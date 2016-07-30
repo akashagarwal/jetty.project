@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.nosql;
 
@@ -30,10 +25,10 @@ import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.log.Logger;
 
 
-/* ------------------------------------------------------------ */
+/** ------------------------------------------------------------. */
 public class NoSqlSession extends MemSession
 {
-    private final static Logger LOG = Log.getLogger("org.eclipse.jetty.server.session");
+    private static final Logger LOG = Log.getLogger("org.eclipse.jetty.server.session");
     
     private enum IdleState {NOT_IDLE, IDLE, IDLING, DEIDLING};
 
@@ -47,7 +42,7 @@ public class NoSqlSession extends MemSession
     
     private boolean _deIdleFailed;
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public NoSqlSession(NoSqlSessionManager manager, HttpServletRequest request)
     {
         super(manager, request);
@@ -55,7 +50,7 @@ public class NoSqlSession extends MemSession
         _active.incrementAndGet();
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public NoSqlSession(NoSqlSessionManager manager, long created, long accessed, String clusterId, Object version)
     {
         super(manager, created,accessed,clusterId);
@@ -63,7 +58,7 @@ public class NoSqlSession extends MemSession
         _version=version;
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public Object doPutOrRemove(String name, Object value)
     {
@@ -80,13 +75,15 @@ public class NoSqlSession extends MemSession
     }
     
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void setAttribute(String name, Object value)
     {
         Object old = changeAttribute(name,value);
         if (value == null && old == null)
-            return; //not dirty, no change
+		 {
+			return; //not dirty, no change
+		}
         
         if (value==null || !value.equals(old))
         {
@@ -100,7 +97,7 @@ public class NoSqlSession extends MemSession
     }
     
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     protected void timeout() throws IllegalStateException
     {
@@ -109,14 +106,15 @@ public class NoSqlSession extends MemSession
 
 
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     protected void checkValid() throws IllegalStateException
     {
         //whenever a method is called on the session, check that it was not idled and
         //reinflate it if necessary
-        if (!isDeIdleFailed() && _manager.getIdlePeriod() > 0 && isIdle())
-            deIdle();
+        if (!isDeIdleFailed() && _manager.getIdlePeriod() > 0 && isIdle()) {
+			deIdle();
+		}
         try
         {
             super.checkValid();
@@ -129,31 +127,34 @@ public class NoSqlSession extends MemSession
     
     
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     protected boolean access(long time)
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("NoSqlSession:access:active {} time {}", _active, time);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("NoSqlSession:access:active {} time {}", _active, time);
+		}
         if (_active.incrementAndGet()==1)
         {
             long period=_manager.getStalePeriod()*1000L;
-            if (period==0)
-                refresh();
-            else if (period>0)
+            if (period==0) {
+				refresh();
+			} else if (period>0)
             {
                 long stale=time-_lastSync;
-                if (LOG.isDebugEnabled())
-                    LOG.debug("NoSqlSession:access:stale "+stale);
-                if (stale>period)
-                    refresh();
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("NoSqlSession:access:stale "+stale);
+				}
+                if (stale>period) {
+					refresh();
+				}
             }
         }
 
         return super.access(time);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     protected void complete()
     {
@@ -166,15 +167,16 @@ public class NoSqlSession extends MemSession
                     save(isValid());
                     break;
                 case 1:
-                    if (isDirty())
-                        save(isValid());
+                    if (isDirty()) {
+						save(isValid());
+					}
                     break;
 
             }
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     protected void doInvalidate() throws IllegalStateException
     {
@@ -183,7 +185,7 @@ public class NoSqlSession extends MemSession
         save(false);
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected void save(boolean activateAfterSave)
     {
         synchronized (this)
@@ -194,15 +196,16 @@ public class NoSqlSession extends MemSession
     }
     
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void idle ()
     {
         synchronized (this)
         {
             if (!isIdle() && !isIdling()) //don't re-idle an idle session as the attribute map will be empty
             {
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Idling {}", super.getId());
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("Idling {}", super.getId());
+				}
                 setIdling();
                 save(false);
                 willPassivate();
@@ -213,18 +216,20 @@ public class NoSqlSession extends MemSession
     }
     
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public synchronized void deIdle()
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("Checking before de-idling {}, isidle:{}, isDeidleFailed:", super.getId(), isIdle(), isDeIdleFailed());
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Checking before de-idling {}, isidle:{}, isDeidleFailed:", super.getId(), isIdle(), isDeIdleFailed());
+		}
         
         if (isIdle() && !isDeIdleFailed())
         {
 
             setDeIdling();
-            if (LOG.isDebugEnabled())
-                LOG.debug("De-idling " + super.getId());
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("De-idling " + super.getId());
+			}
 
             // Update access time to prevent race with idling period
             super.access(System.currentTimeMillis());
@@ -235,9 +240,10 @@ public class NoSqlSession extends MemSession
                 try
                 {    
                     setIdle(false);
-                    _version=_manager.refresh(this, new Long(0)); //ensure version should not match to force refresh
-                    if (_version == null)
-                        setDeIdleFailed(true);
+                    _version=_manager.refresh(this, Long.valueOf(0)); //ensure version should not match to force refresh
+                    if (_version == null) {
+						setDeIdleFailed(true);
+					}
                 }
                 catch (Exception e)
                 {
@@ -249,20 +255,20 @@ public class NoSqlSession extends MemSession
         }
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public synchronized boolean isIdle ()
     {
         return _idle == IdleState.IDLE;
     }
     
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public synchronized boolean isIdling ()
     {
         return _idle == IdleState.IDLING;
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public synchronized boolean isDeIdling()
     {
         return _idle == IdleState.DEIDLING;
@@ -279,13 +285,14 @@ public class NoSqlSession extends MemSession
         _idle = IdleState.DEIDLING;
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public synchronized void setIdle (boolean idle)
     {
-        if (idle)
-            _idle = IdleState.IDLE;
-        else
-            _idle = IdleState.NOT_IDLE;
+        if (idle) {
+			_idle = IdleState.IDLE;
+		} else {
+			_idle = IdleState.NOT_IDLE;
+		}
     }
     
 
@@ -299,7 +306,7 @@ public class NoSqlSession extends MemSession
         this._deIdleFailed = _deIdleFailed;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected void refresh()
     {
         synchronized (this)
@@ -308,7 +315,7 @@ public class NoSqlSession extends MemSession
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public boolean isDirty()
     {
         synchronized (this)
@@ -317,28 +324,29 @@ public class NoSqlSession extends MemSession
         }
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public Set<String> takeDirty()
     {
         synchronized (this)
         {
             Set<String> dirty=_dirty;
-            if (dirty==null)
-                dirty= new HashSet<String>();
-            else
-                _dirty=null;
+            if (dirty!=null) {
+				_dirty=null;
+			} else {
+				dirty= new HashSet<String>();
+			}
             return dirty;
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public Object getVersion()
     {
         return _version;
     }
     
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void setClusterId(String clusterId)
     {
@@ -346,7 +354,7 @@ public class NoSqlSession extends MemSession
     }
 
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void setNodeId(String nodeId)
     {

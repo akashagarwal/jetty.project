@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http2.parser;
 
@@ -70,8 +65,9 @@ public class SettingsBodyParser extends BodyParser
                 case PREPARE:
                 {
                     // SPEC: wrong streamId is treated as connection error.
-                    if (getStreamId() != 0)
-                        return connectionFailure(buffer, ErrorCode.PROTOCOL_ERROR.code, "invalid_settings_frame");
+                    if (getStreamId() != 0) {
+						return connectionFailure(buffer, ErrorCode.PROTOCOL_ERROR.code, "invalid_settings_frame");
+					}
                     length = getBodyLength();
                     settings = new HashMap<>();
                     state = State.SETTING_ID;
@@ -84,8 +80,9 @@ public class SettingsBodyParser extends BodyParser
                         settingId = buffer.getShort() & 0xFF_FF;
                         state = State.SETTING_VALUE;
                         length -= 2;
-                        if (length <= 0)
-                            return connectionFailure(buffer, ErrorCode.FRAME_SIZE_ERROR.code, "invalid_settings_frame");
+                        if (length <= 0) {
+							return connectionFailure(buffer, ErrorCode.FRAME_SIZE_ERROR.code, "invalid_settings_frame");
+						}
                     }
                     else
                     {
@@ -99,10 +96,11 @@ public class SettingsBodyParser extends BodyParser
                 {
                     int currByte = buffer.get() & 0xFF;
                     --cursor;
-                    settingId += currByte << (8 * cursor);
+                    settingId += currByte << 8 * cursor;
                     --length;
-                    if (length <= 0)
-                        return connectionFailure(buffer, ErrorCode.FRAME_SIZE_ERROR.code, "invalid_settings_frame");
+                    if (length <= 0) {
+						return connectionFailure(buffer, ErrorCode.FRAME_SIZE_ERROR.code, "invalid_settings_frame");
+					}
                     if (cursor == 0)
                     {
                         state = State.SETTING_VALUE;
@@ -114,13 +112,15 @@ public class SettingsBodyParser extends BodyParser
                     if (buffer.remaining() >= 4)
                     {
                         settingValue = buffer.getInt();
-                        if (LOG.isDebugEnabled())
-                            LOG.debug(String.format("setting %d=%d",settingId, settingValue));
+                        if (LOG.isDebugEnabled()) {
+							LOG.debug(String.format("setting %d=%d",settingId, settingValue));
+						}
                         settings.put(settingId, settingValue);
                         state = State.SETTING_ID;
                         length -= 4;
-                        if (length == 0)
-                            return onSettings(settings);
+                        if (length == 0) {
+							return onSettings(settings);
+						}
                     }
                     else
                     {
@@ -134,18 +134,21 @@ public class SettingsBodyParser extends BodyParser
                 {
                     int currByte = buffer.get() & 0xFF;
                     --cursor;
-                    settingValue += currByte << (8 * cursor);
+                    settingValue += currByte << 8 * cursor;
                     --length;
-                    if (cursor > 0 && length <= 0)
-                        return connectionFailure(buffer, ErrorCode.FRAME_SIZE_ERROR.code, "invalid_settings_frame");
+                    if (cursor > 0 && length <= 0) {
+						return connectionFailure(buffer, ErrorCode.FRAME_SIZE_ERROR.code, "invalid_settings_frame");
+					}
                     if (cursor == 0)
                     {
-                        if (LOG.isDebugEnabled())
-                            LOG.debug(String.format("setting %d=%d",settingId, settingValue));
+                        if (LOG.isDebugEnabled()) {
+							LOG.debug(String.format("setting %d=%d",settingId, settingValue));
+						}
                         settings.put(settingId, settingValue);
                         state = State.SETTING_ID;
-                        if (length == 0)
-                            return onSettings(settings);
+                        if (length == 0) {
+							return onSettings(settings);
+						}
                     }
                     break;
                 }
@@ -198,10 +201,11 @@ public class SettingsBodyParser extends BodyParser
                 return false;
             }
         };
-        if (bodyLength == 0)
-            parser.emptyBody(buffer);
-        else
-            parser.parse(buffer);
+        if (bodyLength == 0) {
+			parser.emptyBody(buffer);
+		} else {
+			parser.parse(buffer);
+		}
         return frameRef.get();
     }
 

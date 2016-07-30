@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.nosql.mongodb;
 
@@ -53,9 +48,7 @@ public class AttributeNameTest
     public AbstractTestServer createServer(int port, int max, int scavenge)
     throws Exception
     {   
-        MongoTestServer server = new MongoTestServer(port,max,scavenge,true);
-        
-        return server;
+        return new MongoTestServer(port,max,scavenge,true);
 
     }
 
@@ -130,8 +123,7 @@ public class AttributeNameTest
             if ("init".equals(action))
             {
                 NoSqlSession session = (NoSqlSession)request.getSession(true);
-                session.setAttribute("a.b.c",System.currentTimeMillis());               
-                sendResult(session,httpServletResponse.getWriter());
+                session.setAttribute("a.b.c",System.currentTimeMillis());
                 
             }
             else
@@ -139,8 +131,8 @@ public class AttributeNameTest
                 NoSqlSession session = (NoSqlSession)request.getSession(false);
                 assertNotNull(session);     
                 assertNotNull(session.getAttribute("a.b.c"));
-                sendResult(session,httpServletResponse.getWriter());
             }
+			sendResult(session,httpServletResponse.getWriter());
 
         }
 
@@ -148,10 +140,11 @@ public class AttributeNameTest
         {
             if (session != null)
             {
-                if (session.getAttribute("a.b.c") != null)
-                    writer.print("a.b.c/"+session.getAttribute("a.b.c"));    
-                else
-                    writer.print("-/0");
+                if (session.getAttribute("a.b.c") != null) {
+					writer.print("a.b.c/"+session.getAttribute("a.b.c"));
+				} else {
+					writer.print("-/0");
+				}
             }
             else
             {

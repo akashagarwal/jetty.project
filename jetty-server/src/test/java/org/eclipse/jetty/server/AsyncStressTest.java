@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 
@@ -62,7 +57,7 @@ public class AsyncStressTest
     protected InetAddress _addr;
     protected int _port;
     protected Random _random = new Random();
-    private final static String[][] __paths =
+    private static final String[][] __paths =
     {
         {"/path","NORMAL"},
         {"/path/info","NORMAL"},
@@ -115,10 +110,12 @@ public class AsyncStressTest
         {
             socket[i] = new Socket(_addr,_port);
             socket[i].setSoTimeout(30000);
-            if (i%10==0)
-                Thread.sleep(50);
-            if (i%80==0)
-                System.err.println();
+            if (i%10==0) {
+				Thread.sleep(50);
+			}
+            if (i%80==0) {
+				System.err.println();
+			}
             System.err.print('+');
         }
         System.err.println();
@@ -144,21 +141,23 @@ public class AsyncStressTest
                 socket[i].getOutputStream().write(request.getBytes(StandardCharsets.UTF_8));
                 socket[i].getOutputStream().flush();
             }
-            if (l%80==0)
-                System.err.println();
+            if (l%80==0) {
+				System.err.println();
+			}
             System.err.print('.');
             Thread.sleep(_random.nextInt(290)+10);
         }
 
         System.err.println();
-        LOG.info("Sent "+(loops*__paths.length)+" requests");
+        LOG.info("Sent "+loops*__paths.length+" requests");
 
         String[] results=new String[connections];
         for (int i=0;i<connections;i++)
         {
             results[i]=IO.toString(socket[i].getInputStream(),StandardCharsets.UTF_8);
-            if (i%80==0)
-                System.err.println();
+            if (i%80==0) {
+				System.err.println();
+			}
             System.err.print('-');
         }
         System.err.println();
@@ -204,16 +203,21 @@ public class AsyncStressTest
 
             final String uri=baseRequest.getHttpURI().toString();
 
-            if (request.getParameter("read")!=null)
-                read_before=Integer.parseInt(request.getParameter("read"));
-            if (request.getParameter("sleep")!=null)
-                sleep_for=Integer.parseInt(request.getParameter("sleep"));
-            if (request.getParameter("suspend")!=null)
-                suspend_for=Integer.parseInt(request.getParameter("suspend"));
-            if (request.getParameter("resume")!=null)
-                resume_after=Integer.parseInt(request.getParameter("resume"));
-            if (request.getParameter("complete")!=null)
-                complete_after=Integer.parseInt(request.getParameter("complete"));
+            if (request.getParameter("read")!=null) {
+				read_before=Integer.parseInt(request.getParameter("read"));
+			}
+            if (request.getParameter("sleep")!=null) {
+				sleep_for=Integer.parseInt(request.getParameter("sleep"));
+			}
+            if (request.getParameter("suspend")!=null) {
+				suspend_for=Integer.parseInt(request.getParameter("suspend"));
+			}
+            if (request.getParameter("resume")!=null) {
+				resume_after=Integer.parseInt(request.getParameter("resume"));
+			}
+            if (request.getParameter("complete")!=null) {
+				complete_after=Integer.parseInt(request.getParameter("complete"));
+			}
 
             if (DispatcherType.REQUEST.equals(baseRequest.getDispatcherType()))
             {
@@ -226,16 +230,18 @@ public class AsyncStressTest
                 {
                     InputStream in = request.getInputStream();
                     int b=in.read();
-                    while(b!=-1)
-                        b=in.read();
+                    while(b!=-1) {
+						b=in.read();
+					}
                 }
 
                 if (suspend_for>=0)
                 {
                     final AsyncContext asyncContext = baseRequest.startAsync();
                     asyncContext.addListener(__asyncListener);
-                    if (suspend_for>0)
-                        asyncContext.setTimeout(suspend_for);
+                    if (suspend_for>0) {
+						asyncContext.setTimeout(suspend_for);
+					}
                     if (complete_after>0)
                     {
                         TimerTask complete = new TimerTask()
@@ -253,7 +259,7 @@ public class AsyncStressTest
                                 catch(Exception e)
                                 {
                                     Request br=(Request)asyncContext.getRequest();
-                                    System.err.println("\n"+e.toString());
+                                    System.err.println("\n"+e);
                                     System.err.println(baseRequest+"=="+br);
                                     System.err.println(uri+"=="+br.getHttpURI());
                                     System.err.println(asyncContext+"=="+br.getHttpChannelState());

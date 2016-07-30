@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.quickstart;
 
@@ -75,11 +70,11 @@ public class AttributeNormalizer
         
         private static Path toCanonicalPath(String path) throws IOException
         {
-            if (path == null)
+            if (path != null)
             {
-                return null;
+                return toCanonicalPath(FileSystems.getDefault().getPath(path));
             }
-            return toCanonicalPath(FileSystems.getDefault().getPath(path));
+            return null;
         }
         
         private static Path toCanonicalPath(Path path) throws IOException
@@ -113,17 +108,17 @@ public class AttributeNormalizer
         @Override
         public int compare(PathAttribute o1, PathAttribute o2)
         {
-            if( (o1.path == null) && (o2.path != null) )
+            if( o1.path == null && o2.path != null )
             {
                 return -1;
             }
             
-            if( (o1.path != null) && (o2.path == null) )
+            if( o1.path != null && o2.path == null )
             {
                 return 1;
             }
             
-            if( (o1.path == null) && (o2.path == null) )
+            if( o1.path == null && o2.path == null )
             {
                 return 0;
             }
@@ -152,7 +147,7 @@ public class AttributeNormalizer
         StringBuilder ret = new StringBuilder();
         for (char c : path.toCharArray())
         {
-            if ((c == '/') || (c == '\\'))
+            if (c == '/' || c == '\\')
             {
                 ret.append('/');
             }
@@ -172,8 +167,9 @@ public class AttributeNormalizer
         // WAR URI is always evaluated before paths.
         warURI = baseResource == null ? null : baseResource.getURI();
         // We don't normalize or resolve the baseResource URI
-        if (!warURI.isAbsolute())
-            throw new IllegalArgumentException("WAR URI is not absolute: " + warURI);
+        if (!warURI.isAbsolute()) {
+			throw new IllegalArgumentException("WAR URI is not absolute: " + warURI);
+		}
         try
         {
             // Track path attributes for expansion
@@ -205,18 +201,19 @@ public class AttributeNormalizer
         {
             // Find a URI
             URI uri = null;
-            if (o instanceof URI)
-                uri = (URI)o;
-            else if (o instanceof URL)
-                uri = ((URL)o).toURI();
-            else if (o instanceof File)
-                uri = ((File)o).toURI();
-            else
+            if (o instanceof URI) {
+				uri = (URI)o;
+			} else if (o instanceof URL) {
+				uri = ((URL)o).toURI();
+			} else if (o instanceof File) {
+				uri = ((File)o).toURI();
+			} else
             {
                 String s = o.toString();
                 uri = new URI(s);
-                if (uri.getScheme() == null)
-                    return s;
+                if (uri.getScheme() == null) {
+					return s;
+				}
             }
 
             if ("jar".equalsIgnoreCase(uri.getScheme()))
@@ -230,14 +227,10 @@ public class AttributeNormalizer
             else if ("file".equalsIgnoreCase(uri.getScheme()))
             {
                 return "file:" + normalizePath(new File(uri.getRawSchemeSpecificPart()).toPath());
-            }
-            else
-            {
-                if(uri.isAbsolute())
-                {
-                    return normalizeUri(uri);
-                }
-            }
+            } else if(uri.isAbsolute())
+			{
+			    return normalizeUri(uri);
+			}
         }
         catch (Exception e)
         {
@@ -261,8 +254,9 @@ public class AttributeNormalizer
     {
         for (PathAttribute attr : attributes)
         {
-            if (attr.path == null)
-                continue;
+            if (attr.path == null) {
+				continue;
+			}
             
             try
             {
@@ -292,7 +286,7 @@ public class AttributeNormalizer
             return str;
         }
 
-        if (str.indexOf("${") < 0)
+        if (!str.contains("${"))
         {
             // Contains no potential expressions.
             return str;
@@ -326,13 +320,14 @@ public class AttributeNormalizer
             seenStack.push(property);
 
             // find property name
-            expanded.append(str.subSequence(offset,mat.start()));
+            expanded.append(str, offset, mat.start());
             // get property value
             value = getString(property);
             if (value == null)
             {
-                if(LOG.isDebugEnabled())
-                    LOG.debug("Unable to expand: {}",property);
+                if(LOG.isDebugEnabled()) {
+					LOG.debug("Unable to expand: {}",property);
+				}
                 expanded.append(mat.group());
             }
             else

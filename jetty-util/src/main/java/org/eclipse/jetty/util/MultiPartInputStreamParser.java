@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util;
 
@@ -77,7 +72,7 @@ public class MultiPartInputStreamParser
         protected ByteArrayOutputStream2 _bout;
         protected String _contentType;
         protected MultiMap<String> _headers;
-        protected long _size = 0;
+        protected long _size;
         protected boolean _temporary = true;
 
         public MultiPart (String name, String filename)
@@ -126,11 +121,13 @@ public class MultiPartInputStreamParser
         protected void write (int b)
         throws IOException
         {
-            if (MultiPartInputStreamParser.this._config.getMaxFileSize() > 0 && _size + 1 > MultiPartInputStreamParser.this._config.getMaxFileSize())
-                throw new IllegalStateException ("Multipart Mime part "+_name+" exceeds max filesize");
+            if (MultiPartInputStreamParser.this._config.getMaxFileSize() > 0 && _size + 1 > MultiPartInputStreamParser.this._config.getMaxFileSize()) {
+				throw new IllegalStateException ("Multipart Mime part "+_name+" exceeds max filesize");
+			}
 
-            if (MultiPartInputStreamParser.this._config.getFileSizeThreshold() > 0 && _size + 1 > MultiPartInputStreamParser.this._config.getFileSizeThreshold() && _file==null)
-                createFile();
+            if (MultiPartInputStreamParser.this._config.getFileSizeThreshold() > 0 && _size + 1 > MultiPartInputStreamParser.this._config.getFileSizeThreshold() && _file==null) {
+				createFile();
+			}
 
             _out.write(b);
             _size ++;
@@ -139,11 +136,13 @@ public class MultiPartInputStreamParser
         protected void write (byte[] bytes, int offset, int length)
         throws IOException
         {
-            if (MultiPartInputStreamParser.this._config.getMaxFileSize() > 0 && _size + length > MultiPartInputStreamParser.this._config.getMaxFileSize())
-                throw new IllegalStateException ("Multipart Mime part "+_name+" exceeds max filesize");
+            if (MultiPartInputStreamParser.this._config.getMaxFileSize() > 0 && _size + length > MultiPartInputStreamParser.this._config.getMaxFileSize()) {
+				throw new IllegalStateException ("Multipart Mime part "+_name+" exceeds max filesize");
+			}
 
-            if (MultiPartInputStreamParser.this._config.getFileSizeThreshold() > 0 && _size + length > MultiPartInputStreamParser.this._config.getFileSizeThreshold() && _file==null)
-                createFile();
+            if (MultiPartInputStreamParser.this._config.getFileSizeThreshold() > 0 && _size + length > MultiPartInputStreamParser.this._config.getFileSizeThreshold() && _file==null) {
+				createFile();
+			}
 
             _out.write(bytes, offset, length);
             _size += length;
@@ -154,8 +153,9 @@ public class MultiPartInputStreamParser
         {
             _file = File.createTempFile("MultiPart", "", MultiPartInputStreamParser.this._tmpDir);
 
-            if (_deleteOnExit)
-                _file.deleteOnExit();
+            if (_deleteOnExit) {
+				_file.deleteOnExit();
+			}
             FileOutputStream fos = new FileOutputStream(_file);
             BufferedOutputStream bos = new BufferedOutputStream(fos);
 
@@ -177,43 +177,29 @@ public class MultiPartInputStreamParser
             _headers = headers;
         }
 
-        /**
-         * @see javax.servlet.http.Part#getContentType()
-         */
         public String getContentType()
         {
             return _contentType;
         }
 
-        /**
-         * @see javax.servlet.http.Part#getHeader(java.lang.String)
-         */
         public String getHeader(String name)
         {
-            if (name == null)
-                return null;
-            return _headers.getValue(name.toLowerCase(Locale.ENGLISH), 0);
+            if (name != null) {
+				return _headers.getValue(name.toLowerCase(Locale.ENGLISH), 0);
+			}
+            return null;
         }
 
-        /**
-         * @see javax.servlet.http.Part#getHeaderNames()
-         */
         public Collection<String> getHeaderNames()
         {
             return _headers.keySet();
         }
 
-        /**
-         * @see javax.servlet.http.Part#getHeaders(java.lang.String)
-         */
         public Collection<String> getHeaders(String name)
         {
            return _headers.getValues(name);
         }
 
-        /**
-         * @see javax.servlet.http.Part#getInputStream()
-         */
         public InputStream getInputStream() throws IOException
         {
            if (_file != null)
@@ -229,9 +215,6 @@ public class MultiPartInputStreamParser
         }
 
 
-        /**
-         * @see javax.servlet.http.Part#getSubmittedFileName()
-         */
         @Override
         public String getSubmittedFileName()
         {
@@ -240,36 +223,27 @@ public class MultiPartInputStreamParser
 
         public byte[] getBytes()
         {
-            if (_bout!=null)
-                return _bout.toByteArray();
+            if (_bout!=null) {
+				return _bout.toByteArray();
+			}
             return null;
         }
 
-        /**
-         * @see javax.servlet.http.Part#getName()
-         */
         public String getName()
         {
            return _name;
         }
 
-        /**
-         * @see javax.servlet.http.Part#getSize()
-         */
         public long getSize()
         {
             return _size;
         }
 
-        /**
-         * @see javax.servlet.http.Part#write(java.lang.String)
-         */
         public void write(String fileName) throws IOException
         {
-            if (_file == null)
+            _temporary = false;
+			if (_file == null)
             {
-                _temporary = false;
-
                 //part data is only in the ByteArrayOutputStream and never been written to disk
                 _file = new File (_tmpDir, fileName);
 
@@ -282,16 +256,14 @@ public class MultiPartInputStreamParser
                 }
                 finally
                 {
-                    if (bos != null)
-                        bos.close();
+                    if (bos != null) {
+						bos.close();
+					}
                     _bout = null;
                 }
             }
             else
             {
-                //the part data is already written to a temporary file, just rename it
-                _temporary = false;
-
                 Path src = _file.toPath();
                 Path target = src.resolveSibling(fileName);
                 Files.move(src, target, StandardCopyOption.REPLACE_EXISTING);
@@ -306,8 +278,9 @@ public class MultiPartInputStreamParser
          */
         public void delete() throws IOException
         {
-            if (_file != null && _file.exists())
-                _file.delete();
+            if (_file != null && _file.exists()) {
+				_file.delete();
+			}
         }
 
         /**
@@ -317,8 +290,9 @@ public class MultiPartInputStreamParser
          */
         public void cleanUp() throws IOException
         {
-            if (_temporary && _file != null && _file.exists())
-                _file.delete();
+            if (_temporary && _file != null && _file.exists()) {
+				_file.delete();
+			}
         }
 
 
@@ -357,11 +331,13 @@ public class MultiPartInputStreamParser
        _contentType = contentType;
        _config = config;
        _contextTmpDir = contextTmpDir;
-       if (_contextTmpDir == null)
-           _contextTmpDir = new File (System.getProperty("java.io.tmpdir"));
+       if (_contextTmpDir == null) {
+		_contextTmpDir = new File (System.getProperty("java.io.tmpdir"));
+	}
 
-       if (_config == null)
-           _config = new MultipartConfigElement(_contextTmpDir.getAbsolutePath());
+       if (_config == null) {
+		_config = new MultipartConfigElement(_contextTmpDir.getAbsolutePath());
+	}
     }
 
     /**
@@ -370,8 +346,9 @@ public class MultiPartInputStreamParser
      */
     public Collection<Part> getParsedParts()
     {
-        if (_parts == null)
-            return Collections.emptyList();
+        if (_parts == null) {
+			return Collections.emptyList();
+		}
 
         Collection<List<Part>> values = _parts.values();
         List<Part> parts = new ArrayList<>();
@@ -459,10 +436,12 @@ public class MultiPartInputStreamParser
     {
         if (_err != null)
         {
-            if (_err instanceof IOException)
-                throw (IOException)_err;
-            if (_err instanceof IllegalStateException)
-                throw (IllegalStateException)_err;
+            if (_err instanceof IOException) {
+				throw (IOException)_err;
+			}
+            if (_err instanceof IllegalStateException) {
+				throw (IllegalStateException)_err;
+			}
             throw new IllegalStateException(_err);
         }
     }
@@ -474,43 +453,47 @@ public class MultiPartInputStreamParser
     protected void parse ()
     {
         //have we already parsed the input?
-        if (_parts != null || _err != null)
-            return;
+        if (_parts != null || _err != null) {
+			return;
+		}
 
         //initialize
         long total = 0; //keep running total of size of bytes read from input and throw an exception if exceeds MultipartConfigElement._maxRequestSize
         _parts = new MultiMap<>();
 
         //if its not a multipart request, don't parse it
-        if (_contentType == null || !_contentType.startsWith("multipart/form-data"))
-            return;
+        if (_contentType == null || !_contentType.startsWith("multipart/form-data")) {
+			return;
+		}
 
         try
         {
             //sort out the location to which to write the files
 
-            if (_config.getLocation() == null)
-                _tmpDir = _contextTmpDir;
-            else if ("".equals(_config.getLocation()))
-                _tmpDir = _contextTmpDir;
-            else
+            if (_config.getLocation() == null) {
+				_tmpDir = _contextTmpDir;
+			} else if ("".equals(_config.getLocation())) {
+				_tmpDir = _contextTmpDir;
+			} else
             {
                 File f = new File (_config.getLocation());
-                if (f.isAbsolute())
-                    _tmpDir = f;
-                else
-                    _tmpDir = new File (_contextTmpDir, _config.getLocation());
+                if (f.isAbsolute()) {
+					_tmpDir = f;
+				} else {
+					_tmpDir = new File (_contextTmpDir, _config.getLocation());
+				}
             }
 
-            if (!_tmpDir.exists())
-                _tmpDir.mkdirs();
+            if (!_tmpDir.exists()) {
+				_tmpDir.mkdirs();
+			}
 
             String contentTypeBoundary = "";
             int bstart = _contentType.indexOf("boundary=");
             if (bstart >= 0)
             {
                 int bend = _contentType.indexOf(";", bstart);
-                bend = (bend < 0? _contentType.length(): bend);
+                bend = bend < 0? _contentType.length(): bend;
                 contentTypeBoundary = QuotedStringTokenizer.unquote(value(_contentType.substring(bstart,bend)).trim());
             }
 
@@ -530,8 +513,9 @@ public class MultiPartInputStreamParser
                 throw e;
             }
 
-            if (line == null)
-                throw new IOException("Missing content for multipart request");
+            if (line == null) {
+				throw new IOException("Missing content for multipart request");
+			}
 
             boolean badFormatLogged = false;
             line=line.trim();
@@ -543,15 +527,17 @@ public class MultiPartInputStreamParser
                     badFormatLogged = true;
                 }
                 line=((ReadLineInputStream)_in).readLine();
-                line=(line==null?line:line.trim());
+                line=line==null?line:line.trim();
             }
 
-            if (line == null)
-                throw new IOException("Missing initial multi part boundary");
+            if (line == null) {
+				throw new IOException("Missing initial multi part boundary");
+			}
 
             // Empty multipart.
-            if (line.equals(lastBoundary))
-                return;
+            if (line.equals(lastBoundary)) {
+				return;
+			}
 
             // Read each part
             boolean lastPart=false;
@@ -568,16 +554,19 @@ public class MultiPartInputStreamParser
                     line=((ReadLineInputStream)_in).readLine();
 
                     //No more input
-                    if(line==null)
-                        break outer;
+                    if(line==null) {
+						break outer;
+					}
 
                     //end of headers:
-                    if("".equals(line))
-                        break;
+                    if("".equals(line)) {
+						break;
+					}
 
                     total += line.length();
-                    if (_config.getMaxRequestSize() > 0 && total > _config.getMaxRequestSize())
-                        throw new IllegalStateException ("Request exceeds maxRequestSize ("+_config.getMaxRequestSize()+")");
+                    if (_config.getMaxRequestSize() > 0 && total > _config.getMaxRequestSize()) {
+						throw new IllegalStateException ("Request exceeds maxRequestSize ("+_config.getMaxRequestSize()+")");
+					}
 
                     //get content-disposition and content-type
                     int c=line.indexOf(':',0);
@@ -586,12 +575,15 @@ public class MultiPartInputStreamParser
                         String key=line.substring(0,c).trim().toLowerCase(Locale.ENGLISH);
                         String value=line.substring(c+1,line.length()).trim();
                         headers.put(key, value);
-                        if (key.equalsIgnoreCase("content-disposition"))
-                            contentDisposition=value;
-                        if (key.equalsIgnoreCase("content-type"))
-                            contentType = value;
-                        if(key.equals("content-transfer-encoding"))
-                            contentTransferEncoding=value;
+                        if ("content-disposition".equalsIgnoreCase(key)) {
+							contentDisposition=value;
+						}
+                        if ("content-type".equalsIgnoreCase(key)) {
+							contentType = value;
+						}
+                        if("content-transfer-encoding".equals(key)) {
+							contentTransferEncoding=value;
+						}
                     }
                 }
 
@@ -609,12 +601,13 @@ public class MultiPartInputStreamParser
                 {
                     String t=tok.nextToken().trim();
                     String tl=t.toLowerCase(Locale.ENGLISH);
-                    if(t.startsWith("form-data"))
-                        form_data=true;
-                    else if(tl.startsWith("name="))
-                        name=value(t);
-                    else if(tl.startsWith("filename="))
-                        filename=filenameValue(t);
+                    if(t.startsWith("form-data")) {
+						form_data=true;
+					} else if(tl.startsWith("name=")) {
+						name=value(t);
+					} else if(tl.startsWith("filename=")) {
+						filename=filenameValue(t);
+					}
                 }
 
                 // Check disposition
@@ -666,9 +659,9 @@ public class MultiPartInputStreamParser
                             return c;
                         }
                     };
-                }
-                else
-                    partInput = _in;
+                } else {
+					partInput = _in;
+				}
 
 
                 try
@@ -685,8 +678,9 @@ public class MultiPartInputStreamParser
                         while((c=(state!=-2)?state:partInput.read())!=-1)
                         {
                             total ++;
-                            if (_config.getMaxRequestSize() > 0 && total > _config.getMaxRequestSize())
-                                throw new IllegalStateException("Request exceeds maxRequestSize ("+_config.getMaxRequestSize()+")");
+                            if (_config.getMaxRequestSize() > 0 && total > _config.getMaxRequestSize()) {
+								throw new IllegalStateException("Request exceeds maxRequestSize ("+_config.getMaxRequestSize()+")");
+							}
 
                             state=-2;
 
@@ -697,10 +691,11 @@ public class MultiPartInputStreamParser
                                 {
                                     partInput.mark(1);
                                     int tmp=partInput.read();
-                                    if (tmp!=10)
-                                        partInput.reset();
-                                    else
-                                        state=tmp;
+                                    if (tmp!=10) {
+										partInput.reset();
+									} else {
+										state=tmp;
+									}
                                 }
                                 break;
                             }
@@ -714,15 +709,18 @@ public class MultiPartInputStreamParser
                             {
                                 // Got a character not part of the boundary, so we don't have the boundary marker.
                                 // Write out as many chars as we matched, then the char we're looking at.
-                                if(cr)
-                                    part.write(13);
+                                if(cr) {
+									part.write(13);
+								}
 
-                                if(lf)
-                                    part.write(10);
+                                if(lf) {
+									part.write(10);
+								}
 
                                 cr=lf=false;
-                                if(b>0)
-                                    part.write(byteBoundary,0,b);
+                                if(b>0) {
+									part.write(byteBoundary,0,b);
+								}
 
                                 b=-1;
                                 part.write(c);
@@ -730,13 +728,15 @@ public class MultiPartInputStreamParser
                         }
 
                         // Check for incomplete boundary match, writing out the chars we matched along the way
-                        if((b>0&&b<byteBoundary.length-2)||(b==byteBoundary.length-1))
+                        if((b>0&&b<byteBoundary.length-2)||b==byteBoundary.length-1)
                         {
-                            if(cr)
-                                part.write(13);
+                            if(cr) {
+								part.write(13);
+							}
 
-                            if(lf)
-                                part.write(10);
+                            if(lf) {
+								part.write(10);
+							}
 
                             cr=lf=false;
                             part.write(byteBoundary,0,b);
@@ -747,24 +747,29 @@ public class MultiPartInputStreamParser
                         if(b>0||c==-1)
                         {
 
-                            if(b==byteBoundary.length)
-                                lastPart=true;
-                            if(state==10)
-                                state=-2;
+                            if(b==byteBoundary.length) {
+								lastPart=true;
+							}
+                            if(state==10) {
+								state=-2;
+							}
                             break;
                         }
 
                         // handle CR LF
-                        if(cr)
-                            part.write(13);
+                        if(cr) {
+							part.write(13);
+						}
 
-                        if(lf)
-                            part.write(10);
+                        if(lf) {
+							part.write(10);
+						}
 
-                        cr=(c==13);
-                        lf=(c==10||state==10);
-                        if(state==10)
-                            state=-2;
+                        cr=c==13;
+                        lf=c==10||state==10;
+                        if(state==10) {
+							state=-2;
+						}
                     }
                 }
                 finally
@@ -774,11 +779,12 @@ public class MultiPartInputStreamParser
             }
             if (lastPart)
             {
-                while(line!=null)
-                    line=((ReadLineInputStream)_in).readLine();
-            }
-            else
-                throw new IOException("Incomplete parts");
+                while(line!=null) {
+					line=((ReadLineInputStream)_in).readLine();
+				}
+            } else {
+				throw new IOException("Incomplete parts");
+			}
         }
         catch (Exception e)
         {
@@ -807,7 +813,7 @@ public class MultiPartInputStreamParser
     }
 
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     private String value(String nameEqualsValue)
     {
         int idx = nameEqualsValue.indexOf('=');
@@ -816,7 +822,7 @@ public class MultiPartInputStreamParser
     }
 
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     private String filenameValue(String nameEqualsValue)
     {
         int idx = nameEqualsValue.indexOf('=');
@@ -827,20 +833,22 @@ public class MultiPartInputStreamParser
             //incorrectly escaped IE filenames that have the whole path
             //we just strip any leading & trailing quotes and leave it as is
             char first=value.charAt(0);
-            if (first=='"' || first=='\'')
-                value=value.substring(1);
+            if (first=='"' || first=='\'') {
+				value=value.substring(1);
+			}
             char last=value.charAt(value.length()-1);
-            if (last=='"' || last=='\'')
-                value = value.substring(0,value.length()-1);
+            if (last=='"' || last=='\'') {
+				value = value.substring(0,value.length()-1);
+			}
 
             return value;
-        }
-        else
-            //unquote the string, but allow any backslashes that don't
+        } else {
+			//unquote the string, but allow any backslashes that don't
             //form a valid escape sequence to remain as many browsers
             //even on *nix systems will not escape a filename containing
             //backslashes
             return QuotedStringTokenizer.unquoteOnly(value, true);
+		}
     }
 
 
@@ -869,14 +877,16 @@ public class MultiPartInputStreamParser
                 //as markers to determine when we've reached the end of a part.
                 _line = _in.readLine();
                 if (_line==null)
-                    return -1;  //nothing left
-                if (_line.startsWith("--"))
-                    _buffer=(_line+"\r\n").getBytes(); //boundary marking end of part
-                else if (_line.length()==0)
-                    _buffer="\r\n".getBytes(); //blank line
-                else
+				 {
+					return -1;  //nothing left
+				}
+                if (_line.startsWith("--")) {
+					_buffer=(_line+"\r\n").getBytes(); //boundary marking end of part
+				} else if (_line.length()==0) {
+					_buffer="\r\n".getBytes(); //blank line
+				} else
                 {
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream((4*_line.length()/3)+2);
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream(4*_line.length()/3+2);
                     B64Code.decode(_line, baos);
                     baos.write(13);
                     baos.write(10);

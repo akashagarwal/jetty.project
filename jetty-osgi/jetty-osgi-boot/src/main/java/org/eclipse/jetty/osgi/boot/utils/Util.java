@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 
 package org.eclipse.jetty.osgi.boot.utils;
@@ -44,12 +39,15 @@ public class Util
      */
     public static String getManifestHeaderValue (String name, String altName, Dictionary manifest)
     {
-        if (manifest == null)
-            return null;
-        if (name == null && altName == null)
-            return null;
-        if (name != null)
-            return (String)manifest.get(name);
+        if (manifest == null) {
+			return null;
+		}
+        if (name == null && altName == null) {
+			return null;
+		}
+        if (name != null) {
+			return (String)manifest.get(name);
+		}
         return (String)manifest.get(altName);
     }
     
@@ -69,8 +67,9 @@ public class Util
     throws Exception
     {
         String separators = DEFAULT_DELIMS;
-        if (delims == null)
-            delims = separators;
+        if (delims == null) {
+			delims = separators;
+		}
 
         StringTokenizer tokenizer = new StringTokenizer(val, delims, false);
         List<URL> urls = new ArrayList<URL>();
@@ -82,7 +81,7 @@ public class Util
     }
     
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public static void setProperty(Dictionary<String,String> properties, String key, String value)
     {
         if (value != null)
@@ -94,7 +93,7 @@ public class Util
     
     /* ------------------------------------------------------------ */
     /**
-     * recursively substitute the <code>${sysprop}</code> by their actual system property.
+     * Recursively substitute the <code>${sysprop}</code> by their actual system property.
      * <code>${sysprop,defaultvalue}</code> will use <code>'defaultvalue'</code> as the value if no
      * sysprop is defined. Not the most efficient code but we are shooting for
      * simplicity and speed of development here.

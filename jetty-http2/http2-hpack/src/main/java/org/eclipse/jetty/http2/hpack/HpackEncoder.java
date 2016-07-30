@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 
 package org.eclipse.jetty.http2.hpack;
@@ -39,17 +34,17 @@ public class HpackEncoder
 {
     public static final Logger LOG = Log.getLogger(HpackEncoder.class);
 
-    private final static HttpField[] __status= new HttpField[599];
+    private static final HttpField[] __status= new HttpField[599];
 
 
-    final static EnumSet<HttpHeader> __DO_NOT_HUFFMAN =
+    static final EnumSet<HttpHeader> __DO_NOT_HUFFMAN =
             EnumSet.of(
                     HttpHeader.AUTHORIZATION,
                     HttpHeader.CONTENT_MD5,
                     HttpHeader.PROXY_AUTHENTICATE,
                     HttpHeader.PROXY_AUTHORIZATION);
 
-    final static EnumSet<HttpHeader> __DO_NOT_INDEX =
+    static final EnumSet<HttpHeader> __DO_NOT_INDEX =
             EnumSet.of(
                     // HttpHeader.C_PATH,  // TODO more data needed
                     // HttpHeader.DATE,    // TODO more data needed
@@ -71,7 +66,7 @@ public class HpackEncoder
                     HttpHeader.SET_COOKIE2);
 
 
-    final static EnumSet<HttpHeader> __NEVER_INDEX =
+    static final EnumSet<HttpHeader> __NEVER_INDEX =
             EnumSet.of(
                     HttpHeader.AUTHORIZATION,
                     HttpHeader.SET_COOKIE,
@@ -79,8 +74,9 @@ public class HpackEncoder
 
     static
     {
-        for (HttpStatus.Code code : HttpStatus.Code.values())
-            __status[code.getCode()]=new PreEncodedHttpField(HttpHeader.C_STATUS,Integer.toString(code.getCode()));
+        for (HttpStatus.Code code : HttpStatus.Code.values()) {
+			__status[code.getCode()]=new PreEncodedHttpField(HttpHeader.C_STATUS,Integer.toString(code.getCode()));
+		}
     }
 
     private final HpackContext _context;
@@ -141,16 +137,18 @@ public class HpackEncoder
 
     public void encode(ByteBuffer buffer, MetaData metadata)
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug(String.format("CtxTbl[%x] encoding",_context.hashCode()));
+        if (LOG.isDebugEnabled()) {
+			LOG.debug(String.format("CtxTbl[%x] encoding",_context.hashCode()));
+		}
 
         _size=0;
         int pos = buffer.position();
 
         // Check the dynamic table sizes!
         int maxDynamicTableSize=Math.min(_remoteMaxDynamicTableSize,_localMaxDynamicTableSize);
-        if (maxDynamicTableSize!=_context.getMaxDynamicTableSize())
-            encodeMaxDynamicTableSize(buffer,maxDynamicTableSize);
+        if (maxDynamicTableSize!=_context.getMaxDynamicTableSize()) {
+			encodeMaxDynamicTableSize(buffer,maxDynamicTableSize);
+		}
 
         // Add Request/response meta fields
         if (metadata.isRequest())
@@ -169,31 +167,36 @@ public class HpackEncoder
             MetaData.Response response = (MetaData.Response)metadata;
             int code=response.getStatus();
             HttpField status = code<__status.length?__status[code]:null;
-            if (status==null)
-                status=new HttpField.IntValueHttpField(HttpHeader.C_STATUS,code);
+            if (status==null) {
+				status=new HttpField.IntValueHttpField(HttpHeader.C_STATUS,code);
+			}
             encode(buffer,status);
         }
 
         // Add all the other fields
-        for (HttpField field : metadata)
-            encode(buffer,field);
+        for (HttpField field : metadata) {
+			encode(buffer,field);
+		}
 
         // Check size
         if (_maxHeaderListSize>0 && _size>_maxHeaderListSize)
         {
             LOG.warn("Header list size too large {} > {} for {}",_size,_maxHeaderListSize);
-            if (LOG.isDebugEnabled())
-                LOG.debug("metadata={}",metadata);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("metadata={}",metadata);
+			}
         }
         
-        if (LOG.isDebugEnabled())
-            LOG.debug(String.format("CtxTbl[%x] encoded %d octets",_context.hashCode(), buffer.position() - pos));
+        if (LOG.isDebugEnabled()) {
+			LOG.debug(String.format("CtxTbl[%x] encoded %d octets",_context.hashCode(), buffer.position() - pos));
+		}
     }
 
     public void encodeMaxDynamicTableSize(ByteBuffer buffer, int maxDynamicTableSize)
     {
-        if (maxDynamicTableSize>_remoteMaxDynamicTableSize)
-            throw new IllegalArgumentException();
+        if (maxDynamicTableSize>_remoteMaxDynamicTableSize) {
+			throw new IllegalArgumentException();
+		}
         buffer.put((byte)0x20);
         NBitInteger.encode(buffer,5,maxDynamicTableSize);
         _context.resize(maxDynamicTableSize);
@@ -201,8 +204,9 @@ public class HpackEncoder
 
     public void encode(ByteBuffer buffer, HttpField field)
     {
-        if (field.getValue()==null)
-            field = new HttpField(field.getHeader(),field.getName(),"");
+        if (field.getValue()==null) {
+			field = new HttpField(field.getHeader(),field.getName(),"");
+		}
         
         int field_size = field.getName().length() + field.getValue().length();
         _size+=field_size+32;
@@ -219,16 +223,18 @@ public class HpackEncoder
             if (entry.isStatic())
             {
                 buffer.put(((StaticEntry)entry).getEncodedField());
-                if (_debug)
-                    encoding="IdxFieldS1";
+                if (_debug) {
+					encoding="IdxFieldS1";
+				}
             }
             else
             {
                 int index=_context.index(entry);
                 buffer.put((byte)0x80);
                 NBitInteger.encode(buffer,7,index);
-                if (_debug)
-                    encoding="IdxField"+(entry.isStatic()?"S":"")+(1+NBitInteger.octectsNeeded(7,index));
+                if (_debug) {
+					encoding="IdxField"+(entry.isStatic()?"S":"")+(1+NBitInteger.octectsNeeded(7,index));
+				}
             }
         }
         else
@@ -251,8 +257,9 @@ public class HpackEncoder
                     ((PreEncodedHttpField)field).putTo(buffer,HttpVersion.HTTP_2);
                     byte b=buffer.get(i);
                     indexed=b<0||b>=0x40;
-                    if (_debug)
-                        encoding=indexed?"PreEncodedIdx":"PreEncoded";
+                    if (_debug) {
+						encoding=indexed?"PreEncodedIdx":"PreEncoded";
+					}
                 }
                 // has the custom header name been seen before?
                 else if (name==null)
@@ -263,8 +270,9 @@ public class HpackEncoder
                     indexed=true;
                     encodeName(buffer,(byte)0x40,6,field.getName(),null);
                     encodeValue(buffer,true,field.getValue());
-                    if (_debug)
-                        encoding="LitHuffNHuffVIdx";
+                    if (_debug) {
+						encoding="LitHuffNHuffVIdx";
+					}
                 }
                 else
                 {
@@ -273,8 +281,9 @@ public class HpackEncoder
                     indexed=false;
                     encodeName(buffer,(byte)0x00,4,field.getName(),null);
                     encodeValue(buffer,true,field.getValue());
-                    if (_debug)
-                        encoding="LitHuffNHuffV!Idx";
+                    if (_debug) {
+						encoding="LitHuffNHuffV!Idx";
+					}
                 }
             }
             else
@@ -289,8 +298,9 @@ public class HpackEncoder
                     ((PreEncodedHttpField)field).putTo(buffer,HttpVersion.HTTP_2);
                     byte b=buffer.get(i);
                     indexed=b<0||b>=0x40;
-                    if (_debug)
-                        encoding=indexed?"PreEncodedIdx":"PreEncoded";
+                    if (_debug) {
+						encoding=indexed?"PreEncodedIdx":"PreEncoded";
+					}
                 }
                 else if (__DO_NOT_INDEX.contains(header))
                 {
@@ -301,11 +311,12 @@ public class HpackEncoder
                     encodeName(buffer,never_index?(byte)0x10:(byte)0x00,4,header.asString(),name);
                     encodeValue(buffer,huffman,field.getValue());
 
-                    if (_debug)
-                        encoding="Lit"+
+                    if (_debug) {
+						encoding="Lit"+
                                 ((name==null)?"HuffN":("IdxN"+(name.isStatic()?"S":"")+(1+NBitInteger.octectsNeeded(4,_context.index(name)))))+
                                 (huffman?"HuffV":"LitV")+
                                 (indexed?"Idx":(never_index?"!!Idx":"!Idx"));
+					}
                 }
                 else if (header==HttpHeader.CONTENT_LENGTH && field.getValue().length()>1)
                 {
@@ -313,8 +324,9 @@ public class HpackEncoder
                     indexed=false;
                     encodeName(buffer,(byte)0x00,4,header.asString(),name);
                     encodeValue(buffer,true,field.getValue());
-                    if (_debug)
-                        encoding="LitIdxNS"+(1+NBitInteger.octectsNeeded(4,_context.index(name)))+"HuffV!Idx";
+                    if (_debug) {
+						encoding="LitIdxNS"+(1+NBitInteger.octectsNeeded(4,_context.index(name)))+"HuffV!Idx";
+					}
                 }
                 else
                 {
@@ -323,23 +335,26 @@ public class HpackEncoder
                     boolean huffman=!__DO_NOT_HUFFMAN.contains(header);
                     encodeName(buffer,(byte)0x40,6,header.asString(),name);
                     encodeValue(buffer,huffman,field.getValue());
-                    if (_debug)
-                        encoding=((name==null)?"LitHuffN":("LitIdxN"+(name.isStatic()?"S":"")+(1+NBitInteger.octectsNeeded(6,_context.index(name)))))+
+                    if (_debug) {
+						encoding=((name==null)?"LitHuffN":("LitIdxN"+(name.isStatic()?"S":"")+(1+NBitInteger.octectsNeeded(6,_context.index(name)))))+
                                 (huffman?"HuffVIdx":"LitVIdx");
+					}
                 }
             }
 
             // If we want the field referenced, then we add it to our
             // table and reference set.
-            if (indexed)
-                _context.add(field);
+            if (indexed) {
+				_context.add(field);
+			}
         }
 
         if (_debug)
         {
             int e=buffer.position();
-            if (LOG.isDebugEnabled())
-                LOG.debug("encode {}:'{}' to '{}'",encoding,field,TypeUtil.toHexString(buffer.array(),buffer.arrayOffset()+p,e-p));
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("encode {}:'{}' to '{}'",encoding,field,TypeUtil.toHexString(buffer.array(),buffer.arrayOffset()+p,e-p));
+			}
         }
     }
 
@@ -377,8 +392,9 @@ public class HpackEncoder
             for (int i=0;i<value.length();i++)
             {
                 char c=value.charAt(i);
-                if (c<' '|| c>127)
-                    throw new IllegalArgumentException();
+                if (c<' '|| c>127) {
+					throw new IllegalArgumentException();
+				}
                 buffer.put((byte)c);
             }
         }

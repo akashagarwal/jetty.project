@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.servlet;
 
@@ -52,32 +47,32 @@ import org.junit.Test;
 @Ignore("Not handling Exceptions during Async very well")
 public class AsyncListenerTest
 {
-    // Unique named RuntimeException to help during debugging / assertions
+    /** Unique named RuntimeException to help during debugging / assertions. */
     @SuppressWarnings("serial")
     public static class FooRuntimeException extends RuntimeException
     {
     }
 
-    // Unique named Exception to help during debugging / assertions
+    /** Unique named Exception to help during debugging / assertions. */
     @SuppressWarnings("serial")
     public static class FooException extends Exception
     {
     }
 
-    // Unique named Throwable to help during debugging / assertions
+    /** Unique named Throwable to help during debugging / assertions. */
     @SuppressWarnings("serial")
     public static class FooThrowable extends Throwable
     {
     }
 
-    // Unique named Error to help during debugging / assertions
+    /** Unique named Error to help during debugging / assertions. */
     @SuppressWarnings("serial")
     public static class FooError extends Error
     {
     }
 
     /**
-     * Basic AsyncListener adapter that simply logs (and makes testcase writing easier) 
+     * Basic AsyncListener adapter that simply logs (and makes testcase writing easier). 
      */
     public static class AsyncListenerAdapter implements AsyncListener
     {
@@ -109,7 +104,7 @@ public class AsyncListenerTest
     }
 
     /**
-     * Common ErrorContext for normal and async error handling
+     * Common ErrorContext for normal and async error handling.
      */
     public static class ErrorContext implements AsyncListener
     {
@@ -215,7 +210,7 @@ public class AsyncListenerTest
     }
 
     /**
-     * Normal non-async testcase of error handling from a filter
+     * Normal non-async testcase of error handling from a filter.
      * 
      * @throws Exception
      *             on test failure
@@ -261,7 +256,7 @@ public class AsyncListenerTest
     }
 
     /**
-     * async testcase of error handling from a filter.
+     * Async testcase of error handling from a filter.
      * 
      * Async Started, then application Exception
      * 
@@ -311,7 +306,7 @@ public class AsyncListenerTest
     }
 
     /**
-     * async testcase of error handling from a filter.
+     * Async testcase of error handling from a filter.
      * 
      * Async Started, add listener that does nothing, then application Exception
      * 
@@ -361,7 +356,7 @@ public class AsyncListenerTest
     }
 
     /**
-     * async testcase of error handling from a filter.
+     * Async testcase of error handling from a filter.
      * 
      * Async Started, add listener that completes only, then application Exception
      * 
@@ -420,7 +415,7 @@ public class AsyncListenerTest
     }
 
     /**
-     * async testcase of error handling from a filter.
+     * Async testcase of error handling from a filter.
      * 
      * Async Started, add listener, in onStartAsync throw Exception
      * 
@@ -476,7 +471,7 @@ public class AsyncListenerTest
     }
     
     /**
-     * async testcase of error handling from a filter.
+     * Async testcase of error handling from a filter.
      * 
      * Async Started, add listener, in onComplete throw Exception
      * 
@@ -533,7 +528,7 @@ public class AsyncListenerTest
     }
 
     /**
-     * async testcase of error handling from a filter.
+     * Async testcase of error handling from a filter.
      * 
      * Async Started, add listener, in onTimeout throw Exception
      * 
@@ -590,7 +585,7 @@ public class AsyncListenerTest
     }
 
     /**
-     * async testcase of error handling from a filter.
+     * Async testcase of error handling from a filter.
      * 
      * Async Started, no listener, in start() throw Exception
      * 

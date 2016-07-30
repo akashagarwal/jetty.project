@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 
@@ -123,7 +118,7 @@ public class SecureRequestCustomizer implements HttpConfiguration.Customizer
     }
 
     /**
-     * Convenience method to call {@link #setStsMaxAge(long)}
+     * Convenience method to call {@link #setStsMaxAge(long)}.
      * @param period The period in units
      * @param units The {@link TimeUnit} of the period
      */
@@ -152,10 +147,11 @@ public class SecureRequestCustomizer implements HttpConfiguration.Customizer
 
     private void formatSTS()
     {
-        if (_stsMaxAge<0)
-            _stsField=null;
-        else
-            _stsField=new PreEncodedHttpField(HttpHeader.STRICT_TRANSPORT_SECURITY,String.format("max-age=%d%s",_stsMaxAge,_stsIncludeSubDomains?"; includeSubDomains":""));
+        if (_stsMaxAge<0) {
+			_stsField=null;
+		} else {
+			_stsField=new PreEncodedHttpField(HttpHeader.STRICT_TRANSPORT_SECURITY,String.format("max-age=%d%s",_stsMaxAge,_stsIncludeSubDomains?"; includeSubDomains":""));
+		}
     }
 
     @Override
@@ -164,8 +160,9 @@ public class SecureRequestCustomizer implements HttpConfiguration.Customizer
         if (request.getHttpChannel().getEndPoint() instanceof DecryptedEndPoint)
         {
 
-            if (request.getHttpURI().getScheme()==null)
-                request.setScheme(HttpScheme.HTTPS.asString());
+            if (request.getHttpURI().getScheme()==null) {
+				request.setScheme(HttpScheme.HTTPS.asString());
+			}
 
             SslConnection.DecryptedEndPoint ssl_endp = (DecryptedEndPoint)request.getHttpChannel().getEndPoint();
             SslConnection sslConnection = ssl_endp.getSslConnection();
@@ -173,8 +170,9 @@ public class SecureRequestCustomizer implements HttpConfiguration.Customizer
             customize(sslEngine,request);
         }
 
-        if (HttpScheme.HTTPS.is(request.getScheme()))
-            customizeSecure(request);
+        if (HttpScheme.HTTPS.is(request.getScheme())) {
+			customizeSecure(request);
+		}
     }
 
 
@@ -189,8 +187,9 @@ public class SecureRequestCustomizer implements HttpConfiguration.Customizer
     {
         request.setSecure(true);
 
-        if (_stsField!=null)
-            request.getResponse().getHttpFields().add(_stsField);
+        if (_stsField!=null) {
+			request.getResponse().getHttpFields().add(_stsField);
+		}
     }
 
     /**
@@ -231,8 +230,9 @@ public class SecureRequestCustomizer implements HttpConfiguration.Customizer
                 throw new BadMessageException(400,"Host does not match SNI");
             }
 
-            if (LOG.isDebugEnabled())
-                LOG.debug("Host {} matched SNI {}",name,x509);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Host {} matched SNI {}",name,x509);
+			}
         }
 
         try
@@ -259,15 +259,17 @@ public class SecureRequestCustomizer implements HttpConfiguration.Customizer
                 sslSession.putValue(CACHED_INFO_ATTR,cachedInfo);
             }
 
-            if (certs!=null)
-                request.setAttribute("javax.servlet.request.X509Certificate",certs);
+            if (certs!=null) {
+				request.setAttribute("javax.servlet.request.X509Certificate",certs);
+			}
 
             request.setAttribute("javax.servlet.request.cipher_suite",cipherSuite);
             request.setAttribute("javax.servlet.request.key_size",keySize);
             request.setAttribute("javax.servlet.request.ssl_session_id", idStr);
             String sessionAttribute = getSslSessionAttribute();
-            if (sessionAttribute != null && !sessionAttribute.isEmpty())
-                request.setAttribute(sessionAttribute, sslSession);
+            if (sessionAttribute != null && !sessionAttribute.isEmpty()) {
+				request.setAttribute(sessionAttribute, sslSession);
+			}
         }
         catch (Exception e)
         {
@@ -288,7 +290,7 @@ public class SecureRequestCustomizer implements HttpConfiguration.Customizer
     @Override
     public String toString()
     {
-        return String.format("%s@%x",this.getClass().getSimpleName(),hashCode());
+        return String.format("%s@%x",getClass().getSimpleName(),hashCode());
     }
 
     /**

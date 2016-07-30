@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.plus.annotation;
 
@@ -29,7 +24,7 @@ import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.log.Logger;
 
 /**
- * LifeCycleCallbackCollection
+ * LifeCycleCallbackCollection.
  */
 public class LifeCycleCallbackCollection
 {
@@ -47,19 +42,24 @@ public class LifeCycleCallbackCollection
      */
     public void add (LifeCycleCallback callback)
     {
-        if ((callback==null) || (callback.getTargetClassName()==null))
-            return;
+        if (callback==null || callback.getTargetClassName()==null) {
+			return;
+		}
 
-        if (LOG.isDebugEnabled())
-            LOG.debug("Adding callback for class="+callback.getTargetClass()+ " on "+callback.getTarget());
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Adding callback for class="+callback.getTargetClass()+ " on "+callback.getTarget());
+		}
         Map<String, List<LifeCycleCallback>> map = null;
-        if (callback instanceof PreDestroyCallback)
-            map = preDestroyCallbacksMap;
-        if (callback instanceof PostConstructCallback)
-            map = postConstructCallbacksMap;
+        if (callback instanceof PreDestroyCallback) {
+			map = preDestroyCallbacksMap;
+		}
+        if (callback instanceof PostConstructCallback) {
+			map = postConstructCallbacksMap;
+		}
 
-        if (map == null)
-            throw new IllegalArgumentException ("Unsupported lifecycle callback type: "+callback);
+        if (map == null) {
+			throw new IllegalArgumentException ("Unsupported lifecycle callback type: "+callback);
+		}
      
         List<LifeCycleCallback> callbacks = map.get(callback.getTargetClassName());
         if (callbacks==null)
@@ -69,14 +69,16 @@ public class LifeCycleCallbackCollection
         }
        
         //don't add another callback for exactly the same method
-        if (!callbacks.contains(callback))
-            callbacks.add(callback);
+        if (!callbacks.contains(callback)) {
+			callbacks.add(callback);
+		}
     }
 
     public List<LifeCycleCallback> getPreDestroyCallbacks (Object o)
     {
-        if (o == null)
-            return null;
+        if (o == null) {
+			return null;
+		}
         
         Class<? extends Object> clazz = o.getClass();
         return preDestroyCallbacksMap.get(clazz.getName());
@@ -84,8 +86,9 @@ public class LifeCycleCallbackCollection
     
     public List<LifeCycleCallback> getPostConstructCallbacks (Object o)
     {
-        if (o == null)
-            return null;
+        if (o == null) {
+			return null;
+		}
         
         Class<? extends Object> clazz = o.getClass();
         return postConstructCallbacksMap.get(clazz.getName());
@@ -100,14 +103,16 @@ public class LifeCycleCallbackCollection
     public void callPostConstructCallback (Object o)
     throws Exception
     {
-        if (o == null)
-            return;
+        if (o == null) {
+			return;
+		}
         
         Class<? extends Object> clazz = o.getClass();
         List<LifeCycleCallback> callbacks = postConstructCallbacksMap.get(clazz.getName());
 
-        if (callbacks == null)
-            return;
+        if (callbacks == null) {
+			return;
+		}
 
         for (int i=0;i<callbacks.size();i++)
         {
@@ -125,20 +130,23 @@ public class LifeCycleCallbackCollection
     public void callPreDestroyCallback (Object o)
     throws Exception
     {
-        if (o == null)
-            return;
+        if (o == null) {
+			return;
+		}
         
         Class<? extends Object> clazz = o.getClass();
         List<LifeCycleCallback> callbacks = preDestroyCallbacksMap.get(clazz.getName());
-        if (callbacks == null)
-            return;
+        if (callbacks == null) {
+			return;
+		}
         
-        for (int i=0;i<callbacks.size();i++)
-            ((LifeCycleCallback)callbacks.get(i)).callback(o);
+        for (int i=0;i<callbacks.size();i++) {
+			((LifeCycleCallback)callbacks.get(i)).callback(o);
+		}
     }
     
     /**
-     * Generate a read-only view of the post-construct callbacks
+     * Generate a read-only view of the post-construct callbacks.
      * @return the map of {@link PostConstructCallback}s
      */
     public Map<String, List<LifeCycleCallback>> getPostConstructCallbackMap()
@@ -147,7 +155,7 @@ public class LifeCycleCallbackCollection
     }
     
     /**
-     * Generate a read-only view of the pre-destroy callbacks
+     * Generate a read-only view of the pre-destroy callbacks.
      * @return the map of {@link PreDestroyCallback}s
      */
     public Map<String, List<LifeCycleCallback>> getPreDestroyCallbackMap()
@@ -156,7 +164,7 @@ public class LifeCycleCallbackCollection
     }
     
     /**
-     * Amalgamate all post-construct callbacks and return a read only list
+     * Amalgamate all post-construct callbacks and return a read only list.
      * @return the collection of {@link PostConstructCallback}s
      */
     public Collection<LifeCycleCallback> getPostConstructCallbacks()
@@ -170,7 +178,7 @@ public class LifeCycleCallbackCollection
     }
     
     /**
-     * Amalgamate all pre-destroy callbacks and return a read only list
+     * Amalgamate all pre-destroy callbacks and return a read only list.
      * @return the collection of {@link PreDestroyCallback}s
      */
     public Collection<LifeCycleCallback> getPreDestroyCallbacks()

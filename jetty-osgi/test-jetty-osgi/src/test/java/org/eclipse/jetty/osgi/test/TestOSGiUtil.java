@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.osgi.test;
 
@@ -38,7 +33,7 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.service.http.HttpService;
 
 /**
- * Helper methods for pax-exam tests
+ * Helper methods for pax-exam tests.
  */
 public class TestOSGiUtil
 {
@@ -70,7 +65,9 @@ public class TestOSGiUtil
     {
         Bundle b = getBundle(bundleContext, symbolicName);
         Assert.assertNotNull(b);
-        if (b.getHeaders().get("Fragment-Host") == null) diagnoseNonActiveOrNonResolvedBundle(b);
+        if (b.getHeaders().get("Fragment-Host") == null) {
+			diagnoseNonActiveOrNonResolvedBundle(b);
+		}
         Assert.assertTrue(b.getSymbolicName() + " must be active or resolved. It was " + b.getState(),
                           b.getState() == Bundle.ACTIVE || b.getState() == Bundle.RESOLVED);
     }
@@ -92,7 +89,7 @@ public class TestOSGiUtil
                               + "]"
                               + ", but was ["
                               + b.getState()
-                              + "])", (b.getState() == Bundle.ACTIVE) || (b.getState() == Bundle.RESOLVED));
+                              + "])", b.getState() == Bundle.ACTIVE || b.getState() == Bundle.RESOLVED);
         }
     }
 
@@ -169,7 +166,7 @@ public class TestOSGiUtil
         }, null, null);
 
         // now test the servlet
-        HttpClient client = protocol.equals("https") ? new HttpClient(newSslContextFactory()) : new HttpClient();
+        HttpClient client = "https".equals(protocol) ? new HttpClient(newSslContextFactory()) : new HttpClient();
         try
         {
             client.start();

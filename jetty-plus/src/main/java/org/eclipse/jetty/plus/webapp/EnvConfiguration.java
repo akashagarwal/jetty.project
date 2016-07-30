@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.plus.webapp;
 
@@ -46,7 +41,7 @@ import org.eclipse.jetty.xml.XmlConfiguration;
 
 
 /**
- * EnvConfiguration
+ * EnvConfiguration.
  */
 public class EnvConfiguration extends AbstractConfiguration
 {
@@ -70,8 +65,9 @@ public class EnvConfiguration extends AbstractConfiguration
     @Override
     public void configure (WebAppContext context) throws Exception
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("Created java:comp/env for webapp "+context.getContextPath());
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Created java:comp/env for webapp "+context.getContextPath());
+		}
 
         //check to see if an explicit file has been set, if not,
         //look in WEB-INF/jetty-env.xml
@@ -129,7 +125,7 @@ public class EnvConfiguration extends AbstractConfiguration
 
 
     /**
-     * Remove jndi setup from start
+     * Remove jndi setup from start.
      * @throws Exception if unable to deconfigure
      */
     @Override
@@ -152,8 +148,9 @@ public class EnvConfiguration extends AbstractConfiguration
             if (bindings!=null)
             {
                 Collections.reverse(bindings);
-                for (Bound b:bindings)
-                    b._context.destroySubcontext(b._name);
+                for (Bound b:bindings) {
+					b._context.destroySubcontext(b._name);
+				}
             }
         }
         catch (NameNotFoundException e)
@@ -169,7 +166,7 @@ public class EnvConfiguration extends AbstractConfiguration
 
 
     /**
-     * Remove all jndi setup
+     * Remove all jndi setup.
      * @throws Exception if unable to destroy
      */
     @Override

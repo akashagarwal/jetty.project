@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.io;
 
@@ -121,77 +116,115 @@ public class SelectChannelEndPointSslTest extends SelectChannelEndPointTest
 
         boolean debug=false;
 
-        if (debug) System.err.println(engine.getHandshakeStatus());
+        if (debug) {
+			System.err.println(engine.getHandshakeStatus());
+		}
         int loop=20;
         while (engine.getHandshakeStatus()!=HandshakeStatus.NOT_HANDSHAKING)
         {
-            if (--loop==0)
-                throw new IllegalStateException();
+            if (--loop==0) {
+				throw new IllegalStateException();
+			}
 
             if (engine.getHandshakeStatus()==HandshakeStatus.NEED_WRAP)
             {
-                if (debug) System.err.printf("sslOut %d-%d-%d%n",sslOut.position(),sslOut.limit(),sslOut.capacity());
-                if (debug) System.err.printf("appOut %d-%d-%d%n",appOut.position(),appOut.limit(),appOut.capacity());
+                if (debug) {
+					System.err.printf("sslOut %d-%d-%d%n",sslOut.position(),sslOut.limit(),sslOut.capacity());
+				}
+                if (debug) {
+					System.err.printf("appOut %d-%d-%d%n",appOut.position(),appOut.limit(),appOut.capacity());
+				}
                 SSLEngineResult result =engine.wrap(appOut,sslOut);
-                if (debug) System.err.println(result);
+                if (debug) {
+					System.err.println(result);
+				}
                 sslOut.flip();
                 int flushed=client.write(sslOut);
-                if (debug) System.err.println("out="+flushed);
+                if (debug) {
+					System.err.println("out="+flushed);
+				}
                 sslOut.clear();
             }
 
             if (engine.getHandshakeStatus()==HandshakeStatus.NEED_UNWRAP)
             {
-                if (debug) System.err.printf("sslIn %d-%d-%d%n",sslIn.position(),sslIn.limit(),sslIn.capacity());
+                if (debug) {
+					System.err.printf("sslIn %d-%d-%d%n",sslIn.position(),sslIn.limit(),sslIn.capacity());
+				}
                 if (sslIn.position()==0)
                 {
                     int filled=client.read(sslIn);
-                    if (debug) System.err.println("in="+filled);
+                    if (debug) {
+						System.err.println("in="+filled);
+					}
                 }
                 sslIn.flip();
-                if (debug) System.err.printf("sslIn %d-%d-%d%n",sslIn.position(),sslIn.limit(),sslIn.capacity());
+                if (debug) {
+					System.err.printf("sslIn %d-%d-%d%n",sslIn.position(),sslIn.limit(),sslIn.capacity());
+				}
                 SSLEngineResult result =engine.unwrap(sslIn,appIn);
-                if (debug) System.err.println(result);
-                if (debug) System.err.printf("sslIn %d-%d-%d%n",sslIn.position(),sslIn.limit(),sslIn.capacity());
-                if (sslIn.hasRemaining())
-                    sslIn.compact();
-                else
-                    sslIn.clear();
-                if (debug) System.err.printf("sslIn %d-%d-%d%n",sslIn.position(),sslIn.limit(),sslIn.capacity());
+                if (debug) {
+					System.err.println(result);
+				}
+                if (debug) {
+					System.err.printf("sslIn %d-%d-%d%n",sslIn.position(),sslIn.limit(),sslIn.capacity());
+				}
+                if (sslIn.hasRemaining()) {
+					sslIn.compact();
+				} else {
+					sslIn.clear();
+				}
+                if (debug) {
+					System.err.printf("sslIn %d-%d-%d%n",sslIn.position(),sslIn.limit(),sslIn.capacity());
+				}
             }
 
             if (engine.getHandshakeStatus()==HandshakeStatus.NEED_TASK)
             {
                 Runnable task;
-                while ((task=engine.getDelegatedTask())!=null)
-                    task.run();
-                if (debug) System.err.println(engine.getHandshakeStatus());
+                while ((task=engine.getDelegatedTask())!=null) {
+					task.run();
+				}
+                if (debug) {
+					System.err.println(engine.getHandshakeStatus());
+				}
             }
         }
 
-        if (debug) System.err.println("\nSay Hello");
+        if (debug) {
+			System.err.println("\nSay Hello");
+		}
 
         // write a message
         appOut.put("HelloWorld".getBytes(StandardCharsets.UTF_8));
         appOut.flip();
         SSLEngineResult result =engine.wrap(appOut,sslOut);
-        if (debug) System.err.println(result);
+        if (debug) {
+			System.err.println(result);
+		}
         sslOut.flip();
         int flushed=client.write(sslOut);
-        if (debug) System.err.println("out="+flushed);
+        if (debug) {
+			System.err.println("out="+flushed);
+		}
         sslOut.clear();
         appOut.clear();
 
         // read the response
         int filled=client.read(sslIn);
-        if (debug) System.err.println("in="+filled);
+        if (debug) {
+			System.err.println("in="+filled);
+		}
         sslIn.flip();
         result =engine.unwrap(sslIn,appIn);
-        if (debug) System.err.println(result);
-        if (sslIn.hasRemaining())
-            sslIn.compact();
-        else
-            sslIn.clear();
+        if (debug) {
+			System.err.println(result);
+		}
+        if (sslIn.hasRemaining()) {
+			sslIn.compact();
+		} else {
+			sslIn.clear();
+		}
 
         appIn.flip();
         String reply= new String(appIn.array(),appIn.arrayOffset(),appIn.remaining());
@@ -199,11 +232,15 @@ public class SelectChannelEndPointSslTest extends SelectChannelEndPointTest
 
         Assert.assertEquals("HelloWorld",reply);
 
-        if (debug) System.err.println("Shutting down output");
+        if (debug) {
+			System.err.println("Shutting down output");
+		}
         client.socket().shutdownOutput();
 
         filled=client.read(sslIn);
-        if (debug) System.err.println("in="+filled);
+        if (debug) {
+			System.err.println("in="+filled);
+		}
         
         if (filled>=0)
         {

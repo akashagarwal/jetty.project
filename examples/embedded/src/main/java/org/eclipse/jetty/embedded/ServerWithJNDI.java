@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.embedded;
 
@@ -26,7 +21,7 @@ import org.eclipse.jetty.webapp.Configuration;
 import org.eclipse.jetty.webapp.WebAppContext;
 
 /**
- * ServerWithJNDI
+ * ServerWithJNDI.
  */
 public class ServerWithJNDI
 {
@@ -64,7 +59,7 @@ public class ServerWithJNDI
         // <env-entry-type>java.lang.Integer</env-entry-type>
         // <env-entry-value>4000</env-entry-value>
         // </env-entry>
-        new org.eclipse.jetty.plus.jndi.EnvEntry(server, "woggle", new Integer(4000), false);
+        new org.eclipse.jetty.plus.jndi.EnvEntry(server, "woggle", Integer.valueOf(4000), false);
 
         // Define an env entry with webapp scope.
         // At runtime, the webapp accesses this as java:comp/env/wiggle
@@ -77,7 +72,7 @@ public class ServerWithJNDI
         // Note that the last arg of "true" means that this definition for
         // "wiggle" would override an entry of the
         // same name in web.xml
-        new org.eclipse.jetty.plus.jndi.EnvEntry(webapp, "wiggle", new Double(100), true);
+        new org.eclipse.jetty.plus.jndi.EnvEntry(webapp, "wiggle", Double.valueOf(100), true);
 
         // Register a reference to a mail service scoped to the webapp.
         // This must be linked to the webapp by an entry in web.xml:

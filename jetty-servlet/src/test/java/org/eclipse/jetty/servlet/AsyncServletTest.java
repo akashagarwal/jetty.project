@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.servlet;
 
@@ -663,14 +658,15 @@ public class AsyncServletTest
     {
         String request = "GET /ctx/"+path+"/info";
 
-        if (query!=null)
-            request+="?"+query;
+        if (query!=null) {
+			request+="?"+query;
+		}
         request+=" HTTP/1.1\r\n"+
         "Host: localhost\r\n"+
         "Connection: close\r\n";
-        if (content==null)
-            request+="\r\n";
-        else
+        if (content==null) {
+			request+="\r\n";
+		} else
         {
             request+="Content-Length: "+content.length()+"\r\n";
             request+="\r\n" + content;
@@ -711,8 +707,9 @@ public class AsyncServletTest
         public void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException
         {
             __history.add("FWD "+request.getDispatcherType()+" "+request.getRequestURI());
-            if (request instanceof ServletRequestWrapper || response instanceof ServletResponseWrapper)
-                __history.add("wrapped"+((request instanceof ServletRequestWrapper)?" REQ":"")+((response instanceof ServletResponseWrapper)?" RSP":""));
+            if (request instanceof ServletRequestWrapper || response instanceof ServletResponseWrapper) {
+				__history.add("wrapped"+((request instanceof ServletRequestWrapper)?" REQ":"")+((response instanceof ServletResponseWrapper)?" RSP":""));
+			}
             request.getServletContext().getRequestDispatcher("/path1").forward(request,response);
         }
     }
@@ -738,8 +735,9 @@ public class AsyncServletTest
 
             // System.err.println(request.getDispatcherType()+" "+request.getRequestURI());
             __history.add(request.getDispatcherType()+" "+request.getRequestURI());
-            if (request instanceof ServletRequestWrapper || response instanceof ServletResponseWrapper)
-                __history.add("wrapped"+((request instanceof ServletRequestWrapper)?" REQ":"")+((response instanceof ServletResponseWrapper)?" RSP":""));
+            if (request instanceof ServletRequestWrapper || response instanceof ServletResponseWrapper) {
+				__history.add("wrapped"+((request instanceof ServletRequestWrapper)?" REQ":"")+((response instanceof ServletResponseWrapper)?" RSP":""));
+			}
 
             boolean wrap="true".equals(request.getParameter("wrap"));
             int read_before=0;
@@ -752,27 +750,35 @@ public class AsyncServletTest
             long complete2_after=-1;
 
 
-            if (request.getParameter("read")!=null)
-                read_before=Integer.parseInt(request.getParameter("read"));
-            if (request.getParameter("sleep")!=null)
-                sleep_for=Integer.parseInt(request.getParameter("sleep"));
-            if (request.getParameter("start")!=null)
-                start_for=Integer.parseInt(request.getParameter("start"));
-            if (request.getParameter("start2")!=null)
-                start2_for=Integer.parseInt(request.getParameter("start2"));
-            if (request.getParameter("dispatch")!=null)
-                dispatch_after=Integer.parseInt(request.getParameter("dispatch"));
+            if (request.getParameter("read")!=null) {
+				read_before=Integer.parseInt(request.getParameter("read"));
+			}
+            if (request.getParameter("sleep")!=null) {
+				sleep_for=Integer.parseInt(request.getParameter("sleep"));
+			}
+            if (request.getParameter("start")!=null) {
+				start_for=Integer.parseInt(request.getParameter("start"));
+			}
+            if (request.getParameter("start2")!=null) {
+				start2_for=Integer.parseInt(request.getParameter("start2"));
+			}
+            if (request.getParameter("dispatch")!=null) {
+				dispatch_after=Integer.parseInt(request.getParameter("dispatch"));
+			}
             final String path=request.getParameter("path");
-            if (request.getParameter("dispatch2")!=null)
-                dispatch2_after=Integer.parseInt(request.getParameter("dispatch2"));
-            if (request.getParameter("complete")!=null)
-                complete_after=Integer.parseInt(request.getParameter("complete"));
-            if (request.getParameter("complete2")!=null)
-                complete2_after=Integer.parseInt(request.getParameter("complete2"));
+            if (request.getParameter("dispatch2")!=null) {
+				dispatch2_after=Integer.parseInt(request.getParameter("dispatch2"));
+			}
+            if (request.getParameter("complete")!=null) {
+				complete_after=Integer.parseInt(request.getParameter("complete"));
+			}
+            if (request.getParameter("complete2")!=null) {
+				complete2_after=Integer.parseInt(request.getParameter("complete2"));
+			}
 
             if (request.getAttribute("State")==null)
             {
-                request.setAttribute("State",new Integer(1));
+                request.setAttribute("State",Integer.valueOf(1));
                 __history.add("initial");
                 if (read_before>0)
                 {
@@ -783,8 +789,9 @@ public class AsyncServletTest
                 {
                     InputStream in = request.getInputStream();
                     int b=in.read();
-                    while(b!=-1)
-                        b=in.read();
+                    while(b!=-1) {
+						b=in.read();
+					}
                 }
                 else if (request.getContentLength()>0)
                 {
@@ -798,9 +805,12 @@ public class AsyncServletTest
                             {
                                 InputStream in=request.getInputStream();
                                 int b=0;
-                                while(b!=-1)
-                                    if((b=in.read())>=0)
-                                        c++;
+                                while(b!=-1) {
+									b=in.read();
+									if(b>=0) {
+										c++;
+									}
+								}
                                 __history.add("async-read="+c);
                             }
                             catch(Exception e)
@@ -814,13 +824,15 @@ public class AsyncServletTest
                 if (start_for>=0)
                 {
                     final AsyncContext async=wrap?request.startAsync(new HttpServletRequestWrapper(request),new HttpServletResponseWrapper(response)):request.startAsync();
-                    if (start_for>0)
-                        async.setTimeout(start_for);
+                    if (start_for>0) {
+						async.setTimeout(start_for);
+					}
                     async.addListener(__listener);
                     __history.add("start");
 
-                    if ("1".equals(request.getParameter("throw")))
-                        throw new QuietServletException(new Exception("test throw in async 1"));
+                    if ("1".equals(request.getParameter("throw"))) {
+						throw new QuietServletException(new Exception("test throw in async 1"));
+					}
 
                     if (complete_after>0)
                     {
@@ -869,9 +881,9 @@ public class AsyncServletTest
                                         ?URIUtil.encodePath(path.substring(0,q))+path.substring(q)
                                         :URIUtil.encodePath(path);
                                     async.dispatch(uriInContext);
-                                }
-                                else
-                                    async.dispatch();
+                                } else {
+									async.dispatch();
+								}
                             }
                         };
                         synchronized (_timer)
@@ -882,10 +894,11 @@ public class AsyncServletTest
                     else if (dispatch_after==0)
                     {
                         __history.add("dispatch");
-                        if (path!=null)
-                            async.dispatch(path);
-                        else
-                            async.dispatch();
+                        if (path!=null) {
+							async.dispatch(path);
+						} else {
+							async.dispatch();
+						}
                     }
 
                 }
@@ -924,8 +937,9 @@ public class AsyncServletTest
                     }
                     __history.add("start");
 
-                    if ("2".equals(request.getParameter("throw")))
-                        throw new QuietServletException(new Exception("test throw in async 2"));
+                    if ("2".equals(request.getParameter("throw"))) {
+						throw new QuietServletException(new Exception("test throw in async 2"));
+					}
 
                     if (complete2_after>0)
                     {

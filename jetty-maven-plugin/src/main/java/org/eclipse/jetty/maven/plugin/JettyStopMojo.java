@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.maven.plugin;
 
@@ -43,7 +38,7 @@ public class JettyStopMojo extends AbstractMojo
 {
     
     /**
-     * Port to listen to stop jetty on sending stop command
+     * Port to listen to stop jetty on sending stop command.
      * @parameter
      * @required
      */
@@ -70,10 +65,12 @@ public class JettyStopMojo extends AbstractMojo
 
     public void execute() throws MojoExecutionException, MojoFailureException 
     {
-        if (stopPort <= 0)
-            throw new MojoExecutionException("Please specify a valid port"); 
-        if (stopKey == null)
-            throw new MojoExecutionException("Please specify a valid stopKey");  
+        if (stopPort <= 0) {
+			throw new MojoExecutionException("Please specify a valid port");
+		} 
+        if (stopKey == null) {
+			throw new MojoExecutionException("Please specify a valid stopKey");
+		}  
 
         //Ensure jetty Server instance stops. Whether or not the remote process
         //also stops depends whether or not it was started with ShutdownMonitor.exitVm=true

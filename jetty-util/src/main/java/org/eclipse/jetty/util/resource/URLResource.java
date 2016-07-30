@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util.resource;
 
@@ -41,10 +36,10 @@ public class URLResource extends Resource
     protected final String _urlString;
     
     protected URLConnection _connection;
-    protected InputStream _in=null;
+    protected InputStream _in;
     transient boolean _useCaches = Resource.__defaultUseCaches;
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected URLResource(URL url, URLConnection connection)
     {
         _url = url;
@@ -52,14 +47,14 @@ public class URLResource extends Resource
         _connection=connection;
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected URLResource (URL url, URLConnection connection, boolean useCaches)
     {
         this (url, connection);
         _useCaches = useCaches;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected synchronized boolean checkConnection()
     {
         if (_connection==null)
@@ -88,8 +83,9 @@ public class URLResource extends Resource
             _in=null;
         }
 
-        if (_connection!=null)
-            _connection=null;
+        if (_connection!=null) {
+			_connection=null;
+		}
     }
 
     /* ------------------------------------------------------------ */
@@ -103,8 +99,9 @@ public class URLResource extends Resource
         {
             synchronized(this)
             {
-                if (checkConnection() && _in==null )
-                    _in = _connection.getInputStream();
+                if (checkConnection() && _in==null ) {
+					_in = _connection.getInputStream();
+				}
             }
         }
         catch (IOException e)
@@ -129,32 +126,34 @@ public class URLResource extends Resource
 
     /* ------------------------------------------------------------ */
     /**
-     * Returns the last modified time
+     * Returns the last modified time.
      */
     @Override
     public long lastModified()
     {
-        if (checkConnection())
-            return _connection.getLastModified();
+        if (checkConnection()) {
+			return _connection.getLastModified();
+		}
         return -1;
     }
 
 
     /* ------------------------------------------------------------ */
     /**
-     * Return the length of the resource
+     * Return the length of the resource.
      */
     @Override
     public long length()
     {
-        if (checkConnection())
-            return _connection.getContentLength();
+        if (checkConnection()) {
+			return _connection.getContentLength();
+		}
         return -1;
     }
 
     /* ------------------------------------------------------------ */
     /**
-     * Returns an URL representing the given resource
+     * Returns an URL representing the given resource.
      */
     @Override
     public URL getURL()
@@ -175,8 +174,9 @@ public class URLResource extends Resource
         if (checkConnection())
         {
             Permission perm = _connection.getPermission();
-            if (perm instanceof java.io.FilePermission)
-                return new File(perm.getName());
+            if (perm instanceof java.io.FilePermission) {
+				return new File(perm.getName());
+			}
         }
 
         // Try the URL file arg
@@ -189,7 +189,7 @@ public class URLResource extends Resource
 
     /* ------------------------------------------------------------ */
     /**
-     * Returns the name of the resource
+     * Returns the name of the resource.
      */
     @Override
     public String getName()
@@ -227,8 +227,9 @@ public class URLResource extends Resource
     protected synchronized InputStream getInputStream(boolean resetConnection)
         throws IOException
     {
-        if (!checkConnection())
-            throw new IOException( "Invalid resource");
+        if (!checkConnection()) {
+			throw new IOException( "Invalid resource");
+		}
 
         try
         {    
@@ -245,12 +246,14 @@ public class URLResource extends Resource
             if (resetConnection)
             {
                 _connection=null;
-                if (LOG.isDebugEnabled()) LOG.debug("Connection nulled");
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("Connection nulled");
+				}
             }
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public ReadableByteChannel getReadableByteChannel() throws IOException
     {
@@ -259,7 +262,7 @@ public class URLResource extends Resource
 
     /* ------------------------------------------------------------ */
     /**
-     * Deletes the given resource
+     * Deletes the given resource.
      */
     @Override
     public boolean delete()
@@ -270,7 +273,7 @@ public class URLResource extends Resource
 
     /* ------------------------------------------------------------ */
     /**
-     * Rename the given resource
+     * Rename the given resource.
      */
     @Override
     public boolean renameTo( Resource dest)
@@ -281,7 +284,7 @@ public class URLResource extends Resource
 
     /* ------------------------------------------------------------ */
     /**
-     * Returns a list of resource names contained in the given resource
+     * Returns a list of resource names contained in the given resource.
      */
     @Override
     public String[] list()
@@ -292,48 +295,49 @@ public class URLResource extends Resource
     /* ------------------------------------------------------------ */
     /**
      * Returns the resource contained inside the current resource with the
-     * given name
+     * given name.
      */
     @Override
     public Resource addPath(String path)
         throws IOException,MalformedURLException
     {
-        if (path==null)
-            return null;
+        if (path==null) {
+			return null;
+		}
 
         path = URIUtil.canonicalPath(path);
 
         return newResource(URIUtil.addPaths(_url.toExternalForm(),URIUtil.encodePath(path)), _useCaches);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public String toString()
     {
         return _urlString;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public int hashCode()
     {
         return _urlString.hashCode();
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public boolean equals( Object o)
     {
         return o instanceof URLResource && _urlString.equals(((URLResource)o)._urlString);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public boolean getUseCaches ()
     {
         return _useCaches;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public boolean isContainedIn (Resource containingResource) throws MalformedURLException
     {

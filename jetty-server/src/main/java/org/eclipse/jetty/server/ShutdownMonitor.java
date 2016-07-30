@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 
@@ -53,7 +48,7 @@ import org.eclipse.jetty.util.thread.ShutdownThread;
  */
 public class ShutdownMonitor
 {
-    // Implementation of safe lazy init, using Initialization on Demand Holder technique.
+    /** Implementation of safe lazy init, using Initialization on Demand Holder technique. */
     private static class Holder
     {
         static ShutdownMonitor instance = new ShutdownMonitor();
@@ -135,14 +130,16 @@ public class ShutdownMonitor
 
     private void debug(String format, Object... args)
     {
-        if (debug)
-            System.err.printf("[ShutdownMonitor] " + format + "%n", args);
+        if (debug) {
+			System.err.printf("[ShutdownMonitor] " + format + "%n", args);
+		}
     }
 
     private void debug(Throwable t)
     {
-        if (debug)
-            t.printStackTrace(System.err);
+        if (debug) {
+			t.printStackTrace(System.err);
+		}
     }
 
     public String getKey()
@@ -181,8 +178,9 @@ public class ShutdownMonitor
     {
         synchronized (this)
         {
-            if (alive)
-                throw new IllegalStateException("ShutdownMonitor already started");
+            if (alive) {
+				throw new IllegalStateException("ShutdownMonitor already started");
+			}
             this.exitVm = exitVm;
         }
     }
@@ -191,8 +189,9 @@ public class ShutdownMonitor
     {
         synchronized (this)
         {
-            if (alive)
-                throw new IllegalStateException("ShutdownMonitor already started");
+            if (alive) {
+				throw new IllegalStateException("ShutdownMonitor already started");
+			}
             this.key = key;
         }
     }
@@ -201,8 +200,9 @@ public class ShutdownMonitor
     {
         synchronized (this)
         {
-            if (alive)
-                throw new IllegalStateException("ShutdownMonitor already started");
+            if (alive) {
+				throw new IllegalStateException("ShutdownMonitor already started");
+			}
             this.port = port;
         }
     }
@@ -237,7 +237,7 @@ public class ShutdownMonitor
         }
     }
 
-    // For test purposes only.
+    /** For test purposes only. */
     void await() throws InterruptedException
     {
         synchronized (this)
@@ -282,7 +282,7 @@ public class ShutdownMonitor
 
             if (key == null)
             {
-                key = Long.toString((long)(Long.MAX_VALUE * Math.random() + this.hashCode() + System.currentTimeMillis()), 36);
+                key = Long.toString((long)(Long.MAX_VALUE * Math.random() + hashCode() + System.currentTimeMillis()), 36);
                 System.out.printf("STOP.KEY=%s%n", key);
                 setKey(key);
             }
@@ -292,7 +292,7 @@ public class ShutdownMonitor
         catch (Throwable x)
         {
             debug(x);
-            System.err.println("Error binding ShutdownMonitor to port " + port + ": " + x.toString());
+            System.err.println("Error binding ShutdownMonitor to port " + port + ": " + x);
             return null;
         }
         finally
@@ -306,7 +306,7 @@ public class ShutdownMonitor
     @Override
     public String toString()
     {
-        return String.format("%s[port=%d,alive=%b]", this.getClass().getName(), getPort(), isAlive());
+        return String.format("%s[port=%d,alive=%b]", getClass().getName(), getPort(), isAlive());
     }
 
     /**
@@ -357,8 +357,9 @@ public class ShutdownMonitor
                             debug("Informing client that we are stopped");
                             informClient(out, "Stopped\r\n");
 
-                            if (!exitVm)
-                                break;
+                            if (!exitVm) {
+								break;
+							}
 
                             // Kill JVM
                             debug("Killing JVM");
@@ -373,8 +374,9 @@ public class ShutdownMonitor
                             debug("Informing client that we are stopped");
                             informClient(out, "Stopped\r\n");
 
-                            if (!exitVm)
-                                break;
+                            if (!exitVm) {
+								break;
+							}
 
                             // Kill JVM
                             debug("Killing JVM");
@@ -438,11 +440,13 @@ public class ShutdownMonitor
             {
                 try
                 {
-                    if (l.isStarted() && predicate.test(l))
-                        l.stop();
+                    if (l.isStarted() && predicate.test(l)) {
+						l.stop();
+					}
 
-                    if ((l instanceof Destroyable) && destroy)
-                        ((Destroyable)l).destroy();
+                    if (l instanceof Destroyable && destroy) {
+						((Destroyable)l).destroy();
+					}
                 }
                 catch (Throwable x)
                 {

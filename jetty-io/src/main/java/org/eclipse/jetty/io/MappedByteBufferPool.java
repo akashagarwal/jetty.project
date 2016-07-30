@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.io;
 
@@ -55,9 +50,10 @@ public class MappedByteBufferPool implements ByteBufferPool
         ConcurrentMap<Integer, Bucket> buffers = bucketsFor(direct);
 
         Bucket bucket = buffers.get(b);
-        if (bucket==null)
-            return newByteBuffer(b*_factor, direct);
-        return bucket.acquire(direct);
+        if (bucket!=null) {
+			return bucket.acquire(direct);
+		}
+        return newByteBuffer(b*_factor, direct);
     }
 
     protected ByteBuffer newByteBuffer(int capacity, boolean direct)
@@ -69,8 +65,9 @@ public class MappedByteBufferPool implements ByteBufferPool
     @Override
     public void release(ByteBuffer buffer)
     {
-        if (buffer == null)
-            return; // nothing to do
+        if (buffer == null) {
+			return;
+		} // nothing to do
         
         // validate that this buffer is from this pool
         assert((buffer.capacity() % _factor) == 0);
@@ -91,12 +88,13 @@ public class MappedByteBufferPool implements ByteBufferPool
     private int bucketFor(int size)
     {
         int bucket = size / _factor;
-        if (size % _factor > 0)
-            ++bucket;
+        if (size % _factor > 0) {
+			++bucket;
+		}
         return bucket;
     }
 
-    // Package local for testing
+    /** Package local for testing. */
     ConcurrentMap<Integer, Bucket> bucketsFor(boolean direct)
     {
         return direct ? directBuffers : heapBuffers;

@@ -1,25 +1,20 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http.pathmap;
 
 /**
- * The base PathSpec, what all other path specs are based on
+ * The base PathSpec, what all other path specs are based on.
  */
 public abstract class PathSpec implements Comparable<PathSpec>
 {
@@ -140,12 +135,11 @@ public abstract class PathSpec implements Comparable<PathSpec>
     {
         final int prime = 31;
         int result = 1;
-        result = (prime * result) + ((pathSpec == null)?0:pathSpec.hashCode());
-        return result;
+        return prime * result + ((pathSpec == null)?0:pathSpec.hashCode());
     }
 
     /**
-     * Test to see if the provided path matches this path spec
+     * Test to see if the provided path matches this path spec.
      * 
      * @param path
      *            the path to test
@@ -157,7 +151,7 @@ public abstract class PathSpec implements Comparable<PathSpec>
     public String toString()
     {
         StringBuilder str = new StringBuilder();
-        str.append(this.getClass().getSimpleName()).append("[\"");
+        str.append(getClass().getSimpleName()).append("[\"");
         str.append(pathSpec);
         str.append("\",pathDepth=").append(pathDepth);
         str.append(",group=").append(group);

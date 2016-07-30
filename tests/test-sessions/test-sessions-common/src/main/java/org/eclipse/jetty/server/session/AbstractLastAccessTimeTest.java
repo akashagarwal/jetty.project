@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server.session;
 
@@ -107,8 +102,9 @@ public abstract class AbstractLastAccessTimeTest
                         assertEquals("test", response2.getContentAsString());
 
                         String setCookie = response2.getHeaders().get("Set-Cookie");
-                        if (setCookie!=null)
-                            sessionCookie = setCookie.replaceFirst("(\\W)(P|p)ath=", "$1\\$Path=");
+                        if (setCookie!=null) {
+							sessionCookie = setCookie.replaceFirst("(\\W)(P|p)ath=", "$1\\$Path=");
+						}
 
                         Thread.sleep(requestInterval);
                     }
@@ -138,8 +134,8 @@ public abstract class AbstractLastAccessTimeTest
 
     public static class TestSessionListener implements HttpSessionListener
     {
-        public boolean destroyed = false;
-        public boolean created = false;
+        public boolean destroyed;
+        public boolean created;
 
         @Override
         public void sessionDestroyed(HttpSessionEvent se)

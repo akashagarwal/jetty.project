@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package com.acme;
 
@@ -28,19 +23,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /** 
- * Test Servlet Rewrite
+ * Test Servlet Rewrite.
  */
 @SuppressWarnings("serial")
 public class RewriteServlet extends HttpServlet
 {
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException
     {
         doGet(req, res);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException
     {
@@ -55,20 +50,21 @@ public class RewriteServlet extends HttpServlet
         {
             for(Cookie c: cookies)
             {
-                if (c.getName().equals("visited"))
+                if ("visited".equals(c.getName()))
                 {
                     cookie = c;
                     break;
                 }
             }
         }
-        if (cookie!=null)
-            out.println("<tr><th>Previously visited: </th></td><td>" + cookie.getValue()+"</td></tr>");
+        if (cookie!=null) {
+			out.println("<tr><th>Previously visited: </th></td><td>" + cookie.getValue()+"</td></tr>");
+		}
 
         out.println("</table></body></html>");
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public String getServletInfo()
     {

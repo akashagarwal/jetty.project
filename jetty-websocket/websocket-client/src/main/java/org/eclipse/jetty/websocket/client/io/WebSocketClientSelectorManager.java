@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.client.io;
 
@@ -55,8 +50,9 @@ public class WebSocketClientSelectorManager extends SelectorManager
     @Override
     protected void connectionFailed(SocketChannel channel, Throwable ex, Object attachment)
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("Connection Failed",ex);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Connection Failed",ex);
+		}
         ConnectPromise connect = (ConnectPromise)attachment;
         connect.failed(ex);
     }
@@ -69,8 +65,9 @@ public class WebSocketClientSelectorManager extends SelectorManager
     @Override
     public Connection newConnection(final SocketChannel channel, EndPoint endPoint, final Object attachment) throws IOException
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("newConnection({},{},{})",channel,endPoint,attachment);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("newConnection({},{},{})",channel,endPoint,attachment);
+		}
         ConnectPromise connectPromise = (ConnectPromise)attachment;
 
         try
@@ -117,8 +114,9 @@ public class WebSocketClientSelectorManager extends SelectorManager
     @Override
     protected EndPoint newEndPoint(SocketChannel channel, ManagedSelector selectSet, SelectionKey selectionKey) throws IOException
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("newEndPoint({}, {}, {})",channel,selectSet,selectionKey);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("newEndPoint({}, {}, {})",channel,selectSet,selectionKey);
+		}
         return new SelectChannelEndPoint(channel,selectSet,selectionKey,getScheduler(),policy.getIdleTimeout());
     }
 
@@ -135,8 +133,7 @@ public class WebSocketClientSelectorManager extends SelectorManager
     {
         WebSocketClient client = connectPromise.getClient();
         Executor executor = client.getExecutor();
-        UpgradeConnection connection = new UpgradeConnection(endPoint,executor,connectPromise);
-        return connection;
+        return new UpgradeConnection(endPoint,executor,connectPromise);
     }
 
     public void setSslContextFactory(SslContextFactory sslContextFactory)

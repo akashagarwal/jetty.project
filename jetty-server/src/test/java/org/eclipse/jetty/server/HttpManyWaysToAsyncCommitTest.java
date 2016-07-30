@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 
@@ -38,13 +33,17 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-//TODO: reset buffer tests
-//TODO: add protocol specific tests for connection: close and/or chunking
-@RunWith(value = Parameterized.class)
+/**
+
+ *TODO: reset buffer tests
+ *TODO: add protocol specific tests for connection: close and/or chunking
+*/
+@RunWith(Parameterized.class)
 public class HttpManyWaysToAsyncCommitTest extends AbstractHttpTest
 {
     private final String CONTEXT_ATTRIBUTE = getClass().getName() + ".asyncContext";
-    private boolean dispatch; // if true we dispatch, otherwise we complete
+    /** If true we dispatch, otherwise we complete. */
+    private boolean dispatch;
 
     @Parameterized.Parameters
     public static Collection<Object[]> data()
@@ -111,10 +110,11 @@ public class HttpManyWaysToAsyncCommitTest extends AbstractHttpTest
                     @Override
                     public void run()
                     {
-                        if (dispatch)
-                            asyncContext.dispatch();
-                        else
-                            asyncContext.complete();
+                        if (dispatch) {
+							asyncContext.dispatch();
+						} else {
+							asyncContext.complete();
+						}
                     }
                 }).run();
             }
@@ -168,10 +168,11 @@ public class HttpManyWaysToAsyncCommitTest extends AbstractHttpTest
                     @Override
                     public void run()
                     {
-                        if (dispatch)
-                            asyncContext.dispatch();
-                        else
-                            asyncContext.complete();
+                        if (dispatch) {
+							asyncContext.dispatch();
+						} else {
+							asyncContext.complete();
+						}
                     }
                 }).run();
             }
@@ -229,10 +230,11 @@ public class HttpManyWaysToAsyncCommitTest extends AbstractHttpTest
                         try
                         {
                             asyncContext.getResponse().getWriter().write("foobar");
-                            if (dispatch)
-                                asyncContext.dispatch();
-                            else
-                                asyncContext.complete();
+                            if (dispatch) {
+								asyncContext.dispatch();
+							} else {
+								asyncContext.complete();
+							}
                         }
                         catch (IOException e)
                         {
@@ -258,8 +260,9 @@ public class HttpManyWaysToAsyncCommitTest extends AbstractHttpTest
 
         assertThat("response code is 200", response.getCode(), is("200"));
         assertThat("no exceptions", handler.failure(), is(nullValue()));
-        if (!"HTTP/1.0".equals(httpVersion))
-            assertHeader(response, "transfer-encoding", "chunked");
+        if (!"HTTP/1.0".equals(httpVersion)) {
+			assertHeader(response, "transfer-encoding", "chunked");
+		}
     }
 
     @Test
@@ -273,8 +276,9 @@ public class HttpManyWaysToAsyncCommitTest extends AbstractHttpTest
 
         assertThat("response code is 200", response.getCode(), is("200"));
         assertThat("no exceptions", handler.failure(), is(nullValue()));
-        if (!"HTTP/1.0".equals(httpVersion))
-            assertHeader(response, "transfer-encoding", "chunked");
+        if (!"HTTP/1.0".equals(httpVersion)) {
+			assertHeader(response, "transfer-encoding", "chunked");
+		}
     }
 
     private class ExplicitFlushHandler extends ThrowExceptionOnDemandHandler
@@ -301,10 +305,11 @@ public class HttpManyWaysToAsyncCommitTest extends AbstractHttpTest
                             ServletResponse asyncContextResponse = asyncContext.getResponse();
                             asyncContextResponse.getWriter().write("foobar");
                             asyncContextResponse.flushBuffer();
-                            if (dispatch)
-                                asyncContext.dispatch();
-                            else
-                                asyncContext.complete();
+                            if (dispatch) {
+								asyncContext.dispatch();
+							} else {
+								asyncContext.complete();
+							}
                         }
                         catch (IOException e)
                         {
@@ -329,8 +334,9 @@ public class HttpManyWaysToAsyncCommitTest extends AbstractHttpTest
 
         assertThat("response code is 200", response.getCode(), is("200"));
         assertThat("no exceptions", handler.failure(), is(nullValue()));
-        if (!"HTTP/1.0".equals(httpVersion))
-            assertHeader(response, "transfer-encoding", "chunked");
+        if (!"HTTP/1.0".equals(httpVersion)) {
+			assertHeader(response, "transfer-encoding", "chunked");
+		}
     }
 
     @Test
@@ -344,8 +350,9 @@ public class HttpManyWaysToAsyncCommitTest extends AbstractHttpTest
 
         assertThat("response code is 200", response.getCode(), is("200"));
         assertThat("no exceptions", handler.failure(), is(nullValue()));
-        if (!"HTTP/1.0".equals(httpVersion))
-            assertHeader(response, "transfer-encoding", "chunked");
+        if (!"HTTP/1.0".equals(httpVersion)) {
+			assertHeader(response, "transfer-encoding", "chunked");
+		}
     }
 
     private class SetHandledAndFlushWithoutContentHandler extends ThrowExceptionOnDemandHandler
@@ -370,10 +377,11 @@ public class HttpManyWaysToAsyncCommitTest extends AbstractHttpTest
                         try
                         {
                             asyncContext.getResponse().flushBuffer();
-                            if (dispatch)
-                                asyncContext.dispatch();
-                            else
-                                asyncContext.complete();
+                            if (dispatch) {
+								asyncContext.dispatch();
+							} else {
+								asyncContext.complete();
+							}
                         }
                         catch (IOException e)
                         {
@@ -399,7 +407,9 @@ public class HttpManyWaysToAsyncCommitTest extends AbstractHttpTest
         assertThat("response code is 200", response.getCode(), is("200"));
         assertThat("no exceptions", handler.failure(), is(nullValue()));
         if (!"HTTP/1.0".equals(httpVersion))
-            assertHeader(response, "transfer-encoding", "chunked"); // HTTP/1.0 does not do chunked.  it will just send content and close
+		 {
+			assertHeader(response, "transfer-encoding", "chunked"); // HTTP/1.0 does not do chunked.  it will just send content and close
+		}
     }
 
     @Test
@@ -413,8 +423,9 @@ public class HttpManyWaysToAsyncCommitTest extends AbstractHttpTest
 
         assertThat("response code is 200", response.getCode(), is("200"));
         assertThat("no exceptions", handler.failure(), is(nullValue()));
-        if (!"HTTP/1.0".equals(httpVersion))
-            assertHeader(response, "transfer-encoding", "chunked"); 
+        if (!"HTTP/1.0".equals(httpVersion)) {
+			assertHeader(response, "transfer-encoding", "chunked");
+		} 
     }
 
     private class WriteFlushWriteMoreHandler extends ThrowExceptionOnDemandHandler
@@ -442,10 +453,11 @@ public class HttpManyWaysToAsyncCommitTest extends AbstractHttpTest
                             asyncContextResponse.getWriter().write("foo");
                             asyncContextResponse.flushBuffer();
                             asyncContextResponse.getWriter().write("bar");
-                            if (dispatch)
-                                asyncContext.dispatch();
-                            else
-                                asyncContext.complete();
+                            if (dispatch) {
+								asyncContext.dispatch();
+							} else {
+								asyncContext.complete();
+							}
                         }
                         catch (IOException e)
                         {
@@ -470,8 +482,9 @@ public class HttpManyWaysToAsyncCommitTest extends AbstractHttpTest
 
         assertThat("response code is 200", response.getCode(), is("200"));
         assertResponseBody(response, "foobar");
-        if (!"HTTP/1.0".equals(httpVersion))
-            assertHeader(response, "transfer-encoding", "chunked");
+        if (!"HTTP/1.0".equals(httpVersion)) {
+			assertHeader(response, "transfer-encoding", "chunked");
+		}
         assertThat("no exceptions", handler.failure(), is(nullValue()));
     }
 
@@ -487,8 +500,9 @@ public class HttpManyWaysToAsyncCommitTest extends AbstractHttpTest
         // Buffer size is too small, so the content is written directly producing a 200 response
         assertThat("response code is 200", response.getCode(), is("200"));
         assertResponseBody(response, "foobar");
-        if (!"HTTP/1.0".equals(httpVersion))
-            assertHeader(response, "transfer-encoding", "chunked");
+        if (!"HTTP/1.0".equals(httpVersion)) {
+			assertHeader(response, "transfer-encoding", "chunked");
+		}
         assertThat("no exceptions", handler.failure(), is(nullValue()));
     }
 
@@ -516,10 +530,11 @@ public class HttpManyWaysToAsyncCommitTest extends AbstractHttpTest
                             ServletResponse asyncContextResponse = asyncContext.getResponse();
                             asyncContextResponse.setBufferSize(3);
                             asyncContextResponse.getWriter().write("foobar");
-                            if (dispatch)
-                                asyncContext.dispatch();
-                            else
-                                asyncContext.complete();
+                            if (dispatch) {
+								asyncContext.dispatch();
+							} else {
+								asyncContext.complete();
+							}
                         }
                         catch (IOException e)
                         {
@@ -588,10 +603,11 @@ public class HttpManyWaysToAsyncCommitTest extends AbstractHttpTest
                             ServletResponse asyncContextResponse = asyncContext.getResponse();
                             asyncContextResponse.setContentLength(3);
                             asyncContextResponse.getWriter().write("foo");
-                            if (dispatch)
-                                asyncContext.dispatch();
-                            else
-                                asyncContext.complete();
+                            if (dispatch) {
+								asyncContext.dispatch();
+							} else {
+								asyncContext.complete();
+							}
                         }
                         catch (IOException e)
                         {
@@ -661,10 +677,11 @@ public class HttpManyWaysToAsyncCommitTest extends AbstractHttpTest
                             ServletResponse asyncContextResponse = asyncContext.getResponse();
                             asyncContextResponse.setContentLength(3);
                             asyncContextResponse.getWriter().write("foobar");
-                            if (dispatch)
-                                asyncContext.dispatch();
-                            else
-                                asyncContext.complete();
+                            if (dispatch) {
+								asyncContext.dispatch();
+							} else {
+								asyncContext.complete();
+							}
                         }
                         catch (IOException e)
                         {
@@ -729,10 +746,11 @@ public class HttpManyWaysToAsyncCommitTest extends AbstractHttpTest
                             ServletResponse asyncContextResponse = asyncContext.getResponse();
                             asyncContextResponse.getWriter().write("foo");
                             asyncContextResponse.setContentLength(3); // This should commit the response
-                            if (dispatch)
-                                asyncContext.dispatch();
-                            else
-                                asyncContext.complete();
+                            if (dispatch) {
+								asyncContext.dispatch();
+							} else {
+								asyncContext.complete();
+							}
                         }
                         catch (IOException e)
                         {
@@ -798,10 +816,11 @@ public class HttpManyWaysToAsyncCommitTest extends AbstractHttpTest
                             ServletResponse asyncContextResponse = asyncContext.getResponse();
                             asyncContextResponse.getWriter().write("foobar");
                             asyncContextResponse.setContentLength(3);
-                            if (dispatch)
-                                asyncContext.dispatch();
-                            else
-                                asyncContext.complete();
+                            if (dispatch) {
+								asyncContext.dispatch();
+							} else {
+								asyncContext.complete();
+							}
                         }
                         catch (IOException e)
                         {

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 
 package org.eclipse.jetty.server;
@@ -39,7 +34,7 @@ import javax.servlet.http.Part;
 /** 
  * ServletRequestHttpWrapper
  * 
- * Class to tunnel a ServletRequest via a HttpServletRequest
+ * Class to tunnel a ServletRequest via a HttpServletRequest.
  */
 public class ServletRequestHttpWrapper extends ServletRequestWrapper implements HttpServletRequest
 {
@@ -198,45 +193,30 @@ public class ServletRequestHttpWrapper extends ServletRequestWrapper implements 
         return false;
     }
 
-    /**
-     * @see javax.servlet.http.HttpServletRequest#authenticate(javax.servlet.http.HttpServletResponse)
-     */
     @Override
     public boolean authenticate(HttpServletResponse response) throws IOException, ServletException
     {
         return false;
     }
 
-    /**
-     * @see javax.servlet.http.HttpServletRequest#getPart(java.lang.String)
-     */
     @Override
     public Part getPart(String name) throws IOException, ServletException
     {
         return null;
     }
 
-    /**
-     * @see javax.servlet.http.HttpServletRequest#getParts()
-     */
     @Override
     public Collection<Part> getParts() throws IOException, ServletException
     {
         return null;
     }
 
-    /**
-     * @see javax.servlet.http.HttpServletRequest#login(java.lang.String, java.lang.String)
-     */
     @Override
     public void login(String username, String password) throws ServletException
     {
 
     }
 
-    /**
-     * @see javax.servlet.http.HttpServletRequest#logout()
-     */
     @Override
     public void logout() throws ServletException
     {
@@ -244,9 +224,6 @@ public class ServletRequestHttpWrapper extends ServletRequestWrapper implements 
     }
 
 
-    /** 
-     * @see javax.servlet.http.HttpServletRequest#changeSessionId()
-     */
     @Override
     public String changeSessionId()
     {
@@ -254,9 +231,6 @@ public class ServletRequestHttpWrapper extends ServletRequestWrapper implements 
         return null;
     }
 
-    /** 
-     * @see javax.servlet.http.HttpServletRequest#upgrade(java.lang.Class)
-     */
     @Override
     public <T extends HttpUpgradeHandler> T upgrade(Class<T> handlerClass) throws IOException, ServletException
     {

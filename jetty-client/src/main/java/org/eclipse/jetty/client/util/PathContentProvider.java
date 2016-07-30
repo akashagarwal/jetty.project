@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.client.util;
 
@@ -70,10 +65,12 @@ public class PathContentProvider extends AbstractTypedContentProvider
     public PathContentProvider(String contentType, Path filePath, int bufferSize) throws IOException
     {
         super(contentType);
-        if (!Files.isRegularFile(filePath))
-            throw new NoSuchFileException(filePath.toString());
-        if (!Files.isReadable(filePath))
-            throw new AccessDeniedException(filePath.toString());
+        if (!Files.isRegularFile(filePath)) {
+			throw new NoSuchFileException(filePath.toString());
+		}
+        if (!Files.isReadable(filePath)) {
+			throw new AccessDeniedException(filePath.toString());
+		}
         this.filePath = filePath;
         this.fileSize = Files.size(filePath);
         this.bufferSize = bufferSize;
@@ -124,17 +121,20 @@ public class PathContentProvider extends AbstractTypedContentProvider
                             ByteBuffer.allocateDirect(bufferSize) :
                             bufferPool.acquire(bufferSize, true);
                     channel = Files.newByteChannel(filePath, StandardOpenOption.READ);
-                    if (LOG.isDebugEnabled())
-                        LOG.debug("Opened file {}", filePath);
+                    if (LOG.isDebugEnabled()) {
+						LOG.debug("Opened file {}", filePath);
+					}
                 }
 
                 buffer.clear();
                 int read = channel.read(buffer);
-                if (read < 0)
-                    throw new NoSuchElementException();
+                if (read < 0) {
+					throw new NoSuchElementException();
+				}
 
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Read {} bytes from {}", read, filePath);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("Read {} bytes from {}", read, filePath);
+				}
 
                 position += read;
 
@@ -158,10 +158,12 @@ public class PathContentProvider extends AbstractTypedContentProvider
         {
             try
             {
-                if (bufferPool != null && buffer != null)
-                    bufferPool.release(buffer);
-                if (channel != null)
-                    channel.close();
+                if (bufferPool != null && buffer != null) {
+					bufferPool.release(buffer);
+				}
+                if (channel != null) {
+					channel.close();
+				}
             }
             catch (Throwable x)
             {

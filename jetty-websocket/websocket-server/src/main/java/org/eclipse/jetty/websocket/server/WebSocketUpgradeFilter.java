@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.server;
 
@@ -126,7 +121,7 @@ public class WebSocketUpgradeFilter extends ContainerLifeCycle implements Filter
     private final WebSocketServerFactory factory;
     private final PathMappings<WebSocketCreator> pathmap = new PathMappings<>();
     private String fname;
-    private boolean alreadySetToAttribute = false;
+    private boolean alreadySetToAttribute;
 
     public WebSocketUpgradeFilter()
     {
@@ -189,7 +184,7 @@ public class WebSocketUpgradeFilter extends ContainerLifeCycle implements Filter
             LOG.debug(".doFilter({}) - {}",fname,chain);
         }
 
-        if ((request instanceof HttpServletRequest) && (response instanceof HttpServletResponse))
+        if (request instanceof HttpServletRequest && response instanceof HttpServletResponse)
         {
             HttpServletRequest httpreq = (HttpServletRequest)request;
             HttpServletResponse httpresp = (HttpServletResponse)response;
@@ -256,7 +251,7 @@ public class WebSocketUpgradeFilter extends ContainerLifeCycle implements Filter
     @Override
     public void dump(Appendable out, String indent) throws IOException
     {
-        out.append(indent).append(" +- pathmap=").append(pathmap.toString()).append("\n");
+        out.append(indent).append(" +- pathmap=").append(pathmap).append("\n");
         pathmap.dump(out,indent + "   ");
     }
 
@@ -365,6 +360,6 @@ public class WebSocketUpgradeFilter extends ContainerLifeCycle implements Filter
     @Override
     public String toString()
     {
-        return String.format("%s[factory=%s,pathmap=%s]",this.getClass().getSimpleName(),factory,pathmap);
+        return String.format("%s[factory=%s,pathmap=%s]",getClass().getSimpleName(),factory,pathmap);
     }
 }

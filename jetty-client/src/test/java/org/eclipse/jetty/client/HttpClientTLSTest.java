@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.client;
 
@@ -80,10 +75,12 @@ public class HttpClientTLSTest
     @After
     public void dispose() throws Exception
     {
-        if (client != null)
-            client.stop();
-        if (server != null)
-            server.stop();
+        if (client != null) {
+			client.stop();
+		}
+        if (server != null) {
+			server.stop();
+		}
     }
 
     @Test
@@ -365,8 +362,9 @@ public class HttpClientTLSTest
             @Override
             public void handshakeSucceeded(Event event)
             {
-                if (Arrays.equals(serverSession.get(), event.getSSLEngine().getSession().getId()))
-                    serverLatch.countDown();
+                if (Arrays.equals(serverSession.get(), event.getSSLEngine().getSession().getId())) {
+					serverLatch.countDown();
+				}
             }
         });
 
@@ -376,8 +374,9 @@ public class HttpClientTLSTest
             @Override
             public void handshakeSucceeded(Event event)
             {
-                if (Arrays.equals(clientSession.get(), event.getSSLEngine().getSession().getId()))
-                    clientLatch.countDown();
+                if (Arrays.equals(clientSession.get(), event.getSSLEngine().getSession().getId())) {
+					clientLatch.countDown();
+				}
             }
         });
 

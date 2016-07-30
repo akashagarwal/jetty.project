@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util;
 
@@ -182,8 +177,9 @@ public abstract class Utf8Appendable
         try
         {
             int end = offset + length;
-            for (int i = offset; i < end; i++)
-                appendByte(b[i]);
+            for (int i = offset; i < end; i++) {
+				appendByte(b[i]);
+			}
         }
         catch (IOException e)
         {
@@ -198,8 +194,9 @@ public abstract class Utf8Appendable
             int end = offset + length;
             for (int i = offset; i < end; i++)
             {
-                if (length() > maxChars)
-                    return false;
+                if (length() > maxChars) {
+					return false;
+				}
                 appendByte(b[i]);
             }
             return true;
@@ -234,13 +231,14 @@ public abstract class Utf8Appendable
                     }
                     else
                     {
-                        for (char c : Character.toChars(_codep))
-                            _appendable.append(c);
+                        for (char c : Character.toChars(_codep)) {
+							_appendable.append(c);
+						}
                     }
                     break;
                     
                 case UTF8_REJECT:
-                    String reason = "byte "+TypeUtil.toHexString(b)+" in state "+(_state/12);
+                    String reason = "byte "+TypeUtil.toHexString(b)+" in state "+_state/12;
                     _codep=0;
                     _state = UTF8_ACCEPT;
                     _appendable.append(REPLACEMENT);

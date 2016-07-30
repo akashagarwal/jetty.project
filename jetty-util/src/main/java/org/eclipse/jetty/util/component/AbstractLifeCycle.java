@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util.component;
 
@@ -62,8 +57,9 @@ public abstract class AbstractLifeCycle implements LifeCycle
         {
             try
             {
-                if (_state == __STARTED || _state == __STARTING)
-                    return;
+                if (_state == __STARTED || _state == __STARTING) {
+					return;
+				}
                 setStarting();
                 doStart();
                 setStarted();
@@ -83,8 +79,9 @@ public abstract class AbstractLifeCycle implements LifeCycle
         {
             try
             {
-                if (_state == __STOPPING || _state == __STOPPED)
-                    return;
+                if (_state == __STOPPING || _state == __STOPPED) {
+					return;
+				}
                 setStopping();
                 doStop();
                 setStopped();
@@ -163,59 +160,77 @@ public abstract class AbstractLifeCycle implements LifeCycle
 
     public static String getState(LifeCycle lc)
     {
-        if (lc.isStarting()) return STARTING;
-        if (lc.isStarted()) return STARTED;
-        if (lc.isStopping()) return STOPPING;
-        if (lc.isStopped()) return STOPPED;
+        if (lc.isStarting()) {
+			return STARTING;
+		}
+        if (lc.isStarted()) {
+			return STARTED;
+		}
+        if (lc.isStopping()) {
+			return STOPPING;
+		}
+        if (lc.isStopped()) {
+			return STOPPED;
+		}
         return FAILED;
     }
 
     private void setStarted()
     {
         _state = __STARTED;
-        if (LOG.isDebugEnabled())
-            LOG.debug(STARTED+" @{}ms {}",Uptime.getUptime(),this);
-        for (Listener listener : _listeners)
-            listener.lifeCycleStarted(this);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug(STARTED+" @{}ms {}",Uptime.getUptime(),this);
+		}
+        for (Listener listener : _listeners) {
+			listener.lifeCycleStarted(this);
+		}
     }
 
     private void setStarting()
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("starting {}",this);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("starting {}",this);
+		}
         _state = __STARTING;
-        for (Listener listener : _listeners)
-            listener.lifeCycleStarting(this);
+        for (Listener listener : _listeners) {
+			listener.lifeCycleStarting(this);
+		}
     }
 
     private void setStopping()
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("stopping {}",this);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("stopping {}",this);
+		}
         _state = __STOPPING;
-        for (Listener listener : _listeners)
-            listener.lifeCycleStopping(this);
+        for (Listener listener : _listeners) {
+			listener.lifeCycleStopping(this);
+		}
     }
 
     private void setStopped()
     {
         _state = __STOPPED;
-        if (LOG.isDebugEnabled())
-            LOG.debug("{} {}",STOPPED,this);
-        for (Listener listener : _listeners)
-            listener.lifeCycleStopped(this);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("{} {}",STOPPED,this);
+		}
+        for (Listener listener : _listeners) {
+			listener.lifeCycleStopped(this);
+		}
     }
 
     private void setFailed(Throwable th)
     {
         _state = __FAILED;
-        if (LOG.isDebugEnabled())
-            LOG.warn(FAILED+" " + this+": "+th,th);
-        for (Listener listener : _listeners)
-            listener.lifeCycleFailure(this,th);
+        if (LOG.isDebugEnabled()) {
+			LOG.warn(FAILED+" " + this+": "+th,th);
+		}
+        for (Listener listener : _listeners) {
+			listener.lifeCycleFailure(this,th);
+		}
     }
 
-    @ManagedAttribute(value="The stop timeout in milliseconds")
+    @ManagedAttribute("The stop timeout in milliseconds")
     public long getStopTimeout()
     {
         return _stopTimeout;

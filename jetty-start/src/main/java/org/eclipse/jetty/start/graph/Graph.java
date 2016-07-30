@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.start.graph;
 
@@ -38,7 +33,7 @@ import org.eclipse.jetty.start.StartLog;
 import org.eclipse.jetty.start.Utils;
 
 /**
- * Basic Graph
+ * Basic Graph.
  * @param <T> the node type
  */
 public abstract class Graph<T extends Node<T>> implements Iterable<T>
@@ -67,7 +62,7 @@ public abstract class Graph<T extends Node<T>> implements Iterable<T>
                 // Cycle detected.
                 StringBuilder err = new StringBuilder();
                 err.append("A cyclic reference in the ");
-                err.append(this.getClass().getSimpleName());
+                err.append(getClass().getSimpleName());
                 err.append(" has been detected: ");
                 for (int i = 0; i < refs.size(); i++)
                 {
@@ -185,8 +180,7 @@ public abstract class Graph<T extends Node<T>> implements Iterable<T>
 
     public void dumpSelectedTree()
     {
-        List<T> ordered = new ArrayList<>();
-        ordered.addAll(nodes.values());
+        List<T> ordered = new ArrayList<T>(nodes.values());
         Collections.sort(ordered,new NodeDepthComparator());
 
         List<T> active = getSelected();
@@ -205,8 +199,7 @@ public abstract class Graph<T extends Node<T>> implements Iterable<T>
 
     public void dumpSelected()
     {
-        List<T> ordered = new ArrayList<>();
-        ordered.addAll(nodes.values());
+        List<T> ordered = new ArrayList<T>(nodes.values());
         Collections.sort(ordered,new NodeDepthComparator());
 
         List<T> active = getSelected();
@@ -242,10 +235,7 @@ public abstract class Graph<T extends Node<T>> implements Iterable<T>
     protected void findChildren(T module, Set<T> ret)
     {
         ret.add(module);
-        for (T child : module.getChildEdges())
-        {
-            ret.add(child);
-        }
+        ret.addAll(module.getChildEdges());
     }
 
     protected void findParents(T module, Map<String, T> ret)
@@ -441,9 +431,7 @@ public abstract class Graph<T extends Node<T>> implements Iterable<T>
 
         // Walk transitive
         Selection transitive = selection.asTransitive();
-        List<String> parentNames = new ArrayList<>();
-        parentNames.addAll(node.getParentNames());
-
+        List<String> parentNames = new ArrayList<String>(node.getParentNames());
         count += selectNodes(parentNames,transitive);
 
         return count;

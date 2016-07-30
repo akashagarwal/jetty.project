@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.jaas.spi;
 
@@ -80,7 +75,7 @@ public abstract class AbstractDatabaseLoginModule extends AbstractLoginModule
 
 
     /* ------------------------------------------------ */
-    /** Load info from database
+    /** Load info from database.
      * @param userName user info to load
      * @exception Exception if unable to get the user info
      */
@@ -104,14 +99,14 @@ public abstract class AbstractDatabaseLoginModule extends AbstractLoginModule
                 }
             }
 
-            if (dbCredential==null)
+            if (dbCredential!=null)
             {
-                return null;
+                return new JDBCUserInfo (userName, Credential.getCredential(dbCredential));
             }
 
           
 
-            return new JDBCUserInfo (userName, Credential.getCredential(dbCredential));
+            return null;
         }
     }
     
@@ -168,7 +163,11 @@ public abstract class AbstractDatabaseLoginModule extends AbstractLoginModule
 
         rolesQuery = "select "+dbUserRoleTableRoleField+" from "+dbUserRoleTable+" where "+dbUserRoleTableUserField+"=?";
 
-        if(LOG.isDebugEnabled())LOG.debug("userQuery = "+userQuery);
-        if(LOG.isDebugEnabled())LOG.debug("rolesQuery = "+rolesQuery);
+        if(LOG.isDebugEnabled()) {
+			LOG.debug("userQuery = "+userQuery);
+		}
+        if(LOG.isDebugEnabled()) {
+			LOG.debug("rolesQuery = "+rolesQuery);
+		}
     }
 }

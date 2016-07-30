@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http2.hpack;
 
@@ -135,8 +130,9 @@ public class HpackContext
                     {
 
                         HttpMethod method = HttpMethod.CACHE.get(value);
-                        if (method!=null)
-                            entry=new StaticEntry(i,new StaticTableHttpField(header,name,value,method));
+                        if (method!=null) {
+							entry=new StaticEntry(i,new StaticTableHttpField(header,name,value,method));
+						}
                         break;
                     }
 
@@ -144,8 +140,9 @@ public class HpackContext
                     {
 
                         HttpScheme scheme = HttpScheme.CACHE.get(value);
-                        if (scheme!=null)
-                            entry=new StaticEntry(i,new StaticTableHttpField(header,name,value,scheme));
+                        if (scheme!=null) {
+							entry=new StaticEntry(i,new StaticTableHttpField(header,name,value,scheme));
+						}
                         break;
                     }
 
@@ -160,29 +157,33 @@ public class HpackContext
                 }
             }
 
-            if (entry==null)
-                entry=new StaticEntry(i,header==null?new HttpField(STATIC_TABLE[i][0],value):new HttpField(header,name,value));
+            if (entry==null) {
+				entry=new StaticEntry(i,header==null?new HttpField(STATIC_TABLE[i][0],value):new HttpField(header,name,value));
+			}
 
 
             __staticTable[i]=entry;
 
-            if (entry._field.getValue()!=null)
-                __staticFieldMap.put(entry._field,entry);
+            if (entry._field.getValue()!=null) {
+				__staticFieldMap.put(entry._field,entry);
+			}
 
             if (!added.contains(entry._field.getName()))
             {
                 added.add(entry._field.getName());
                 __staticNameMap.put(entry._field.getName(),entry);
-                if (__staticNameMap.get(entry._field.getName())==null)
-                    throw new IllegalStateException("name trie too small");
+                if (__staticNameMap.get(entry._field.getName())==null) {
+					throw new IllegalStateException("name trie too small");
+				}
             }
         }
 
         for (HttpHeader h : HttpHeader.values())
         {
             StaticEntry entry = __staticNameMap.get(h.asString());
-            if (entry!=null)
-                __staticTableByHeader[h.ordinal()]=entry;
+            if (entry!=null) {
+				__staticTableByHeader[h.ordinal()]=entry;
+			}
         }
     }
 
@@ -197,14 +198,16 @@ public class HpackContext
         _maxDynamicTableSizeInBytes=maxDynamicTableSize;
         int guesstimateEntries = 10+maxDynamicTableSize/(32+10+10);
         _dynamicTable=new DynamicTable(guesstimateEntries);
-        if (LOG.isDebugEnabled())
-            LOG.debug(String.format("HdrTbl[%x] created max=%d",hashCode(),maxDynamicTableSize));
+        if (LOG.isDebugEnabled()) {
+			LOG.debug(String.format("HdrTbl[%x] created max=%d",hashCode(),maxDynamicTableSize));
+		}
     }
 
     public void resize(int newMaxDynamicTableSize)
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug(String.format("HdrTbl[%x] resized max=%d->%d",hashCode(),_maxDynamicTableSizeInBytes,newMaxDynamicTableSize));
+        if (LOG.isDebugEnabled()) {
+			LOG.debug(String.format("HdrTbl[%x] resized max=%d->%d",hashCode(),_maxDynamicTableSizeInBytes,newMaxDynamicTableSize));
+		}
         _maxDynamicTableSizeInBytes=newMaxDynamicTableSize;
         _dynamicTable.evict();
     }
@@ -212,23 +215,26 @@ public class HpackContext
     public Entry get(HttpField field)
     {
         Entry entry = _fieldMap.get(field);
-        if (entry==null)
-            entry=__staticFieldMap.get(field);
+        if (entry==null) {
+			entry=__staticFieldMap.get(field);
+		}
         return entry;
     }
 
     public Entry get(String name)
     {
         Entry entry = __staticNameMap.get(name);
-        if (entry!=null)
-            return entry;
+        if (entry!=null) {
+			return entry;
+		}
         return _nameMap.get(StringUtil.asciiToLowerCase(name));
     }
 
     public Entry get(int index)
     {
-        if (index<=STATIC_SIZE)
-            return __staticTable[index];
+        if (index<=STATIC_SIZE) {
+			return __staticTable[index];
+		}
 
         return _dynamicTable.get(index);
     }
@@ -236,9 +242,10 @@ public class HpackContext
     public Entry get(HttpHeader header)
     {
         Entry e = __staticTableByHeader[header.ordinal()];
-        if (e==null)
-            return get(header.asString());
-        return e;
+        if (e!=null) {
+			return e;
+		}
+        return get(header.asString());
     }
 
     public static Entry getStatic(HttpHeader header)
@@ -252,8 +259,9 @@ public class HpackContext
         int size = entry.getSize();
         if (size>_maxDynamicTableSizeInBytes)
         {
-            if (LOG.isDebugEnabled())
-                LOG.debug(String.format("HdrTbl[%x] !added size %d>%d",hashCode(),size,_maxDynamicTableSizeInBytes));
+            if (LOG.isDebugEnabled()) {
+				LOG.debug(String.format("HdrTbl[%x] !added size %d>%d",hashCode(),size,_maxDynamicTableSizeInBytes));
+			}
             return null;
         }
         _dynamicTableSizeInBytes+=size;
@@ -261,8 +269,9 @@ public class HpackContext
         _fieldMap.put(field,entry);
         _nameMap.put(StringUtil.asciiToLowerCase(field.getName()),entry);
 
-        if (LOG.isDebugEnabled())
-            LOG.debug(String.format("HdrTbl[%x] added %s",hashCode(),entry));
+        if (LOG.isDebugEnabled()) {
+			LOG.debug(String.format("HdrTbl[%x] added %s",hashCode(),entry));
+		}
         _dynamicTable.evict();
         return entry;
     }
@@ -293,22 +302,26 @@ public class HpackContext
 
     public int index(Entry entry)
     {
-        if (entry._slot<0)
-            return 0;
-        if (entry.isStatic())
-            return entry._slot;
+        if (entry._slot<0) {
+			return 0;
+		}
+        if (entry.isStatic()) {
+			return entry._slot;
+		}
 
         return _dynamicTable.index(entry);
     }
 
     public static int staticIndex(HttpHeader header)
     {
-        if (header==null)
-            return 0;
+        if (header==null) {
+			return 0;
+		}
         Entry entry=__staticNameMap.get(header.asString());
-        if (entry==null)
-            return 0;
-        return entry._slot;
+        if (entry!=null) {
+			return entry._slot;
+		}
+        return 0;
     }
 
 
@@ -358,8 +371,9 @@ public class HpackContext
         public Entry get(int index)
         {
             int d = index-STATIC_SIZE-1;
-            if (d<0 || d>=_size)
-                return null;
+            if (d<0 || d>=_size) {
+				return null;
+			}
             int slot = (_offset+_size-d-1)%_entries.length;
             return _entries[slot];
         }
@@ -377,18 +391,21 @@ public class HpackContext
                 _entries[_offset]=null;
                 _offset = (_offset+1)%_entries.length;
                 _size--;
-                if (LOG.isDebugEnabled())
-                    LOG.debug(String.format("HdrTbl[%x] evict %s",hashCode(),entry));
+                if (LOG.isDebugEnabled()) {
+					LOG.debug(String.format("HdrTbl[%x] evict %s",hashCode(),entry));
+				}
                 _dynamicTableSizeInBytes-=entry.getSize();
                 entry._slot=-1;
                 _fieldMap.remove(entry.getHttpField());
                 String lc=StringUtil.asciiToLowerCase(entry.getHttpField().getName());
-                if (entry==_nameMap.get(lc))
-                    _nameMap.remove(lc);
+                if (entry==_nameMap.get(lc)) {
+					_nameMap.remove(lc);
+				}
 
             }
-            if (LOG.isDebugEnabled())
-                LOG.debug(String.format("HdrTbl[%x] entries=%d, size=%d, max=%d",hashCode(),_dynamicTable.size(),_dynamicTableSizeInBytes,_maxDynamicTableSizeInBytes));
+            if (LOG.isDebugEnabled()) {
+				LOG.debug(String.format("HdrTbl[%x] entries=%d, size=%d, max=%d",hashCode(),_dynamicTable.size(),_dynamicTableSizeInBytes,_maxDynamicTableSizeInBytes));
+			}
         }
 
     }
@@ -396,7 +413,8 @@ public class HpackContext
     public static class Entry
     {
         final HttpField _field;
-        int _slot; // The index within it's array
+        /** The index within it's array. */
+        int _slot;
 
         Entry()
         {
@@ -459,9 +477,9 @@ public class HpackContext
                 NBitInteger.encode(buffer,7,huffmanLen);
                 // Encode value
                 Huffman.encode(buffer,value);
-            }
-            else
-                _huffmanValue=null;
+            } else {
+				_huffmanValue=null;
+			}
 
             _encodedField=(byte)(0x80|index);
         }

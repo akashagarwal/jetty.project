@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util;
 
@@ -59,7 +54,7 @@ public class ArrayTrie<V> extends AbstractTrie<V>
     
     /**
      * The index lookup table, this maps a character as a byte 
-     * (ISO-8859-1 or UTF8) to an index within a Trie row
+     * (ISO-8859-1 or UTF8) to an index within a Trie row.
      */
     private static final int[] __lookup = 
     { // 0   1   2   3   4   5   6   7   8   9   A   B   C   D   E   F
@@ -107,7 +102,7 @@ public class ArrayTrie<V> extends AbstractTrie<V>
     private char[][] _bigIndex;
     
     /**
-     * The number of rows allocated
+     * The number of rows allocated.
      */
     private char _rows;
 
@@ -134,7 +129,7 @@ public class ArrayTrie<V> extends AbstractTrie<V>
         _key=new String[capacity];
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void clear()
     {
@@ -144,7 +139,7 @@ public class ArrayTrie<V> extends AbstractTrie<V>
         Arrays.fill(_key,null);
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public boolean put(String s, V v)
     {
@@ -162,27 +157,32 @@ public class ArrayTrie<V> extends AbstractTrie<V>
                 t=_rowIndex[idx];
                 if (t==0)
                 {
-                    if (++_rows>=_value.length)
-                        return false;
+                    if (++_rows>=_value.length) {
+						return false;
+					}
                     t=_rowIndex[idx]=_rows;
                 }
             }
-            else if (c>127)
-                throw new IllegalArgumentException("non ascii character");
-            else
+            else if (c>127) {
+				throw new IllegalArgumentException("non ascii character");
+			} else
             {
-                if (_bigIndex==null)
-                    _bigIndex=new char[_value.length][];
-                if (t>=_bigIndex.length)
-                    return false;
+                if (_bigIndex==null) {
+					_bigIndex=new char[_value.length][];
+				}
+                if (t>=_bigIndex.length) {
+					return false;
+				}
                 char[] big=_bigIndex[t];
-                if (big==null)
-                    big=_bigIndex[t]=new char[128];
+                if (big==null) {
+					big=_bigIndex[t]=new char[128];
+				}
                 t=big[c];
                 if (t==0)
                 {
-                    if (_rows==_value.length)
-                        return false;
+                    if (_rows==_value.length) {
+						return false;
+					}
                     t=big[c]=++_rows;
                 }
             }
@@ -199,7 +199,7 @@ public class ArrayTrie<V> extends AbstractTrie<V>
         return true;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public V get(String s, int offset, int len)
     {
@@ -212,23 +212,23 @@ public class ArrayTrie<V> extends AbstractTrie<V>
             {
                 int idx=t*ROW_SIZE+index;
                 t=_rowIndex[idx];
-                if (t==0)
-                    return null;
             }
             else
             {
                 char[] big = _bigIndex==null?null:_bigIndex[t];
-                if (big==null)
-                    return null;
+                if (big==null) {
+					return null;
+				}
                 t=big[c];
-                if (t==0)
-                    return null;
             }
+			if (t==0) {
+				return null;
+			}
         }
         return _value[t];
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public V get(ByteBuffer b,int offset,int len)
     {
@@ -241,46 +241,47 @@ public class ArrayTrie<V> extends AbstractTrie<V>
             {
                 int idx=t*ROW_SIZE+index;
                 t=_rowIndex[idx];
-                if (t==0)
-                    return null;
             }
             else
             {
                 char[] big = _bigIndex==null?null:_bigIndex[t];
-                if (big==null)
-                    return null;
+                if (big==null) {
+					return null;
+				}
                 t=big[c];
-                if (t==0)
-                    return null;
             }
+			if (t==0) {
+				return null;
+			}
         }
-        return (V)_value[t];
+        return _value[t];
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public V getBest(byte[] b,int offset,int len)
     {
         return getBest(0,b,offset,len);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public V getBest(ByteBuffer b,int offset,int len)
     {
-        if (b.hasArray())
-            return getBest(0,b.array(),b.arrayOffset()+b.position()+offset,len);
+        if (b.hasArray()) {
+			return getBest(0,b.array(),b.arrayOffset()+b.position()+offset,len);
+		}
         return getBest(0,b,offset,len);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public V getBest(String s, int offset, int len)
     {
         return getBest(0,s,offset,len);
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     private V getBest(int t, String s, int offset, int len)
     {
         int pos=offset;
@@ -292,35 +293,35 @@ public class ArrayTrie<V> extends AbstractTrie<V>
             {
                 int idx=t*ROW_SIZE+index;
                 int nt=_rowIndex[idx];
-                if (nt==0)
-                    break;
-                t=nt;
             }
             else
             {
                 char[] big = _bigIndex==null?null:_bigIndex[t];
-                if (big==null)
-                    return null;
+                if (big==null) {
+					return null;
+				}
                 int nt=big[c];
-                if (nt==0)
-                    break;
-                t=nt;
             }
+			if (nt==0) {
+				break;
+			}
+			t=nt;
             
             // Is the next Trie is a match
             if (_key[t]!=null)
             {
                 // Recurse so we can remember this possibility
                 V best=getBest(t,s,offset+i+1,len-i-1);
-                if (best!=null)
-                    return best;
-                return (V)_value[t];
+                if (best!=null) {
+					return best;
+				}
+                return _value[t];
             }
         }
-        return (V)_value[t];
+        return _value[t];
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     private V getBest(int t,byte[] b,int offset,int len)
     {
         for(int i=0; i < len; i++)
@@ -331,32 +332,32 @@ public class ArrayTrie<V> extends AbstractTrie<V>
             {
                 int idx=t*ROW_SIZE+index;
                 int nt=_rowIndex[idx];
-                if (nt==0)
-                    break;
-                t=nt;
             }
             else
             {
                 char[] big = _bigIndex==null?null:_bigIndex[t];
-                if (big==null)
-                    return null;
+                if (big==null) {
+					return null;
+				}
                 int nt=big[c];
-                if (nt==0)
-                    break;
-                t=nt;
             }
+			if (nt==0) {
+				break;
+			}
+			t=nt;
             
             // Is the next Trie is a match
             if (_key[t]!=null)
             {
                 // Recurse so we can remember this possibility
                 V best=getBest(t,b,offset+i+1,len-i-1);
-                if (best!=null)
-                    return best;
+                if (best!=null) {
+					return best;
+				}
                 break;
             }
         }
-        return (V)_value[t];
+        return _value[t];
     }
     
     private V getBest(int t,ByteBuffer b,int offset,int len)
@@ -370,32 +371,32 @@ public class ArrayTrie<V> extends AbstractTrie<V>
             {
                 int idx=t*ROW_SIZE+index;
                 int nt=_rowIndex[idx];
-                if (nt==0)
-                    break;
-                t=nt;
             }
             else
             {
                 char[] big = _bigIndex==null?null:_bigIndex[t];
-                if (big==null)
-                    return null;
+                if (big==null) {
+					return null;
+				}
                 int nt=big[c];
-                if (nt==0)
-                    break;
-                t=nt;
             }
+			if (nt==0) {
+				break;
+			}
+			t=nt;
             
             // Is the next Trie is a match
             if (_key[t]!=null)
             {
                 // Recurse so we can remember this possibility
                 V best=getBest(t,b,offset+i+1,len-i-1);
-                if (best!=null)
-                    return best;
+                if (best!=null) {
+					return best;
+				}
                 break;
             }
         }
-        return (V)_value[t];
+        return _value[t];
     }
     
     
@@ -407,8 +408,9 @@ public class ArrayTrie<V> extends AbstractTrie<V>
         StringBuilder buf = new StringBuilder();
         toString(buf,0);
         
-        if (buf.length()==0)
-            return "{}";
+        if (buf.length()==0) {
+			return "{}";
+		}
         
         buf.setCharAt(0,'{');
         buf.append('}');
@@ -425,7 +427,7 @@ public class ArrayTrie<V> extends AbstractTrie<V>
                 out.append(',');
                 out.append(_key[t]);
                 out.append('=');
-                out.append(_value[t].toString());
+                out.append(_value[t]);
             }
             catch (IOException e)
             {
@@ -436,16 +438,19 @@ public class ArrayTrie<V> extends AbstractTrie<V>
         for(int i=0; i < ROW_SIZE; i++)
         {
             int idx=t*ROW_SIZE+i;
-            if (_rowIndex[idx] != 0)
-                toString(out,_rowIndex[idx]);
+            if (_rowIndex[idx] != 0) {
+				toString(out,_rowIndex[idx]);
+			}
         }
 
         char[] big = _bigIndex==null?null:_bigIndex[t];
         if (big!=null)
         {
-            for (int i:big)
-                if (i!=0)
-                    toString(out,i);
+            for (int i:big) {
+				if (i!=0) {
+					toString(out,i);
+				}
+			}
         }
 
     }
@@ -460,22 +465,26 @@ public class ArrayTrie<V> extends AbstractTrie<V>
     
     private void keySet(Set<String> set, int t)
     {
-        if (t<_value.length&&_value[t]!=null)
-            set.add(_key[t]);
+        if (t<_value.length&&_value[t]!=null) {
+			set.add(_key[t]);
+		}
 
         for(int i=0; i < ROW_SIZE; i++)
         {
             int idx=t*ROW_SIZE+i;
-            if (idx<_rowIndex.length && _rowIndex[idx] != 0)
-                keySet(set,_rowIndex[idx]);
+            if (idx<_rowIndex.length && _rowIndex[idx] != 0) {
+				keySet(set,_rowIndex[idx]);
+			}
         }
         
         char[] big = _bigIndex==null||t>=_bigIndex.length?null:_bigIndex[t];
         if (big!=null)
         {
-            for (int i:big)
-                if (i!=0)
-                    keySet(set,i);
+            for (int i:big) {
+				if (i!=0) {
+					keySet(set,i);
+				}
+			}
         }
     }
     

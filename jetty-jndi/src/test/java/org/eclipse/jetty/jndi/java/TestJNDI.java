@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.jndi.java;
 
@@ -50,9 +45,6 @@ import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.log.Logger;
 import org.junit.Test;
-/**
- *
- */
 public class TestJNDI
 {
     private static final Logger LOG = Log.getLogger(TestJNDI.class);
@@ -214,30 +206,60 @@ public class TestJNDI
             InitialContext initCtx = new InitialContext();
             Context sub0 = (Context)initCtx.lookup("java:");
 
-            if(LOG.isDebugEnabled())LOG.debug("------ Looked up java: --------------");
+            if(LOG.isDebugEnabled()) {
+				LOG.debug("------ Looked up java: --------------");
+			}
 
             Name n = sub0.getNameParser("").parse("/red/green/");
 
-            if(LOG.isDebugEnabled())LOG.debug("get(0)="+n.get(0));
-            if(LOG.isDebugEnabled())LOG.debug("getPrefix(1)="+n.getPrefix(1));
+            if(LOG.isDebugEnabled()) {
+				LOG.debug("get(0)="+n.get(0));
+			}
+            if(LOG.isDebugEnabled()) {
+				LOG.debug("getPrefix(1)="+n.getPrefix(1));
+			}
             n = n.getSuffix(1);
-            if(LOG.isDebugEnabled())LOG.debug("getSuffix(1)="+n);
-            if(LOG.isDebugEnabled())LOG.debug("get(0)="+n.get(0));
-            if(LOG.isDebugEnabled())LOG.debug("getPrefix(1)="+n.getPrefix(1));
+            if(LOG.isDebugEnabled()) {
+				LOG.debug("getSuffix(1)="+n);
+			}
+            if(LOG.isDebugEnabled()) {
+				LOG.debug("get(0)="+n.get(0));
+			}
+            if(LOG.isDebugEnabled()) {
+				LOG.debug("getPrefix(1)="+n.getPrefix(1));
+			}
             n = n.getSuffix(1);
-            if(LOG.isDebugEnabled())LOG.debug("getSuffix(1)="+n);
-            if(LOG.isDebugEnabled())LOG.debug("get(0)="+n.get(0));
-            if(LOG.isDebugEnabled())LOG.debug("getPrefix(1)="+n.getPrefix(1));
+            if(LOG.isDebugEnabled()) {
+				LOG.debug("getSuffix(1)="+n);
+			}
+            if(LOG.isDebugEnabled()) {
+				LOG.debug("get(0)="+n.get(0));
+			}
+            if(LOG.isDebugEnabled()) {
+				LOG.debug("getPrefix(1)="+n.getPrefix(1));
+			}
             n = n.getSuffix(1);
-            if(LOG.isDebugEnabled())LOG.debug("getSuffix(1)="+n);
+            if(LOG.isDebugEnabled()) {
+				LOG.debug("getSuffix(1)="+n);
+			}
 
             n = sub0.getNameParser("").parse("pink/purple/");
-            if(LOG.isDebugEnabled())LOG.debug("get(0)="+n.get(0));
-            if(LOG.isDebugEnabled())LOG.debug("getPrefix(1)="+n.getPrefix(1));
+            if(LOG.isDebugEnabled()) {
+				LOG.debug("get(0)="+n.get(0));
+			}
+            if(LOG.isDebugEnabled()) {
+				LOG.debug("getPrefix(1)="+n.getPrefix(1));
+			}
             n = n.getSuffix(1);
-            if(LOG.isDebugEnabled())LOG.debug("getSuffix(1)="+n);
-            if(LOG.isDebugEnabled())LOG.debug("get(0)="+n.get(0));
-            if(LOG.isDebugEnabled())LOG.debug("getPrefix(1)="+n.getPrefix(1));
+            if(LOG.isDebugEnabled()) {
+				LOG.debug("getSuffix(1)="+n);
+			}
+            if(LOG.isDebugEnabled()) {
+				LOG.debug("get(0)="+n.get(0));
+			}
+            if(LOG.isDebugEnabled()) {
+				LOG.debug("getPrefix(1)="+n.getPrefix(1));
+			}
 
             NamingContext ncontext = (NamingContext)sub0;
 
@@ -250,7 +272,9 @@ public class TestJNDI
             assertEquals (2, nn.size());
 
             nn = ncontext.toCanonicalName(ncontext.getNameParser("").parse("/"));
-            if(LOG.isDebugEnabled())LOG.debug("/ parses as: "+nn+" with size="+nn.size());
+            if(LOG.isDebugEnabled()) {
+				LOG.debug("/ parses as: "+nn+" with size="+nn.size());
+			}
             LOG.debug(nn.toString());
             assertEquals (1, nn.size());
 
@@ -372,7 +396,7 @@ public class TestJNDI
             currentThread.setContextClassLoader(childLoader2);
 
             Context otherSub1 = (Context)initCtx.lookup("java:comp");
-            assertTrue (!(sub1 == otherSub1));
+            assertTrue (sub1 != otherSub1);
             try
             {
                 initCtx.lookup("java:comp/env/rubbish");

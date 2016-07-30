@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util.thread;
 
@@ -110,11 +105,13 @@ public class Sweeper extends AbstractLifeCycle implements Runnable
     public boolean offer(Sweepable sweepable)
     {
         List<Sweepable> refs = items.get();
-        if (refs == null)
-            return false;
+        if (refs == null) {
+			return false;
+		}
         refs.add(sweepable);
-        if (LOG.isDebugEnabled())
-            LOG.debug("Resource offered {}", sweepable);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Resource offered {}", sweepable);
+		}
         return true;
     }
 
@@ -128,8 +125,9 @@ public class Sweeper extends AbstractLifeCycle implements Runnable
     public void run()
     {
         List<Sweepable> refs = items.get();
-        if (refs == null)
-            return;
+        if (refs == null) {
+			return;
+		}
         for (Sweepable sweepable : refs)
         {
             try
@@ -137,8 +135,9 @@ public class Sweeper extends AbstractLifeCycle implements Runnable
                 if (sweepable.sweep())
                 {
                     refs.remove(sweepable);
-                    if (LOG.isDebugEnabled())
-                        LOG.debug("Resource swept {}", sweepable);
+                    if (LOG.isDebugEnabled()) {
+						LOG.debug("Resource swept {}", sweepable);
+					}
                 }
             }
             catch (Throwable x)
@@ -154,15 +153,13 @@ public class Sweeper extends AbstractLifeCycle implements Runnable
         if (isRunning())
         {
             Scheduler.Task t = scheduler.schedule(this, period, TimeUnit.MILLISECONDS);
-            if (LOG.isDebugEnabled())
-                LOG.debug("Scheduled in {} ms sweep task {}", period, t);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Scheduled in {} ms sweep task {}", period, t);
+			}
             task.set(t);
-        }
-        else
-        {
-            if (LOG.isDebugEnabled())
-                LOG.debug("Skipping sweep task scheduling");
-        }
+        } else if (LOG.isDebugEnabled()) {
+			LOG.debug("Skipping sweep task scheduling");
+		}
     }
 
     private void deactivate()
@@ -171,8 +168,9 @@ public class Sweeper extends AbstractLifeCycle implements Runnable
         if (t != null)
         {
             boolean cancelled = t.cancel();
-            if (LOG.isDebugEnabled())
-                LOG.debug("Cancelled ({}) sweep task {}", cancelled, t);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Cancelled ({}) sweep task {}", cancelled, t);
+			}
         }
     }
 
@@ -189,6 +187,6 @@ public class Sweeper extends AbstractLifeCycle implements Runnable
         /**
          * @return whether this resource should be swept
          */
-        public boolean sweep();
+        boolean sweep();
     }
 }

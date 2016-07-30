@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.osgi.annotations;
 
@@ -36,9 +31,6 @@ import org.eclipse.jetty.util.resource.Resource;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Constants;
 
-/**
- * 
- */
 public class AnnotationParser extends org.eclipse.jetty.annotations.AnnotationParser
 {
     private Set<URI> _alreadyParsed = new ConcurrentHashSet<URI>();
@@ -81,9 +73,6 @@ public class AnnotationParser extends org.eclipse.jetty.annotations.AnnotationPa
     }
     
     
-    /**
-     * 
-     */
     @Override
     public void parse (Set<? extends Handler> handlers, URI[] uris, ClassNameResolver resolver)
     throws Exception
@@ -146,7 +135,7 @@ public class AnnotationParser extends org.eclipse.jetty.annotations.AnnotationPa
             {
                 token = "/" + token;
             }
-            if (token.equals("/."))
+            if ("/.".equals(token))
             {
                 hasDotPath = true;
             }
@@ -205,7 +194,7 @@ public class AnnotationParser extends org.eclipse.jetty.annotations.AnnotationPa
             }
             //transform into a classname to pass to the resolver
             String shortName =  name.replace('/', '.').substring(0,name.length()-6);
-            if ((resolver == null) || (!resolver.isExcluded(shortName) && (!isParsed(shortName) || resolver.shouldOverride(shortName))))
+            if (resolver == null || (!resolver.isExcluded(shortName) && (!isParsed(shortName) || resolver.shouldOverride(shortName))))
             {
                 try (InputStream classInputStream = classUrl.openStream())
                 {

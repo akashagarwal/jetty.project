@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.server.ab;
 
@@ -36,13 +31,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
- * Test various bad / forbidden opcodes (per spec)
+ * Test various bad / forbidden opcodes (per spec).
  */
 @RunWith(AdvancedRunner.class)
 public class TestABCase4 extends AbstractABCase
 {
     /**
-     * Send opcode 3 (reserved)
+     * Send opcode 3 (reserved).
      * @throws Exception on test failure
      */
     @Test
@@ -64,7 +59,7 @@ public class TestABCase4 extends AbstractABCase
     }
 
     /**
-     * Send opcode 4 (reserved), with payload
+     * Send opcode 4 (reserved), with payload.
      * @throws Exception on test failure
      */
     @Test
@@ -89,7 +84,7 @@ public class TestABCase4 extends AbstractABCase
     }
 
     /**
-     * Send small text, then frame with opcode 5 (reserved), then ping
+     * Send small text, then frame with opcode 5 (reserved), then ping.
      * @throws Exception on test failure
      */
     @Test
@@ -114,7 +109,7 @@ public class TestABCase4 extends AbstractABCase
     }
 
     /**
-     * Send small text, then frame with opcode 6 (reserved) w/payload, then ping
+     * Send small text, then frame with opcode 6 (reserved) w/payload, then ping.
      * @throws Exception on test failure
      */
     @Test
@@ -141,7 +136,7 @@ public class TestABCase4 extends AbstractABCase
     }
 
     /**
-     * Send small text, then frame with opcode 7 (reserved) w/payload, then ping
+     * Send small text, then frame with opcode 7 (reserved) w/payload, then ping.
      * @throws Exception on test failure
      */
     @Test
@@ -168,7 +163,7 @@ public class TestABCase4 extends AbstractABCase
     }
 
     /**
-     * Send opcode 11 (reserved)
+     * Send opcode 11 (reserved).
      * @throws Exception on test failure
      */
     @Test
@@ -190,7 +185,7 @@ public class TestABCase4 extends AbstractABCase
     }
 
     /**
-     * Send opcode 12 (reserved)
+     * Send opcode 12 (reserved).
      * @throws Exception on test failure
      */
     @Test
@@ -214,7 +209,7 @@ public class TestABCase4 extends AbstractABCase
     }
 
     /**
-     * Send small text, then frame with opcode 13 (reserved), then ping
+     * Send small text, then frame with opcode 13 (reserved), then ping.
      * @throws Exception on test failure
      */
     @Test
@@ -239,7 +234,7 @@ public class TestABCase4 extends AbstractABCase
     }
 
     /**
-     * Send small text, then frame with opcode 14 (reserved), then ping
+     * Send small text, then frame with opcode 14 (reserved), then ping.
      * @throws Exception on test failure
      */
     @Test
@@ -266,7 +261,7 @@ public class TestABCase4 extends AbstractABCase
     }
 
     /**
-     * Send small text, then frame with opcode 15 (reserved), then ping
+     * Send small text, then frame with opcode 15 (reserved), then ping.
      * @throws Exception on test failure
      */
     @Test

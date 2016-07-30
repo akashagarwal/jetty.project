@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.security.jaspi;
 
@@ -73,8 +68,12 @@ public class JaspiAuthenticator extends LoginAuthenticator
                               boolean allowLazyAuthentication, IdentityService identityService)
     {
         // TODO maybe pass this in via setConfiguration ?
-        if (callbackHandler == null) throw new NullPointerException("No CallbackHandler");
-        if (authConfig == null) throw new NullPointerException("No AuthConfig");
+        if (callbackHandler == null) {
+			throw new NullPointerException("No CallbackHandler");
+		}
+        if (authConfig == null) {
+			throw new NullPointerException("No AuthConfig");
+		}
         this._authConfig = authConfig;
         this._authProperties = authProperties;
         this._callbackHandler = callbackHandler;
@@ -101,23 +100,23 @@ public class JaspiAuthenticator extends LoginAuthenticator
         Authentication a = validateRequest(info);
         
         //if its not mandatory to authenticate, and the authenticator returned UNAUTHENTICATED, we treat it as authentication deferred
-        if (_allowLazyAuthentication && !info.isAuthMandatory() && a == Authentication.UNAUTHENTICATED)
-            a = new DeferredAuthentication(this);
+        if (_allowLazyAuthentication && !info.isAuthMandatory() && a == Authentication.UNAUTHENTICATED) {
+			a = new DeferredAuthentication(this);
+		}
         return a;
     }
 
-    // most likely validatedUser is not needed here.
+    /** Most likely validatedUser is not needed here. */
     public boolean secureResponse(ServletRequest req, ServletResponse res, boolean mandatory, User validatedUser) throws ServerAuthException
     {
         JaspiMessageInfo info = (JaspiMessageInfo) req.getAttribute("org.eclipse.jetty.security.jaspi.info");
-        if (info == null) throw new NullPointerException("MessageInfo from request missing: " + req);
+        if (info == null) {
+			throw new NullPointerException("MessageInfo from request missing: " + req);
+		}
         return secureResponse(info, validatedUser);
     }
 
 
-    /** 
-     * @see org.eclipse.jetty.security.authentication.LoginAuthenticator#login(java.lang.String, java.lang.Object, javax.servlet.ServletRequest)
-     */
     @Override
     public UserIdentity login(String username, Object password, ServletRequest request)
     { 
@@ -147,8 +146,12 @@ public class JaspiAuthenticator extends LoginAuthenticator
 
             AuthStatus authStatus = authContext.validateRequest(messageInfo, clientSubject, _serviceSubject);
 
-            if (authStatus == AuthStatus.SEND_CONTINUE) return Authentication.SEND_CONTINUE;
-            if (authStatus == AuthStatus.SEND_FAILURE) return Authentication.SEND_FAILURE;
+            if (authStatus == AuthStatus.SEND_CONTINUE) {
+				return Authentication.SEND_CONTINUE;
+			}
+            if (authStatus == AuthStatus.SEND_FAILURE) {
+				return Authentication.SEND_FAILURE;
+			}
 
             if (authStatus == AuthStatus.SUCCESS)
             {
@@ -183,9 +186,10 @@ public class JaspiAuthenticator extends LoginAuthenticator
                 }
                 
                 HttpSession session = ((HttpServletRequest)messageInfo.getRequestMessage()).getSession(false);
-                Authentication cached = (session == null?null:(SessionAuthentication)session.getAttribute(SessionAuthentication.__J_AUTHENTICATED));
-                if (cached != null)
-                    return cached;
+                Authentication cached = session == null?null:(SessionAuthentication)session.getAttribute(SessionAuthentication.__J_AUTHENTICATED);
+                if (cached != null) {
+					return cached;
+				}
                 
                 return new UserAuthentication(getAuthMethod(), userIdentity);
             }
@@ -218,7 +222,7 @@ public class JaspiAuthenticator extends LoginAuthenticator
             // TODO
             // authContext.cleanSubject(messageInfo,validatedUser.getUserIdentity().getSubject());
             AuthStatus status = authContext.secureResponse(messageInfo, _serviceSubject);
-            return (AuthStatus.SEND_SUCCESS.equals(status));
+            return AuthStatus.SEND_SUCCESS.equals(status);
         }
         catch (AuthException e)
         {

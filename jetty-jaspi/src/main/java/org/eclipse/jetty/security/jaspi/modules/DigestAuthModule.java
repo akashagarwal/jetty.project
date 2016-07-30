@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.security.jaspi.modules;
 
@@ -47,11 +42,11 @@ public class DigestAuthModule extends BaseAuthModule
 {
     private static final Logger LOG = Log.getLogger(DigestAuthModule.class);
 
-    protected long maxNonceAge = 0;
+    protected long maxNonceAge;
 
-    protected long nonceSecret = this.hashCode() ^ System.currentTimeMillis();
+    protected long nonceSecret = hashCode() ^ System.currentTimeMillis();
 
-    protected boolean useStale = false;
+    protected boolean useStale;
 
     private String realmName;
 
@@ -92,7 +87,9 @@ public class DigestAuthModule extends BaseAuthModule
             long timestamp = System.currentTimeMillis();
             if (credentials != null)
             {
-                if (LOG.isDebugEnabled()) LOG.debug("Credentials: " + credentials);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("Credentials: " + credentials);
+				}
                 QuotedStringTokenizer tokenizer = new QuotedStringTokenizer(credentials, "=, ", true, false);
                 final Digest digest = new Digest(request.getMethod());
                 String last = null;
@@ -118,21 +115,23 @@ public class DigestAuthModule extends BaseAuthModule
                             last = tok;
                             if (name != null)
                             {
-                                if ("username".equalsIgnoreCase(name))
-                                    digest.username = tok;
-                                else if ("realm".equalsIgnoreCase(name))
-                                    digest.realm = tok;
-                                else if ("nonce".equalsIgnoreCase(name))
-                                    digest.nonce = tok;
-                                else if ("nc".equalsIgnoreCase(name))
-                                    digest.nc = tok;
-                                else if ("cnonce".equalsIgnoreCase(name))
-                                    digest.cnonce = tok;
-                                else if ("qop".equalsIgnoreCase(name))
-                                    digest.qop = tok;
-                                else if ("uri".equalsIgnoreCase(name))
-                                    digest.uri = tok;
-                                else if ("response".equalsIgnoreCase(name)) digest.response = tok;
+                                if ("username".equalsIgnoreCase(name)) {
+									digest.username = tok;
+								} else if ("realm".equalsIgnoreCase(name)) {
+									digest.realm = tok;
+								} else if ("nonce".equalsIgnoreCase(name)) {
+									digest.nonce = tok;
+								} else if ("nc".equalsIgnoreCase(name)) {
+									digest.nc = tok;
+								} else if ("cnonce".equalsIgnoreCase(name)) {
+									digest.cnonce = tok;
+								} else if ("qop".equalsIgnoreCase(name)) {
+									digest.qop = tok;
+								} else if ("uri".equalsIgnoreCase(name)) {
+									digest.uri = tok;
+								} else if ("response".equalsIgnoreCase(name)) {
+									digest.response = tok;
+								}
                                 break;
                             }
                     }
@@ -144,13 +143,17 @@ public class DigestAuthModule extends BaseAuthModule
                 {
                     if (login(clientSubject, digest.username, digest, Constraint.__DIGEST_AUTH, messageInfo)) { return AuthStatus.SUCCESS; }
                 }
-                else if (n == 0) stale = true;
+                else if (n == 0) {
+					stale = true;
+				}
 
             }
 
             if (!isMandatory(messageInfo)) { return AuthStatus.SUCCESS; }
             String domain = request.getContextPath();
-            if (domain == null) domain = "/";
+            if (domain == null) {
+				domain = "/";
+			}
             response.setHeader(HttpHeader.WWW_AUTHENTICATE.asString(), "Digest realm=\"" + realmName
                                                              + "\", domain=\""
                                                              + domain
@@ -202,7 +205,9 @@ public class DigestAuthModule extends BaseAuthModule
         for (int i = 0; i < hash.length; i++)
         {
             nounce[8 + i] = hash[i];
-            if (i == 23) break;
+            if (i == 23) {
+				break;
+			}
         }
 
         return new String(B64Code.encode(nounce));
@@ -218,7 +223,9 @@ public class DigestAuthModule extends BaseAuthModule
         try
         {
             byte[] n = B64Code.decode(nonce.toCharArray());
-            if (n.length != 24) return -1;
+            if (n.length != 24) {
+				return -1;
+			}
 
             long ts = 0;
             long sk = nonceSecret;
@@ -232,7 +239,9 @@ public class DigestAuthModule extends BaseAuthModule
             }
 
             long age = timestamp - ts;
-            if (LOG.isDebugEnabled()) LOG.debug("age=" + age);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("age=" + age);
+			}
 
             byte[] hash = null;
             try
@@ -247,10 +256,16 @@ public class DigestAuthModule extends BaseAuthModule
                 LOG.warn(e);
             }
 
-            for (int i = 0; i < 16; i++)
-                if (n[i + 8] != hash[i]) return -1;
+            for (int i = 0; i < 16; i++) {
+				if (n[i + 8] != hash[i]) {
+					return -1;
+				}
+			}
 
-            if (maxNonceAge > 0 && (age < 0 || age > maxNonceAge)) return 0; // stale
+            if (maxNonceAge > 0 && (age < 0 || age > maxNonceAge))
+			 {
+				return 0; // stale
+			}
 
             return 1;
         }
@@ -265,23 +280,23 @@ public class DigestAuthModule extends BaseAuthModule
     {
         private static final long serialVersionUID = -1866670896275159116L;
 
-        String method = null;
-        String username = null;
-        String realm = null;
-        String nonce = null;
-        String nc = null;
-        String cnonce = null;
-        String qop = null;
-        String uri = null;
-        String response = null;
+        String method;
+        String username;
+        String realm;
+        String nonce;
+        String nc;
+        String cnonce;
+        String qop;
+        String uri;
+        String response;
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         Digest(String m)
         {
             method = m;
         }
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         @Override
         public boolean check(Object credentials)
         {
@@ -336,7 +351,7 @@ public class DigestAuthModule extends BaseAuthModule
                 byte[] digest = md.digest();
 
                 // check digest
-                return (TypeUtil.toString(digest, 16).equalsIgnoreCase(response));
+                return TypeUtil.toString(digest, 16).equalsIgnoreCase(response);
             }
             catch (Exception e)
             {

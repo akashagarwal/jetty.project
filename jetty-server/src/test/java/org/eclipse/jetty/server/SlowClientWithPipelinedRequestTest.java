@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 
@@ -111,11 +106,7 @@ public class SlowClientWithPipelinedRequestTest
 
         Socket client = new Socket("localhost", connector.getLocalPort());
         OutputStream output = client.getOutputStream();
-        output.write(("" +
-                "GET /content HTTP/1.1\r\n" +
-                "Host: localhost:" + connector.getLocalPort() + "\r\n" +
-                "\r\n" +
-                "").getBytes(StandardCharsets.UTF_8));
+        output.write(("GET /content HTTP/1.1\r\n" + "Host: localhost:" + connector.getLocalPort() + "\r\n" + "\r\n").getBytes(StandardCharsets.UTF_8));
         output.flush();
 
         InputStream input = client.getInputStream();
@@ -124,11 +115,7 @@ public class SlowClientWithPipelinedRequestTest
         Assert.assertTrue(read >= 0);
         // As soon as we can read the response, send a pipelined request
         // so it is a different read for the server and it will trigger NIO
-        output.write(("" +
-                "GET /pipelined HTTP/1.1\r\n" +
-                "Host: localhost:" + connector.getLocalPort() + "\r\n" +
-                "\r\n" +
-                "").getBytes(StandardCharsets.UTF_8));
+        output.write(("GET /pipelined HTTP/1.1\r\n" + "Host: localhost:" + connector.getLocalPort() + "\r\n" + "\r\n").getBytes(StandardCharsets.UTF_8));
         output.flush();
 
         // Simulate a slow reader
@@ -142,17 +129,20 @@ public class SlowClientWithPipelinedRequestTest
         {
             read = input.read();
             lines.append((char)read);
-            if (read == '\r' || read == '\n')
-                ++crlfs;
-            else
-                crlfs = 0;
-            if (crlfs == 4)
-                break;
+            if (read == '\r' || read == '\n') {
+				++crlfs;
+			} else {
+				crlfs = 0;
+			}
+            if (crlfs == 4) {
+				break;
+			}
         }
         Assert.assertTrue(lines.toString().contains(" 200 "));
         // Read the body
-        for (int i = 0; i < contentLength; ++i)
-            input.read();
+        for (int i = 0; i < contentLength; ++i) {
+			input.read();
+		}
 
         // Read the pipelined response
         lines.setLength(0);
@@ -161,12 +151,14 @@ public class SlowClientWithPipelinedRequestTest
         {
             read = input.read();
             lines.append((char)read);
-            if (read == '\r' || read == '\n')
-                ++crlfs;
-            else
-                crlfs = 0;
-            if (crlfs == 4)
-                break;
+            if (read == '\r' || read == '\n') {
+				++crlfs;
+			} else {
+				crlfs = 0;
+			}
+            if (crlfs == 4) {
+				break;
+			}
         }
         Assert.assertTrue(lines.toString().contains(" 200 "));
 

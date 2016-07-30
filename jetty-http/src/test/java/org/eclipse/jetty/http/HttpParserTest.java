@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http;
 
@@ -45,10 +40,12 @@ public class HttpParserTest
      */
     public static void parseAll(HttpParser parser, ByteBuffer buffer)
     {
-        if (parser.isState(State.END))
-            parser.reset();
-        if (!parser.isState(State.START))
-            throw new IllegalStateException("!START");
+        if (parser.isState(State.END)) {
+			parser.reset();
+		}
+        if (!parser.isState(State.START)) {
+			throw new IllegalStateException("!START");
+		}
 
         // continue parsing
         int remaining = buffer.remaining();
@@ -57,8 +54,9 @@ public class HttpParserTest
             int was_remaining = remaining;
             parser.parseNext(buffer);
             remaining = buffer.remaining();
-            if (remaining == was_remaining)
-                break;
+            if (remaining == was_remaining) {
+				break;
+			}
         }
     }
 
@@ -1831,8 +1829,9 @@ public class HttpParserTest
         @Override
         public boolean content(ByteBuffer ref)
         {
-            if (_content == null)
-                _content = "";
+            if (_content == null) {
+				_content = "";
+			}
             String c = BufferUtil.toString(ref, StandardCharsets.UTF_8);
             _content = _content + c;
             ref.position(ref.limit());

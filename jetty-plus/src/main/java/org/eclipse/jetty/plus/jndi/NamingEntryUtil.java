@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.plus.jndi;
 
@@ -54,15 +49,18 @@ public class NamingEntryUtil
     public static boolean bindToENC (Object scope, String asName, String mappedName)
     throws NamingException
     {
-        if (asName==null||asName.trim().equals(""))
-            throw new NamingException ("No name for NamingEntry");
+        if (asName==null||"".equals(asName.trim())) {
+			throw new NamingException ("No name for NamingEntry");
+		}
 
-        if (mappedName==null || "".equals(mappedName))
-            mappedName=asName;
+        if (mappedName==null || "".equals(mappedName)) {
+			mappedName=asName;
+		}
 
         NamingEntry entry = lookupNamingEntry (scope, mappedName);
-        if (entry == null)
-            return false;
+        if (entry == null) {
+			return false;
+		}
 
         entry.bindToENC(asName);
         return true;
@@ -111,7 +109,7 @@ public class NamingEntryUtil
 
     /**
      * Get all NameEntries of a certain type in the given naming
-     * environment scope (server-wide names or context-specific names)
+     * environment scope (server-wide names or context-specific names).
      *
      * @param scope the object scope
      * @param clazz the type of the entry
@@ -139,14 +137,15 @@ public class NamingEntryUtil
     public static Name makeNamingEntryName (NameParser parser, NamingEntry namingEntry)
     throws NamingException
     {
-        return makeNamingEntryName(parser, (namingEntry==null?null:namingEntry.getJndiName()));
+        return makeNamingEntryName(parser, namingEntry==null?null:namingEntry.getJndiName());
     }
 
     public static Name makeNamingEntryName (NameParser parser, String jndiName)
     throws NamingException
     {
-        if (jndiName==null)
-            return null;
+        if (jndiName==null) {
+			return null;
+		}
 
         if (parser==null)
         {
@@ -219,10 +218,11 @@ public class NamingEntryUtil
             while (nenum.hasMoreElements())
             {
                 Binding binding = nenum.next();
-                if (binding.getObject() instanceof Context)
-                    lookupNamingEntries (list, (Context)binding.getObject(), clazz);
-                else if (clazz.isInstance(binding.getObject()))
-                  list.add(binding.getObject());
+                if (binding.getObject() instanceof Context) {
+					lookupNamingEntries (list, (Context)binding.getObject(), clazz);
+				} else if (clazz.isInstance(binding.getObject())) {
+					list.add(binding.getObject());
+				}
             }
         }
         catch (NameNotFoundException e)
@@ -235,11 +235,11 @@ public class NamingEntryUtil
 
     private static String canonicalizeScope(Object scope)
     {
-        if (scope==null)
-            return "";
+        if (scope==null) {
+			return "";
+		}
 
         String str = scope.getClass().getName()+"@"+Long.toHexString(scope.hashCode());
-        str=str.replace('/', '_').replace(' ', '_');
-        return str;
+        return str.replace('/', '_').replace(' ', '_');
     }
 }

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.monitor.integration;
 
@@ -63,7 +58,7 @@ public class JavaMonitorAction extends MonitorAction
     private String _srvip;
     private String _session;
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public JavaMonitorAction(EventNotifier notifier, String url, String uuid, String appid, long pollInterval)
         throws Exception
     {
@@ -91,22 +86,14 @@ public class JavaMonitorAction extends MonitorAction
         sendData(new Properties());
      }
 
-    /* ------------------------------------------------------------ */
-    /**
-     * @see org.eclipse.jetty.monitor.jmx.MonitorAction#execute(org.eclipse.jetty.monitor.jmx.EventTrigger, org.eclipse.jetty.monitor.jmx.EventState, long)
-     */
+    /** ------------------------------------------------------------. */
     @Override
     public void execute(EventTrigger trigger, EventState<?> state, long timestamp)
     {
         exec(trigger, state, timestamp);
     }
 
-    /* ------------------------------------------------------------ */
-    /**
-     * @param trigger
-     * @param state
-     * @param timestamp
-     */
+    /** ------------------------------------------------------------. */
     private <T> void exec(EventTrigger trigger, EventState<T> state, long timestamp)
     {
         Collection<TriggerState<T>> trs = state.values();
@@ -147,12 +134,14 @@ public class JavaMonitorAction extends MonitorAction
         data.put("account", _uuid);
         data.put("appserver", "Jetty");
         data.put("localIp", _srvip);
-        if (_appid == null)
-            data.put("lowestPort", getHttpPort());
-        else
-            data.put("lowestPort", _appid);
-        if (_session != null)
-            data.put("session", _session);
+        if (_appid != null) {
+			data.put("lowestPort", _appid);
+		} else {
+			data.put("lowestPort", getHttpPort());
+		}
+        if (_session != null) {
+			data.put("session", _session);
+		}
         
         Properties response = sendRequest(data);
         
@@ -193,8 +182,9 @@ public class JavaMonitorAction extends MonitorAction
         {
             try
             {
-                if (reqStream != null)
-                    reqStream.close();
+                if (reqStream != null) {
+					reqStream.close();
+				}
             }
             catch (IOException ex)
             {
@@ -203,8 +193,9 @@ public class JavaMonitorAction extends MonitorAction
             
             try
             {
-                if (resStream != null)
-                    resStream.close();
+                if (resStream != null) {
+					resStream.close();
+				}
             }
             catch (IOException ex)
             {
@@ -215,11 +206,12 @@ public class JavaMonitorAction extends MonitorAction
         return response;    
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     private void parseResponse(Properties response)
     {
-        if (response.get("onhold") != null)
-            throw new Error("Suspended");
+        if (response.get("onhold") != null) {
+			throw new Error("Suspended");
+		}
         
 
         if (response.get("session") != null)
@@ -235,8 +227,9 @@ public class JavaMonitorAction extends MonitorAction
                 String[] values = ((String) entry.getValue()).split("\\|");
 
                 queryString = values[0];
-                if (queryString.startsWith("com.javamonitor.openfire"))
-                    continue;
+                if (queryString.startsWith("com.javamonitor.openfire")) {
+					continue;
+				}
                 
                 if (queryString.startsWith("com.javamonitor"))
                 {
@@ -262,7 +255,7 @@ public class JavaMonitorAction extends MonitorAction
                     int idx = 0;
                     for(ObjectName objName : queryResults)
                     {
-                        String id = entry.getKey().toString()+(idx == 0 ? "" : ":"+idx);
+                        String id = entry.getKey()+(idx == 0 ? "" : ":"+idx);
                         String name = queryString.equals(objName.toString()) ? "" : objName.toString();
                         boolean repeat = Boolean.parseBoolean(values[2]);
                         trigger.add(new JavaMonitorTrigger(objName, values[1], id, name, repeat));
@@ -272,28 +265,28 @@ public class JavaMonitorAction extends MonitorAction
         }
     }
     
-    /* ------------------------------------------------------------ */
-    /**
-     * @param value
-     * @return
-     */
+    /** ------------------------------------------------------------. */
     private int getClassID(final Object value)
     {
-        if (value == null)
-            return 0;
+        if (value == null) {
+			return 0;
+		}
         
         if (value instanceof Byte || 
             value instanceof Short ||
             value instanceof Integer ||
-            value instanceof Long)
-            return 1;
+            value instanceof Long) {
+			return 1;
+		}
             
         if (value instanceof Float ||
-            value instanceof Double)
-            return 2;
+            value instanceof Double) {
+			return 2;
+		}
         
-        if (value instanceof Boolean)
-            return 3;
+        if (value instanceof Boolean) {
+			return 3;
+		}
 
         return 4; // String
     }
@@ -329,8 +322,9 @@ public class JavaMonitorAction extends MonitorAction
         {
             try
             {
-                if (s != null)
-                    s.close();
+                if (s != null) {
+					s.close();
+				}
             } 
             catch (IOException ex)
             {
@@ -339,7 +333,7 @@ public class JavaMonitorAction extends MonitorAction
         }
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public Integer getHttpPort() 
     {       
         Collection<ObjectName> connectors = null;
@@ -356,8 +350,9 @@ public class JavaMonitorAction extends MonitorAction
                     lowest = (Integer)service.getAttribute(connector, "port");
                 }
         
-                if (lowest < Integer.MAX_VALUE)
-                    return lowest;
+                if (lowest < Integer.MAX_VALUE) {
+					return lowest;
+				}
             }
         }
         catch (Exception ex)
@@ -390,10 +385,11 @@ public class JavaMonitorAction extends MonitorAction
             int idx = 0;
             for(Object name : names)
             {
-                if (name instanceof ObjectName)
-                    result[idx++] = (ObjectName)name;
-                else
-                    result[idx++] = new ObjectName(name.toString());
+                if (name instanceof ObjectName) {
+					result[idx++] = (ObjectName)name;
+				} else {
+					result[idx++] = new ObjectName(name.toString());
+				}
             }
         }
         

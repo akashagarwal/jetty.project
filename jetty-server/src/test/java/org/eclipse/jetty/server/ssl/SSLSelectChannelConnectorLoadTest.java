@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server.ssl;
 
@@ -129,24 +124,28 @@ public class SSLSelectChannelConnectorLoadTest
         {
             Thread.sleep(1000);
             boolean done = true;
-            for (Future task : tasks)
-                done &= task.isDone();
+            for (Future task : tasks) {
+				done &= task.isDone();
+			}
             //System.err.print("\rIterations: " + Worker.totalIterations.get() + "/" + clients * iterations);
-            if (done)
-                break;
+            if (done) {
+				break;
+			}
         }
         long end = System.currentTimeMillis();
         //System.err.println();
         //System.err.println("Elapsed time: " + TimeUnit.MILLISECONDS.toSeconds(end - start) + "s");
 
-        for (Worker worker : workers)
-            worker.close();
+        for (Worker worker : workers) {
+			worker.close();
+		}
 
         threadPool.shutdown();
 
         // Throw exceptions if any
-        for (Future task : tasks)
-            task.get();
+        for (Future task : tasks) {
+			task.get();
+		}
 
         // Keep the JVM running
 //        new CountDownLatch(1).await();
@@ -175,11 +174,13 @@ public class SSLSelectChannelConnectorLoadTest
         {
             Thread.sleep(1000);
             boolean done = true;
-            for (Future task : tasks)
-                done &= task.isDone();
+            for (Future task : tasks) {
+				done &= task.isDone();
+			}
             // System.err.print("\rIterations: " + Worker.totalIterations.get() + "/" + clients * iterations);
-            if (done)
-                break;
+            if (done) {
+				break;
+			}
         }
         long end = System.currentTimeMillis();
         // System.err.println();
@@ -188,8 +189,9 @@ public class SSLSelectChannelConnectorLoadTest
         threadPool.shutdown();
 
         // Throw exceptions if any
-        for (Future task : tasks)
-            task.get();
+        for (Future task : tasks) {
+			task.get();
+		}
 
         // Keep the JVM running
 //        new CountDownLatch(1).await();
@@ -255,8 +257,9 @@ public class SSLSelectChannelConnectorLoadTest
                     out.write("Host: localhost\r\n".getBytes());
                     out.write(("Content-Length: " + contentSize + "\r\n").getBytes());
                     out.write("Content-Type: application/octect-stream\r\n".getBytes());
-                    if (closeConnection)
-                        out.write("Connection: close\r\n".getBytes());
+                    if (closeConnection) {
+						out.write("Connection: close\r\n".getBytes());
+					}
                     out.write("\r\n".getBytes());
                     out.flush();
                     byte[] contentChunk = new byte[minContent];
@@ -283,8 +286,9 @@ public class SSLSelectChannelConnectorLoadTest
                         }
                         else if (line.length() == 0)
                         {
-                            if (responseLength == 0)
-                                line = reader.readLine();
+                            if (responseLength == 0) {
+								line = reader.readLine();
+							}
                             break;
                         }
                     }
@@ -292,27 +296,31 @@ public class SSLSelectChannelConnectorLoadTest
                     builder.setLength(0);
                     if (responseLength > 0)
                     {
-                        for (int j = 0; j < responseLength; ++j)
-                            builder.append((char)reader.read());
+                        for (int j = 0; j < responseLength; ++j) {
+							builder.append((char)reader.read());
+						}
                     }
                     else
                     {
                         builder.append(line);
                     }
 
-                    if (closeConnection)
-                        close();
+                    if (closeConnection) {
+						close();
+					}
 
-                    if (contentSize != Integer.parseInt(builder.toString()))
-                        throw new IllegalStateException();
+                    if (contentSize != Integer.parseInt(builder.toString())) {
+						throw new IllegalStateException();
+					}
 
                     Thread.sleep(random.nextInt(1000));
 
                     totalIterations.incrementAndGet();
                 }
 
-                if (!closeConnection)
-                    close();
+                if (!closeConnection) {
+					close();
+				}
             }
             catch (Exception x)
             {
@@ -331,8 +339,9 @@ public class SSLSelectChannelConnectorLoadTest
             int total = 0;
             byte[] b = new byte[1024 * 1024];
             int read;
-            while ((read = in.read(b)) >= 0)
-                total += read;
+            while ((read = in.read(b)) >= 0) {
+				total += read;
+			}
 //            System.err.println("Read " + total + " request bytes");
             httpResponse.getOutputStream().write(String.valueOf(total).getBytes());
         }

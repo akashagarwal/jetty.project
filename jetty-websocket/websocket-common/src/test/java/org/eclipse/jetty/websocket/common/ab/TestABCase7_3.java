@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.common.ab;
 
@@ -170,7 +165,7 @@ public class TestABCase7_3
                 { (byte)0x88 });
 
         byte b = 0x00; // no masking
-        b |= (message.length() + 2) & 0x7F;
+        b |= message.length() + 2 & 0x7F;
         expected.put(b);
         expected.putShort((short)1000);
         expected.put(messageBytes);
@@ -191,7 +186,7 @@ public class TestABCase7_3
         expected.put(new byte[]
                 { (byte)0x88 });
         byte b = 0x00; // no masking
-        b |= (messageBytes.length + 2) & 0x7F;
+        b |= messageBytes.length + 2 & 0x7F;
         expected.put(b);
         expected.putShort((short)1000);
         expected.put(messageBytes);
@@ -231,7 +226,7 @@ public class TestABCase7_3
                 { (byte)0x88 });
 
         byte b = 0x00; // no masking
-        b |= (messageBytes.length + 2) & 0x7F;
+        b |= messageBytes.length + 2 & 0x7F;
         expected.put(b);
         expected.putShort((short)1000);
 
@@ -259,7 +254,7 @@ public class TestABCase7_3
                 { (byte)0x88 });
         byte b = 0x00; // no masking
 
-        b |= (messageBytes.length + 2) & 0x7F;
+        b |= messageBytes.length + 2 & 0x7F;
         expected.put(b);
         expected.putShort((short)1000);
 

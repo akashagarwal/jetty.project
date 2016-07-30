@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.api.extensions;
 
@@ -46,7 +41,7 @@ public class ExtensionConfig
     }
 
     /**
-     * Parse enumeration of <code>Sec-WebSocket-Extensions</code> header values into a {@link ExtensionConfig} list
+     * Parse enumeration of <code>Sec-WebSocket-Extensions</code> header values into a {@link ExtensionConfig} list.
      * 
      * @param valuesEnum
      *            the raw header values enum
@@ -73,7 +68,7 @@ public class ExtensionConfig
     }
 
     /**
-     * Parse 1 or more raw <code>Sec-WebSocket-Extensions</code> header values into a {@link ExtensionConfig} list
+     * Parse 1 or more raw <code>Sec-WebSocket-Extensions</code> header values into a {@link ExtensionConfig} list.
      * 
      * @param rawSecWebSocketExtensions
      *            the raw header values
@@ -97,7 +92,7 @@ public class ExtensionConfig
     }
 
     /**
-     * Convert a list of {@link ExtensionConfig} to a header value
+     * Convert a list of {@link ExtensionConfig} to a header value.
      * 
      * @param configs
      *            the list of extension configs
@@ -105,7 +100,7 @@ public class ExtensionConfig
      */
     public static String toHeaderValue(List<ExtensionConfig> configs)
     {
-        if ((configs == null) || (configs.isEmpty()))
+        if (configs == null || configs.isEmpty())
         {
             return null;
         }
@@ -127,7 +122,7 @@ public class ExtensionConfig
     private final Map<String, String> parameters;
 
     /**
-     * Copy constructor
+     * Copy constructor.
      * @param copy the extension config to copy
      */
     public ExtensionConfig(ExtensionConfig copy)
@@ -166,21 +161,21 @@ public class ExtensionConfig
     public final int getParameter(String key, int defValue)
     {
         String val = parameters.get(key);
-        if (val == null)
+        if (val != null)
         {
-            return defValue;
+            return Integer.valueOf(val);
         }
-        return Integer.valueOf(val);
+        return defValue;
     }
 
     public final String getParameter(String key, String defValue)
     {
         String val = parameters.get(key);
-        if (val == null)
+        if (val != null)
         {
-            return defValue;
+            return val;
         }
-        return val;
+        return defValue;
     }
 
     public final String getParameterizedName()

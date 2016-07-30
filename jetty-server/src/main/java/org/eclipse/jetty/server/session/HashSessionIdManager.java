@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server.session;
 
@@ -42,12 +37,12 @@ public class HashSessionIdManager extends AbstractSessionIdManager
 {
     private final Map<String, Set<WeakReference<HttpSession>>> _sessions = new HashMap<String, Set<WeakReference<HttpSession>>>();
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public HashSessionIdManager()
     {
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public HashSessionIdManager(Random random)
     {
         super(random);
@@ -76,21 +71,22 @@ public class HashSessionIdManager extends AbstractSessionIdManager
             for (WeakReference<HttpSession> ref: refs)
             {
                 HttpSession session = ref.get();
-                if (session!=null)
-                    sessions.add(session);
+                if (session!=null) {
+					sessions.add(session);
+				}
             }
         }
         return sessions;
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     protected void doStart() throws Exception
     {
         super.doStart();
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     protected void doStop() throws Exception
     {
@@ -98,10 +94,7 @@ public class HashSessionIdManager extends AbstractSessionIdManager
         super.doStop();
     }
 
-    /* ------------------------------------------------------------ */
-    /**
-     * @see SessionIdManager#idInUse(String)
-     */
+    /** ------------------------------------------------------------. */
     @Override
     public boolean idInUse(String id)
     {
@@ -111,10 +104,7 @@ public class HashSessionIdManager extends AbstractSessionIdManager
         }
     }
 
-    /* ------------------------------------------------------------ */
-    /**
-     * @see SessionIdManager#addSession(HttpSession)
-     */
+    /** ------------------------------------------------------------. */
     @Override
     public void addSession(HttpSession session)
     {
@@ -133,10 +123,7 @@ public class HashSessionIdManager extends AbstractSessionIdManager
         }
     }
 
-    /* ------------------------------------------------------------ */
-    /**
-     * @see SessionIdManager#removeSession(HttpSession)
-     */
+    /** ------------------------------------------------------------. */
     @Override
     public void removeSession(HttpSession session)
     {
@@ -162,16 +149,14 @@ public class HashSessionIdManager extends AbstractSessionIdManager
                         break;
                     }
                 }
-                if (sessions.isEmpty())
-                    _sessions.remove(id);
+                if (sessions.isEmpty()) {
+					_sessions.remove(id);
+				}
             }
         }
     }
 
-    /* ------------------------------------------------------------ */
-    /**
-     * @see SessionIdManager#invalidateAll(String)
-     */
+    /** ------------------------------------------------------------. */
     @Override
     public void invalidateAll(String id)
     {
@@ -186,15 +171,16 @@ public class HashSessionIdManager extends AbstractSessionIdManager
             for (WeakReference<HttpSession> ref: sessions)
             {
                 AbstractSession session=(AbstractSession)ref.get();
-                if (session!=null && session.isValid())
-                    session.invalidate();
+                if (session!=null && session.isValid()) {
+					session.invalidate();
+				}
             }
             sessions.clear();
         }
     }
     
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void renewSessionId (String oldClusterId, String oldNodeId, HttpServletRequest request)
     {
@@ -214,15 +200,11 @@ public class HashSessionIdManager extends AbstractSessionIdManager
                     if (s == null)
                     {
                         continue;
-                    }
-                    else
-                    {
-                        if (s instanceof AbstractSession)
-                        {
-                            AbstractSession abstractSession = (AbstractSession)s;
-                            abstractSession.getSessionManager().renewSessionId(oldClusterId, oldNodeId, newClusterId, getNodeId(newClusterId, request));
-                        }
-                    }
+                    } else if (s instanceof AbstractSession)
+					{
+					    AbstractSession abstractSession = (AbstractSession)s;
+					    abstractSession.getSessionManager().renewSessionId(oldClusterId, oldNodeId, newClusterId, getNodeId(newClusterId, request));
+					}
                 }
                 _sessions.put(newClusterId, sessions);
             }

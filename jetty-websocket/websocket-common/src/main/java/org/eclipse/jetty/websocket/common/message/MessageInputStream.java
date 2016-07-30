@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.common.message;
 
@@ -43,7 +38,7 @@ public class MessageInputStream extends InputStream implements MessageAppender
     private final BlockingDeque<ByteBuffer> buffers = new LinkedBlockingDeque<>();
     private AtomicBoolean closed = new AtomicBoolean(false);
     private final long timeoutMs;
-    private ByteBuffer activeBuffer = null;
+    private ByteBuffer activeBuffer;
 
     public MessageInputStream()
     {
@@ -129,8 +124,9 @@ public class MessageInputStream extends InputStream implements MessageAppender
     @Override
     public void messageComplete()
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("Message completed");
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Message completed");
+		}
         buffers.offer(EOF);
     }
 
@@ -141,16 +137,18 @@ public class MessageInputStream extends InputStream implements MessageAppender
         {
             if (closed.get())
             {
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Stream closed");
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("Stream closed");
+				}
                 return -1;
             }
 
             // grab a fresh buffer
             while (activeBuffer == null || !activeBuffer.hasRemaining())
             {
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Waiting {} ms to read", timeoutMs);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("Waiting {} ms to read", timeoutMs);
+				}
                 if (timeoutMs < 0)
                 {
                     // Wait forever until a buffer is available.
@@ -168,8 +166,9 @@ public class MessageInputStream extends InputStream implements MessageAppender
 
                 if (activeBuffer == EOF)
                 {
-                    if (LOG.isDebugEnabled())
-                        LOG.debug("Reached EOF");
+                    if (LOG.isDebugEnabled()) {
+						LOG.debug("Reached EOF");
+					}
                     // Be sure that this stream cannot be reused.
                     closed.set(true);
                     // Removed buffers that may have remained in the queue.
@@ -182,8 +181,9 @@ public class MessageInputStream extends InputStream implements MessageAppender
         }
         catch (InterruptedException x)
         {
-            if (LOG.isDebugEnabled())
-                LOG.debug("Interrupted while waiting to read", x);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Interrupted while waiting to read", x);
+			}
             closed.set(true);
             return -1;
         }

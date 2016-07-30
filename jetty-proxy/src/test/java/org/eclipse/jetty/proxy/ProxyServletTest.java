@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.proxy;
 
@@ -154,8 +149,9 @@ public class ProxyServletTest
         configuration.setSendDateHeader(false);
         configuration.setSendServerVersion(false);
         String value = initParams.get("outputBufferSize");
-        if (value != null)
-            configuration.setOutputBufferSize(Integer.valueOf(value));
+        if (value != null) {
+			configuration.setOutputBufferSize(Integer.valueOf(value));
+		}
         proxyConnector = new ServerConnector(proxy, new HttpConnectionFactory(configuration));
         proxy.addConnector(proxyConnector);
 
@@ -221,8 +217,9 @@ public class ProxyServletTest
             @Override
             protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
             {
-                if (req.getHeader("Via") != null)
-                    resp.addHeader(PROXIED_HEADER, "true");
+                if (req.getHeader("Via") != null) {
+					resp.addHeader(PROXIED_HEADER, "true");
+				}
             }
         });
         startProxy();
@@ -247,8 +244,9 @@ public class ProxyServletTest
             @Override
             protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
             {
-                if (req.getHeader("Via") != null)
-                    resp.addHeader(PROXIED_HEADER, "true");
+                if (req.getHeader("Via") != null) {
+					resp.addHeader(PROXIED_HEADER, "true");
+				}
                 resp.getOutputStream().write(content);
             }
         });
@@ -280,8 +278,9 @@ public class ProxyServletTest
             @Override
             protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
             {
-                if (req.getHeader("Via") != null)
-                    resp.addHeader(PROXIED_HEADER, "true");
+                if (req.getHeader("Via") != null) {
+					resp.addHeader(PROXIED_HEADER, "true");
+				}
                 IO.copy(req.getInputStream(), resp.getOutputStream());
             }
         });
@@ -315,8 +314,9 @@ public class ProxyServletTest
                     // upload the content to the server.
                     Thread.sleep(1000);
 
-                    if (req.getHeader("Via") != null)
-                        resp.addHeader(PROXIED_HEADER, "true");
+                    if (req.getHeader("Via") != null) {
+						resp.addHeader(PROXIED_HEADER, "true");
+					}
                 }
                 catch (InterruptedException x)
                 {
@@ -348,15 +348,17 @@ public class ProxyServletTest
             @Override
             protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
             {
-                if (req.getHeader("Via") != null)
-                    resp.addHeader(PROXIED_HEADER, "true");
+                if (req.getHeader("Via") != null) {
+					resp.addHeader(PROXIED_HEADER, "true");
+				}
                 InputStream input = req.getInputStream();
                 int index = 0;
                 while (true)
                 {
                     int value = input.read();
-                    if (value < 0)
-                        break;
+                    if (value < 0) {
+						break;
+					}
                     Assert.assertEquals("Content mismatch at index=" + index, content[index] & 0xFF, value);
                     ++index;
                 }
@@ -387,8 +389,9 @@ public class ProxyServletTest
         new Random().nextBytes(kb);
         try (OutputStream output = Files.newOutputStream(temp, StandardOpenOption.CREATE))
         {
-            for (int i = 0; i < length; ++i)
-                output.write(kb);
+            for (int i = 0; i < length; ++i) {
+				output.write(kb);
+			}
         }
         startServer(new HttpServlet()
         {
@@ -480,8 +483,9 @@ public class ProxyServletTest
                         @Override
                         public void onTimeout(AsyncEvent event) throws IOException
                         {
-                            if (request.getHeader("Via") != null)
-                                response.addHeader(PROXIED_HEADER, "true");
+                            if (request.getHeader("Via") != null) {
+								response.addHeader(PROXIED_HEADER, "true");
+							}
                             asyncContext.complete();
                         }
 
@@ -582,8 +586,9 @@ public class ProxyServletTest
             @Override
             protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
             {
-                if (req.getHeader("Via") != null)
-                    resp.addHeader(PROXIED_HEADER, "true");
+                if (req.getHeader("Via") != null) {
+					resp.addHeader(PROXIED_HEADER, "true");
+				}
             }
         });
         startProxy();
@@ -626,8 +631,9 @@ public class ProxyServletTest
             @Override
             protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
             {
-                if (req.getHeader("Via") != null)
-                    resp.addHeader(PROXIED_HEADER, "true");
+                if (req.getHeader("Via") != null) {
+					resp.addHeader(PROXIED_HEADER, "true");
+				}
                 resp.setStatus(target.equals(req.getRequestURI()) ? 200 : 404);
             }
         });
@@ -680,20 +686,18 @@ public class ProxyServletTest
             @Override
             protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
             {
-                if (req.getHeader("Via") != null)
-                    resp.addHeader(PROXIED_HEADER, "true");
+                if (req.getHeader("Via") != null) {
+					resp.addHeader(PROXIED_HEADER, "true");
+				}
 
                 String expectedURI = proxyToContext + target;
-                if (expectedURI.isEmpty())
-                    expectedURI = "/";
-                if (expectedURI.equals(req.getRequestURI()))
-                {
-                    if (query.equals(req.getQueryString()))
-                    {
-                        resp.setStatus(200);
-                        return;
-                    }
-                }
+                if (expectedURI.isEmpty()) {
+					expectedURI = "/";
+				}
+                if (expectedURI.equals(req.getRequestURI()) && query.equals(req.getQueryString())) {
+				    resp.setStatus(200);
+				    return;
+				}
                 resp.setStatus(404);
             }
         });
@@ -724,17 +728,14 @@ public class ProxyServletTest
             @Override
             protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
             {
-                if (req.getHeader("Via") != null)
-                    resp.addHeader(PROXIED_HEADER, "true");
+                if (req.getHeader("Via") != null) {
+					resp.addHeader(PROXIED_HEADER, "true");
+				}
 
-                if (target.equals(req.getRequestURI()))
-                {
-                    if (query.equals(req.getQueryString()))
-                    {
-                        resp.setStatus(200);
-                        return;
-                    }
-                }
+                if (target.equals(req.getRequestURI()) && query.equals(req.getQueryString())) {
+				    resp.setStatus(200);
+				    return;
+				}
                 resp.setStatus(404);
             }
         });
@@ -765,8 +766,9 @@ public class ProxyServletTest
             @Override
             protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
             {
-                if (req.getHeader("Via") != null)
-                    resp.addHeader(PROXIED_HEADER, "true");
+                if (req.getHeader("Via") != null) {
+					resp.addHeader(PROXIED_HEADER, "true");
+				}
                 resp.setStatus(target.equals(req.getRequestURI()) ? 200 : 404);
             }
         });
@@ -795,8 +797,9 @@ public class ProxyServletTest
             @Override
             protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
             {
-                if (req.getHeader("Via") != null)
-                    resp.addHeader(PROXIED_HEADER, "true");
+                if (req.getHeader("Via") != null) {
+					resp.addHeader(PROXIED_HEADER, "true");
+				}
                 resp.getOutputStream().write(content);
             }
         });
@@ -877,8 +880,9 @@ public class ProxyServletTest
             @Override
             protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
             {
-                if (req.getHeader("Via") != null)
-                    resp.addHeader(PROXIED_HEADER, "true");
+                if (req.getHeader("Via") != null) {
+					resp.addHeader(PROXIED_HEADER, "true");
+				}
                 resp.sendRedirect("/");
             }
         });
@@ -903,8 +907,9 @@ public class ProxyServletTest
             @Override
             protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
             {
-                if (req.getHeader("Via") != null)
-                    resp.addHeader(PROXIED_HEADER, "true");
+                if (req.getHeader("Via") != null) {
+					resp.addHeader(PROXIED_HEADER, "true");
+				}
 
                 resp.addHeader("Content-Encoding", "gzip");
                 GZIPOutputStream gzipOutputStream = new GZIPOutputStream(resp.getOutputStream());
@@ -956,8 +961,9 @@ public class ProxyServletTest
             @Override
             protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
             {
-                if (req.getHeader("Via") != null)
-                    resp.addHeader(PROXIED_HEADER, "true");
+                if (req.getHeader("Via") != null) {
+					resp.addHeader(PROXIED_HEADER, "true");
+				}
 
                 String value = req.getHeader(name);
                 if (value != null)
@@ -1135,8 +1141,9 @@ public class ProxyServletTest
         Assert.assertEquals(200, response.getStatus());
 
         InputStream input = listener.getInputStream();
-        for (int i = 0; i < chunk1.length; ++i)
-            Assert.assertEquals(chunk1[i] & 0xFF, input.read());
+        for (int i = 0; i < chunk1.length; ++i) {
+			Assert.assertEquals(chunk1[i] & 0xFF, input.read());
+		}
 
         TimeUnit.MILLISECONDS.sleep(2 * proxyTimeout);
 
@@ -1212,8 +1219,9 @@ public class ProxyServletTest
                 List<String> names = Collections.list(request.getHeaderNames());
                 for (String name : names)
                 {
-                    if (hopHeaders.containsKey(name))
-                        throw new IOException("Hop header must not be proxied: " + name);
+                    if (hopHeaders.containsKey(name)) {
+						throw new IOException("Hop header must not be proxied: " + name);
+					}
                 }
             }
         });
@@ -1221,8 +1229,9 @@ public class ProxyServletTest
         startClient();
 
         Request request = client.newRequest("localhost", serverConnector.getLocalPort());
-        for (Map.Entry<String, String> entry : hopHeaders.entrySet())
-            request.header(entry.getKey(), entry.getValue());
+        for (Map.Entry<String, String> entry : hopHeaders.entrySet()) {
+			request.header(entry.getKey(), entry.getValue());
+		}
         ContentResponse response = request
                 .timeout(5, TimeUnit.SECONDS)
                 .send();

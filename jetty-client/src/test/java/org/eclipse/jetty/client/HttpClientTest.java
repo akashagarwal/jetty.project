@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.client;
 
@@ -236,8 +231,9 @@ public class HttpClientTest extends AbstractHttpClientServerTest
                 response.setCharacterEncoding("UTF-8");
                 ServletOutputStream output = response.getOutputStream();
                 String[] paramValues1 = request.getParameterValues(paramName1);
-                for (String paramValue : paramValues1)
-                    output.write(paramValue.getBytes(StandardCharsets.UTF_8));
+                for (String paramValue : paramValues1) {
+					output.write(paramValue.getBytes(StandardCharsets.UTF_8));
+				}
                 String paramValue2 = request.getParameter(paramName2);
                 output.write(paramValue2.getBytes(StandardCharsets.UTF_8));
                 baseRequest.setHandled(true);
@@ -474,10 +470,11 @@ public class HttpClientTest extends AbstractHttpClientServerTest
             @Override
             public void handle(String target, org.eclipse.jetty.server.Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
             {
-                if (target.endsWith("/one"))
-                    baseRequest.getHttpChannel().getEndPoint().close();
-                else
-                    baseRequest.setHandled(true);
+                if (target.endsWith("/one")) {
+					baseRequest.getHttpChannel().getEndPoint().close();
+				} else {
+					baseRequest.setHandled(true);
+				}
             }
         });
 
@@ -518,8 +515,9 @@ public class HttpClientTest extends AbstractHttpClientServerTest
         try (OutputStream output = Files.newOutputStream(file, StandardOpenOption.CREATE))
         {
             byte[] kb = new byte[1024];
-            for (int i = 0; i < 10 * 1024; ++i)
-                output.write(kb);
+            for (int i = 0; i < 10 * 1024; ++i) {
+				output.write(kb);
+			}
         }
 
         final CountDownLatch latch = new CountDownLatch(3);
@@ -761,8 +759,9 @@ public class HttpClientTest extends AbstractHttpClientServerTest
                         @Override
                         public void onComplete(Result result)
                         {
-                            if (result.isSucceeded())
-                                latch.countDown();
+                            if (result.isSucceeded()) {
+								latch.countDown();
+							}
                         }
                     });
         }
@@ -916,10 +915,11 @@ public class HttpClientTest extends AbstractHttpClientServerTest
             {
                 baseRequest.setHandled(true);
                 ArrayList<String> userAgents = Collections.list(request.getHeaders("User-Agent"));
-                if ("/ua".equals(target))
-                    Assert.assertEquals(1, userAgents.size());
-                else
-                    Assert.assertEquals(0, userAgents.size());
+                if ("/ua".equals(target)) {
+					Assert.assertEquals(1, userAgents.size());
+				} else {
+					Assert.assertEquals(0, userAgents.size());
+				}
             }
         });
 
@@ -1325,8 +1325,9 @@ public class HttpClientTest extends AbstractHttpClientServerTest
             {
                 baseRequest.setHandled(true);
                 // Send Connection: close to avoid that the server chunks the content with HTTP 1.1.
-                if (version.compareTo(HttpVersion.HTTP_1_0) > 0)
-                    response.setHeader("Connection", "close");
+                if (version.compareTo(HttpVersion.HTTP_1_0) > 0) {
+					response.setHeader("Connection", "close");
+				}
                 response.getOutputStream().write(data);
             }
         });
@@ -1359,8 +1360,9 @@ public class HttpClientTest extends AbstractHttpClientServerTest
             public void handle(String target, org.eclipse.jetty.server.Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
             {
                 int count = requests.incrementAndGet();
-                if (count == maxRetries)
-                    baseRequest.setHandled(true);
+                if (count == maxRetries) {
+					baseRequest.setHandled(true);
+				}
                 consume(request.getInputStream(), true);
             }
         });
@@ -1410,8 +1412,9 @@ public class HttpClientTest extends AbstractHttpClientServerTest
                     @Override
                     public void onComplete(Result result)
                     {
-                        if (result.isSucceeded())
-                            completeLatch.countDown();
+                        if (result.isSucceeded()) {
+							completeLatch.countDown();
+						}
                     }
                 });
 
@@ -1500,9 +1503,7 @@ public class HttpClientTest extends AbstractHttpClientServerTest
                 consume(input, false);
 
                 // HTTP/1.0 response, the client must not close the connection.
-                String httpResponse = "" +
-                        "HTTP/1.0 200 OK\r\n" +
-                        "\r\n";
+                String httpResponse = "HTTP/1.0 200 OK\r\n" + "\r\n";
                 OutputStream output = socket.getOutputStream();
                 output.write(httpResponse.getBytes(StandardCharsets.UTF_8));
                 output.flush();
@@ -1522,10 +1523,7 @@ public class HttpClientTest extends AbstractHttpClientServerTest
 
                 consume(input, false);
 
-                httpResponse = "" +
-                        "HTTP/1.1 200 OK\r\n" +
-                        "Content-Length: 0\r\n" +
-                        "\r\n";
+                httpResponse = "HTTP/1.1 200 OK\r\n" + "Content-Length: 0\r\n" + "\r\n";
                 output.write(httpResponse.getBytes(StandardCharsets.UTF_8));
                 output.flush();
 
@@ -1540,14 +1538,17 @@ public class HttpClientTest extends AbstractHttpClientServerTest
         while (true)
         {
             int read = input.read();
-            if (read == '\r' || read == '\n')
-                ++crlfs;
-            else
-                crlfs = 0;
-            if (!eof && crlfs == 4)
-                break;
-            if (read < 0)
-                break;
+            if (read == '\r' || read == '\n') {
+				++crlfs;
+			} else {
+				crlfs = 0;
+			}
+            if (!eof && crlfs == 4) {
+				break;
+			}
+            if (read < 0) {
+				break;
+			}
         }
     }
 
@@ -1574,10 +1575,11 @@ public class HttpClientTest extends AbstractHttpClientServerTest
         @Override
         public void onComplete(Result result)
         {
-            if (retries > maxRetries || result.isSucceeded() && result.getResponse().getStatus() == 200)
-                completed(result);
-            else
-                retry();
+            if (retries > maxRetries || (result.isSucceeded() && result.getResponse().getStatus() == 200)) {
+				completed(result);
+			} else {
+				retry();
+			}
         }
 
         private void retry()

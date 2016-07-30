@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util;
 
@@ -63,7 +58,7 @@ public class Fields implements Iterable<Fields.Field>
 
     /**
      * <p>Creates a {@link Fields} instance by copying the fields from the given
-     * {@link Fields} and making it (im)mutable depending on the given {@code immutable} parameter</p>
+     * {@link Fields} and making it (im)mutable depending on the given {@code immutable} parameter</p>.
      *
      * @param original the {@link Fields} to copy fields from
      * @param immutable whether this instance is immutable
@@ -79,21 +74,26 @@ public class Fields implements Iterable<Fields.Field>
     @Override
     public boolean equals(Object obj)
     {
-        if (this == obj)
-            return true;
-        if (obj == null || getClass() != obj.getClass())
-            return false;
+        if (this == obj) {
+			return true;
+		}
+        if (obj == null || getClass() != obj.getClass()) {
+			return false;
+		}
         Fields that = (Fields)obj;
-        if (getSize() != that.getSize())
-            return false;
-        if (caseSensitive != that.caseSensitive)
-            return false;
+        if (getSize() != that.getSize()) {
+			return false;
+		}
+        if (caseSensitive != that.caseSensitive) {
+			return false;
+		}
         for (Map.Entry<String, Field> entry : fields.entrySet())
         {
             String name = entry.getKey();
             Field value = entry.getValue();
-            if (!value.equals(that.get(name), caseSensitive))
-                return false;
+            if (!value.equals(that.get(name), caseSensitive)) {
+				return false;
+			}
         }
         return true;
     }
@@ -110,8 +110,9 @@ public class Fields implements Iterable<Fields.Field>
     public Set<String> getNames()
     {
         Set<String> result = new LinkedHashSet<>();
-        for (Field field : fields.values())
-            result.add(field.getName());
+        for (Field field : fields.values()) {
+			result.add(field.getName());
+		}
         return result;
     }
 
@@ -143,14 +144,15 @@ public class Fields implements Iterable<Fields.Field>
     }
 
     /**
-     * <p>Inserts or replaces the given {@link Field}, mapped to the {@link Field#getName() field's name}</p>
+     * <p>Inserts or replaces the given {@link Field}, mapped to the {@link Field#getName() field's name}</p>.
      *
      * @param field the field to put
      */
     public void put(Field field)
     {
-        if (field != null)
-            fields.put(normalizeName(field.getName()), field);
+        if (field != null) {
+			fields.put(normalizeName(field.getName()), field);
+		}
     }
 
     /**
@@ -164,21 +166,20 @@ public class Fields implements Iterable<Fields.Field>
     {
         String key = normalizeName(name);
         Field field = fields.get(key);
-        if (field == null)
+        if (field != null)
         {
-            // Preserve the case for the field name
-            field = new Field(name, value);
-            fields.put(key, field);
+            field = new Field(field.getName(), field.getValues(), value);
         }
         else
         {
-            field = new Field(field.getName(), field.getValues(), value);
-            fields.put(key, field);
+            // Preserve the case for the field name
+            field = new Field(name, value);
         }
+		fields.put(key, field);
     }
 
     /**
-     * <p>Removes the {@link Field} with the given name</p>
+     * <p>Removes the {@link Field} with the given name</p>.
      *
      * @param name the name of the field to remove
      * @return the removed field, or null if no such field existed
@@ -189,7 +190,7 @@ public class Fields implements Iterable<Fields.Field>
     }
 
     /**
-     * <p>Empties this {@link Fields} instance from all fields</p>
+     * <p>Empties this {@link Fields} instance from all fields</p>.
      * @see #isEmpty()
      */
     public void clear()
@@ -245,30 +246,34 @@ public class Fields implements Iterable<Fields.Field>
         private Field(String name, List<String> values, String... moreValues)
         {
             this.name = name;
-            List<String> list = new ArrayList<>(values.size() + moreValues.length);
-            list.addAll(values);
+            List<String> list = new ArrayList<String>(values);
             list.addAll(Arrays.asList(moreValues));
             this.values = Collections.unmodifiableList(list);
         }
 
         public boolean equals(Field that, boolean caseSensitive)
         {
-            if (this == that)
-                return true;
-            if (that == null)
-                return false;
-            if (caseSensitive)
-                return equals(that);
+            if (this == that) {
+				return true;
+			}
+            if (that == null) {
+				return false;
+			}
+            if (caseSensitive) {
+				return equals(that);
+			}
             return name.equalsIgnoreCase(that.name) && values.equals(that.values);
         }
 
         @Override
         public boolean equals(Object obj)
         {
-            if (this == obj)
-                return true;
-            if (obj == null || getClass() != obj.getClass())
-                return false;
+            if (this == obj) {
+				return true;
+			}
+            if (obj == null || getClass() != obj.getClass()) {
+				return false;
+			}
             Field that = (Field)obj;
             return name.equals(that.name) && values.equals(that.values);
         }
@@ -277,8 +282,7 @@ public class Fields implements Iterable<Fields.Field>
         public int hashCode()
         {
             int result = name.hashCode();
-            result = 31 * result + values.hashCode();
-            return result;
+            return 31 * result + values.hashCode();
         }
 
         /**

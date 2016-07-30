@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 
 package org.eclipse.jetty.server;
@@ -44,23 +39,23 @@ import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.log.Logger;
 
 /**
- * A HttpChannel customized to be transported over the HTTP/1 protocol
+ * A HttpChannel customized to be transported over the HTTP/1 protocol.
  */
 public class HttpChannelOverHttp extends HttpChannel implements HttpParser.RequestHandler, HttpParser.ComplianceHandler
 {
     private static final Logger LOG = Log.getLogger(HttpChannelOverHttp.class);
-    private final static HttpField PREAMBLE_UPGRADE_H2C = new HttpField(HttpHeader.UPGRADE, "h2c");
+    private static final HttpField PREAMBLE_UPGRADE_H2C = new HttpField(HttpHeader.UPGRADE, "h2c");
     private static final String ATTR_COMPLIANCE_VIOLATIONS = "org.eclipse.jetty.http.compliance.violations";
 
     private final HttpFields _fields = new HttpFields();
     private final MetaData.Request _metadata = new MetaData.Request(_fields);
     private final HttpConnection _httpConnection;
     private HttpField _connection;
-    private HttpField _upgrade = null;
+    private HttpField _upgrade;
     private boolean _delayedForContent;
-    private boolean _unknownExpectation = false;
-    private boolean _expect100Continue = false;
-    private boolean _expect102Processing = false;
+    private boolean _unknownExpectation;
+    private boolean _expect100Continue;
+    private boolean _expect102Processing;
     private List<String> _complianceViolations;
 
     public HttpChannelOverHttp(HttpConnection httpConnection, Connector connector, HttpConfiguration config, EndPoint endPoint, HttpTransport transport)
@@ -154,9 +149,9 @@ public class HttpChannelOverHttp extends HttpChannel implements HttpParser.Reque
                                 for (int i = 0; values != null && i < values.length; i++)
                                 {
                                     expect = HttpHeaderValue.CACHE.get(values[i].trim());
-                                    if (expect == null)
-                                        _unknownExpectation = true;
-                                    else
+                                    if (expect == null) {
+										_unknownExpectation = true;
+									} else
                                     {
                                         switch (expect)
                                         {
@@ -206,12 +201,14 @@ public class HttpChannelOverHttp extends HttpChannel implements HttpParser.Reque
             // is content missing?
             if (available == 0)
             {
-                if (getResponse().isCommitted())
-                    throw new IOException("Committed before 100 Continues");
+                if (getResponse().isCommitted()) {
+					throw new IOException("Committed before 100 Continues");
+				}
 
                 boolean committed = sendResponse(HttpGenerator.CONTINUE_100_INFO, null, false);
-                if (!committed)
-                    throw new IOException("Concurrent commit while trying to send 100-Continue");
+                if (!committed) {
+					throw new IOException("Concurrent commit while trying to send 100-Continue");
+				}
             }
         }
     }
@@ -220,10 +217,11 @@ public class HttpChannelOverHttp extends HttpChannel implements HttpParser.Reque
     public void earlyEOF()
     {
         // If we have no request yet, just close
-        if (_metadata.getMethod() == null)
-            _httpConnection.close();
-        else
-            onEarlyEOF();
+        if (_metadata.getMethod() != null) {
+			onEarlyEOF();
+		} else {
+			_httpConnection.close();
+		}
     }
 
     @Override
@@ -261,8 +259,9 @@ public class HttpChannelOverHttp extends HttpChannel implements HttpParser.Reque
     @Override
     public boolean headerComplete()
     {
-        if (_complianceViolations != null)
-            this.getRequest().setAttribute(ATTR_COMPLIANCE_VIOLATIONS, _complianceViolations);
+        if (_complianceViolations != null) {
+			getRequest().setAttribute(ATTR_COMPLIANCE_VIOLATIONS, _complianceViolations);
+		}
 
         boolean persistent;
 
@@ -279,21 +278,24 @@ public class HttpChannelOverHttp extends HttpChannel implements HttpParser.Reque
                 {
                     if (_connection != null)
                     {
-                        if (_connection.contains(HttpHeaderValue.KEEP_ALIVE.asString()))
-                            persistent = true;
-                        else
-                            persistent = _fields.contains(HttpHeader.CONNECTION, HttpHeaderValue.KEEP_ALIVE.asString());
-                    }
-                    else
-                        persistent = false;
-                }
-                else
-                    persistent = false;
+                        if (_connection.contains(HttpHeaderValue.KEEP_ALIVE.asString())) {
+							persistent = true;
+						} else {
+							persistent = _fields.contains(HttpHeader.CONNECTION, HttpHeaderValue.KEEP_ALIVE.asString());
+						}
+                    } else {
+						persistent = false;
+					}
+                } else {
+					persistent = false;
+				}
 
-                if (!persistent)
-                    persistent = HttpMethod.CONNECT.is(_metadata.getMethod());
-                if (persistent)
-                    getResponse().getHttpFields().add(HttpHeader.CONNECTION, HttpHeaderValue.KEEP_ALIVE);
+                if (!persistent) {
+					persistent = HttpMethod.CONNECT.is(_metadata.getMethod());
+				}
+                if (persistent) {
+					getResponse().getHttpFields().add(HttpHeader.CONNECTION, HttpHeaderValue.KEEP_ALIVE);
+				}
 
                 break;
             }
@@ -310,24 +312,29 @@ public class HttpChannelOverHttp extends HttpChannel implements HttpParser.Reque
                 {
                     if (_connection != null)
                     {
-                        if (_connection.contains(HttpHeaderValue.CLOSE.asString()))
-                            persistent = false;
-                        else
-                            persistent = !_fields.contains(HttpHeader.CONNECTION, HttpHeaderValue.CLOSE.asString()); // handle multiple connection fields
-                    }
-                    else
-                        persistent = true;
-                }
-                else
-                    persistent = false;
+                        if (_connection.contains(HttpHeaderValue.CLOSE.asString())) {
+							persistent = false;
+						}
+						else {
+							persistent = !_fields.contains(HttpHeader.CONNECTION, HttpHeaderValue.CLOSE.asString()); // handle multiple connection fields
+						}
+                    } else {
+						persistent = true;
+					}
+                } else {
+					persistent = false;
+				}
 
-                if (!persistent)
-                    persistent = HttpMethod.CONNECT.is(_metadata.getMethod());
-                if (!persistent)
-                    getResponse().getHttpFields().add(HttpHeader.CONNECTION, HttpHeaderValue.CLOSE);
+                if (!persistent) {
+					persistent = HttpMethod.CONNECT.is(_metadata.getMethod());
+				}
+                if (!persistent) {
+					getResponse().getHttpFields().add(HttpHeader.CONNECTION, HttpHeaderValue.CLOSE);
+				}
 
-                if (_upgrade != null && upgrade())
-                    return true;
+                if (_upgrade != null && upgrade()) {
+					return true;
+				}
 
                 break;
             }
@@ -340,8 +347,9 @@ public class HttpChannelOverHttp extends HttpChannel implements HttpParser.Reque
                 if (HttpMethod.PRI.is(_metadata.getMethod()) &&
                         "*".equals(_metadata.getURI().toString()) &&
                         _fields.size() == 0 &&
-                        upgrade())
-                    return true;
+                        upgrade()) {
+					return true;
+				}
 
                 badMessage(HttpStatus.UPGRADE_REQUIRED_426, null);
                 _httpConnection.getParser().close();
@@ -354,18 +362,19 @@ public class HttpChannelOverHttp extends HttpChannel implements HttpParser.Reque
             }
         }
 
-        if (!persistent)
-            _httpConnection.getGenerator().setPersistent(false);
+        if (!persistent) {
+			_httpConnection.getGenerator().setPersistent(false);
+		}
 
         onRequest(_metadata);
 
         // Should we delay dispatch until we have some content?
         // We should not delay if there is no content expect or client is expecting 100 or the response is already committed or the request buffer already has something in it to parse
-        _delayedForContent = (getHttpConfiguration().isDelayDispatchUntilContent()
+        _delayedForContent = getHttpConfiguration().isDelayDispatchUntilContent()
                 && (_httpConnection.getParser().getContentLength() > 0 || _httpConnection.getParser().isChunking())
                 && !isExpecting100Continue()
                 && !isCommitted()
-                && _httpConnection.isRequestBufferEmpty());
+                && _httpConnection.isRequestBufferEmpty();
 
         return !_delayedForContent;
     }
@@ -383,30 +392,29 @@ public class HttpChannelOverHttp extends HttpChannel implements HttpParser.Reque
      */
     private boolean upgrade() throws BadMessageException
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("upgrade {} {}", this, _upgrade);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("upgrade {} {}", this, _upgrade);
+		}
 
-        if (_upgrade != PREAMBLE_UPGRADE_H2C && (_connection == null || !_connection.contains("upgrade")))
-            throw new BadMessageException(HttpStatus.BAD_REQUEST_400);
+        if (_upgrade != PREAMBLE_UPGRADE_H2C && (_connection == null || !_connection.contains("upgrade"))) {
+			throw new BadMessageException(HttpStatus.BAD_REQUEST_400);
+		}
 
         // Find the upgrade factory
         ConnectionFactory.Upgrading factory = null;
         for (ConnectionFactory f : getConnector().getConnectionFactories())
         {
-            if (f instanceof ConnectionFactory.Upgrading)
-            {
-                if (f.getProtocols().contains(_upgrade.getValue()))
-                {
-                    factory = (ConnectionFactory.Upgrading)f;
-                    break;
-                }
-            }
+            if (f instanceof ConnectionFactory.Upgrading && f.getProtocols().contains(_upgrade.getValue())) {
+			    factory = (ConnectionFactory.Upgrading)f;
+			    break;
+			}
         }
 
         if (factory == null)
         {
-            if (LOG.isDebugEnabled())
-                LOG.debug("No factory for {} in {}", _upgrade, getConnector());
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("No factory for {} in {}", _upgrade, getConnector());
+			}
             return false;
         }
 
@@ -415,24 +423,27 @@ public class HttpChannelOverHttp extends HttpChannel implements HttpParser.Reque
         Connection upgrade_connection = factory.upgradeConnection(getConnector(), getEndPoint(), _metadata, response101);
         if (upgrade_connection == null)
         {
-            if (LOG.isDebugEnabled())
-                LOG.debug("Upgrade ignored for {} by {}", _upgrade, factory);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Upgrade ignored for {} by {}", _upgrade, factory);
+			}
             return false;
         }
 
         // Send 101 if needed
         try
         {
-            if (_upgrade != PREAMBLE_UPGRADE_H2C)
-                sendResponse(new MetaData.Response(HttpVersion.HTTP_1_1, HttpStatus.SWITCHING_PROTOCOLS_101, response101, 0), null, true);
+            if (_upgrade != PREAMBLE_UPGRADE_H2C) {
+				sendResponse(new MetaData.Response(HttpVersion.HTTP_1_1, HttpStatus.SWITCHING_PROTOCOLS_101, response101, 0), null, true);
+			}
         }
         catch (IOException e)
         {
             throw new BadMessageException(HttpStatus.INTERNAL_SERVER_ERROR_500, null, e);
         }
 
-        if (LOG.isDebugEnabled())
-            LOG.debug("Upgrade from {} to {}", getEndPoint().getConnection(), upgrade_connection);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Upgrade from {} to {}", getEndPoint().getConnection(), upgrade_connection);
+		}
         getRequest().setAttribute(HttpConnection.UPGRADE_CONNECTION_ATTRIBUTE, upgrade_connection);
         getResponse().setStatus(101);
         getHttpTransport().onCompleted();
@@ -478,8 +489,9 @@ public class HttpChannelOverHttp extends HttpChannel implements HttpParser.Reque
             }
             String violation = String.format("%s<%s: %s for %s", compliance, required, reason, getHttpTransport());
             _complianceViolations.add(violation);
-            if (LOG.isDebugEnabled())
-                LOG.debug(violation);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug(violation);
+			}
         }
     }
 }

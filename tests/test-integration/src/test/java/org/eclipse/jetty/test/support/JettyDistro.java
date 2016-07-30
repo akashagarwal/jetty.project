@@ -1,38 +1,28 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.test.support;
-//
 //========================================================================
 //------------------------------------------------------------------------
 //All rights reserved. This program and the accompanying materials
 //are made available under the terms of the Eclipse Public License v1.0
 //and Apache License v2.0 which accompanies this distribution.
-//
 //  The Eclipse Public License is available at
 //  http://www.eclipse.org/legal/epl-v10.html
-//
 //  The Apache License v2.0 is available at
 //  http://www.opensource.org/licenses/apache2.0.php
-//
 //You may elect to redistribute this code under either of these licenses.
 //========================================================================
-//
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -230,7 +220,7 @@ public class JettyDistro
 
     private String jmxUrl;
 
-    private boolean _debug = false;
+    private boolean _debug;
 
     /**
      * Setup the JettyHome as belonging in a testing directory associated with a testing clazz.
@@ -267,7 +257,7 @@ public class JettyDistro
     }
 
     /**
-     * Setup the JettyHome as belonging to a specific testing method directory
+     * Setup the JettyHome as belonging to a specific testing method directory.
      * 
      * @param testdir
      *            the testing directory to use as the JettyHome for this JettyDistro
@@ -281,7 +271,7 @@ public class JettyDistro
     }
 
     /**
-     * Setup the JettyHome as belonging to a specific testing method directory
+     * Setup the JettyHome as belonging to a specific testing method directory.
      * 
      * @param testdir
      *            the testing directory to use as the JettyHome for this JettyDistro
@@ -302,7 +292,7 @@ public class JettyDistro
     }
 
     /**
-     * 
+     *. 
      * @throws IOException
      *             if unable to copy unpacked distribution into place for the provided testing directory
      */
@@ -318,12 +308,7 @@ public class JettyDistro
         {
             public boolean accept(File path)
             {
-                if (!path.isDirectory())
-                {
-                    return false;
-                }
-
-                return path.getName().startsWith(artifactName + "-");
+                return path.isDirectory() && path.getName().startsWith(artifactName + "-");
             }
         });
 
@@ -639,26 +624,22 @@ public class JettyDistro
             if (c == '\\')
             {
                 escaped = true;
-            }
-            else
-            {
-                if ((c == ' ') && (!inQuote))
-                {
-                    // the delim!
-                    cmds.add(String.valueOf(arg.toString()));
-                    arg.setLength(0);
-                }
-                else if (c == '"')
-                {
-                    inQuote = !inQuote;
-                }
-                else
-                {
-                    arg.append(c);
-                }
-            }
+            } else if (c == ' ' && !inQuote)
+			{
+			    // the delim!
+			    cmds.add(arg.toString());
+			    arg.setLength(0);
+			}
+			else if (c == '"')
+			{
+			    inQuote = !inQuote;
+			}
+			else
+			{
+			    arg.append(c);
+			}
         }
-        cmds.add(String.valueOf(arg.toString()));
+        cmds.add(arg.toString());
 
         return cmds;
     }
@@ -778,7 +759,7 @@ public class JettyDistro
     }
 
     /**
-     * enable debug on the jetty process
+     * Enable debug on the jetty process.
      * 
      * @param debug
      */
@@ -807,7 +788,7 @@ public class JettyDistro
     }
 
     /**
-     * Stop the jetty server
+     * Stop the jetty server.
      */
     public void stop()
     {
@@ -820,7 +801,7 @@ public class JettyDistro
     }
 
     /**
-     * Simple streamer for the console output from a Process
+     * Simple streamer for the console output from a Process.
      */
     private static class ConsoleStreamer implements Runnable
     {
@@ -845,7 +826,7 @@ public class JettyDistro
             // System.out.printf("ConsoleStreamer/%s initiated%n",mode);
             try
             {
-                while ((line = reader.readLine()) != (null))
+                while ((line = reader.readLine()) != null)
                 {
                     if (parser != null)
                     {

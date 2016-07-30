@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http2.parser;
 
@@ -51,11 +46,13 @@ public class ResetBodyParser extends BodyParser
                 case PREPARE:
                 {
                     // SPEC: wrong streamId is treated as connection error.
-                    if (getStreamId() == 0)
-                        return connectionFailure(buffer, ErrorCode.PROTOCOL_ERROR.code, "invalid_rst_stream_frame");
+                    if (getStreamId() == 0) {
+						return connectionFailure(buffer, ErrorCode.PROTOCOL_ERROR.code, "invalid_rst_stream_frame");
+					}
                     int length = getBodyLength();
-                    if (length != 4)
-                        return connectionFailure(buffer, ErrorCode.FRAME_SIZE_ERROR.code, "invalid_rst_stream_frame");
+                    if (length != 4) {
+						return connectionFailure(buffer, ErrorCode.FRAME_SIZE_ERROR.code, "invalid_rst_stream_frame");
+					}
                     state = State.ERROR;
                     break;
                 }
@@ -76,9 +73,10 @@ public class ResetBodyParser extends BodyParser
                 {
                     int currByte = buffer.get() & 0xFF;
                     --cursor;
-                    error += currByte << (8 * cursor);
-                    if (cursor == 0)
-                        return onReset(error);
+                    error += currByte << 8 * cursor;
+                    if (cursor == 0) {
+						return onReset(error);
+					}
                     break;
                 }
                 default:

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.client.util;
 
@@ -99,8 +94,9 @@ public class InputStreamContentProvider implements ContentProvider, Callback, Cl
      */
     protected ByteBuffer onRead(byte[] buffer, int offset, int length)
     {
-        if (length <= 0)
-            return BufferUtil.EMPTY_BUFFER;
+        if (length <= 0) {
+			return BufferUtil.EMPTY_BUFFER;
+		}
         return ByteBuffer.wrap(buffer, offset, length);
     }
 
@@ -169,13 +165,15 @@ public class InputStreamContentProvider implements ContentProvider, Callback, Cl
         {
             try
             {
-                if (hasNext != null)
-                    return hasNext;
+                if (hasNext != null) {
+					return hasNext;
+				}
 
                 byte[] bytes = new byte[bufferSize];
                 int read = stream.read(bytes);
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Read {} bytes from {}", read, stream);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("Read {} bytes from {}", read, stream);
+				}
                 if (read > 0)
                 {
                     hasNext = Boolean.TRUE;
@@ -198,8 +196,9 @@ public class InputStreamContentProvider implements ContentProvider, Callback, Cl
             }
             catch (Throwable x)
             {
-                if (LOG.isDebugEnabled())
-                    LOG.debug(x);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug(x);
+				}
                 if (failure == null)
                 {
                     failure = x;
@@ -225,8 +224,9 @@ public class InputStreamContentProvider implements ContentProvider, Callback, Cl
                 buffer = null;
                 throw (NoSuchElementException)new NoSuchElementException().initCause(failure);
             }
-            if (!hasNext())
-                throw new NoSuchElementException();
+            if (!hasNext()) {
+				throw new NoSuchElementException();
+			}
 
             ByteBuffer result = buffer;
             if (result == null)

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http.pathmap;
 
@@ -31,7 +26,7 @@ import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
 /**
- * Tests of {@link PathMappings#getMatches(String)}
+ * Tests of {@link PathMappings#getMatches(String)}.
  */
 @RunWith(Parameterized.class)
 public class ServletPathSpecMatchListTest
@@ -89,8 +84,9 @@ public class ServletPathSpecMatchListTest
         boolean delim = false;
         for (MappedResource<String> res : matches)
         {
-            if (delim)
-                actual.append(", ");
+            if (delim) {
+				actual.append(", ");
+			}
             actual.append(res.getPathSpec().pathSpec).append('=').append(res.getResource());
             delim = true;
         }

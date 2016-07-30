@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.fcgi.client.http;
 
@@ -138,17 +133,20 @@ public class HttpConnectionOverFCGI extends AbstractConnection implements Connec
             boolean looping = false;
             while (true)
             {
-                if (!looping && parse(buffer))
-                    return;
+                if (!looping && parse(buffer)) {
+					return;
+				}
 
                 int read = endPoint.fill(buffer);
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Read {} bytes from {}", read, endPoint);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("Read {} bytes from {}", read, endPoint);
+				}
 
                 if (read > 0)
                 {
-                    if (parse(buffer))
-                        return;
+                    if (parse(buffer)) {
+						return;
+					}
                 }
                 else if (read == 0)
                 {
@@ -168,8 +166,9 @@ public class HttpConnectionOverFCGI extends AbstractConnection implements Connec
         }
         catch (Exception x)
         {
-            if (LOG.isDebugEnabled())
-                LOG.debug(x);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug(x);
+			}
             releaseBuffer(buffer);
             close(x);
         }
@@ -184,10 +183,11 @@ public class HttpConnectionOverFCGI extends AbstractConnection implements Connec
     {
         // Close explicitly only if we are idle, since the request may still
         // be in progress, otherwise close only if we can fail the responses.
-        if (channels.isEmpty())
-            close();
-        else
-            failAndClose(new EOFException(String.valueOf(getEndPoint())));
+        if (channels.isEmpty()) {
+			close();
+		} else {
+			failAndClose(new EOFException(String.valueOf(getEndPoint())));
+		}
     }
 
     @Override
@@ -195,10 +195,12 @@ public class HttpConnectionOverFCGI extends AbstractConnection implements Connec
     {
         long idleTimeout = getEndPoint().getIdleTimeout();
         boolean close = delegate.onIdleTimeout(idleTimeout);
-        if (multiplexed)
-            close &= isFillInterested();
-        if (close)
-            close(new TimeoutException("Idle timeout " + idleTimeout + " ms"));
+        if (multiplexed) {
+			close &= isFillInterested();
+		}
+        if (close) {
+			close(new TimeoutException("Idle timeout " + idleTimeout + " ms"));
+		}
         return false;
     }
 
@@ -223,11 +225,13 @@ public class HttpConnectionOverFCGI extends AbstractConnection implements Connec
             abort(failure);
 
             getEndPoint().shutdownOutput();
-            if (LOG.isDebugEnabled())
-                LOG.debug("Shutdown {}", this);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Shutdown {}", this);
+			}
             getEndPoint().close();
-            if (LOG.isDebugEnabled())
-                LOG.debug("Closed {}", this);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Closed {}", this);
+			}
         }
     }
 
@@ -239,10 +243,12 @@ public class HttpConnectionOverFCGI extends AbstractConnection implements Connec
 
     protected boolean closeByHTTP(HttpFields fields)
     {
-        if (multiplexed)
-            return false;
-        if (!fields.contains(HttpHeader.CONNECTION, HttpHeaderValue.CLOSE.asString()))
-            return false;
+        if (multiplexed) {
+			return false;
+		}
+        if (!fields.contains(HttpHeader.CONNECTION, HttpHeaderValue.CLOSE.asString())) {
+			return false;
+		}
         close();
         return true;
     }
@@ -252,8 +258,9 @@ public class HttpConnectionOverFCGI extends AbstractConnection implements Connec
         for (HttpChannelOverFCGI channel : channels.values())
         {
             HttpExchange exchange = channel.getHttpExchange();
-            if (exchange != null)
-                exchange.getRequest().abort(failure);
+            if (exchange != null) {
+				exchange.getRequest().abort(failure);
+			}
         }
         channels.clear();
     }
@@ -261,10 +268,12 @@ public class HttpConnectionOverFCGI extends AbstractConnection implements Connec
     private void failAndClose(Throwable failure)
     {
         boolean result = false;
-        for (HttpChannelOverFCGI channel : channels.values())
-            result |= channel.responseFailure(failure);
-        if (result)
-            close(failure);
+        for (HttpChannelOverFCGI channel : channels.values()) {
+			result |= channel.responseFailure(failure);
+		}
+        if (result) {
+			close(failure);
+		}
     }
 
     private int acquireRequest()
@@ -352,30 +361,33 @@ public class HttpConnectionOverFCGI extends AbstractConnection implements Connec
         public void onBegin(int request, int code, String reason)
         {
             HttpChannelOverFCGI channel = channels.get(request);
-            if (channel != null)
-                channel.responseBegin(code, reason);
-            else
-                noChannel(request);
+            if (channel != null) {
+				channel.responseBegin(code, reason);
+			} else {
+				noChannel(request);
+			}
         }
 
         @Override
         public void onHeader(int request, HttpField field)
         {
             HttpChannelOverFCGI channel = channels.get(request);
-            if (channel != null)
-                channel.responseHeader(field);
-            else
-                noChannel(request);
+            if (channel != null) {
+				channel.responseHeader(field);
+			} else {
+				noChannel(request);
+			}
         }
 
         @Override
         public void onHeaders(int request)
         {
             HttpChannelOverFCGI channel = channels.get(request);
-            if (channel != null)
-                channel.responseHeaders();
-            else
-                noChannel(request);
+            if (channel != null) {
+				channel.responseHeaders();
+			} else {
+				noChannel(request);
+			}
         }
 
         @Override
@@ -393,8 +405,9 @@ public class HttpConnectionOverFCGI extends AbstractConnection implements Connec
                             @Override
                             public void resume()
                             {
-                                if (LOG.isDebugEnabled())
-                                    LOG.debug("Content consumed asynchronously, resuming processing");
+                                if (LOG.isDebugEnabled()) {
+									LOG.debug("Content consumed asynchronously, resuming processing");
+								}
                                 process(HttpConnectionOverFCGI.this.buffer);
                             }
 
@@ -434,8 +447,9 @@ public class HttpConnectionOverFCGI extends AbstractConnection implements Connec
             HttpChannelOverFCGI channel = channels.get(request);
             if (channel != null)
             {
-                if (channel.responseSuccess())
-                    releaseRequest(request);
+                if (channel.responseSuccess()) {
+					releaseRequest(request);
+				}
             }
             else
             {
@@ -449,8 +463,9 @@ public class HttpConnectionOverFCGI extends AbstractConnection implements Connec
             HttpChannelOverFCGI channel = channels.get(request);
             if (channel != null)
             {
-                if (channel.responseFailure(failure))
-                    releaseRequest(request);
+                if (channel.responseFailure(failure)) {
+					releaseRequest(request);
+				}
             }
             else
             {
@@ -460,8 +475,9 @@ public class HttpConnectionOverFCGI extends AbstractConnection implements Connec
 
         private void noChannel(int request)
         {
-            if (LOG.isDebugEnabled())
-                LOG.debug("Channel not found for request {}", request);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Channel not found for request {}", request);
+			}
         }
     }
 }

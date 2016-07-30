@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http2.client;
 
@@ -67,8 +62,9 @@ public class HTTP2ClientConnectionFactory implements ClientConnectionFactory
 
         Generator generator = new Generator(byteBufferPool);
         FlowControlStrategy flowControl = newFlowControlStrategy();
-        if (flowControl == null)
-            flowControl = client.getFlowControlStrategyFactory().newFlowControlStrategy();
+        if (flowControl == null) {
+			flowControl = client.getFlowControlStrategyFactory().newFlowControlStrategy();
+		}
         HTTP2ClientSession session = new HTTP2ClientSession(scheduler, endPoint, generator, listener, flowControl);
         Parser parser = new Parser(byteBufferPool, session, 4096, 8192);
         HTTP2ClientConnection connection = new HTTP2ClientConnection(client, byteBufferPool, executor, endPoint,
@@ -122,8 +118,9 @@ public class HTTP2ClientConnectionFactory implements ClientConnectionFactory
         public void onOpen()
         {
             Map<Integer, Integer> settings = listener.onPreface(getSession());
-            if (settings == null)
-                settings = Collections.emptyMap();
+            if (settings == null) {
+				settings = Collections.emptyMap();
+			}
 
             PrefaceFrame prefaceFrame = new PrefaceFrame();
             SettingsFrame settingsFrame = new SettingsFrame(settings, false);
@@ -131,8 +128,9 @@ public class HTTP2ClientConnectionFactory implements ClientConnectionFactory
             ISession session = getSession();
 
             int sessionRecv = client.getInitialSessionRecvWindow();
-            if (sessionRecv == FlowControlStrategy.DEFAULT_WINDOW_SIZE)
-                sessionRecv = initialSessionRecvWindow;
+            if (sessionRecv == FlowControlStrategy.DEFAULT_WINDOW_SIZE) {
+				sessionRecv = initialSessionRecvWindow;
+			}
 
             int windowDelta = sessionRecv - FlowControlStrategy.DEFAULT_WINDOW_SIZE;
             if (windowDelta > 0)

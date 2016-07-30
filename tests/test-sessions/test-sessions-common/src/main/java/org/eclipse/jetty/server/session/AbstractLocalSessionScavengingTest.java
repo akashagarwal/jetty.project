@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server.session;
 
@@ -36,7 +31,7 @@ import org.eclipse.jetty.server.SessionManager;
 import org.junit.Test;
 
 /**
- * AbstractLocalSessionScavengingTest
+ * AbstractLocalSessionScavengingTest.
  */
 public abstract class AbstractLocalSessionScavengingTest
 {
@@ -108,7 +103,7 @@ public abstract class AbstractLocalSessionScavengingTest
 
                     // Wait for the scavenger to run on node2, waiting 2 times the scavenger period
                     // This ensures that the scavenger on node2 runs at least once.
-                    pause(inactivePeriod+(3*scavengePeriod));
+                    pause(inactivePeriod+3*scavengePeriod);
                     
                     // Check that node2 does not have any local session cached
                     request = client.newRequest(urls[1] + "?action=check");

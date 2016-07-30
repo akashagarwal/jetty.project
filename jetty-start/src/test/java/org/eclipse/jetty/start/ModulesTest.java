@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.start;
 
@@ -43,7 +38,7 @@ import static org.junit.Assert.assertThat;
 
 public class ModulesTest
 {
-    private final static String TEST_SOURCE = "<test>";
+    private static final String TEST_SOURCE = "<test>";
 
     @Rule
     public TestingDir testdir = new TestingDir();
@@ -81,7 +76,7 @@ public class ModulesTest
         for (Module mod : modules)
         {
             // skip alpn-boot in this test (as its behavior is jdk specific)
-            if (mod.getName().equals("alpn-boot"))
+            if ("alpn-boot".equals(mod.getName()))
             {
                 continue;
             }

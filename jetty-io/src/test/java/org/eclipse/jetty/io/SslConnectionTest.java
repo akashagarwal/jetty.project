@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.io;
 
@@ -114,16 +109,11 @@ public class SslConnectionTest
         @Override
         public boolean flush(ByteBuffer... buffers) throws IOException
         {
-            if (__startBlocking.get()==0 || __startBlocking.decrementAndGet()==0)
-            {
-                if (__blockFor.get()>0 && __blockFor.getAndDecrement()>0)
-                {
-                    return false;
-                }
-            }
+            if ((__startBlocking.get()==0 || __startBlocking.decrementAndGet()==0) && __blockFor.get()>0 && __blockFor.getAndDecrement()>0) {
+			    return false;
+			}
             String s=BufferUtil.toDetailString(buffers[0]);
-            boolean flushed=super.flush(buffers);
-            return flushed;
+            return super.flush(buffers);
         }
     }
     
@@ -155,8 +145,9 @@ public class SslConnectionTest
     @After
     public void stopManager() throws Exception
     {
-        if (_lastEndp.isOpen())
-            _lastEndp.close();
+        if (_lastEndp.isOpen()) {
+			_lastEndp.close();
+		}
         _manager.stop();
         _scheduler.stop();
         _threadPool.stop();
@@ -176,9 +167,9 @@ public class SslConnectionTest
         public void onOpen()
         {
             super.onOpen();
-            if (_testFill)
-                fillInterested();
-            else
+            if (_testFill) {
+				fillInterested();
+			} else
             {
                 getExecutor().execute(new Runnable()
                 {
@@ -243,8 +234,9 @@ public class SslConnectionTest
             }
             finally
             {
-                if (endp.isOpen())
-                    fillInterested();
+                if (endp.isOpen()) {
+					fillInterested();
+				}
             }
         }
     }
@@ -274,8 +266,9 @@ public class SslConnectionTest
         _dispatches.set(0);
         client.getOutputStream().write("World".getBytes(StandardCharsets.UTF_8));
         len=5;
-        while(len>0)
-            len-=client.getInputStream().read(buffer);
+        while(len>0) {
+			len-=client.getInputStream().read(buffer);
+		}
 
         client.close();
     }
@@ -325,8 +318,9 @@ public class SslConnectionTest
         _dispatches.set(0);
         client.getOutputStream().write("World".getBytes(StandardCharsets.UTF_8));
         len=5;
-        while(len>0)
-            len-=client.getInputStream().read(buffer);
+        while(len>0) {
+			len-=client.getInputStream().read(buffer);
+		}
         Assert.assertEquals(0, len);
         client.close();
     }
@@ -356,8 +350,9 @@ public class SslConnectionTest
                     while(count.getCount()>0)
                     {
                         String line=in.readLine();
-                        if (line==null)
-                            break;
+                        if (line==null) {
+							break;
+						}
                         // System.err.println(line);
                         count.countDown();
                     }

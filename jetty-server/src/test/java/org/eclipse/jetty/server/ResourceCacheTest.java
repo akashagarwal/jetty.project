@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 
@@ -87,7 +82,7 @@ public class ResourceCacheTest
             @Override
             public boolean isCacheable(Resource resource)
             {
-                return super.isCacheable(resource) && resource.getName().indexOf("2.txt")<0;
+                return super.isCacheable(resource) && !resource.getName().contains("2.txt");
             }
         };
 
@@ -123,8 +118,9 @@ public class ResourceCacheTest
             names[i]=files[i].getName();
             try (OutputStream out = new FileOutputStream(files[i]))
             {
-                for (int j=0;j<(i*10-1);j++)
-                    out.write(' ');
+                for (int j=0;j<i*10-1;j++) {
+					out.write(' ');
+				}
                 out.write('\n');
             }
         }
@@ -297,8 +293,9 @@ public class ResourceCacheTest
         String line = null;
         try (BufferedReader br = new BufferedReader(new InputStreamReader(r.addPath(path).getURL().openStream())))
         {
-            while((line=br.readLine())!=null)
-                buffer.append(line);
+            while((line=br.readLine())!=null) {
+				buffer.append(line);
+			}
         }
         return buffer.toString();
     }
@@ -306,9 +303,10 @@ public class ResourceCacheTest
     static String getContent(ResourceCache rc, String path) throws Exception
     {
         HttpContent content = rc.lookup(path);
-        if (content==null)
-            return null;
+        if (content!=null) {
+			return BufferUtil.toString(content.getIndirectBuffer());
+		}
 
-        return BufferUtil.toString(content.getIndirectBuffer());
+        return null;
     }
 }

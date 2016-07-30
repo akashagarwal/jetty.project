@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.client.ssl;
 
@@ -88,8 +83,9 @@ public abstract class SslBytesTest
             public static Type from(int code)
             {
                 Type result = Mapper.codes.get(code);
-                if (result == null)
-                    throw new IllegalArgumentException("Invalid TLSRecord.Type " + code);
+                if (result == null) {
+					throw new IllegalArgumentException("Invalid TLSRecord.Type " + code);
+				}
                 return result;
             }
 
@@ -135,8 +131,9 @@ public abstract class SslBytesTest
         public void stop() throws Exception
         {
             server.close();
-            if (client != null) // some tests only run on linux, those won't create a client on other OS
-                client.close();
+            if (client != null) {
+				client.close();
+			}
             serverSocket.close();
         }
 
@@ -179,14 +176,16 @@ public abstract class SslBytesTest
                 }
                 catch (SocketTimeoutException x)
                 {
-                    if (Thread.currentThread().isInterrupted())
-                        break;
+                    if (Thread.currentThread().isInterrupted()) {
+						break;
+					}
                 }
             }
-            if (first == -2)
-                throw new InterruptedIOException();
-            else if (first == -1)
-                return null;
+            if (first == -2) {
+				throw new InterruptedIOException();
+			} else if (first == -1) {
+				return null;
+			}
 
             if (first >= 0x80)
             {
@@ -222,8 +221,9 @@ public abstract class SslBytesTest
             while (length > 0)
             {
                 int read = input.read(bytes, offset, length);
-                if (read < 0)
-                    throw new EOFException();
+                if (read < 0) {
+					throw new EOFException();
+				}
                 offset += read;
                 length -= read;
             }
@@ -262,8 +262,9 @@ public abstract class SslBytesTest
             OutputStream output = socket.getOutputStream();
             output.write(bytes);
             output.flush();
-            if (sleep > 0)
-                TimeUnit.MILLISECONDS.sleep(sleep);
+            if (sleep > 0) {
+				TimeUnit.MILLISECONDS.sleep(sleep);
+			}
         }
 
         public TLSRecord readFromServer() throws IOException

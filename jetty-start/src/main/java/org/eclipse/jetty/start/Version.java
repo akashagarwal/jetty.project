@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.start;
 
@@ -27,20 +22,20 @@ public class Version implements Comparable<Version>
 {
     
     /**
-     * Original String version
+     * Original String version.
      */
-    private String string = null;
+    private String string;
     
     /**
-     * Short String version
+     * Short String version.
      */
-    private String shortString = null;
+    private String shortString;
     
     /**
      * The major version for java is always "1" (per
      * <a href="http://www.oracle.com/technetwork/java/javase/namechange-140185.html">legacy versioning history</a>)
      */
-    private int legacyMajor = 0;
+    private int legacyMajor;
     /**
      * The true major version is the second value ("1.5" == "Java 5", "1.8" = "Java 8", etc..)
      */
@@ -53,14 +48,14 @@ public class Version implements Comparable<Version>
      */
     private int revision = -1;
     /**
-     * The update (where bug fixes are placed)
+     * The update (where bug fixes are placed).
      */
     private int update = -1;
     
     /**
      * Update strings may be zero padded!
      */
-    private String updateString = null;
+    private String updateString;
     
     /**
      * Extra versioning information present on the version string, but not relevant for version comparison reason.
@@ -162,7 +157,7 @@ public class Version implements Comparable<Version>
     public boolean isNewerThanOrEqualTo(Version other)
     {
         int comp = compareTo(other);
-        return (comp == 0) || (comp == 1);
+        return comp == 0 || comp == 1;
     }
 
     public boolean isOlderThan(Version other)
@@ -173,11 +168,11 @@ public class Version implements Comparable<Version>
     public boolean isOlderThanOrEqualTo(Version other)
     {
         int comp = compareTo(other);
-        return (comp == 0) || (comp == -1);
+        return comp == 0 || comp == -1;
     }
 
     /**
-     * Check whether this version is in range of versions specified
+     * Check whether this version is in range of versions specified.
      * 
      * @param low
      *            the low part of the range
@@ -187,11 +182,11 @@ public class Version implements Comparable<Version>
      */
     public boolean isInRange(Version low, Version high)
     {
-        return ((compareTo(low) >= 0) && (compareTo(high) <= 0));
+        return compareTo(low) >= 0 && compareTo(high) <= 0;
     }
 
     /**
-     * parses version string in the form legacy[.major[.revision[_update[-suffix]]]] into this instance.
+     * Parses version string in the form legacy[.major[.revision[_update[-suffix]]]] into this instance.
      * 
      * @param versionStr
      *            the version string
@@ -212,8 +207,9 @@ public class Version implements Comparable<Version>
         while (offset < len)
         {
             char c = versionStr.charAt(offset);
-            if (c=='-')
-                shortString=versionStr.substring(0,offset);
+            if (c=='-') {
+				shortString=versionStr.substring(0,offset);
+			}
             boolean isSeparator = !Character.isLetterOrDigit(c);
             if (isSeparator)
             {
@@ -221,7 +217,7 @@ public class Version implements Comparable<Version>
             }
             else if (Character.isDigit(c))
             {
-                val = (val * 10) + (c - '0');
+                val = val * 10 + (c - '0');
             }
             else if (Character.isLetter(c))
             {
@@ -232,22 +228,25 @@ public class Version implements Comparable<Version>
             switch (state)
             {
                 case LEGACY:
-                    if (isSeparator)
-                        state = ParseState.MAJOR;
-                    else
-                        legacyMajor = val;
+                    if (isSeparator) {
+						state = ParseState.MAJOR;
+					} else {
+						legacyMajor = val;
+					}
                     break;
                 case MAJOR:
-                    if (isSeparator)
-                        state = ParseState.REVISION;
-                    else
-                        major = val;
+                    if (isSeparator) {
+						state = ParseState.REVISION;
+					} else {
+						major = val;
+					}
                     break;
                 case REVISION:
-                    if (isSeparator)
-                        state = ParseState.UPDATE;
-                    else
-                        revision = val;
+                    if (isSeparator) {
+						state = ParseState.UPDATE;
+					} else {
+						revision = val;
+					}
                     break;
                 case UPDATE:
                     if (!isSeparator)
@@ -259,8 +258,9 @@ public class Version implements Comparable<Version>
 
             offset++;
         }
-        if (shortString==null)
-            shortString=versionStr;
+        if (shortString==null) {
+			shortString=versionStr;
+		}
     }
 
     /**
@@ -273,7 +273,7 @@ public class Version implements Comparable<Version>
     }
     
     /**
-     * Return short string form (without suffix)
+     * Return short string form (without suffix).
      * @return string the short version string form
      */
     public String toShortString()

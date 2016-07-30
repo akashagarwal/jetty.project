@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.start.config;
 
@@ -91,8 +86,7 @@ public class ConfigSourcesTest
         // Create base
         File base = testdir.getFile("base");
         FS.ensureEmpty(base);
-        TestEnv.makeFile(base,"start.ini", //
-                "jetty.http.host=127.0.0.1");
+        TestEnv.makeFile(base,"start.ini",                "jetty.http.host=127.0.0.1");
 
         ConfigSources sources = new ConfigSources();
 
@@ -120,9 +114,7 @@ public class ConfigSourcesTest
         // Create base
         File base = testdir.getFile("base");
         FS.ensureEmpty(base);
-        TestEnv.makeFile(base,"start.ini", //
-                "jetty.http.host=127.0.0.1",//
-                "--include-jetty-dir=" + common.toString());
+        TestEnv.makeFile(base,"start.ini",                "jetty.http.host=127.0.0.1",                "--include-jetty-dir=" + common.toString());
 
         ConfigSources sources = new ConfigSources();
 
@@ -150,8 +142,7 @@ public class ConfigSourcesTest
         // Create base
         File base = testdir.getFile("base");
         FS.ensureEmpty(base);
-        TestEnv.makeFile(base,"start.ini", //
-                "jetty.http.host=127.0.0.1");
+        TestEnv.makeFile(base,"start.ini",                "jetty.http.host=127.0.0.1");
 
         ConfigSources sources = new ConfigSources();
 
@@ -195,8 +186,7 @@ public class ConfigSourcesTest
         // Create base
         File base = testdir.getFile("base");
         FS.ensureEmpty(base);
-        TestEnv.makeFile(base,"start.ini", //
-                "jetty.http.host=127.0.0.1");
+        TestEnv.makeFile(base,"start.ini",                "jetty.http.host=127.0.0.1");
 
         String dirRef = "${my.opt}" + File.separator + "common";
 
@@ -241,8 +231,7 @@ public class ConfigSourcesTest
         // Create base
         File base = testdir.getFile("base");
         FS.ensureEmpty(base);
-        TestEnv.makeFile(base,"start.ini", //
-                "jetty.http.host=127.0.0.1");
+        TestEnv.makeFile(base,"start.ini",                "jetty.http.host=127.0.0.1");
 
         String dirRef = "${my.opt}" + File.separator + "${my.dir}";
 
@@ -286,9 +275,7 @@ public class ConfigSourcesTest
         // Create base
         File base = testdir.getFile("base");
         FS.ensureEmpty(base);
-        TestEnv.makeFile(base,"start.ini", //
-                "jetty.http.host=127.0.0.1",//
-                "--include-jetty-dir=" + common.getAbsolutePath());
+        TestEnv.makeFile(base,"start.ini",                "jetty.http.host=127.0.0.1",                "--include-jetty-dir=" + common.getAbsolutePath());
 
         ConfigSources sources = new ConfigSources();
         
@@ -325,10 +312,7 @@ public class ConfigSourcesTest
         // Create base
         File base = testdir.getFile("base");
         FS.ensureEmpty(base);
-        TestEnv.makeFile(base,"start.ini", //
-                "jetty.http.host=127.0.0.1",//
-                "--include-jetty-dir=" + common.getAbsolutePath(), //
-                "--include-jetty-dir=" + corp.getAbsolutePath());
+        TestEnv.makeFile(base,"start.ini",                "jetty.http.host=127.0.0.1",                "--include-jetty-dir=" + common.getAbsolutePath(),                "--include-jetty-dir=" + corp.getAbsolutePath());
 
         ConfigSources sources = new ConfigSources();
 
@@ -359,22 +343,17 @@ public class ConfigSourcesTest
         // Create corp
         File corp = testdir.getFile("corp");
         FS.ensureEmpty(corp);
-        TestEnv.makeFile(corp,"start.ini", //
-                "jetty.http.port=9090");
+        TestEnv.makeFile(corp,"start.ini",                "jetty.http.port=9090");
 
         // Create common
         File common = testdir.getFile("common");
         FS.ensureEmpty(common);
-        TestEnv.makeFile(common,"start.ini", //
-                "--include-jetty-dir=" + corp.getAbsolutePath(), //
-                "jetty.http.port=8080");
+        TestEnv.makeFile(common,"start.ini",                "--include-jetty-dir=" + corp.getAbsolutePath(),                "jetty.http.port=8080");
 
         // Create base
         File base = testdir.getFile("base");
         FS.ensureEmpty(base);
-        TestEnv.makeFile(base,"start.ini", //
-                "jetty.http.host=127.0.0.1",//
-                "--include-jetty-dir=" + common.getAbsolutePath());
+        TestEnv.makeFile(base,"start.ini",                "jetty.http.host=127.0.0.1",                "--include-jetty-dir=" + common.getAbsolutePath());
 
         ConfigSources sources = new ConfigSources();
 
@@ -405,24 +384,17 @@ public class ConfigSourcesTest
         // Create corp
         File corp = testdir.getFile("corp");
         FS.ensureEmpty(corp);
-        TestEnv.makeFile(corp,"start.ini", //
-                "jetty.http.port=9090");
+        TestEnv.makeFile(corp,"start.ini",                "jetty.http.port=9090");
 
         // Create common
         File common = testdir.getFile("common");
         FS.ensureEmpty(common);
-        TestEnv.makeFile(common,"start.ini", //
-                "my.corp=" + corp.getAbsolutePath(), //
-                "--include-jetty-dir=${my.corp}", //
-                "jetty.http.port=8080");
+        TestEnv.makeFile(common,"start.ini",                "my.corp=" + corp.getAbsolutePath(),                "--include-jetty-dir=${my.corp}",                "jetty.http.port=8080");
 
         // Create base
         File base = testdir.getFile("base");
         FS.ensureEmpty(base);
-        TestEnv.makeFile(base,"start.ini", //
-                "jetty.http.host=127.0.0.1",//
-                "my.common="+common.getAbsolutePath(), //
-                "--include-jetty-dir=${my.common}");
+        TestEnv.makeFile(base,"start.ini",                "jetty.http.host=127.0.0.1",                "my.common="+common.getAbsolutePath(),                "--include-jetty-dir=${my.common}");
 
         ConfigSources sources = new ConfigSources();
 
@@ -454,29 +426,22 @@ public class ConfigSourcesTest
         // Create devops
         File devops = testdir.getFile("devops");
         FS.ensureEmpty(devops);
-        TestEnv.makeFile(devops,"start.ini", //
-                "--module=logging", //
-                "jetty.http.port=2222");
+        TestEnv.makeFile(devops,"start.ini",                "--module=logging",                "jetty.http.port=2222");
 
         // Create corp
         File corp = testdir.getFile("corp");
         FS.ensureEmpty(corp);
-        TestEnv.makeFile(corp,"start.ini", //
-                "jetty.http.port=9090");
+        TestEnv.makeFile(corp,"start.ini",                "jetty.http.port=9090");
 
         // Create common
         File common = testdir.getFile("common");
         FS.ensureEmpty(common);
-        TestEnv.makeFile(common,"start.ini", //
-                "--include-jetty-dir=" + corp.getAbsolutePath(), //
-                "jetty.http.port=8080");
+        TestEnv.makeFile(common,"start.ini",                "--include-jetty-dir=" + corp.getAbsolutePath(),                "jetty.http.port=8080");
 
         // Create base
         File base = testdir.getFile("base");
         FS.ensureEmpty(base);
-        TestEnv.makeFile(base,"start.ini", //
-                "jetty.http.host=127.0.0.1",//
-                "--include-jetty-dir=" + common.getAbsolutePath());
+        TestEnv.makeFile(base,"start.ini",                "jetty.http.host=127.0.0.1",                "--include-jetty-dir=" + common.getAbsolutePath());
 
         ConfigSources sources = new ConfigSources();
         
@@ -511,22 +476,17 @@ public class ConfigSourcesTest
         // Create corp
         File corp = testdir.getFile("corp");
         FS.ensureEmpty(corp);
-        TestEnv.makeFile(corp,"start.ini", //
-                "jetty.http.port=9090");
+        TestEnv.makeFile(corp,"start.ini",                "jetty.http.port=9090");
 
         // Create common
         File common = testdir.getFile("common");
         FS.ensureEmpty(common);
-        TestEnv.makeFile(common,"start.ini", //
-                "--include-jetty-dir=" + corp.getAbsolutePath(), //
-                "jetty.http.port=8080");
+        TestEnv.makeFile(common,"start.ini",                "--include-jetty-dir=" + corp.getAbsolutePath(),                "jetty.http.port=8080");
 
         // Create base
         File base = testdir.getFile("base");
         FS.ensureEmpty(base);
-        TestEnv.makeFile(base,"start.ini", //
-                "jetty.http.host=127.0.0.1",//
-                "--include-jetty-dir=" + common.getAbsolutePath());
+        TestEnv.makeFile(base,"start.ini",                "jetty.http.host=127.0.0.1",                "--include-jetty-dir=" + common.getAbsolutePath());
 
         ConfigSources sources = new ConfigSources();
         
@@ -580,9 +540,7 @@ public class ConfigSourcesTest
         // Create base
         File base = testdir.getFile("base");
         FS.ensureEmpty(base);
-        TestEnv.makeFile(base,"start.ini", //
-                "jetty.http.host=127.0.0.1",//
-                "--include-jetty-dir=" + common.getAbsolutePath());
+        TestEnv.makeFile(base,"start.ini",                "jetty.http.host=127.0.0.1",                "--include-jetty-dir=" + common.getAbsolutePath());
 
         ConfigSources sources = new ConfigSources();
 

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 
 package org.eclipse.jetty.security;
@@ -51,7 +46,7 @@ public abstract class MappedLoginService extends AbstractLifeCycle implements Lo
     protected String _name;
     protected final ConcurrentMap<String, UserIdentity> _users=new ConcurrentHashMap<String, UserIdentity>();
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected MappedLoginService()
     {
     }
@@ -89,8 +84,9 @@ public abstract class MappedLoginService extends AbstractLifeCycle implements Lo
      */
     public void setIdentityService(IdentityService identityService)
     {
-        if (isRunning())
-            throw new IllegalStateException("Running");
+        if (isRunning()) {
+			throw new IllegalStateException("Running");
+		}
         _identityService = identityService;
     }
 
@@ -100,8 +96,9 @@ public abstract class MappedLoginService extends AbstractLifeCycle implements Lo
      */
     public void setName(String name)
     {
-        if (isRunning())
-            throw new IllegalStateException("Running");
+        if (isRunning()) {
+			throw new IllegalStateException("Running");
+		}
         _name = name;
     }
 
@@ -111,16 +108,14 @@ public abstract class MappedLoginService extends AbstractLifeCycle implements Lo
      */
     public void setUsers(Map<String, UserIdentity> users)
     {
-        if (isRunning())
-            throw new IllegalStateException("Running");
+        if (isRunning()) {
+			throw new IllegalStateException("Running");
+		}
         _users.clear();
         _users.putAll(users);
     }
 
-    /* ------------------------------------------------------------ */
-    /**
-     * @see org.eclipse.jetty.util.component.AbstractLifeCycle#doStart()
-     */
+    /** ------------------------------------------------------------. */
     @Override
     protected void doStart() throws Exception
     {
@@ -128,14 +123,14 @@ public abstract class MappedLoginService extends AbstractLifeCycle implements Lo
         super.doStart();
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     protected void doStop() throws Exception
     {
         super.doStop();
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void logout(UserIdentity identity)
     {
         LOG.debug("logout {}",identity);
@@ -143,11 +138,11 @@ public abstract class MappedLoginService extends AbstractLifeCycle implements Lo
         //TODO should remove the user?????
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public String toString()
     {
-        return this.getClass().getSimpleName()+"["+_name+"]";
+        return getClass().getSimpleName()+"["+_name+"]";
     }
 
     /* ------------------------------------------------------------ */
@@ -161,9 +156,9 @@ public abstract class MappedLoginService extends AbstractLifeCycle implements Lo
     protected synchronized UserIdentity putUser(String userName, Object info)
     {
         final UserIdentity identity;
-        if (info instanceof UserIdentity)
-            identity=(UserIdentity)info;
-        else
+        if (info instanceof UserIdentity) {
+			identity=(UserIdentity)info;
+		} else
         {
             Credential credential = (info instanceof Credential)?(Credential)info:Credential.getCredential(info.toString());
 
@@ -193,9 +188,11 @@ public abstract class MappedLoginService extends AbstractLifeCycle implements Lo
         subject.getPrincipals().add(userPrincipal);
         subject.getPrivateCredentials().add(credential);
 
-        if (roles!=null)
-            for (String role : roles)
-                subject.getPrincipals().add(new RolePrincipal(role));
+        if (roles!=null) {
+			for (String role : roles) {
+				subject.getPrincipals().add(new RolePrincipal(role));
+			}
+		}
 
         subject.setReadOnly();
         UserIdentity identity=_identityService.newUserIdentity(subject,userPrincipal,roles);
@@ -211,9 +208,11 @@ public abstract class MappedLoginService extends AbstractLifeCycle implements Lo
         Subject subject = new Subject();
         subject.getPrincipals().add(userPrincipal);
         subject.getPrivateCredentials().add(userPrincipal._credential);
-        if (roles!=null)
-            for (String role : roles)
-                subject.getPrincipals().add(new RolePrincipal(role));
+        if (roles!=null) {
+			for (String role : roles) {
+				subject.getPrincipals().add(new RolePrincipal(role));
+			}
+		}
         subject.setReadOnly();
         UserIdentity identity=_identityService.newUserIdentity(subject,userPrincipal,roles);
         _users.put(userPrincipal._name,identity);
@@ -221,20 +220,18 @@ public abstract class MappedLoginService extends AbstractLifeCycle implements Lo
     }
     
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void removeUser(String username)
     {
         _users.remove(username);
     }
 
-    /* ------------------------------------------------------------ */
-    /**
-     * @see org.eclipse.jetty.security.LoginService#login(java.lang.String, java.lang.Object, ServletRequest)
-     */
+    /** ------------------------------------------------------------. */
     public UserIdentity login(String username, Object credentials, ServletRequest request)
     {
-        if (username == null)
-            return null;
+        if (username == null) {
+			return null;
+		}
         
         UserIdentity user = _users.get(username);
 
@@ -245,53 +242,47 @@ public abstract class MappedLoginService extends AbstractLifeCycle implements Lo
             {
                 //safe to load the roles
                 String[] roles = loadRoleInfo(userPrincipal);
-                user = putUser(userPrincipal, roles);
-                return user;
+                return putUser(userPrincipal, roles);
             }
         }
         else
         {
             UserPrincipal principal = (UserPrincipal)user.getUserPrincipal();
-            if (principal.authenticate(credentials))
-                return user;
+            if (principal.authenticate(credentials)) {
+				return user;
+			}
         }
         return null;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public boolean validate(UserIdentity user)
     {
-        if (_users.containsKey(user.getUserPrincipal().getName()))
-            return true;
-
-        if (loadUser(user.getUserPrincipal().getName())!=null)
-            return true;
-
-        return false;
+        return _users.containsKey(user.getUserPrincipal().getName()) || loadUser(user.getUserPrincipal().getName())!=null;
     }
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected abstract String[] loadRoleInfo (KnownUser user);
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected abstract KnownUser loadUserInfo (String username);
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected abstract UserIdentity loadUser(String username);
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected abstract void loadUsers() throws IOException;
 
 
     /* ------------------------------------------------------------ */
     /* ------------------------------------------------------------ */
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public interface UserPrincipal extends Principal,Serializable
     {
         boolean authenticate(Object credentials);
-        public boolean isAuthenticated();
+        boolean isAuthenticated();
     }
 
     /* ------------------------------------------------------------ */
     /* ------------------------------------------------------------ */
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public static class RolePrincipal implements Principal,Serializable
     {
         private static final long serialVersionUID = 2998397924051854402L;
@@ -308,7 +299,7 @@ public abstract class MappedLoginService extends AbstractLifeCycle implements Lo
 
     /* ------------------------------------------------------------ */
     /* ------------------------------------------------------------ */
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public static class Anonymous implements UserPrincipal,Serializable
     {
         private static final long serialVersionUID = 1097640442553284845L;
@@ -332,39 +323,39 @@ public abstract class MappedLoginService extends AbstractLifeCycle implements Lo
 
     /* ------------------------------------------------------------ */
     /* ------------------------------------------------------------ */
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public static class KnownUser implements UserPrincipal,Serializable
     {
         private static final long serialVersionUID = -6226920753748399662L;
         private final String _name;
         private final Credential _credential;
 
-        /* -------------------------------------------------------- */
+        /** --------------------------------------------------------. */
         public KnownUser(String name,Credential credential)
         {
             _name=name;
             _credential=credential;
         }
 
-        /* -------------------------------------------------------- */
+        /** --------------------------------------------------------. */
         public boolean authenticate(Object credentials)
         {
             return _credential!=null && _credential.check(credentials);
         }
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         public String getName()
         {
             return _name;
         }
 
-        /* -------------------------------------------------------- */
+        /** --------------------------------------------------------. */
         public boolean isAuthenticated()
         {
             return true;
         }
 
-        /* -------------------------------------------------------- */
+        /** --------------------------------------------------------. */
         @Override
         public String toString()
         {

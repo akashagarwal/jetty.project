@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.deploy;
 
@@ -66,16 +61,19 @@ public class MockAppProvider extends AbstractLifeCycle implements AppProvider
         }
         
         // special case of archive (or dir) named "root" is / context
-        if (path.equalsIgnoreCase("root") || path.equalsIgnoreCase("root/"))
-            path = URIUtil.SLASH;
+        if ("root".equalsIgnoreCase(path) || "root/".equalsIgnoreCase(path)) {
+			path = URIUtil.SLASH;
+		}
 
         // Ensure "/" is Prepended to all context paths.
-        if (path.charAt(0) != '/')
-            path = "/" + path;
+        if (path.charAt(0) != '/') {
+			path = "/" + path;
+		}
 
         // Ensure "/" is Not Trailing in context paths.
-        if (path.endsWith("/") && path.length() > 0)
-            path = path.substring(0,path.length() - 1);
+        if (path.endsWith("/") && path.length() > 0) {
+			path = path.substring(0,path.length() - 1);
+		}
 
         context.setContextPath(path);
         

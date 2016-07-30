@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.servlet;
 
@@ -154,8 +149,9 @@ public class PostServletTest
         req.append("Transfer-Encoding: chunked\r\n");
         req.append("\r\n");
         // intentionally bad (not a valid chunked char here)
-        for (int i=1024;i-->0;)
-            req.append("xxxxxxxxxxxx");
+        for (int i=1024;i-->0;) {
+			req.append("xxxxxxxxxxxx");
+		}
         req.append("\r\n");
         req.append("\r\n");
 
@@ -186,8 +182,9 @@ public class PostServletTest
 
             req.setLength(0);
             // intentionally bad (not a valid chunked char here)
-            for (int i=1024;i-->0;)
-                req.append("xxxxxxxxxxxx");
+            for (int i=1024;i-->0;) {
+				req.append("xxxxxxxxxxxx");
+			}
             req.append("\r\n");
             req.append("\r\n");
 
@@ -224,8 +221,9 @@ public class PostServletTest
             LocalConnector.LocalEndPoint endp=connector.executeRequest(req.toString());
             req.setLength(0);
 
-            while(!posted.get())
-                Thread.sleep(100);
+            while(!posted.get()) {
+				Thread.sleep(100);
+			}
             Thread.sleep(100);
             req.append("x\r\n");
             req.append("World\n");

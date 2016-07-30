@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.client.util;
 
@@ -54,7 +49,7 @@ public abstract class BufferingResponseListener extends Listener.Adapter
     }
 
     /**
-     * Creates an instance with the given maximum length
+     * Creates an instance with the given maximum length.
      *
      * @param maxLength the maximum length of the content
      */
@@ -91,14 +86,16 @@ public abstract class BufferingResponseListener extends Listener.Adapter
                 String encoding = contentType.substring(index + charset.length());
                 // Sometimes charsets arrive with an ending semicolon
                 int semicolon = encoding.indexOf(';');
-                if (semicolon > 0)
-                    encoding = encoding.substring(0, semicolon).trim();
+                if (semicolon > 0) {
+					encoding = encoding.substring(0, semicolon).trim();
+				}
                 this.encoding = encoding;
             }
 
             int semicolon = media.indexOf(';');
-            if (semicolon > 0)
-                media = media.substring(0, semicolon).trim();
+            if (semicolon > 0) {
+				media = media.substring(0, semicolon).trim();
+			}
             this.mediaType = media;
         }
     }
@@ -110,8 +107,9 @@ public abstract class BufferingResponseListener extends Listener.Adapter
         if (length > BufferUtil.space(buffer))
         {
             int requiredCapacity = buffer == null ? 0 : buffer.capacity() + length;
-            if (requiredCapacity > maxLength)
-                response.abort(new IllegalArgumentException("Buffering capacity exceeded"));
+            if (requiredCapacity > maxLength) {
+				response.abort(new IllegalArgumentException("Buffering capacity exceeded"));
+			}
 
             int newCapacity = Math.min(Integer.highestOneBit(requiredCapacity) << 1, maxLength);
             buffer = BufferUtil.ensureCapacity(buffer, newCapacity);
@@ -138,9 +136,10 @@ public abstract class BufferingResponseListener extends Listener.Adapter
      */
     public byte[] getContent()
     {
-        if (buffer == null)
-            return new byte[0];
-        return BufferUtil.toArray(buffer);
+        if (buffer != null) {
+			return BufferUtil.toArray(buffer);
+		}
+        return new byte[0];
     }
 
     /**
@@ -151,9 +150,10 @@ public abstract class BufferingResponseListener extends Listener.Adapter
     public String getContentAsString()
     {
         String encoding = this.encoding;
-        if (encoding == null)
-            return getContentAsString(StandardCharsets.UTF_8);
-        return getContentAsString(encoding);
+        if (encoding != null) {
+			return getContentAsString(encoding);
+		}
+        return getContentAsString(StandardCharsets.UTF_8);
     }
 
     /**
@@ -163,9 +163,10 @@ public abstract class BufferingResponseListener extends Listener.Adapter
      */
     public String getContentAsString(String encoding)
     {
-        if (buffer == null)
-            return null;
-        return BufferUtil.toString(buffer, Charset.forName(encoding));
+        if (buffer != null) {
+			return BufferUtil.toString(buffer, Charset.forName(encoding));
+		}
+        return null;
     }
 
     /**
@@ -175,9 +176,10 @@ public abstract class BufferingResponseListener extends Listener.Adapter
      */
     public String getContentAsString(Charset encoding)
     {
-        if (buffer == null)
-            return null;
-        return BufferUtil.toString(buffer, encoding);
+        if (buffer != null) {
+			return BufferUtil.toString(buffer, encoding);
+		}
+        return null;
     }
     
     /**
@@ -185,8 +187,9 @@ public abstract class BufferingResponseListener extends Listener.Adapter
      */
     public InputStream getContentAsInputStream()
     {
-        if (buffer == null)
-            return new ByteArrayInputStream(new byte[]{});
-        return new ByteArrayInputStream(buffer.array(), buffer.arrayOffset(), buffer.remaining());
+        if (buffer != null) {
+			return new ByteArrayInputStream(buffer.array(), buffer.arrayOffset(), buffer.remaining());
+		}
+        return new ByteArrayInputStream(new byte[]{});
     }
 }

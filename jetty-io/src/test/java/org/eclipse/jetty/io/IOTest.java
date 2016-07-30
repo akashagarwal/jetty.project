@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.io;
 
@@ -293,8 +288,9 @@ public class IOTest
             int i = 0;
             try
             {
-                for (i = 0; i < 100000; i++)
-                    client.getOutputStream().write(1);
+                for (i = 0; i < 100000; i++) {
+					client.getOutputStream().write(1);
+				}
 
                 Assert.fail();
             }
@@ -358,8 +354,9 @@ public class IOTest
             }
         };
         acceptor.start();
-        while (alatch.getCount()==2)
-            Thread.sleep(10);
+        while (alatch.getCount()==2) {
+			Thread.sleep(10);
+		}
 
         // interrupt the acceptor
         acceptor.interrupt();
@@ -461,8 +458,9 @@ public class IOTest
     public void testGatherWrite() throws Exception
     {
         File dir = MavenTestingUtils.getTargetTestingDir();
-        if (!dir.exists())
-            dir.mkdir();
+        if (!dir.exists()) {
+			dir.mkdir();
+		}
 
         File file = File.createTempFile("test",".txt",dir);
         file.deleteOnExit();
@@ -484,7 +482,8 @@ public class IOTest
 
         assertEquals(expected,wrote);
 
-        for (int i=0;i<buffers.length;i++)
-            assertEquals(0,buffers[i].remaining());
+        for (int i=0;i<buffers.length;i++) {
+			assertEquals(0,buffers[i].remaining());
+		}
     }
 }

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.server.ab;
 
@@ -40,7 +35,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
- * Big frame/message tests
+ * Big frame/message tests.
  */
 @RunWith(AdvancedRunner.class)
 public class TestABCase9 extends AbstractABCase
@@ -82,7 +77,7 @@ public class TestABCase9 extends AbstractABCase
             frag = new byte[len];
             System.arraycopy(msg,offset,frag,0,len);
             remaining -= len;
-            fin = (remaining <= 0);
+            fin = remaining <= 0;
             buf = ByteBuffer.wrap(frag);
 
             send.add(toDataFrame(op).setPayload(buf).setFin(fin));
@@ -130,7 +125,7 @@ public class TestABCase9 extends AbstractABCase
     }
 
     /**
-     * Echo 64KB text message (1 frame)
+     * Echo 64KB text message (1 frame).
      * @throws Exception on test failure
      */
     @Test
@@ -158,7 +153,7 @@ public class TestABCase9 extends AbstractABCase
     }
 
     /**
-     * Echo 256KB text message (1 frame)
+     * Echo 256KB text message (1 frame).
      * @throws Exception on test failure
      */
     @Test
@@ -186,7 +181,7 @@ public class TestABCase9 extends AbstractABCase
     }
 
     /**
-     * Echo 1MB text message (1 frame)
+     * Echo 1MB text message (1 frame).
      * @throws Exception on test failure
      */
     @Test
@@ -214,7 +209,7 @@ public class TestABCase9 extends AbstractABCase
     }
 
     /**
-     * Echo 4MB text message (1 frame)
+     * Echo 4MB text message (1 frame).
      * @throws Exception on test failure
      */
     @Test
@@ -242,7 +237,7 @@ public class TestABCase9 extends AbstractABCase
     }
 
     /**
-     * Echo 8MB text message (1 frame)
+     * Echo 8MB text message (1 frame).
      * @throws Exception on test failure
      */
     @Test
@@ -271,7 +266,7 @@ public class TestABCase9 extends AbstractABCase
     }
 
     /**
-     * Echo 16MB text message (1 frame)
+     * Echo 16MB text message (1 frame).
      * @throws Exception on test failure
      */
     @Test
@@ -300,7 +295,7 @@ public class TestABCase9 extends AbstractABCase
     }
 
     /**
-     * Echo 64KB binary message (1 frame)
+     * Echo 64KB binary message (1 frame).
      * @throws Exception on test failure
      */
     @Test
@@ -327,7 +322,7 @@ public class TestABCase9 extends AbstractABCase
     }
 
     /**
-     * Echo 256KB binary message (1 frame)
+     * Echo 256KB binary message (1 frame).
      * @throws Exception on test failure
      */
     @Test
@@ -355,7 +350,7 @@ public class TestABCase9 extends AbstractABCase
     }
 
     /**
-     * Echo 1MB binary message (1 frame)
+     * Echo 1MB binary message (1 frame).
      * @throws Exception on test failure
      */
     @Test
@@ -384,7 +379,7 @@ public class TestABCase9 extends AbstractABCase
     }
 
     /**
-     * Echo 4MB binary message (1 frame)
+     * Echo 4MB binary message (1 frame).
      * @throws Exception on test failure
      */
     @Test
@@ -413,7 +408,7 @@ public class TestABCase9 extends AbstractABCase
     }
 
     /**
-     * Echo 8MB binary message (1 frame)
+     * Echo 8MB binary message (1 frame).
      * @throws Exception on test failure
      */
     @Test
@@ -442,7 +437,7 @@ public class TestABCase9 extends AbstractABCase
     }
 
     /**
-     * Echo 16MB binary message (1 frame)
+     * Echo 16MB binary message (1 frame).
      * @throws Exception on test failure
      */
     @Test
@@ -669,7 +664,7 @@ public class TestABCase9 extends AbstractABCase
     }
 
     /**
-     * Send 1MB text message in 1 frame, but slowly
+     * Send 1MB text message in 1 frame, but slowly.
      * @throws Exception on test failure
      */
     @Test
@@ -680,7 +675,7 @@ public class TestABCase9 extends AbstractABCase
     }
 
     /**
-     * Send 1MB text message in 1 frame, but slowly
+     * Send 1MB text message in 1 frame, but slowly.
      * @throws Exception on test failure
      */
     @Test
@@ -691,7 +686,7 @@ public class TestABCase9 extends AbstractABCase
     }
 
     /**
-     * Send 1MB text message in 1 frame, but slowly
+     * Send 1MB text message in 1 frame, but slowly.
      * @throws Exception on test failure
      */
     @Test
@@ -702,7 +697,7 @@ public class TestABCase9 extends AbstractABCase
     }
 
     /**
-     * Send 1MB text message in 1 frame, but slowly
+     * Send 1MB text message in 1 frame, but slowly.
      * @throws Exception on test failure
      */
     @Test
@@ -713,7 +708,7 @@ public class TestABCase9 extends AbstractABCase
     }
 
     /**
-     * Send 1MB text message in 1 frame, but slowly
+     * Send 1MB text message in 1 frame, but slowly.
      * @throws Exception on test failure
      */
     @Test
@@ -724,7 +719,7 @@ public class TestABCase9 extends AbstractABCase
     }
 
     /**
-     * Send 1MB text message in 1 frame, but slowly
+     * Send 1MB text message in 1 frame, but slowly.
      * @throws Exception on test failure
      */
     @Test
@@ -735,7 +730,7 @@ public class TestABCase9 extends AbstractABCase
     }
 
     /**
-     * Send 1MB binary message in 1 frame, but slowly
+     * Send 1MB binary message in 1 frame, but slowly.
      * @throws Exception on test failure
      */
     @Test
@@ -746,7 +741,7 @@ public class TestABCase9 extends AbstractABCase
     }
 
     /**
-     * Send 1MB binary message in 1 frame, but slowly
+     * Send 1MB binary message in 1 frame, but slowly.
      * @throws Exception on test failure
      */
     @Test
@@ -757,7 +752,7 @@ public class TestABCase9 extends AbstractABCase
     }
 
     /**
-     * Send 1MB binary message in 1 frame, but slowly
+     * Send 1MB binary message in 1 frame, but slowly.
      * @throws Exception on test failure
      */
     @Test
@@ -768,7 +763,7 @@ public class TestABCase9 extends AbstractABCase
     }
 
     /**
-     * Send 1MB binary message in 1 frame, but slowly
+     * Send 1MB binary message in 1 frame, but slowly.
      * @throws Exception on test failure
      */
     @Test
@@ -779,7 +774,7 @@ public class TestABCase9 extends AbstractABCase
     }
 
     /**
-     * Send 1MB binary message in 1 frame, but slowly
+     * Send 1MB binary message in 1 frame, but slowly.
      * @throws Exception on test failure
      */
     @Test
@@ -790,7 +785,7 @@ public class TestABCase9 extends AbstractABCase
     }
 
     /**
-     * Send 1MB binary message in 1 frame, but slowly
+     * Send 1MB binary message in 1 frame, but slowly.
      * @throws Exception on test failure
      */
     @Test

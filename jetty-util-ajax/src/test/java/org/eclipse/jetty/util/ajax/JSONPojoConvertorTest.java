@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util.ajax;
 
@@ -43,15 +38,15 @@ public class JSONPojoConvertorTest
         Foo foo = new Foo();
         foo._name = "Foo @ " + System.currentTimeMillis();
         foo._int1 = 1;
-        foo._int2 = new Integer(2);
+        foo._int2 = Integer.valueOf(2);
         foo._long1 = 1000001l;
-        foo._long2 = new Long(1000002l);
+        foo._long2 = Long.valueOf(1000002l);
         foo._float1 = 10.11f;
-        foo._float2 = new Float(10.22f);
+        foo._float2 = Float.valueOf(10.22f);
         foo._double1 = 10000.11111d;
-        foo._double2 = new Double(10000.22222d);
+        foo._double2 = Double.valueOf(10000.22222d);
         foo._char1='a';
-        foo._char2=new Character('b');
+        foo._char2=Character.valueOf('b');
 
         Bar bar = new Bar("Hello", true, new Baz("World", Boolean.FALSE, foo), new Baz[]{
             new Baz("baz0", Boolean.TRUE, null), new Baz("baz1", Boolean.FALSE, null)
@@ -91,15 +86,15 @@ public class JSONPojoConvertorTest
         Foo foo = new Foo();
         foo._name = "Foo @ " + System.currentTimeMillis();
         foo._int1 = 1;
-        foo._int2 = new Integer(2);
+        foo._int2 = Integer.valueOf(2);
         foo._long1 = 1000001l;
-        foo._long2 = new Long(1000002l);
+        foo._long2 = Long.valueOf(1000002l);
         foo._float1 = 10.11f;
-        foo._float2 = new Float(10.22f);
+        foo._float2 = Float.valueOf(10.22f);
         foo._double1 = 10000.11111d;
-        foo._double2 = new Double(10000.22222d);
+        foo._double2 = Double.valueOf(10000.22222d);
         foo._char1='a';
-        foo._char2=new Character('b');
+        foo._char2=Character.valueOf('b');
 
         Bar bar = new Bar("Hello", true, new Baz("World", Boolean.FALSE, foo));
         // bar.setColor(Color.Blue);
@@ -156,13 +151,7 @@ public class JSONPojoConvertorTest
         @Override
         public String toString()
         {
-            return new StringBuffer()
-                .append("\n=== ").append(getClass().getSimpleName()).append(" ===")
-                .append("\ntitle: ").append(getTitle())
-                .append("\nboolean1: ").append(isBoolean1())
-                .append("\nnullTest: ").append(getNullTest())
-                .append("\nbaz: ").append(getBaz())
-                .append("\ncolor: ").append(_color).toString();
+            return "\n=== " + getClass().getSimpleName() + " ===" + "\ntitle: " + getTitle() + "\nboolean1: " + isBoolean1() + "\nnullTest: " + getNullTest() + "\nbaz: " + getBaz() + "\ncolor: " + _color;
         }
 
         public void setTitle(String title)
@@ -250,10 +239,7 @@ public class JSONPojoConvertorTest
         @Override
         public String toString()
         {
-            return new StringBuffer().append("\n=== ").append(getClass().getSimpleName()).append(" ===")
-                .append("\nmessage: ").append(getMessage())
-                .append("\nboolean2: ").append(isBoolean2())
-                .append("\nfoo: ").append(getFoo()).toString();
+            return "\n=== " + getClass().getSimpleName() + " ===" + "\nmessage: " + getMessage() + "\nboolean2: " + isBoolean2() + "\nfoo: " + getFoo();
         }
 
         public void setMessage(String message)
@@ -310,19 +296,8 @@ public class JSONPojoConvertorTest
         @Override
         public String toString()
         {
-            return new StringBuffer().append("\n=== ").append(getClass().getSimpleName()).append(" ===")
-                .append("\nname: ").append(_name)
-                .append("\nint1: ").append(_int1)
-                .append("\nint2: ").append(_int2)
-                .append("\nlong1: ").append(_long1)
-                .append("\nlong2: ").append(_long2)
-                .append("\nfloat1: ").append(_float1)
-                .append("\nfloat2: ").append(_float2)
-                .append("\ndouble1: ").append(_double1)
-                .append("\ndouble2: ").append(_double2)
-                .append("\nchar1: ").append(_char1)
-                .append("\nchar2: ").append(_char2)
-                .toString();
+            return "\n=== " + getClass().getSimpleName() + " ===" + "\nname: " + _name + "\nint1: " + _int1 + "\nint2: " + _int2 + "\nlong1: " + _long1 + "\nlong2: " + _long2 + "\nfloat1: "
+					+ _float1 + "\nfloat2: " + _float2 + "\ndouble1: " + _double1 + "\ndouble2: " + _double2 + "\nchar1: " + _char1 + "\nchar2: " + _char2;
         }
 
         @Override

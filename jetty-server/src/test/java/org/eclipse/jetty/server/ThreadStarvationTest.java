@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 
@@ -89,12 +84,7 @@ public class ThreadStarvationTest
         OutputStream os = client.getOutputStream();
         InputStream is = client.getInputStream();
 
-        String request = "" +
-                "GET / HTTP/1.0\r\n" +
-                "Host: localhost\r\n" +
-                "Content-Length: 10\r\n" +
-                "\r\n" +
-                "0123456789\r\n";
+        String request = "GET / HTTP/1.0\r\n" + "Host: localhost\r\n" + "Content-Length: 10\r\n" + "\r\n" + "0123456789\r\n";
         os.write(request.getBytes(StandardCharsets.UTF_8));
         os.flush();
 
@@ -134,12 +124,7 @@ public class ThreadStarvationTest
             os[i] = client[i].getOutputStream();
             is[i] = client[i].getInputStream();
 
-            String request = "" +
-                    "PUT / HTTP/1.0\r\n" +
-                    "host: localhost\r\n" +
-                    "content-length: 10\r\n" +
-                    "\r\n" +
-                    "1";
+            String request = "PUT / HTTP/1.0\r\n" + "host: localhost\r\n" + "content-length: 10\r\n" + "\r\n" + "1";
             os[i].write(request.getBytes(StandardCharsets.UTF_8));
             os[i].flush();
         }
@@ -148,7 +133,7 @@ public class ThreadStarvationTest
 
         for (int i = 0; i < client.length; i++)
         {
-            os[i].write(("234567890\r\n").getBytes(StandardCharsets.UTF_8));
+            os[i].write("234567890\r\n".getBytes(StandardCharsets.UTF_8));
             os[i].flush();
         }
 
@@ -198,12 +183,7 @@ public class ThreadStarvationTest
         InputStream is = client.getInputStream();
         OutputStream os = client.getOutputStream();
 
-        String request = "" +
-                "PUT / HTTP/1.0\r\n" +
-                "Host: localhost\r\n" +
-                "Content-Length: 10\r\n" +
-                "\r\n" +
-                "1";
+        String request = "PUT / HTTP/1.0\r\n" + "Host: localhost\r\n" + "Content-Length: 10\r\n" + "\r\n" + "1";
         os.write(request.getBytes(StandardCharsets.UTF_8));
         os.flush();
 
@@ -219,8 +199,9 @@ public class ThreadStarvationTest
         }
 
         // Release the stolen threads.
-        for (CountDownLatch latch : latches)
-            latch.countDown();
+        for (CountDownLatch latch : latches) {
+			latch.countDown();
+		}
         Thread.sleep(500);
 
         // Send the rest of the body to unblock the reader thread.
@@ -250,8 +231,9 @@ public class ThreadStarvationTest
             int r = 0;
             while (r < l)
             {
-                if (request.getInputStream().read() >= 0)
-                    r++;
+                if (request.getInputStream().read() >= 0) {
+					r++;
+				}
             }
 
             response.getOutputStream().write(("Read Input " + r + "\r\n").getBytes());

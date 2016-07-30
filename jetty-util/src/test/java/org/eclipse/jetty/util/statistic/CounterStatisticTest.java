@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util.statistic;
 
@@ -29,7 +24,7 @@ import java.util.concurrent.CyclicBarrier;
 import org.junit.Test;
 
 
-/* ------------------------------------------------------------ */
+/** ------------------------------------------------------------. */
 public class CounterStatisticTest
 {
 
@@ -113,8 +108,9 @@ public class CounterStatisticTest
                     for (int l=L;l-->0;)
                     {
                         counter.decrement();
-                        if (random.nextInt(5)==0)
-                            Thread.yield();
+                        if (random.nextInt(5)==0) {
+							Thread.yield();
+						}
                     }
                 }
             }
@@ -135,10 +131,12 @@ public class CounterStatisticTest
                     for (int l=L;l-->0;)
                     {
                         counter.increment();
-                        if (l==L/2)
-                            decBarrier.countDown();
-                        if (random.nextInt(5)==0)
-                            Thread.yield();
+                        if (l==L/2) {
+							decBarrier.countDown();
+						}
+                        if (random.nextInt(5)==0) {
+							Thread.yield();
+						}
                     }
                 }
             };
@@ -146,8 +144,9 @@ public class CounterStatisticTest
         }
         
 
-        for (int i=N;i-->0;)
-            threads[i].join();
+        for (int i=N;i-->0;) {
+			threads[i].join();
+		}
         
         assertThat(counter.getCurrent(),equalTo(0L));
         assertThat(counter.getTotal(),equalTo(N*L/2L));

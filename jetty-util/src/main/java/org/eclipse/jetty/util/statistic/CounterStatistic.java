@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util.statistic;
 
@@ -36,7 +31,7 @@ public class CounterStatistic
     protected final AtomicLong _current = new AtomicLong();
     protected final LongAdder _total = new LongAdder();
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void reset()
     {
         _total.reset();
@@ -46,7 +41,7 @@ public class CounterStatistic
         _max.accumulate(current);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void reset(final long value)
     {
         _current.set(value);
@@ -77,7 +72,7 @@ public class CounterStatistic
 
     /* ------------------------------------------------------------ */
     /**
-     * increment the value by one
+     * Increment the value by one.
      * @return the new value, post increment
      */
     public long increment()
@@ -90,7 +85,7 @@ public class CounterStatistic
 
     /* ------------------------------------------------------------ */
     /**
-     * decrement by 1
+     * Decrement by 1.
      * @return the new value, post-decrement
      */
     public long decrement()
@@ -125,10 +120,10 @@ public class CounterStatistic
         return _total.sum();
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public String toString()
     {
-        return String.format("%s@%x{c=%d,m=%d,t=%d}",this.getClass().getSimpleName(),hashCode(),_current.get(),_max.get(),_total.sum());
+        return String.format("%s@%x{c=%d,m=%d,t=%d}",getClass().getSimpleName(),hashCode(),_current.get(),_max.get(),_total.sum());
     }
 }

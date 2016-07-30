@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.client;
 
@@ -96,11 +91,13 @@ public class HttpRequest implements Request
         followRedirects(client.isFollowRedirects());
         idleTimeout = client.getIdleTimeout();
         HttpField acceptEncodingField = client.getAcceptEncodingField();
-        if (acceptEncodingField != null)
-            headers.put(acceptEncodingField);
+        if (acceptEncodingField != null) {
+			headers.put(acceptEncodingField);
+		}
         HttpField userAgentField = client.getUserAgentField();
-        if (userAgentField != null)
-            headers.put(userAgentField);
+        if (userAgentField != null) {
+			headers.put(userAgentField);
+		}
     }
 
     protected HttpConversation getConversation()
@@ -171,8 +168,9 @@ public class HttpRequest implements Request
         else
         {
             String rawPath = uri.getRawPath();
-            if (rawPath == null)
-                rawPath = "";
+            if (rawPath == null) {
+				rawPath = "";
+			}
             this.path = rawPath;
             String query = uri.getRawQuery();
             if (query != null)
@@ -181,8 +179,9 @@ public class HttpRequest implements Request
                 params.clear();
                 extractParams(query);
             }
-            if (uri.isAbsolute())
-                this.path = buildURI(false).toString();
+            if (uri.isAbsolute()) {
+				this.path = buildURI(false).toString();
+			}
         }
         this.uri = null;
         return this;
@@ -197,8 +196,9 @@ public class HttpRequest implements Request
     @Override
     public URI getURI()
     {
-        if (uri == null)
-            uri = buildURI(true);
+        if (uri == null) {
+			uri = buildURI(true);
+		}
         return uri == NULL_URI ? null : uri;
     }
 
@@ -227,10 +227,11 @@ public class HttpRequest implements Request
         if (!fromQuery)
         {
             // If we have an existing query string, preserve it and append the new parameter.
-            if (query != null)
-                query += "&" + urlEncode(name) + "=" + urlEncode(value);
-            else
-                query = buildQuery();
+            if (query != null) {
+				query += "&" + urlEncode(name) + "=" + urlEncode(value);
+			} else {
+				query = buildQuery();
+			}
             uri = null;
         }
         return this;
@@ -261,32 +262,36 @@ public class HttpRequest implements Request
         StringBuilder result = new StringBuilder();
         for (String accept : accepts)
         {
-            if (result.length() > 0)
-                result.append(", ");
+            if (result.length() > 0) {
+				result.append(", ");
+			}
             result.append(accept);
         }
-        if (result.length() > 0)
-            headers.put(HttpHeader.ACCEPT, result.toString());
+        if (result.length() > 0) {
+			headers.put(HttpHeader.ACCEPT, result.toString());
+		}
         return this;
     }
 
     @Override
     public Request header(String name, String value)
     {
-        if (value == null)
-            headers.remove(name);
-        else
-            headers.add(name, value);
+        if (value != null) {
+			headers.add(name, value);
+		} else {
+			headers.remove(name);
+		}
         return this;
     }
 
     @Override
     public Request header(HttpHeader header, String value)
     {
-        if (value == null)
-            headers.remove(header);
-        else
-            headers.add(header, value);
+        if (value != null) {
+			headers.add(header, value);
+		} else {
+			headers.remove(header);
+		}
         return this;
     }
 
@@ -299,8 +304,9 @@ public class HttpRequest implements Request
     @Override
     public Request cookie(HttpCookie cookie)
     {
-        if (cookies == null)
-            cookies = new ArrayList<>();
+        if (cookies == null) {
+			cookies = new ArrayList<>();
+		}
         cookies.add(cookie);
         return this;
     }
@@ -308,8 +314,9 @@ public class HttpRequest implements Request
     @Override
     public Request attribute(String name, Object value)
     {
-        if (attributes == null)
-            attributes = new HashMap<>(4);
+        if (attributes == null) {
+			attributes = new HashMap<>(4);
+		}
         attributes.put(name, value);
         return this;
     }
@@ -332,13 +339,16 @@ public class HttpRequest implements Request
     {
         // This method is invoked often in a request/response conversation,
         // so we avoid allocation if there is no need to filter.
-        if (type == null || requestListeners == null)
-            return requestListeners != null ? (List<T>)requestListeners : Collections.<T>emptyList();
+        if (type == null || requestListeners == null) {
+			return requestListeners != null ? (List<T>)requestListeners : Collections.<T>emptyList();
+		}
 
         ArrayList<T> result = new ArrayList<>();
-        for (RequestListener listener : requestListeners)
-            if (type.isInstance(listener))
-                result.add((T)listener);
+        for (RequestListener listener : requestListeners) {
+			if (type.isInstance(listener)) {
+				result.add((T)listener);
+			}
+		}
         return result;
     }
 
@@ -441,8 +451,9 @@ public class HttpRequest implements Request
 
     private Request requestListener(RequestListener listener)
     {
-        if (requestListeners == null)
-            requestListeners = new ArrayList<>();
+        if (requestListeners == null) {
+			requestListeners = new ArrayList<>();
+		}
         requestListeners.add(listener);
         return this;
     }
@@ -582,8 +593,9 @@ public class HttpRequest implements Request
     @Override
     public Request content(ContentProvider content, String contentType)
     {
-        if (contentType != null)
-            header(HttpHeader.CONTENT_TYPE, contentType);
+        if (contentType != null) {
+			header(HttpHeader.CONTENT_TYPE, contentType);
+		}
         this.content = content;
         return this;
     }
@@ -648,8 +660,9 @@ public class HttpRequest implements Request
         try
         {
             long timeout = getTimeout();
-            if (timeout <= 0)
-                return listener.get();
+            if (timeout <= 0) {
+				return listener.get();
+			}
 
             return listener.get(timeout, TimeUnit.MILLISECONDS);
         }
@@ -680,16 +693,18 @@ public class HttpRequest implements Request
         {
             // Do not leak the scheduler task if we
             // can't even start sending the request.
-            if (timeoutListener != null)
-                timeoutListener.cancel();
+            if (timeoutListener != null) {
+				timeoutListener.cancel();
+			}
             throw x;
         }
     }
 
     private void send(HttpRequest request, Response.CompleteListener listener)
     {
-        if (listener != null)
-            responseListeners.add(listener);
+        if (listener != null) {
+			responseListeners.add(listener);
+		}
         client.send(request, responseListeners);
     }
 
@@ -698,8 +713,9 @@ public class HttpRequest implements Request
     {
         if (aborted.compareAndSet(null, Objects.requireNonNull(cause)))
         {
-            if (content instanceof Callback)
-                ((Callback)content).failed(cause);
+            if (content instanceof Callback) {
+				((Callback)content).failed(cause);
+			}
             return conversation.abort(cause);
         }
         return false;
@@ -720,21 +736,24 @@ public class HttpRequest implements Request
             List<String> values = field.getValues();
             for (int i = 0; i < values.size(); ++i)
             {
-                if (i > 0)
-                    result.append("&");
+                if (i > 0) {
+					result.append("&");
+				}
                 result.append(field.getName()).append("=");
                 result.append(urlEncode(values.get(i)));
             }
-            if (iterator.hasNext())
-                result.append("&");
+            if (iterator.hasNext()) {
+				result.append("&");
+			}
         }
         return result.toString();
     }
 
     private String urlEncode(String value)
     {
-        if (value == null)
-            return "";
+        if (value == null) {
+			return "";
+		}
 
         String encoding = "utf-8";
         try
@@ -757,8 +776,9 @@ public class HttpRequest implements Request
                 if (parts.length > 0)
                 {
                     String name = urlDecode(parts[0]);
-                    if (name.trim().length() == 0)
-                        continue;
+                    if (name.trim().length() == 0) {
+						continue;
+					}
                     param(name, parts.length < 2 ? "" : urlDecode(parts[1]), true);
                 }
             }
@@ -782,13 +802,16 @@ public class HttpRequest implements Request
     {
         String path = getPath();
         String query = getQuery();
-        if (query != null && withQuery)
-            path += "?" + query;
+        if (query != null && withQuery) {
+			path += "?" + query;
+		}
         URI result = newURI(path);
-        if (result == null)
-            return NULL_URI;
-        if (!result.isAbsolute())
-            result = URI.create(new Origin(getScheme(), getHost(), getPort()).asString() + path);
+        if (result == null) {
+			return NULL_URI;
+		}
+        if (!result.isAbsolute()) {
+			result = URI.create(new Origin(getScheme(), getHost(), getPort()).asString() + path);
+		}
         return result;
     }
 
@@ -797,8 +820,9 @@ public class HttpRequest implements Request
         try
         {
             // Handle specially the "OPTIONS *" case, since it is possible to create a URI from "*" (!).
-            if ("*".equals(uri))
-                return null;
+            if ("*".equals(uri)) {
+				return null;
+			}
             URI result = new URI(uri);
             return result.isOpaque() ? null : result;
         }

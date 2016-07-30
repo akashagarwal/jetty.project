@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.servlet;
 
@@ -41,19 +36,21 @@ import org.eclipse.jetty.util.log.Logger;
  */
 public class ErrorPageErrorHandler extends ErrorHandler implements ErrorHandler.ErrorPageMapper
 {
-    public final static String GLOBAL_ERROR_PAGE = "org.eclipse.jetty.server.error_page.global";
+    public static final String GLOBAL_ERROR_PAGE = "org.eclipse.jetty.server.error_page.global";
     private static final Logger LOG = Log.getLogger(ErrorPageErrorHandler.class);
     enum PageLookupTechnique{ THROWABLE, STATUS_CODE, GLOBAL } 
 
     protected ServletContext _servletContext;
-    private final Map<String,String> _errorPages= new HashMap<String,String>(); // code or exception to URL
-    private final List<ErrorCodeRange> _errorPageList=new ArrayList<ErrorCodeRange>(); // list of ErrorCode by range
+    /** Code or exception to URL. */
+    private final Map<String,String> _errorPages= new HashMap<String,String>();
+    /** List of ErrorCode by range. */
+    private final List<ErrorCodeRange> _errorPageList=new ArrayList<ErrorCodeRange>();
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public ErrorPageErrorHandler()
     {}
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public String getErrorPage(HttpServletRequest request)
     {
@@ -76,13 +73,15 @@ public class ErrorPageErrorHandler extends ErrorHandler implements ErrorHandler.
             while (error_page == null)
             {
                 exClass= exClass.getSuperclass();
-                if (exClass==null)
-                    break;
+                if (exClass==null) {
+					break;
+				}
                 error_page = _errorPages.get(exClass.getName());
             }
 
-            if(error_page != null)
-                matchedThrowable = exClass;
+            if(error_page != null) {
+				matchedThrowable = exClass;
+			}
 
             th=(th instanceof ServletException)?((ServletException)th).getRootCause():null;
         }
@@ -97,15 +96,15 @@ public class ErrorPageErrorHandler extends ErrorHandler implements ErrorHandler.
             errorStatusCode = (Integer)request.getAttribute(Dispatcher.ERROR_STATUS_CODE);
             if (errorStatusCode!=null)
             {
-                error_page= (String)_errorPages.get(Integer.toString(errorStatusCode));
+                error_page= _errorPages.get(Integer.toString(errorStatusCode));
 
                 // if still not found
-                if ((error_page == null) && (_errorPageList != null))
+                if (error_page == null && _errorPageList != null)
                 {
                     // look for an error code range match.
                     for (int i = 0; i < _errorPageList.size(); i++)
                     {
-                        ErrorCodeRange errCode = (ErrorCodeRange) _errorPageList.get(i);
+                        ErrorCodeRange errCode = _errorPageList.get(i);
                         if (errCode.isInRange(errorStatusCode))
                         {
                             error_page = errCode.getUri();
@@ -174,8 +173,9 @@ public class ErrorPageErrorHandler extends ErrorHandler implements ErrorHandler.
     public void setErrorPages(Map<String,String> errorPages)
     {
         _errorPages.clear();
-        if (errorPages!=null)
-            _errorPages.putAll(errorPages);
+        if (errorPages!=null) {
+			_errorPages.putAll(errorPages);
+		}
     }
 
     /* ------------------------------------------------------------ */
@@ -227,7 +227,7 @@ public class ErrorPageErrorHandler extends ErrorHandler implements ErrorHandler.
         _errorPageList.add(new ErrorCodeRange(from, to, uri));
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     protected void doStart() throws Exception
     {
@@ -236,7 +236,7 @@ public class ErrorPageErrorHandler extends ErrorHandler implements ErrorHandler.
     }
 
     /* ------------------------------------------------------------ */
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     private class ErrorCodeRange
     {
         private int _from;
@@ -246,8 +246,9 @@ public class ErrorPageErrorHandler extends ErrorHandler implements ErrorHandler.
         ErrorCodeRange(int from, int to, String uri)
             throws IllegalArgumentException
         {
-            if (from > to)
-                throw new IllegalArgumentException("from>to");
+            if (from > to) {
+				throw new IllegalArgumentException("from>to");
+			}
 
             _from = from;
             _to = to;
@@ -256,12 +257,7 @@ public class ErrorPageErrorHandler extends ErrorHandler implements ErrorHandler.
 
         boolean isInRange(int value)
         {
-            if ((value >= _from) && (value <= _to))
-            {
-                return true;
-            }
-
-            return false;
+            return value >= _from && value <= _to;
         }
 
         String getUri()

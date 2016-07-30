@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.client;
 
@@ -57,8 +52,9 @@ public abstract class MultiplexHttpDestination<C extends Connection> extends Htt
             {
                 case DISCONNECTED:
                 {
-                    if (!connect.compareAndSet(current, ConnectState.CONNECTING))
-                        break;
+                    if (!connect.compareAndSet(current, ConnectState.CONNECTING)) {
+						break;
+					}
                     newConnection(this);
                     return;
                 }
@@ -69,8 +65,9 @@ public abstract class MultiplexHttpDestination<C extends Connection> extends Htt
                 }
                 case CONNECTED:
                 {
-                    if (process(connection))
-                        break;
+                    if (process(connection)) {
+						break;
+					}
                     return;
                 }
                 default:
@@ -112,14 +109,16 @@ public abstract class MultiplexHttpDestination<C extends Connection> extends Htt
             int max = getMaxRequestsPerConnection();
             int count = requestsPerConnection.get();
             int next = count + 1;
-            if (next > max)
-                return false;
+            if (next > max) {
+				return false;
+			}
 
             if (requestsPerConnection.compareAndSet(count, next))
             {
                 HttpExchange exchange = getHttpExchanges().poll();
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Processing {}/{} {} on {}", next, max, exchange, connection);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("Processing {}/{} {} on {}", next, max, exchange, connection);
+				}
                 if (exchange == null)
                 {
                     requestsPerConnection.decrementAndGet();
@@ -130,8 +129,9 @@ public abstract class MultiplexHttpDestination<C extends Connection> extends Htt
                 Throwable cause = request.getAbortCause();
                 if (cause != null)
                 {
-                    if (LOG.isDebugEnabled())
-                        LOG.debug("Aborted before processing {}: {}", exchange, cause);
+                    if (LOG.isDebugEnabled()) {
+						LOG.debug("Aborted before processing {}: {}", exchange, cause);
+					}
                     requestsPerConnection.decrementAndGet();
                     // It may happen that the request is aborted before the exchange
                     // is created. Aborting the exchange a second time will result in
@@ -143,14 +143,13 @@ public abstract class MultiplexHttpDestination<C extends Connection> extends Htt
                     SendFailure result = send(connection, exchange);
                     if (result != null)
                     {
-                        if (LOG.isDebugEnabled())
-                            LOG.debug("Send failed {} for {}", result, exchange);
+                        if (LOG.isDebugEnabled()) {
+							LOG.debug("Send failed {} for {}", result, exchange);
+						}
                         requestsPerConnection.decrementAndGet();
-                        if (result.retry)
-                        {
-                            if (enqueue(getHttpExchanges(), exchange))
-                                return true;
-                        }
+                        if (result.retry && enqueue(getHttpExchanges(), exchange)) {
+							return true;
+						}
                         request.abort(result.failure);
                     }
                 }
@@ -171,8 +170,9 @@ public abstract class MultiplexHttpDestination<C extends Connection> extends Htt
     {
         super.close();
         C connection = this.connection;
-        if (connection != null)
-            connection.close();
+        if (connection != null) {
+			connection.close();
+		}
     }
 
     @Override
@@ -184,8 +184,9 @@ public abstract class MultiplexHttpDestination<C extends Connection> extends Htt
             ConnectState current = connect.get();
             if (connect.compareAndSet(current, ConnectState.DISCONNECTED))
             {
-                if (getHttpClient().isRemoveIdleDestinations())
-                    getHttpClient().removeDestination(this);
+                if (getHttpClient().isRemoveIdleDestinations()) {
+					getHttpClient().removeDestination(this);
+				}
                 break;
             }
         }

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.osgi.boot;
 
@@ -62,13 +57,13 @@ public abstract class AbstractContextProvider extends AbstractLifeCycle implemen
     /**
      * OSGiApp
      *
-     *
+     *.
      */
     public class OSGiApp extends AbstractOSGiApp
     {
         private String _contextFile;
         private ContextHandler _contextHandler;
-        private boolean _configured = false;
+        private boolean _configured;
         
         public OSGiApp(DeploymentManager manager, AppProvider provider, String originId, Bundle bundle, String contextFile)
         {
@@ -102,27 +97,30 @@ public abstract class AbstractContextProvider extends AbstractLifeCycle implemen
         public void configureContextHandler()
         throws Exception
         {
-            if (_configured)
-                return;
+            if (_configured) {
+				return;
+			}
 
             _configured = true;
             
             //Override for bundle root may have been set
             String bundleOverrideLocation = (String)_properties.get(OSGiWebappConstants.JETTY_BUNDLE_INSTALL_LOCATION_OVERRIDE);
-            if (bundleOverrideLocation == null)
-                bundleOverrideLocation = (String)_properties.get(OSGiWebappConstants.SERVICE_PROP_BUNDLE_INSTALL_LOCATION_OVERRIDE);
+            if (bundleOverrideLocation == null) {
+				bundleOverrideLocation = (String)_properties.get(OSGiWebappConstants.SERVICE_PROP_BUNDLE_INSTALL_LOCATION_OVERRIDE);
+			}
 
             //Location on filesystem of bundle or the bundle override location
             File bundleLocation = BundleFileLocatorHelperFactory.getFactory().getHelper().getBundleInstallLocation(_bundle);
-            File root = (bundleOverrideLocation==null?bundleLocation:new File(bundleOverrideLocation));
+            File root = bundleOverrideLocation==null?bundleLocation:new File(bundleOverrideLocation);
             Resource rootResource = Resource.newResource(BundleFileLocatorHelperFactory.getFactory().getHelper().getLocalURL(root.toURI().toURL()));
             
             //try and make sure the rootResource is useable - if its a jar then make it a jar file url
             if (rootResource.exists()&& !rootResource.isDirectory() && !rootResource.toString().startsWith("jar:"))
             {
                Resource jarResource = JarResource.newJarResource(rootResource);
-               if (jarResource.exists() && jarResource.isDirectory())
-                   rootResource = jarResource;
+               if (jarResource.exists() && jarResource.isDirectory()) {
+				rootResource = jarResource;
+			}
             }
             
             //Set the base resource of the ContextHandler, if not already set, can also be overridden by the context xml file
@@ -135,8 +133,9 @@ public abstract class AbstractContextProvider extends AbstractLifeCycle implemen
             OSGiClassLoader classLoader = new OSGiClassLoader(getServerInstanceWrapper().getParentClassLoaderForWebapps(), _bundle);
 
             //if there is a context file, find it and apply it
-            if (_contextFile == null && _contextHandler == null)
-                throw new IllegalStateException("No context file or ContextHandler");
+            if (_contextFile == null && _contextHandler == null) {
+				throw new IllegalStateException("No context file or ContextHandler");
+			}
 
             if (_contextFile != null)
             {   
@@ -144,8 +143,9 @@ public abstract class AbstractContextProvider extends AbstractLifeCycle implemen
                 Resource res = null;
                 
                 String jettyHome = (String)getServerInstanceWrapper().getServer().getAttribute(OSGiServerConstants.JETTY_HOME);
-                if (jettyHome == null)
-                    jettyHome =  System.getProperty(OSGiServerConstants.JETTY_HOME);
+                if (jettyHome == null) {
+					jettyHome =  System.getProperty(OSGiServerConstants.JETTY_HOME);
+				}
                 
                 res = findFile(_contextFile, jettyHome, bundleOverrideLocation, _bundle);
 
@@ -170,10 +170,11 @@ public abstract class AbstractContextProvider extends AbstractLifeCycle implemen
                         // insert the bundle's location as a property.
                         xmlConfiguration.getProperties().putAll(properties);
 
-                        if (_contextHandler == null)
-                            _contextHandler = (ContextHandler) xmlConfiguration.configure();
-                        else
-                            xmlConfiguration.configure(_contextHandler);
+                        if (_contextHandler != null) {
+							xmlConfiguration.configure(_contextHandler);
+						} else {
+							_contextHandler = (ContextHandler) xmlConfiguration.configure();
+						}
                     }
                     finally
                     {
@@ -188,17 +189,19 @@ public abstract class AbstractContextProvider extends AbstractLifeCycle implemen
             
             //If a bundle/service property specifies context path, let it override the context xml
             String contextPath = (String)_properties.get(OSGiWebappConstants.RFC66_WEB_CONTEXTPATH);
-            if (contextPath == null)
-                contextPath = (String)_properties.get(OSGiWebappConstants.SERVICE_PROP_CONTEXT_PATH);
-            if (contextPath != null)
-                _contextHandler.setContextPath(contextPath);    
+            if (contextPath == null) {
+				contextPath = (String)_properties.get(OSGiWebappConstants.SERVICE_PROP_CONTEXT_PATH);
+			}
+            if (contextPath != null) {
+				_contextHandler.setContextPath(contextPath);
+			}    
             
             //osgi Enterprise Spec r4 p.427
             _contextHandler.setAttribute(OSGiWebappConstants.OSGI_BUNDLECONTEXT, _bundle.getBundleContext());
             
             //make sure we protect also the osgi dirs specified by OSGi Enterprise spec
             String[] targets = _contextHandler.getProtectedTargets();
-            int length = (targets==null?0:targets.length);
+            int length = targets==null?0:targets.length;
             
             String[] updatedTargets = null;
             if (targets != null)
@@ -206,9 +209,9 @@ public abstract class AbstractContextProvider extends AbstractLifeCycle implemen
                 updatedTargets = new String[length+OSGiWebappConstants.DEFAULT_PROTECTED_OSGI_TARGETS.length];
                 System.arraycopy(targets, 0, updatedTargets, 0, length);
                 
-            }
-            else
-                updatedTargets = new String[OSGiWebappConstants.DEFAULT_PROTECTED_OSGI_TARGETS.length];
+            } else {
+				updatedTargets = new String[OSGiWebappConstants.DEFAULT_PROTECTED_OSGI_TARGETS.length];
+			}
             System.arraycopy(OSGiWebappConstants.DEFAULT_PROTECTED_OSGI_TARGETS, 0, updatedTargets, length, OSGiWebappConstants.DEFAULT_PROTECTED_OSGI_TARGETS.length);
             _contextHandler.setProtectedTargets(updatedTargets);
            
@@ -216,42 +219,39 @@ public abstract class AbstractContextProvider extends AbstractLifeCycle implemen
 
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public AbstractContextProvider(ServerInstanceWrapper wrapper)
     {
         _serverWrapper = wrapper;
     }
     
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public ServerInstanceWrapper getServerInstanceWrapper()
     {
         return _serverWrapper;
     }
     
-    /* ------------------------------------------------------------ */
-    /** 
-     * @see org.eclipse.jetty.deploy.AppProvider#createContextHandler(org.eclipse.jetty.deploy.App)
-     */
+    /** ------------------------------------------------------------. */
     public ContextHandler createContextHandler(App app) throws Exception
     {
-        if (app == null)
-            return null;
-        if (!(app instanceof OSGiApp))
-            throw new IllegalStateException(app+" is not a BundleApp");
+        if (app == null) {
+			return null;
+		}
+        if (!(app instanceof OSGiApp)) {
+			throw new IllegalStateException(app+" is not a BundleApp");
+		}
         
-        //Create a ContextHandler suitable to deploy in OSGi
-        ContextHandler h = ((OSGiApp)app).createContextHandler();           
-        return h;
+        return ((OSGiApp)app).createContextHandler();
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void setDeploymentManager(DeploymentManager deploymentManager)
     {
         _deploymentManager = deploymentManager;
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public DeploymentManager getDeploymentManager()
     {
         return _deploymentManager;

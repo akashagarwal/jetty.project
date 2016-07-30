@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.client;
 
@@ -73,19 +68,18 @@ public abstract class HttpDestination extends ContainerLifeCycle implements Dest
         if (proxy != null)
         {
             connectionFactory = proxy.newClientConnectionFactory(connectionFactory);
-            if (proxy.isSecure())
-                connectionFactory = newSslClientConnectionFactory(connectionFactory);
-        }
-        else
-        {
-            if (HttpScheme.HTTPS.is(getScheme()))
-                connectionFactory = newSslClientConnectionFactory(connectionFactory);
-        }
+            if (proxy.isSecure()) {
+				connectionFactory = newSslClientConnectionFactory(connectionFactory);
+			}
+        } else if (HttpScheme.HTTPS.is(getScheme())) {
+			connectionFactory = newSslClientConnectionFactory(connectionFactory);
+		}
         this.connectionFactory = connectionFactory;
 
         String host = getHost();
-        if (!client.isDefaultPort(getScheme(), getPort()))
-            host += ":" + getPort();
+        if (!client.isDefaultPort(getScheme(), getPort())) {
+			host += ":" + getPort();
+		}
         hostField = new HttpField(HttpHeader.HOST, host);
     }
 
@@ -175,13 +169,16 @@ public abstract class HttpDestination extends ContainerLifeCycle implements Dest
 
     protected void send(HttpRequest request, List<Response.ResponseListener> listeners)
     {
-        if (!getScheme().equalsIgnoreCase(request.getScheme()))
-            throw new IllegalArgumentException("Invalid request scheme " + request.getScheme() + " for destination " + this);
-        if (!getHost().equalsIgnoreCase(request.getHost()))
-            throw new IllegalArgumentException("Invalid request host " + request.getHost() + " for destination " + this);
+        if (!getScheme().equalsIgnoreCase(request.getScheme())) {
+			throw new IllegalArgumentException("Invalid request scheme " + request.getScheme() + " for destination " + this);
+		}
+        if (!getHost().equalsIgnoreCase(request.getHost())) {
+			throw new IllegalArgumentException("Invalid request host " + request.getHost() + " for destination " + this);
+		}
         int port = request.getPort();
-        if (port >= 0 && getPort() != port)
-            throw new IllegalArgumentException("Invalid request port " + port + " for destination " + this);
+        if (port >= 0 && getPort() != port) {
+			throw new IllegalArgumentException("Invalid request port " + port + " for destination " + this);
+		}
 
         HttpExchange exchange = new HttpExchange(this, request, listeners);
 
@@ -195,16 +192,18 @@ public abstract class HttpDestination extends ContainerLifeCycle implements Dest
                 }
                 else
                 {
-                    if (LOG.isDebugEnabled())
-                        LOG.debug("Queued {} for {}", request, this);
+                    if (LOG.isDebugEnabled()) {
+						LOG.debug("Queued {} for {}", request, this);
+					}
                     requestNotifier.notifyQueued(request);
                     send();
                 }
             }
             else
             {
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Max queue size {} exceeded by {} for {}", client.getMaxRequestsQueuedPerDestination(), request, this);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("Max queue size {} exceeded by {} for {}", client.getMaxRequestsQueuedPerDestination(), request, this);
+				}
                 request.abort(new RejectedExecutionException("Max requests per destination " + client.getMaxRequestsQueuedPerDestination() + " exceeded for " + this));
             }
         }
@@ -239,8 +238,9 @@ public abstract class HttpDestination extends ContainerLifeCycle implements Dest
     public void close()
     {
         abort(new AsynchronousCloseException());
-        if (LOG.isDebugEnabled())
-            LOG.debug("Closed {}", this);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Closed {}", this);
+		}
     }
 
     public void release(Connection connection)
@@ -262,8 +262,9 @@ public abstract class HttpDestination extends ContainerLifeCycle implements Dest
         // The application may queue another request from the failure/complete listener
         // and we don't want to fail it immediately as if it was queued before the failure.
         // The call to Request.abort() will remove the exchange from the exchanges queue.
-        for (HttpExchange exchange : new ArrayList<>(exchanges))
-            exchange.getRequest().abort(cause);
+        for (HttpExchange exchange : new ArrayList<>(exchanges)) {
+			exchange.getRequest().abort(cause);
+		}
     }
 
     @Override

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.jsr356.server;
 
@@ -131,13 +126,13 @@ public class ConfiguratorTest
             else
             {
                 List<String> values = headers.get(headerKey);
-                if (values == null)
+                if (values != null)
                 {
-                    response.append("<header not found>");
+                    response.append(QuoteUtil.join(values, ","));
                 }
                 else
                 {
-                    response.append(QuoteUtil.join(values, ","));
+                    response.append("<header not found>");
                 }
             }
 
@@ -215,13 +210,13 @@ public class ConfiguratorTest
             String value = (String) session.getUserProperties().get(msg);
             StringBuilder response = new StringBuilder();
             response.append("Requested User Property: [").append(msg).append("] = ");
-            if (value == null)
+            if (value != null)
             {
-                response.append("<null>");
+                response.append('"').append(value).append('"');
             }
             else
             {
-                response.append('"').append(value).append('"');
+                response.append("<null>");
             }
             return response.toString();
         }
@@ -273,8 +268,9 @@ public class ConfiguratorTest
         {
             List<String> selectedProtocol = response.getHeaders().get("Sec-WebSocket-Protocol");
             String protocol = "<>";
-            if (selectedProtocol != null || !selectedProtocol.isEmpty())
-                protocol = selectedProtocol.get(0);
+            if (selectedProtocol != null || !selectedProtocol.isEmpty()) {
+				protocol = selectedProtocol.get(0);
+			}
             config.getUserProperties().put("selected-subprotocol", protocol);
         }
     }
@@ -286,8 +282,9 @@ public class ConfiguratorTest
         @Override
         public Calendar decode(String s) throws DecodeException
         {
-            if (TZ == null)
-                throw new DecodeException(s, ".init() not called");
+            if (TZ == null) {
+				throw new DecodeException(s, ".init() not called");
+			}
             try
             {
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
@@ -376,17 +373,18 @@ public class ConfiguratorTest
         }
         int port = connector.getLocalPort();
         baseServerUri = new URI(String.format("ws://%s:%d/", host, port));
-        if (LOG.isDebugEnabled())
-            LOG.debug("Server started on {}", baseServerUri);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Server started on {}", baseServerUri);
+		}
     }
 
     public static String toSafeAddr(InetSocketAddress addr)
     {
-        if (addr == null)
+        if (addr != null)
         {
-            return "<null>";
+            return String.format("%s:%d", addr.getAddress().getHostAddress(), addr.getPort());
         }
-        return String.format("%s:%d", addr.getAddress().getHostAddress(), addr.getPort());
+        return "<null>";
     }
 
     @AfterClass
@@ -513,7 +511,7 @@ public class ConfiguratorTest
     }
     
     /**
-     * Test of Sec-WebSocket-Protocol, as seen in RFC-6455, 1 protocol
+     * Test of Sec-WebSocket-Protocol, as seen in RFC-6455, 1 protocol.
      * @throws Exception on test failure
      */
     @Test
@@ -537,7 +535,7 @@ public class ConfiguratorTest
     }
     
     /**
-     * Test of Sec-WebSocket-Protocol, as seen in RFC-6455, 3 protocols
+     * Test of Sec-WebSocket-Protocol, as seen in RFC-6455, 3 protocols.
      * @throws Exception on test failure
      */
     @Test
@@ -561,7 +559,7 @@ public class ConfiguratorTest
     }
     
     /**
-     * Test of Sec-WebSocket-Protocol, using all lowercase header
+     * Test of Sec-WebSocket-Protocol, using all lowercase header.
      * @throws Exception on test failure
      */
     @Test
@@ -585,7 +583,7 @@ public class ConfiguratorTest
     }
     
     /**
-     * Test of Sec-WebSocket-Protocol, using non-spec case header
+     * Test of Sec-WebSocket-Protocol, using non-spec case header.
      * @throws Exception on test failure
      */
     @Test
@@ -609,7 +607,7 @@ public class ConfiguratorTest
     }
 
     /**
-     * Test of Sec-WebSocket-Protocol, using non-spec case header
+     * Test of Sec-WebSocket-Protocol, using non-spec case header.
      */
     @Test
     public void testDecoderWithProtocol() throws Exception

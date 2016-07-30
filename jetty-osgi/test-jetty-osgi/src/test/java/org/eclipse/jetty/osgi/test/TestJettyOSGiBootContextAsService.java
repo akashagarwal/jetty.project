@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.osgi.test;
 
@@ -62,7 +57,7 @@ public class TestJettyOSGiBootContextAsService
 
 
     @Inject
-    BundleContext bundleContext = null;
+    BundleContext bundleContext;
 
     @Configuration
     public static Option[] configure()
@@ -112,8 +107,6 @@ public class TestJettyOSGiBootContextAsService
     }
 
 
-    /**
-     */
     @Test
     public void testContextHandlerAsOSGiService() throws Exception
     {
@@ -126,7 +119,7 @@ public class TestJettyOSGiBootContextAsService
             assertEquals(HttpStatus.OK_200, response.getStatus());
 
             String content = new String(response.getContent());
-            assertTrue(content.indexOf("<h1>Test OSGi Context</h1>") != -1);
+            assertTrue(content.contains("<h1>Test OSGi Context</h1>"));
         }
         finally
         {

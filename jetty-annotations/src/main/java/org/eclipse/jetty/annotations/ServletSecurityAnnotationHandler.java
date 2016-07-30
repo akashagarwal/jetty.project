@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.annotations;
 
@@ -66,9 +61,6 @@ public class ServletSecurityAnnotationHandler extends AbstractIntrospectableAnno
         _context = wac;
     }
 
-    /**
-     * @see org.eclipse.jetty.annotations.AnnotationIntrospector.IntrospectableAnnotationHandler#handle(java.lang.Class)
-     */
     public void doHandle(Class clazz)
     {
         if (!(_context.getSecurityHandler() instanceof ConstraintAware))
@@ -78,8 +70,9 @@ public class ServletSecurityAnnotationHandler extends AbstractIntrospectableAnno
         }
 
        ServletSecurity servletSecurity = (ServletSecurity)clazz.getAnnotation(ServletSecurity.class);
-       if (servletSecurity == null)
-           return;
+       if (servletSecurity == null) {
+		return;
+	}
 
        //If there are already constraints defined (ie from web.xml) that match any 
        //of the url patterns defined for this servlet, then skip the security annotation.
@@ -109,8 +102,9 @@ public class ServletSecurityAnnotationHandler extends AbstractIntrospectableAnno
        //set up the security constraints produced by the annotation
        ConstraintAware securityHandler = (ConstraintAware)_context.getSecurityHandler();
 
-       for (ConstraintMapping m:constraintMappings)
-           securityHandler.addConstraintMapping(m);
+       for (ConstraintMapping m:constraintMappings) {
+		securityHandler.addConstraintMapping(m);
+	}
        
        //Servlet Spec 3.1 requires paths with uncovered http methods to be reported
        securityHandler.checkPathsWithUncoveredHttpMethods();
@@ -148,8 +142,9 @@ public class ServletSecurityAnnotationHandler extends AbstractIntrospectableAnno
         {
             //Check the name of the servlet that this mapping applies to, and then find the ServletHolder for it to find it's class
             ServletHolder holder = _context.getServletHandler().getServlet(mapping.getServletName());
-            if (holder.getClassName() != null && holder.getClassName().equals(className))
-              results.add(mapping);
+            if (holder.getClassName() != null && holder.getClassName().equals(className)) {
+				results.add(mapping);
+			}
         }
         return results;
     }
@@ -174,8 +169,9 @@ public class ServletSecurityAnnotationHandler extends AbstractIntrospectableAnno
         {
             //Get its url mappings
             String[] pathSpecs = mapping.getPathSpecs();
-            if (pathSpecs == null)
-                continue;
+            if (pathSpecs == null) {
+				continue;
+			}
 
             //Check through the constraints to see if there are any whose pathSpecs (url mappings)
             //match the servlet. If so, then we already have constraints defined for this servlet,

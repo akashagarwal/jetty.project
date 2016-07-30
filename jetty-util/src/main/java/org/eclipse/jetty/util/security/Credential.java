@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util.security;
 
@@ -70,15 +65,19 @@ public abstract class Credential implements Serializable
      */
     public static Credential getCredential(String credential)
     {
-        if (credential.startsWith(Crypt.__TYPE)) return new Crypt(credential);
-        if (credential.startsWith(MD5.__TYPE)) return new MD5(credential);
+        if (credential.startsWith(Crypt.__TYPE)) {
+			return new Crypt(credential);
+		}
+        if (credential.startsWith(MD5.__TYPE)) {
+			return new MD5(credential);
+		}
 
         return new Password(credential);
     }
 
     /* ------------------------------------------------------------ */
     /**
-     * Unix Crypt Credentials
+     * Unix Crypt Credentials.
      */
     public static class Crypt extends Credential
     {
@@ -96,10 +95,12 @@ public abstract class Credential implements Serializable
         @Override
         public boolean check(Object credentials)
         {
-            if (credentials instanceof char[])
-                credentials=new String((char[])credentials);
-            if (!(credentials instanceof String) && !(credentials instanceof Password)) 
-                LOG.warn("Can't check " + credentials.getClass() + " against CRYPT");
+            if (credentials instanceof char[]) {
+				credentials=new String((char[])credentials);
+			}
+            if (!(credentials instanceof String) && !(credentials instanceof Password)) {
+				LOG.warn("Can't check " + credentials.getClass() + " against CRYPT");
+			}
 
             String passwd = credentials.toString();
             return _cooked.equals(UnixCrypt.crypt(passwd, _cooked));
@@ -113,7 +114,7 @@ public abstract class Credential implements Serializable
 
     /* ------------------------------------------------------------ */
     /**
-     * MD5 Credentials
+     * MD5 Credentials.
      */
     public static class MD5 extends Credential
     {
@@ -127,20 +128,20 @@ public abstract class Credential implements Serializable
 
         private final byte[] _digest;
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         MD5(String digest)
         {
             digest = digest.startsWith(__TYPE) ? digest.substring(__TYPE.length()) : digest;
             _digest = TypeUtil.parseBytes(digest, 16);
         }
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         public byte[] getDigest()
         {
             return _digest;
         }
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         @Override
         public boolean check(Object credentials)
         {
@@ -148,30 +149,39 @@ public abstract class Credential implements Serializable
             {
                 byte[] digest = null;
 
-                if (credentials instanceof char[])
-                    credentials=new String((char[])credentials);
+                if (credentials instanceof char[]) {
+					credentials=new String((char[])credentials);
+				}
                 if (credentials instanceof Password || credentials instanceof String)
                 {
                     synchronized (__md5Lock)
                     {
-                        if (__md == null) __md = MessageDigest.getInstance("MD5");
+                        if (__md == null) {
+							__md = MessageDigest.getInstance("MD5");
+						}
                         __md.reset();
                         __md.update(credentials.toString().getBytes(StandardCharsets.ISO_8859_1));
                         digest = __md.digest();
                     }
-                    if (digest == null || digest.length != _digest.length) return false;
+                    if (digest == null || digest.length != _digest.length) {
+						return false;
+					}
                     boolean digestMismatch = false;
-                    for (int i = 0; i < digest.length; i++)
-                        digestMismatch |= (digest[i] != _digest[i]);
+                    for (int i = 0; i < digest.length; i++) {
+						digestMismatch |= digest[i] != _digest[i];
+					}
                     return !digestMismatch;
                 }
                 else if (credentials instanceof MD5)
                 {
                     MD5 md5 = (MD5) credentials;
-                    if (_digest.length != md5._digest.length) return false;
+                    if (_digest.length != md5._digest.length) {
+						return false;
+					}
                     boolean digestMismatch = false;
-                    for (int i = 0; i < _digest.length; i++)
-                        digestMismatch |= (_digest[i] != md5._digest[i]);
+                    for (int i = 0; i < _digest.length; i++) {
+						digestMismatch |= _digest[i] != md5._digest[i];
+					}
                     return !digestMismatch;
                 }
                 else if (credentials instanceof Credential)
@@ -193,7 +203,7 @@ public abstract class Credential implements Serializable
             }
         }
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         public static String digest(String password)
         {
             try

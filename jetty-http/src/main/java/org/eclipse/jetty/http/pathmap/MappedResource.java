@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http.pathmap;
 
@@ -34,7 +29,7 @@ public class MappedResource<E> implements Comparable<MappedResource<E>>
     }
 
     /**
-     * Comparison is based solely on the pathSpec
+     * Comparison is based solely on the pathSpec.
      */
     @Override
     public int compareTo(MappedResource<E> other)
@@ -89,8 +84,7 @@ public class MappedResource<E> implements Comparable<MappedResource<E>>
     {
         final int prime = 31;
         int result = 1;
-        result = (prime * result) + ((pathSpec == null) ? 0 : pathSpec.hashCode());
-        return result;
+        return prime * result + ((pathSpec == null) ? 0 : pathSpec.hashCode());
     }
 
     @Override

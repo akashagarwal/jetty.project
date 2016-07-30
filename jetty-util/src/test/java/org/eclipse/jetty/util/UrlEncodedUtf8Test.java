@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util;
 
@@ -125,14 +120,16 @@ public class UrlEncodedUtf8Test
         try
         {
             UrlEncoded.decodeUtf8To(s, 0, s.length(), values);
-            if (thrown)
-                Assert.fail();
+            if (thrown) {
+				Assert.fail();
+			}
             Assert.assertEquals(test, expected, values.getString(field));
         }
         catch (Exception e)
         {
-            if (!thrown)
-                throw e;
+            if (!thrown) {
+				throw e;
+			}
             LOG.ignore(e);
         }
     }
@@ -144,14 +141,16 @@ public class UrlEncodedUtf8Test
         try
         {
             UrlEncoded.decodeUtf8To(is, values, 1000000,-1);
-            if (thrown)
-                Assert.fail();
+            if (thrown) {
+				Assert.fail();
+			}
             Assert.assertEquals(test, expected, values.getString(field));
         }
         catch (Exception e)
         {
-            if (!thrown)
-                throw e;
+            if (!thrown) {
+				throw e;
+			}
             LOG.ignore(e);
         }
     }

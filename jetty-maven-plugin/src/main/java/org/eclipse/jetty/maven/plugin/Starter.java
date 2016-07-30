@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.maven.plugin;
 
@@ -51,15 +46,17 @@ public class Starter
 { 
     private static final Logger LOG = Log.getLogger(Starter.class);
 
-    private List<File> jettyXmls; // list of jetty.xml config files to apply - Mandatory
-    private File contextXml; //name of context xml file to configure the webapp - Mandatory
+    /** List of jetty.xml config files to apply - Mandatory */
+    private List<File> jettyXmls;
+    /** Name of context xml file to configure the webapp - Mandatory. */
+    private File contextXml;
 
     private Server server;
     private JettyWebAppContext webApp;
 
     
-    private int stopPort=0;
-    private String stopKey=null;
+    private int stopPort;
+    private String stopKey;
     private Properties props;
     private String token;
 
@@ -101,12 +98,13 @@ public class Starter
         
         public boolean equals(Object o)
         {
-            if (!(o instanceof Artifact))
-                return false;
+            if (!(o instanceof Artifact)) {
+				return false;
+			}
             
             Artifact ao = (Artifact)o;
-            return (((gid == null && ao.gid == null) || (gid != null && gid.equals(ao.gid)))
-                    &&  ((aid == null && ao.aid == null) || (aid != null && aid.equals(ao.aid))));      
+            return ((gid == null && ao.gid == null) || (gid != null && gid.equals(ao.gid)))
+                    &&  ((aid == null && ao.aid == null) || (aid != null && aid.equals(ao.aid)));      
         }
     }
     
@@ -138,8 +136,9 @@ public class Starter
         if (webApp.getTempDirectory() != null)
         {
             File qs = new File (webApp.getTempDirectory(), "quickstart-web.xml");
-            if (qs.exists() && qs.isFile())
-                webApp.setQuickStartWebDescriptor(Resource.newResource(qs));
+            if (qs.exists() && qs.isFile()) {
+				webApp.setQuickStartWebDescriptor(Resource.newResource(qs));
+			}
         }
         
         //set up the webapp from the context xml file provided
@@ -169,36 +168,42 @@ public class Starter
     public void configureWebApp ()
     throws Exception
     {
-        if (props == null)
-            return;
+        if (props == null) {
+			return;
+		}
         
         //apply a properties file that defines the things that we configure in the jetty:run plugin:
         // - the context path
         String str = (String)props.get("context.path");
-        if (str != null)
-            webApp.setContextPath(str);
+        if (str != null) {
+			webApp.setContextPath(str);
+		}
         
         
         // - web.xml
         str = (String)props.get("web.xml");
-        if (str != null)
-            webApp.setDescriptor(str); 
+        if (str != null) {
+			webApp.setDescriptor(str);
+		} 
         
         str = (String)props.get("quickstart.web.xml");
-        if (str != null)
-            webApp.setQuickStartWebDescriptor(Resource.newResource(new File(str)));
+        if (str != null) {
+			webApp.setQuickStartWebDescriptor(Resource.newResource(new File(str)));
+		}
         
         // - the tmp directory
-        str = (String)props.getProperty("tmp.dir");
-        if (str != null)
-            webApp.setTempDirectory(new File(str.trim()));
+        str = props.getProperty("tmp.dir");
+        if (str != null) {
+			webApp.setTempDirectory(new File(str.trim()));
+		}
 
-        str = (String)props.getProperty("tmp.dir.persist");
-        if (str != null)
-            webApp.setPersistTempDirectory(Boolean.valueOf(str));
+        str = props.getProperty("tmp.dir.persist");
+        if (str != null) {
+			webApp.setPersistTempDirectory(Boolean.valueOf(str));
+		}
         
         //Get the calculated base dirs which includes the overlays
-        str = (String)props.getProperty("base.dirs");
+        str = props.getProperty("base.dirs");
         if (str != null && !"".equals(str.trim()))
         {
             ResourceCollection bases = new ResourceCollection(StringUtil.csvSplit(str));
@@ -215,9 +220,9 @@ public class Starter
         }
         
         //For overlays
-        str = (String)props.getProperty("maven.war.includes");
+        str = props.getProperty("maven.war.includes");
         List<String> defaultWarIncludes = fromCSV(str);
-        str = (String)props.getProperty("maven.war.excludes");
+        str = props.getProperty("maven.war.excludes");
         List<String> defaultWarExcludes = fromCSV(str);
        
         //List of war artifacts
@@ -232,7 +237,7 @@ public class Starter
             if (n.startsWith("maven.war.artifact"))
             {
                 Artifact a = new Artifact((String)props.get(n));
-                a.resource = Resource.newResource("jar:"+Resource.toURL(new File(a.path)).toString()+"!/");
+                a.resource = Resource.newResource("jar:"+Resource.toURL(new File(a.path))+"!/");
                 wars.add(a);
             }
             else if (n.startsWith("maven.war.overlay"))
@@ -250,8 +255,9 @@ public class Starter
         for (OverlayConfig config:orderedConfigs.values())
         {
             //overlays can be individually skipped
-            if (config.isSkip())
-                continue;
+            if (config.isSkip()) {
+				continue;
+			}
 
             //an empty overlay refers to the current project - important for ordering
             if (config.isCurrentProject())
@@ -266,7 +272,7 @@ public class Starter
             if (a != null)
             {
                 matchedWars.add(a);
-                SelectiveJarResource r = new SelectiveJarResource(new URL("jar:"+Resource.toURL(new File(a.path)).toString()+"!/"));
+                SelectiveJarResource r = new SelectiveJarResource(new URL("jar:"+Resource.toURL(new File(a.path))+"!/"));
                 r.setIncludes(config.getIncludes());
                 r.setExcludes(config.getExcludes());
                 Overlay overlay = new Overlay(config, r);
@@ -288,13 +294,13 @@ public class Starter
      
 
         // - the equivalent of web-inf classes
-        str = (String)props.getProperty("classes.dir");
+        str = props.getProperty("classes.dir");
         if (str != null && !"".equals(str.trim()))
         {
             webApp.setClasses(new File(str));
         }
         
-        str = (String)props.getProperty("testClasses.dir"); 
+        str = props.getProperty("testClasses.dir"); 
         if (str != null && !"".equals(str.trim()))
         {
             webApp.setTestClasses(new File(str));
@@ -302,13 +308,14 @@ public class Starter
 
 
         // - the equivalent of web-inf lib
-        str = (String)props.getProperty("lib.jars");
+        str = props.getProperty("lib.jars");
         if (str != null && !"".equals(str.trim()))
         {
             List<File> jars = new ArrayList<File>();
             String[] names = StringUtil.csvSplit(str);
-            for (int j=0; names != null && j < names.length; j++)
-                jars.add(new File(names[j].trim()));
+            for (int j=0; names != null && j < names.length; j++) {
+				jars.add(new File(names[j].trim()));
+			}
             webApp.setWebInfLib(jars);
         }
         
@@ -320,12 +327,14 @@ public class Starter
         for (int i=0; i<args.length; i++)
         {
             //--stop-port
-            if ("--stop-port".equals(args[i]))
-                stopPort = Integer.parseInt(args[++i]);
+            if ("--stop-port".equals(args[i])) {
+				stopPort = Integer.parseInt(args[++i]);
+			}
 
             //--stop-key
-            if ("--stop-key".equals(args[i]))
-                stopKey = args[++i];
+            if ("--stop-key".equals(args[i])) {
+				stopKey = args[++i];
+			}
 
             //--jettyXml
             if ("--jetty-xml".equals(args[i]))
@@ -381,26 +390,29 @@ public class Starter
     {
         if (token != null)
         {
-            if (e==null)
-                System.out.println(token);
-            else
-                System.out.println(token+"\t"+e.getMessage());
+            if (e!=null) {
+				System.out.println(token+"\t"+e.getMessage());
+			} else {
+				System.out.println(token);
+			}
         }
     }
     
     
     /**
-     * Apply any jetty xml files given
+     * Apply any jetty xml files given.
      * @throws Exception if unable to apply the xml
      */
     public void applyJettyXml() throws Exception
     {
         Server tmp = ServerSupport.applyXmlConfigurations(server, jettyXmls);
-        if (server == null)
-            server = tmp;
+        if (server == null) {
+			server = tmp;
+		}
         
-        if (server == null)
-            server = new Server();
+        if (server == null) {
+			server = new Server();
+		}
     }
 
 
@@ -408,8 +420,9 @@ public class Starter
 
     protected void prependHandler (Handler handler, HandlerCollection handlers)
     {
-        if (handler == null || handlers == null)
-            return;
+        if (handler == null || handlers == null) {
+			return;
+		}
 
         Handler[] existing = handlers.getChildHandlers();
         Handler[] children = new Handler[existing.length + 1];
@@ -422,29 +435,28 @@ public class Starter
     
     protected Artifact getArtifactForOverlayConfig (OverlayConfig c, List<Artifact> wars)
     {
-        if (wars == null || wars.isEmpty() || c == null)
-            return null;
+        if (wars == null || wars.isEmpty() || c == null) {
+			return null;
+		}
 
         Artifact war = null;
         Iterator<Artifact> itor = wars.iterator();
         while(itor.hasNext() && war == null)
         {
             Artifact a = itor.next();
-            if (c.matchesArtifact(a.gid, a.aid, null))
-                war = a;
+            if (c.matchesArtifact(a.gid, a.aid, null)) {
+				war = a;
+			}
         }
         return war;
     }
 
 
-    /**
-     * @param csv
-     * @return
-     */
     private List<String> fromCSV (String csv)
     {
-        if (csv == null || "".equals(csv.trim()))
-            return null;
+        if (csv == null || "".equals(csv.trim())) {
+			return null;
+		}
         String[] atoms = StringUtil.csvSplit(csv);
         List<String> list = new ArrayList<String>();
         for (String a:atoms)
@@ -454,10 +466,11 @@ public class Starter
         return list;
     }
     
-    public static final void main(String[] args)
+    public static void main(String[] args)
     {
-        if (args == null)
-           System.exit(1);
+        if (args == null) {
+			System.exit(1);
+		}
        
        Starter starter = null;
        try

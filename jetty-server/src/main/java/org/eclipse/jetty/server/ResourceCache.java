@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 
@@ -47,7 +42,7 @@ import org.eclipse.jetty.util.log.Logger;
 import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.resource.ResourceFactory;
 
-// TODO rename to ContentCache
+/** TODO rename to ContentCache. */
 public class ResourceCache implements HttpContent.Factory
 {
     private static final Logger LOG = Log.getLogger(ResourceCache.class);
@@ -88,38 +83,38 @@ public class ResourceCache implements HttpContent.Factory
         _gzip=gzip;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public int getCachedSize()
     {
         return _cachedSize.get();
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public int getCachedFiles()
     {
         return _cachedFiles.get();
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public int getMaxCachedFileSize()
     {
         return _maxCachedFileSize;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void setMaxCachedFileSize(int maxCachedFileSize)
     {
         _maxCachedFileSize = maxCachedFileSize;
         shrinkCache();
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public int getMaxCacheSize()
     {
         return _maxCacheSize;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void setMaxCacheSize(int maxCacheSize)
     {
         _maxCacheSize = maxCacheSize;
@@ -145,13 +140,13 @@ public class ResourceCache implements HttpContent.Factory
         shrinkCache();
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public boolean isUseFileMappedBuffer()
     {
         return _useFileMappedBuffer;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void flushCache()
     {
         if (_cache!=null)
@@ -161,14 +156,15 @@ public class ResourceCache implements HttpContent.Factory
                 for (String path : _cache.keySet())
                 {
                     CachedHttpContent content = _cache.remove(path);
-                    if (content!=null)
-                        content.invalidate();
+                    if (content!=null) {
+						content.invalidate();
+					}
                 }
             }
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Deprecated
     public HttpContent lookup(String pathInContext)
         throws IOException
@@ -195,21 +191,24 @@ public class ResourceCache implements HttpContent.Factory
     {
         // Is the content in this cache?
         CachedHttpContent content =_cache.get(pathInContext);
-        if (content!=null && (content).isValid())
-            return content;
+        if (content!=null && content.isValid()) {
+			return content;
+		}
        
         // try loading the content from our factory.
         Resource resource=_factory.getResource(pathInContext);
         HttpContent loaded = load(pathInContext,resource,maxBufferSize);
-        if (loaded!=null)
-            return loaded;
+        if (loaded!=null) {
+			return loaded;
+		}
         
         // Is the content in the parent cache?
         if (_parent!=null)
         {
             HttpContent httpContent=_parent.getContent(pathInContext,maxBufferSize);
-            if (httpContent!=null)
-                return httpContent;
+            if (httpContent!=null) {
+				return httpContent;
+			}
         }
         
         return null;
@@ -222,24 +221,27 @@ public class ResourceCache implements HttpContent.Factory
      */
     protected boolean isCacheable(Resource resource)
     {
-        if (_maxCachedFiles<=0)
-            return false;
+        if (_maxCachedFiles<=0) {
+			return false;
+		}
         
         long len = resource.length();
 
         // Will it fit in the cache?
-        return  (len>0 && (_useFileMappedBuffer || (len<_maxCachedFileSize && len<_maxCacheSize)));
+        return  len>0 && (_useFileMappedBuffer || (len<_maxCachedFileSize && len<_maxCacheSize));
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     private HttpContent load(String pathInContext, Resource resource, int maxBufferSize)
         throws IOException
     {
-        if (resource==null || !resource.exists())
-            return null;
+        if (resource==null || !resource.exists()) {
+			return null;
+		}
         
-        if (resource.isDirectory())
-            return new ResourceHttpContent(resource,_mimeTypes.getMimeByExtension(resource.toString()),getMaxCachedFileSize());
+        if (resource.isDirectory()) {
+			return new ResourceHttpContent(resource,_mimeTypes.getMimeByExtension(resource.toString()),getMaxCachedFileSize());
+		}
         
         // Will it fit in the cache?
         if (isCacheable(resource))
@@ -267,9 +269,9 @@ public class ResourceCache implements HttpContent.Factory
                     }
                 }
                 content = new CachedHttpContent(pathInContext,resource,contentGz);
-            }
-            else 
-                content = new CachedHttpContent(pathInContext,resource,null);
+            } else {
+				content = new CachedHttpContent(pathInContext,resource,null);
+			}
 
             // Add it to the cache.
             CachedHttpContent added = _cache.putIfAbsent(pathInContext,content);
@@ -289,20 +291,22 @@ public class ResourceCache implements HttpContent.Factory
             // Is the gzip content cached?
             String pathInContextGz=pathInContext+".gz";
             CachedHttpContent contentGz = _cache.get(pathInContextGz);
-            if (contentGz!=null && contentGz.isValid() && contentGz.getResource().lastModified()>=resource.lastModified())
-                return new ResourceHttpContent(resource,mt,maxBufferSize,contentGz);
+            if (contentGz!=null && contentGz.isValid() && contentGz.getResource().lastModified()>=resource.lastModified()) {
+				return new ResourceHttpContent(resource,mt,maxBufferSize,contentGz);
+			}
             
             // Is there a gzip resource?
             Resource resourceGz=_factory.getResource(pathInContextGz);
-            if (resourceGz.exists() && resourceGz.lastModified()>=resource.lastModified() && resourceGz.length()<resource.length())
-                return new ResourceHttpContent(resource,mt,maxBufferSize,
+            if (resourceGz.exists() && resourceGz.lastModified()>=resource.lastModified() && resourceGz.length()<resource.length()) {
+				return new ResourceHttpContent(resource,mt,maxBufferSize,
                        new ResourceHttpContent(resourceGz,_mimeTypes.getMimeByExtension(pathInContextGz),maxBufferSize));
+			}
         }
         
         return new ResourceHttpContent(resource,mt,maxBufferSize);
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     private void shrinkCache()
     {
         // While we need to shrink
@@ -314,33 +318,37 @@ public class ResourceCache implements HttpContent.Factory
                     {
                         public int compare(CachedHttpContent c1, CachedHttpContent c2)
                         {
-                            if (c1._lastAccessed<c2._lastAccessed)
-                                return -1;
+                            if (c1._lastAccessed<c2._lastAccessed) {
+								return -1;
+							}
                             
-                            if (c1._lastAccessed>c2._lastAccessed)
-                                return 1;
+                            if (c1._lastAccessed>c2._lastAccessed) {
+								return 1;
+							}
 
-                            if (c1._contentLengthValue<c2._contentLengthValue)
-                                return -1;
+                            if (c1._contentLengthValue<c2._contentLengthValue) {
+								return -1;
+							}
                             
                             return c1._key.compareTo(c2._key);
                         }
                     });
-            for (CachedHttpContent content : _cache.values())
-                sorted.add(content);
+            sorted.addAll(_cache.values());
             
             // Invalidate least recently used first
             for (CachedHttpContent content : sorted)
             {
-                if (_cachedFiles.get()<=_maxCachedFiles && _cachedSize.get()<=_maxCacheSize)
-                    break;
-                if (content==_cache.remove(content.getKey()))
-                    content.invalidate();
+                if (_cachedFiles.get()<=_maxCachedFiles && _cachedSize.get()<=_maxCacheSize) {
+					break;
+				}
+                if (content==_cache.remove(content.getKey())) {
+					content.invalidate();
+				}
             }
         }
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected ByteBuffer getIndirectBuffer(Resource resource)
     {
         try
@@ -354,15 +362,16 @@ public class ResourceCache implements HttpContent.Factory
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected ByteBuffer getDirectBuffer(Resource resource)
     {
         // Only use file mapped buffers for cached resources, otherwise too much virtual memory commitment for
         // a non shared resource.  Also ignore max buffer size
         try
         {
-            if (_useFileMappedBuffer && resource.getFile()!=null && resource.length()<Integer.MAX_VALUE) 
-                return BufferUtil.toMappedBuffer(resource.getFile());
+            if (_useFileMappedBuffer && resource.getFile()!=null && resource.length()<Integer.MAX_VALUE) {
+				return BufferUtil.toMappedBuffer(resource.getFile());
+			}
             
             return BufferUtil.toBuffer(resource,true);
         }
@@ -373,7 +382,7 @@ public class ResourceCache implements HttpContent.Factory
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public String toString()
     {
@@ -402,7 +411,7 @@ public class ResourceCache implements HttpContent.Factory
         AtomicReference<ByteBuffer> _indirectBuffer=new AtomicReference<ByteBuffer>();
         AtomicReference<ByteBuffer> _directBuffer=new AtomicReference<ByteBuffer>();
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         CachedHttpContent(String pathInContext,Resource resource,CachedHttpContent gzipped)
         {
             _key=pathInContext;
@@ -421,8 +430,9 @@ public class ResourceCache implements HttpContent.Factory
             _contentLengthValue=exists?(int)resource.length():0;
             _contentLength=new PreEncodedHttpField(HttpHeader.CONTENT_LENGTH,Long.toString(_contentLengthValue));
             
-            if (_cachedFiles.incrementAndGet()>_maxCachedFiles)
-                shrinkCache();
+            if (_cachedFiles.incrementAndGet()>_maxCachedFiles) {
+				shrinkCache();
+			}
             
             _lastAccessed=System.currentTimeMillis();
             
@@ -432,46 +442,46 @@ public class ResourceCache implements HttpContent.Factory
         }
         
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         public String getKey()
         {
             return _key;
         }
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         public boolean isCached()
         {
             return _key!=null;
         }
         
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         public boolean isMiss()
         {
             return false;
         }
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         @Override
         public Resource getResource()
         {
             return _resource;
         }
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         @Override
         public HttpField getETag()
         {
             return _etag;
         }
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         @Override
         public String getETagValue()
         {
             return _etag.getValue();
         }
         
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         boolean isValid()
         {
             if (_lastModifiedValue==_resource.lastModified() && _contentLengthValue==_resource.length())
@@ -480,76 +490,79 @@ public class ResourceCache implements HttpContent.Factory
                 return true;
             }
 
-            if (this==_cache.remove(_key))
-                invalidate();
+            if (this==_cache.remove(_key)) {
+				invalidate();
+			}
             return false;
         }
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         protected void invalidate()
         {
             ByteBuffer indirect=_indirectBuffer.get();
-            if (indirect!=null && _indirectBuffer.compareAndSet(indirect,null))
-                _cachedSize.addAndGet(-BufferUtil.length(indirect));
+            if (indirect!=null && _indirectBuffer.compareAndSet(indirect,null)) {
+				_cachedSize.addAndGet(-BufferUtil.length(indirect));
+			}
             
             ByteBuffer direct=_directBuffer.get();
-            if (direct!=null && !BufferUtil.isMappedBuffer(direct) && _directBuffer.compareAndSet(direct,null))
-                _cachedSize.addAndGet(-BufferUtil.length(direct));
+            if (direct!=null && !BufferUtil.isMappedBuffer(direct) && _directBuffer.compareAndSet(direct,null)) {
+				_cachedSize.addAndGet(-BufferUtil.length(direct));
+			}
 
             _cachedFiles.decrementAndGet();
             _resource.close();
         }
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         @Override
         public HttpField getLastModified()
         {
             return _lastModified;
         }
         
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         @Override
         public String getLastModifiedValue()
         {
             return _lastModified==null?null:_lastModified.getValue();
         }
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         @Override
         public HttpField getContentType()
         {
             return _contentType;
         }
         
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         @Override
         public String getContentTypeValue()
         {
             return _contentType==null?null:_contentType.getValue();
         }
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         @Override
         public HttpField getContentEncoding()
         {
             return null;
         }
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         @Override
         public String getContentEncodingValue()
         {
             return null;
         }   
         
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         @Override
         public String getCharacterEncoding()
         {
             return _characterEncoding;
         }
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         @Override
         public Type getMimeType()
         {
@@ -557,13 +570,13 @@ public class ResourceCache implements HttpContent.Factory
         }
 
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         @Override
         public void release()
         {
         }
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         @Override
         public ByteBuffer getIndirectBuffer()
         {
@@ -572,23 +585,25 @@ public class ResourceCache implements HttpContent.Factory
             {
                 ByteBuffer buffer2=ResourceCache.this.getIndirectBuffer(_resource);
                 
-                if (buffer2==null)
-                    LOG.warn("Could not load "+this);
-                else if (_indirectBuffer.compareAndSet(null,buffer2))
+                if (buffer2==null) {
+					LOG.warn("Could not load "+this);
+				} else if (_indirectBuffer.compareAndSet(null,buffer2))
                 {
                     buffer=buffer2;
-                    if (_cachedSize.addAndGet(BufferUtil.length(buffer))>_maxCacheSize)
-                        shrinkCache();
-                }
-                else
-                    buffer=_indirectBuffer.get();
+                    if (_cachedSize.addAndGet(BufferUtil.length(buffer))>_maxCacheSize) {
+						shrinkCache();
+					}
+                } else {
+					buffer=_indirectBuffer.get();
+				}
             }
-            if (buffer==null)
-                return null;
-            return buffer.slice();
+            if (buffer!=null) {
+				return buffer.slice();
+			}
+            return null;
         }
         
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         @Override
         public ByteBuffer getDirectBuffer()
         {
@@ -597,63 +612,66 @@ public class ResourceCache implements HttpContent.Factory
             {
                 ByteBuffer buffer2=ResourceCache.this.getDirectBuffer(_resource);
 
-                if (buffer2==null)
-                    LOG.warn("Could not load "+this);
-                else if (_directBuffer.compareAndSet(null,buffer2))
+                if (buffer2==null) {
+					LOG.warn("Could not load "+this);
+				} else if (_directBuffer.compareAndSet(null,buffer2))
                 {
                     buffer=buffer2;
 
-                    if (!BufferUtil.isMappedBuffer(buffer) && _cachedSize.addAndGet(BufferUtil.length(buffer))>_maxCacheSize)
-                        shrinkCache(); 
-                }
-                else
-                    buffer=_directBuffer.get();
+                    if (!BufferUtil.isMappedBuffer(buffer) && _cachedSize.addAndGet(BufferUtil.length(buffer))>_maxCacheSize) {
+						shrinkCache();
+					} 
+                } else {
+					buffer=_directBuffer.get();
+				}
             }
-            if (buffer==null)
-                return null;
-            return buffer.asReadOnlyBuffer();
+            if (buffer!=null) {
+				return buffer.asReadOnlyBuffer();
+			}
+            return null;
         }
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         @Override
         public HttpField getContentLength()
         {
             return _contentLength;
         }
         
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         @Override
         public long getContentLengthValue()
         {
             return _contentLengthValue;
         }
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         @Override
         public InputStream getInputStream() throws IOException
         {
             ByteBuffer indirect = getIndirectBuffer();
-            if (indirect!=null && indirect.hasArray())
-                return new ByteArrayInputStream(indirect.array(),indirect.arrayOffset()+indirect.position(),indirect.remaining());
+            if (indirect!=null && indirect.hasArray()) {
+				return new ByteArrayInputStream(indirect.array(),indirect.arrayOffset()+indirect.position(),indirect.remaining());
+			}
            
             return _resource.getInputStream();
         }   
         
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         @Override
         public ReadableByteChannel getReadableByteChannel() throws IOException
         {
             return _resource.getReadableByteChannel();
         }
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         @Override
         public String toString()
         {
             return String.format("CachedContent@%x{r=%s,e=%b,lm=%s,ct=%s,gz=%b}",hashCode(),_resource,_resource.exists(),_lastModified,_contentType,_gzipped!=null);
         }
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         @Override
         public HttpContent getGzipContent()
         {
@@ -663,7 +681,7 @@ public class ResourceCache implements HttpContent.Factory
 
     /* ------------------------------------------------------------ */
     /* ------------------------------------------------------------ */
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public class CachedGzipHttpContent extends GzipHttpContent
     {
         private final CachedHttpContent _content; 
@@ -676,7 +694,7 @@ public class ResourceCache implements HttpContent.Factory
             _content=content;
             _contentGz=contentGz;
             
-            _etag=(ResourceCache.this._etags)?new PreEncodedHttpField(HttpHeader.ETAG,_content.getResource().getWeakETag("--gzip")):null;
+            _etag=ResourceCache.this._etags?new PreEncodedHttpField(HttpHeader.ETAG,_content.getResource().getWeakETag("--gzip")):null;
         }
 
         public boolean isValid()
@@ -687,16 +705,18 @@ public class ResourceCache implements HttpContent.Factory
         @Override
         public HttpField getETag()
         {
-            if (_etag!=null)
-                return _etag;
+            if (_etag!=null) {
+				return _etag;
+			}
             return super.getETag();
         }
 
         @Override
         public String getETagValue()
         {
-            if (_etag!=null)
-                return _etag.getValue();
+            if (_etag!=null) {
+				return _etag.getValue();
+			}
             return super.getETagValue();
         }
         

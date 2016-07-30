@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 
@@ -51,21 +46,21 @@ public interface ConnectionFactory
     /**
      * @return A string representing the primary protocol name.
      */
-    public String getProtocol();
+    String getProtocol();
 
     /* ------------------------------------------------------------ */
     /**
      * @return A list of alternative protocol names/versions including the primary protocol.
      */
-    public List<String> getProtocols();
+    List<String> getProtocols();
     
     /**
-     * <p>Creates a new {@link Connection} with the given parameters</p>
+     * <p>Creates a new {@link Connection} with the given parameters</p>.
      * @param connector The {@link Connector} creating this connection
      * @param endPoint the {@link EndPoint} associated with the connection
      * @return a new {@link Connection}
      */
-    public Connection newConnection(Connector connector, EndPoint endPoint);
+    Connection newConnection(Connector connector, EndPoint endPoint);
     
     
     public interface Upgrading extends ConnectionFactory
@@ -84,6 +79,6 @@ public interface ConnectionFactory
          * indicate that the upgrade should proceed.
          * @throws BadMessageException Thrown to indicate the upgrade attempt was illegal and that a bad message response should be sent.
          */
-        public Connection upgradeConnection(Connector connector, EndPoint endPoint, MetaData.Request upgradeRequest,HttpFields responseFields) throws BadMessageException;
+        Connection upgradeConnection(Connector connector, EndPoint endPoint, MetaData.Request upgradeRequest,HttpFields responseFields) throws BadMessageException;
     }
 }

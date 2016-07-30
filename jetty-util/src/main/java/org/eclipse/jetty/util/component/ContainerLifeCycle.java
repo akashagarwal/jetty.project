@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util.component;
 
@@ -30,7 +25,7 @@ import org.eclipse.jetty.util.annotation.ManagedOperation;
 import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.log.Logger;
 
-/**
+/*
  * An ContainerLifeCycle is an {@link LifeCycle} implementation for a collection of contained beans.
  * <p>
  * Beans can be added the ContainerLifeCycle either as managed beans or as unmanaged beans.  A managed bean is started, stopped and destroyed with the aggregate.
@@ -68,16 +63,14 @@ import org.eclipse.jetty.util.log.Logger;
  * </pre>
  */
 
-/* ------------------------------------------------------------ */
-/**
- */
+/** ------------------------------------------------------------. */
 @ManagedObject("Implementation of Container and LifeCycle")
 public class ContainerLifeCycle extends AbstractLifeCycle implements Container, Destroyable, Dumpable
 {
     private static final Logger LOG = Log.getLogger(ContainerLifeCycle.class);
     private final List<Bean> _beans = new CopyOnWriteArrayList<>();
     private final List<Container.Listener> _listeners = new CopyOnWriteArrayList<>();
-    private boolean _doStarted = false;
+    private boolean _doStarted;
 
 
     public ContainerLifeCycle()
@@ -102,13 +95,14 @@ public class ContainerLifeCycle extends AbstractLifeCycle implements Container, 
                 switch(b._managed)
                 {
                     case MANAGED:
-                        if (!l.isRunning())
-                            start(l);
+                        if (!l.isRunning()) {
+							start(l);
+						}
                         break;
                     case AUTO:
-                        if (l.isRunning())
-                            unmanage(b);
-                        else
+                        if (l.isRunning()) {
+							unmanage(b);
+						} else
                         {
                             manage(b);
                             start(l);
@@ -189,9 +183,11 @@ public class ContainerLifeCycle extends AbstractLifeCycle implements Container, 
      */
     public boolean contains(Object bean)
     {
-        for (Bean b : _beans)
-            if (b._bean == bean)
-                return true;
+        for (Bean b : _beans) {
+			if (b._bean == bean) {
+				return true;
+			}
+		}
         return false;
     }
 
@@ -201,9 +197,11 @@ public class ContainerLifeCycle extends AbstractLifeCycle implements Container, 
      */
     public boolean isManaged(Object bean)
     {
-        for (Bean b : _beans)
-            if (b._bean == bean)
-                return b.isManaged();
+        for (Bean b : _beans) {
+			if (b._bean == bean) {
+				return b.isManaged();
+			}
+		}
         return false;
     }
 
@@ -239,28 +237,32 @@ public class ContainerLifeCycle extends AbstractLifeCycle implements Container, 
      */
     public boolean addBean(Object o, boolean managed)
     {
-        if (o instanceof LifeCycle)
-            return addBean(o,managed?Managed.MANAGED:Managed.UNMANAGED);
+        if (o instanceof LifeCycle) {
+			return addBean(o,managed?Managed.MANAGED:Managed.UNMANAGED);
+		}
         return addBean(o,managed?Managed.POJO:Managed.UNMANAGED);
     }
 
     public boolean addBean(Object o, Managed managed)
     {
-        if (o==null || contains(o))
-            return false;
+        if (o==null || contains(o)) {
+			return false;
+		}
 
         Bean new_bean = new Bean(o);
 
         // if the bean is a Listener
-        if (o instanceof Container.Listener)
-            addEventListener((Container.Listener)o);
+        if (o instanceof Container.Listener) {
+			addEventListener((Container.Listener)o);
+		}
 
         // Add the bean
         _beans.add(new_bean);
 
         // Tell existing listeners about the new bean
-        for (Container.Listener l:_listeners)
-            l.beanAdded(this,o);
+        for (Container.Listener l:_listeners) {
+			l.beanAdded(this,o);
+		}
 
         try
         {
@@ -276,8 +278,9 @@ public class ContainerLifeCycle extends AbstractLifeCycle implements Container, 
                     if (isStarting() && _doStarted)
                     {
                         LifeCycle l = (LifeCycle)o;
-                        if (!l.isRunning())
-                            start(l);
+                        if (!l.isRunning()) {
+							start(l);
+						}
                     }
                     break;
 
@@ -287,23 +290,24 @@ public class ContainerLifeCycle extends AbstractLifeCycle implements Container, 
                         LifeCycle l = (LifeCycle)o;
                         if (isStarting())
                         {
-                            if (l.isRunning())
-                                unmanage(new_bean);
-                            else if (_doStarted)
+                            if (l.isRunning()) {
+								unmanage(new_bean);
+							} else if (_doStarted)
                             {
                                 manage(new_bean);
                                 start(l);
-                            }
-                            else
-                                new_bean._managed=Managed.AUTO;      
+                            } else {
+								new_bean._managed=Managed.AUTO;
+							}      
                         }
-                        else if (isStarted())
-                            unmanage(new_bean);
-                        else
-                            new_bean._managed=Managed.AUTO;
-                    }
-                    else
-                        new_bean._managed=Managed.POJO;
+                        else if (isStarted()) {
+							unmanage(new_bean);
+						} else {
+							new_bean._managed=Managed.AUTO;
+						}
+                    } else {
+						new_bean._managed=Managed.POJO;
+					}
                     break;
 
                 case POJO:
@@ -319,8 +323,9 @@ public class ContainerLifeCycle extends AbstractLifeCycle implements Container, 
             throw new RuntimeException(e);
         }
 
-        if (LOG.isDebugEnabled())
-            LOG.debug("{} added {}",this,new_bean);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("{} added {}",this,new_bean);
+		}
 
         return true;
     }
@@ -339,8 +344,9 @@ public class ContainerLifeCycle extends AbstractLifeCycle implements Container, 
         addBean(lifecycle,true);
         try
         {
-            if (isRunning() && !lifecycle.isRunning())
-                start(lifecycle);
+            if (isRunning() && !lifecycle.isRunning()) {
+				start(lifecycle);
+			}
         }
         catch (RuntimeException | Error e)
         {
@@ -355,8 +361,9 @@ public class ContainerLifeCycle extends AbstractLifeCycle implements Container, 
     @Override
     public void addEventListener(Container.Listener listener)
     {
-        if (_listeners.contains(listener))
-            return;
+        if (_listeners.contains(listener)) {
+			return;
+		}
         
         _listeners.add(listener);
 
@@ -368,10 +375,11 @@ public class ContainerLifeCycle extends AbstractLifeCycle implements Container, 
             // handle inheritance
             if (listener instanceof InheritedListener && b.isManaged() && b._bean instanceof Container)
             {
-                if (b._bean instanceof ContainerLifeCycle)
-                     ((ContainerLifeCycle)b._bean).addBean(listener, false);
-                 else
-                     ((Container)b._bean).addBean(listener);
+                if (b._bean instanceof ContainerLifeCycle) {
+					((ContainerLifeCycle)b._bean).addBean(listener, false);
+				} else {
+					((Container)b._bean).addBean(listener);
+				}
             }
         }
     }
@@ -407,10 +415,11 @@ public class ContainerLifeCycle extends AbstractLifeCycle implements Container, 
                 {
                     if (l instanceof InheritedListener)
                     {
-                        if (bean._bean instanceof ContainerLifeCycle)
-                            ((ContainerLifeCycle)bean._bean).addBean(l,false);
-                        else
-                            ((Container)bean._bean).addBean(l);
+                        if (bean._bean instanceof ContainerLifeCycle) {
+							((ContainerLifeCycle)bean._bean).addBean(l,false);
+						} else {
+							((Container)bean._bean).addBean(l);
+						}
                     }
                 }
             }
@@ -449,8 +458,9 @@ public class ContainerLifeCycle extends AbstractLifeCycle implements Container, 
             {
                 for (Container.Listener l:_listeners)
                 {
-                    if (l instanceof InheritedListener)
-                        ((Container)bean._bean).removeBean(l);
+                    if (l instanceof InheritedListener) {
+						((Container)bean._bean).removeBean(l);
+					}
                 }
             }
             bean._managed=Managed.UNMANAGED;
@@ -465,8 +475,9 @@ public class ContainerLifeCycle extends AbstractLifeCycle implements Container, 
 
     public void setBeans(Collection<Object> beans)
     {
-        for (Object bean : beans)
-            addBean(bean);
+        for (Object bean : beans) {
+			addBean(bean);
+		}
     }
 
     @Override
@@ -475,8 +486,9 @@ public class ContainerLifeCycle extends AbstractLifeCycle implements Container, 
         ArrayList<T> beans = new ArrayList<>();
         for (Bean b : _beans)
         {
-            if (clazz.isInstance(b._bean))
-                beans.add(clazz.cast(b._bean));
+            if (clazz.isInstance(b._bean)) {
+				beans.add(clazz.cast(b._bean));
+			}
         }
         return beans;
     }
@@ -486,28 +498,31 @@ public class ContainerLifeCycle extends AbstractLifeCycle implements Container, 
     {
         for (Bean b : _beans)
         {
-            if (clazz.isInstance(b._bean))
-                return clazz.cast(b._bean);
+            if (clazz.isInstance(b._bean)) {
+				return clazz.cast(b._bean);
+			}
         }
         return null;
     }
 
     /**
-     * Removes all bean
+     * Removes all bean.
      */
     public void removeBeans()
     {
         ArrayList<Bean> beans= new ArrayList<>(_beans);
-        for (Bean b : beans)
-            remove(b);
+        for (Bean b : beans) {
+			remove(b);
+		}
     }
 
     private Bean getBean(Object o)
     {
         for (Bean b : _beans)
         {
-            if (b._bean == o)
-                return b;
+            if (b._bean == o) {
+				return b;
+			}
         }
         return null;
     }
@@ -527,11 +542,13 @@ public class ContainerLifeCycle extends AbstractLifeCycle implements Container, 
             
             unmanage(bean);
 
-            for (Container.Listener l:_listeners)
-                l.beanRemoved(this,bean._bean);
+            for (Container.Listener l:_listeners) {
+				l.beanRemoved(this,bean._bean);
+			}
 
-            if (bean._bean instanceof Container.Listener)
-                removeEventListener((Container.Listener)bean._bean);
+            if (bean._bean instanceof Container.Listener) {
+				removeEventListener((Container.Listener)bean._bean);
+			}
 
             // stop managed beans
             if (wasManaged && bean._bean instanceof LifeCycle)
@@ -564,8 +581,9 @@ public class ContainerLifeCycle extends AbstractLifeCycle implements Container, 
             {
                 listener.beanRemoved(this,b._bean);
 
-                if (listener instanceof InheritedListener && b.isManaged() && b._bean instanceof Container)
-                    ((Container)b._bean).removeBean(listener);
+                if (listener instanceof InheritedListener && b.isManaged() && b._bean instanceof Container) {
+					((Container)b._bean).removeBean(listener);
+				}
             }
         }
     }
@@ -576,8 +594,9 @@ public class ContainerLifeCycle extends AbstractLifeCycle implements Container, 
         super.setStopTimeout(stopTimeout);
         for (Bean bean : _beans)
         {
-            if (bean.isManaged() && bean._bean instanceof AbstractLifeCycle)
-                ((AbstractLifeCycle)bean._bean).setStopTimeout(stopTimeout);
+            if (bean.isManaged() && bean._bean instanceof AbstractLifeCycle) {
+				((AbstractLifeCycle)bean._bean).setStopTimeout(stopTimeout);
+			}
         }
     }
 
@@ -633,14 +652,15 @@ public class ContainerLifeCycle extends AbstractLifeCycle implements Container, 
     {
         try
         {
-            if (o instanceof LifeCycle)
-                out.append(String.valueOf(o)).append(" - ").append((AbstractLifeCycle.getState((LifeCycle)o))).append("\n");
-            else
-                out.append(String.valueOf(o)).append("\n");
+            if (o instanceof LifeCycle) {
+				out.append(String.valueOf(o)).append(" - ").append(AbstractLifeCycle.getState((LifeCycle)o)).append("\n");
+			} else {
+				out.append(String.valueOf(o)).append("\n");
+			}
         }
         catch (Throwable th)
         {
-            out.append(" => ").append(th.toString()).append('\n');
+            out.append(" => ").append(th).append('\n');
         }
     }
 
@@ -654,10 +674,12 @@ public class ContainerLifeCycle extends AbstractLifeCycle implements Container, 
     {
         dumpThis(out);
         int size = _beans.size();
-        for (Collection<?> c : collections)
-            size += c.size();
-        if (size == 0)
-            return;
+        for (Collection<?> c : collections) {
+			size += c.size();
+		}
+        if (size == 0) {
+			return;
+		}
         int i = 0;
         for (Bean b : _beans)
         {
@@ -667,18 +689,20 @@ public class ContainerLifeCycle extends AbstractLifeCycle implements Container, 
             {
                 case POJO:
                     out.append(indent).append(" +- ");
-                    if (b._bean instanceof Dumpable)
-                        ((Dumpable)b._bean).dump(out, indent + (i == size ? "    " : " |  "));
-                    else
-                        dumpObject(out, b._bean);
+                    if (b._bean instanceof Dumpable) {
+						((Dumpable)b._bean).dump(out, indent + (i == size ? "    " : " |  "));
+					} else {
+						dumpObject(out, b._bean);
+					}
                     break;
 
                 case MANAGED:
                     out.append(indent).append(" += ");
-                    if (b._bean instanceof Dumpable)
-                        ((Dumpable)b._bean).dump(out, indent + (i == size ? "    " : " |  "));
-                    else
-                        dumpObject(out, b._bean);
+                    if (b._bean instanceof Dumpable) {
+						((Dumpable)b._bean).dump(out, indent + (i == size ? "    " : " |  "));
+					} else {
+						dumpObject(out, b._bean);
+					}
                     break;
 
                 case UNMANAGED:
@@ -688,17 +712,19 @@ public class ContainerLifeCycle extends AbstractLifeCycle implements Container, 
 
                 case AUTO:
                     out.append(indent).append(" +? ");
-                    if (b._bean instanceof Dumpable)
-                        ((Dumpable)b._bean).dump(out, indent + (i == size ? "    " : " |  "));
-                    else
-                        dumpObject(out, b._bean);
+                    if (b._bean instanceof Dumpable) {
+						((Dumpable)b._bean).dump(out, indent + (i == size ? "    " : " |  "));
+					} else {
+						dumpObject(out, b._bean);
+					}
                     break;
 
             }
         }
 
-        if (i<size)
-            out.append(indent).append(" |\n");
+        if (i<size) {
+			out.append(indent).append(" |\n");
+		}
 
         for (Collection<?> c : collections)
         {
@@ -707,23 +733,27 @@ public class ContainerLifeCycle extends AbstractLifeCycle implements Container, 
                 i++;
                 out.append(indent).append(" +> ");
 
-                if (o instanceof Dumpable)
-                    ((Dumpable)o).dump(out, indent + (i == size ? "    " : " |  "));
-                else
-                    dumpObject(out, o);
+                if (o instanceof Dumpable) {
+					((Dumpable)o).dump(out, indent + (i == size ? "    " : " |  "));
+				} else {
+					dumpObject(out, o);
+				}
             }
         }
     }
 
     public static void dump(Appendable out, String indent, Collection<?>... collections) throws IOException
     {
-        if (collections.length == 0)
-            return;
+        if (collections.length == 0) {
+			return;
+		}
         int size = 0;
-        for (Collection<?> c : collections)
-            size += c.size();
-        if (size == 0)
-            return;
+        for (Collection<?> c : collections) {
+			size += c.size();
+		}
+        if (size == 0) {
+			return;
+		}
 
         int i = 0;
         for (Collection<?> c : collections)
@@ -733,10 +763,11 @@ public class ContainerLifeCycle extends AbstractLifeCycle implements Container, 
                 i++;
                 out.append(indent).append(" +- ");
 
-                if (o instanceof Dumpable)
-                    ((Dumpable)o).dump(out, indent + (i == size ? "    " : " |  "));
-                else
-                    dumpObject(out, o);
+                if (o instanceof Dumpable) {
+					((Dumpable)o).dump(out, indent + (i == size ? "    " : " |  "));
+				} else {
+					dumpObject(out, o);
+				}
             }
         }
     }
@@ -751,8 +782,9 @@ public class ContainerLifeCycle extends AbstractLifeCycle implements Container, 
 
         private Bean(Object b)
         {
-            if (b==null)
-                throw new NullPointerException();
+            if (b==null) {
+				throw new NullPointerException();
+			}
             _bean = b;
         }
 
@@ -772,10 +804,12 @@ public class ContainerLifeCycle extends AbstractLifeCycle implements Container, 
     {
         if (newBean!=oldBean)
         {
-            if (oldBean!=null)
-                removeBean(oldBean);
-            if (newBean!=null)
-                addBean(newBean);
+            if (oldBean!=null) {
+				removeBean(oldBean);
+			}
+            if (newBean!=null) {
+				addBean(newBean);
+			}
         }
     }
     
@@ -783,10 +817,12 @@ public class ContainerLifeCycle extends AbstractLifeCycle implements Container, 
     {
         if (newBean!=oldBean)
         {
-            if (oldBean!=null)
-                removeBean(oldBean);
-            if (newBean!=null)
-                addBean(newBean,managed);
+            if (oldBean!=null) {
+				removeBean(oldBean);
+			}
+            if (newBean!=null) {
+				addBean(newBean,managed);
+			}
         }
     }
 
@@ -799,9 +835,11 @@ public class ContainerLifeCycle extends AbstractLifeCycle implements Container, 
             {
                 if (newBeans!=null)
                 {
-                    for (Object n:newBeans)
-                        if (o==n)
-                            continue loop;
+                    for (Object n:newBeans) {
+						if (o==n) {
+							continue loop;
+						}
+					}
                 }
                 removeBean(o);
             }
@@ -814,9 +852,11 @@ public class ContainerLifeCycle extends AbstractLifeCycle implements Container, 
             {
                 if (oldBeans!=null)
                 {
-                    for (Object o:oldBeans)
-                        if (o==n)
-                            continue loop;
+                    for (Object o:oldBeans) {
+						if (o==n) {
+							continue loop;
+						}
+					}
                 }
                 addBean(n);
             }

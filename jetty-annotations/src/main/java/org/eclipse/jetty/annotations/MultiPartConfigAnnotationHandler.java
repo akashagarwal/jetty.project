@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.annotations;
 
@@ -31,7 +26,7 @@ import org.eclipse.jetty.webapp.WebAppContext;
 /**
  * MultiPartConfigAnnotationHandler
  *
- *
+ *.
  */
 public class MultiPartConfigAnnotationHandler extends AbstractIntrospectableAnnotationHandler
 {
@@ -43,17 +38,16 @@ public class MultiPartConfigAnnotationHandler extends AbstractIntrospectableAnno
         super(false); 
         _context = context;
     }
-    /** 
-     * @see org.eclipse.jetty.annotations.AnnotationIntrospector.AbstractIntrospectableAnnotationHandler#doHandle(java.lang.Class)
-     */
     public void doHandle(Class clazz)
     {
-        if (!Servlet.class.isAssignableFrom(clazz))
-            return;
+        if (!Servlet.class.isAssignableFrom(clazz)) {
+			return;
+		}
         
         MultipartConfig multi = (MultipartConfig) clazz.getAnnotation(MultipartConfig.class);
-        if (multi == null)
-            return;
+        if (multi == null) {
+			return;
+		}
         
         MetaData metaData = _context.getMetaData();
               

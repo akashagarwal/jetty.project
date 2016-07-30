@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.jsr356.annotations;
 
@@ -67,49 +62,49 @@ public class JsrParamIdText extends JsrParamIdOnMessage implements IJsrParamId
             callable.setDecodingType(Boolean.class);
             return true;
         }
-        if (param.type.isAssignableFrom(Byte.class) || (param.type == Byte.TYPE))
+        if (param.type.isAssignableFrom(Byte.class) || param.type == Byte.TYPE)
         {
             assertPartialMessageSupportDisabled(param,callable);
             param.bind(Role.MESSAGE_TEXT);
             callable.setDecodingType(Byte.class);
             return true;
         }
-        if (param.type.isAssignableFrom(Character.class) || (param.type == Character.TYPE))
+        if (param.type.isAssignableFrom(Character.class) || param.type == Character.TYPE)
         {
             assertPartialMessageSupportDisabled(param,callable);
             param.bind(Role.MESSAGE_TEXT);
             callable.setDecodingType(Character.class);
             return true;
         }
-        if (param.type.isAssignableFrom(Double.class) || (param.type == Double.TYPE))
+        if (param.type.isAssignableFrom(Double.class) || param.type == Double.TYPE)
         {
             assertPartialMessageSupportDisabled(param,callable);
             param.bind(Role.MESSAGE_TEXT);
             callable.setDecodingType(Double.class);
             return true;
         }
-        if (param.type.isAssignableFrom(Float.class) || (param.type == Float.TYPE))
+        if (param.type.isAssignableFrom(Float.class) || param.type == Float.TYPE)
         {
             assertPartialMessageSupportDisabled(param,callable);
             param.bind(Role.MESSAGE_TEXT);
             callable.setDecodingType(Float.class);
             return true;
         }
-        if (param.type.isAssignableFrom(Integer.class) || (param.type == Integer.TYPE))
+        if (param.type.isAssignableFrom(Integer.class) || param.type == Integer.TYPE)
         {
             assertPartialMessageSupportDisabled(param,callable);
             param.bind(Role.MESSAGE_TEXT);
             callable.setDecodingType(Integer.class);
             return true;
         }
-        if (param.type.isAssignableFrom(Long.class) || (param.type == Long.TYPE))
+        if (param.type.isAssignableFrom(Long.class) || param.type == Long.TYPE)
         {
             assertPartialMessageSupportDisabled(param,callable);
             param.bind(Role.MESSAGE_TEXT);
             callable.setDecodingType(Long.class);
             return true;
         }
-        if (param.type.isAssignableFrom(Short.class) || (param.type == Short.TYPE))
+        if (param.type.isAssignableFrom(Short.class) || param.type == Short.TYPE)
         {
             assertPartialMessageSupportDisabled(param,callable);
             param.bind(Role.MESSAGE_TEXT);

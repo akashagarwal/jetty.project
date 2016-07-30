@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.client;
 
@@ -75,14 +70,16 @@ public abstract class HttpConnection implements Connection
             timeoutListener.schedule(getHttpClient().getScheduler());
             listeners.add(timeoutListener);
         }
-        if (listener != null)
-            listeners.add(listener);
+        if (listener != null) {
+			listeners.add(listener);
+		}
 
         HttpExchange exchange = new HttpExchange(getHttpDestination(), (HttpRequest)request, listeners);
 
         SendFailure result = send(exchange);
-        if (result != null)
-            request.abort(result.failure);
+        if (result != null) {
+			request.abort(result.failure);
+		}
     }
 
     protected abstract SendFailure send(HttpExchange exchange);
@@ -111,35 +108,28 @@ public abstract class HttpConnection implements Connection
         }
 
         // If we are HTTP 1.1, add the Host header
-        if (version.getVersion() == 11)
-        {
-            if (!headers.containsKey(HttpHeader.HOST.asString()))
-                headers.put(getHttpDestination().getHostField());
-        }
+        if (version.getVersion() == 11 && !headers.containsKey(HttpHeader.HOST.asString())) {
+			headers.put(getHttpDestination().getHostField());
+		}
 
         // Add content headers
         if (content != null)
         {
-            if (content instanceof ContentProvider.Typed)
-            {
-                if (!headers.containsKey(HttpHeader.CONTENT_TYPE.asString()))
-                {
-                    String contentType = ((ContentProvider.Typed)content).getContentType();
-                    if (contentType != null)
-                        headers.put(HttpHeader.CONTENT_TYPE, contentType);
-                }
-            }
+            if (content instanceof ContentProvider.Typed && !headers.containsKey(HttpHeader.CONTENT_TYPE.asString())) {
+			    String contentType = ((ContentProvider.Typed)content).getContentType();
+			    if (contentType != null) {
+					headers.put(HttpHeader.CONTENT_TYPE, contentType);
+				}
+			}
             long contentLength = content.getLength();
             if (contentLength >= 0)
             {
-                if (!headers.containsKey(HttpHeader.CONTENT_LENGTH.asString()))
-                    headers.put(HttpHeader.CONTENT_LENGTH, String.valueOf(contentLength));
-            }
-            else
-            {
-                if (!headers.containsKey(HttpHeader.TRANSFER_ENCODING.asString()))
-                    headers.put(CHUNKED_FIELD);
-            }
+                if (!headers.containsKey(HttpHeader.CONTENT_LENGTH.asString())) {
+					headers.put(HttpHeader.CONTENT_LENGTH, String.valueOf(contentLength));
+				}
+            } else if (!headers.containsKey(HttpHeader.TRANSFER_ENCODING.asString())) {
+				headers.put(CHUNKED_FIELD);
+			}
         }
 
         // Cookies
@@ -147,11 +137,13 @@ public abstract class HttpConnection implements Connection
         if (cookieStore != null)
         {
             StringBuilder cookies = null;
-            if (uri != null)
-                cookies = convertCookies(cookieStore.get(uri), null);
+            if (uri != null) {
+				cookies = convertCookies(cookieStore.get(uri), null);
+			}
             cookies = convertCookies(request.getCookies(), cookies);
-            if (cookies != null)
-                request.header(HttpHeader.COOKIE.asString(), cookies.toString());
+            if (cookies != null) {
+				request.header(HttpHeader.COOKIE.asString(), cookies.toString());
+			}
         }
 
         // Authentication
@@ -163,10 +155,12 @@ public abstract class HttpConnection implements Connection
     {
         for (int i = 0; i < cookies.size(); ++i)
         {
-            if (builder == null)
-                builder = new StringBuilder();
-            if (builder.length() > 0)
-                builder.append("; ");
+            if (builder == null) {
+				builder = new StringBuilder();
+			}
+            if (builder.length() > 0) {
+				builder.append("; ");
+			}
             HttpCookie cookie = cookies.get(i);
             builder.append(cookie.getName()).append("=").append(cookie.getValue());
         }
@@ -178,8 +172,9 @@ public abstract class HttpConnection implements Connection
         if (uri != null)
         {
             Authentication.Result result = getHttpClient().getAuthenticationStore().findAuthenticationResult(uri);
-            if (result != null)
-                result.apply(request);
+            if (result != null) {
+				result.apply(request);
+			}
         }
     }
 
@@ -192,8 +187,9 @@ public abstract class HttpConnection implements Connection
         synchronized (this)
         {
             send = idleTimeoutGuard >= 0;
-            if (send)
-                ++idleTimeoutGuard;
+            if (send) {
+				++idleTimeoutGuard;
+			}
         }
 
         if (send)
@@ -233,16 +229,19 @@ public abstract class HttpConnection implements Connection
             {
                 long elapsed = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - idleTimeoutStamp);
                 boolean idle = elapsed > idleTimeout / 2;
-                if (idle)
-                    idleTimeoutGuard = -1;
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Idle timeout {}/{}ms - {}", elapsed, idleTimeout, this);
+                if (idle) {
+					idleTimeoutGuard = -1;
+				}
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("Idle timeout {}/{}ms - {}", elapsed, idleTimeout, this);
+				}
                 return idle;
             }
             else
             {
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Idle timeout skipped - {}", this);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("Idle timeout skipped - {}", this);
+				}
                 return false;
             }
         }

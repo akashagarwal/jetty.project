@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.fcgi.client.http;
 
@@ -94,8 +89,9 @@ public class HttpChannelOverFCGI extends HttpChannel
     {
         idle.notIdle();
         HttpExchange exchange = getHttpExchange();
-        if (exchange == null)
-            return false;
+        if (exchange == null) {
+			return false;
+		}
         exchange.getResponse().version(version).status(code).reason(reason);
         return receiver.responseBegin(exchange);
     }
@@ -117,8 +113,9 @@ public class HttpChannelOverFCGI extends HttpChannel
     {
         idle.notIdle();
         HttpExchange exchange = getHttpExchange();
-        if (exchange != null)
-            return receiver.responseContent(exchange, buffer, callback);
+        if (exchange != null) {
+			return receiver.responseContent(exchange, buffer, callback);
+		}
         callback.succeeded();
         return false;
     }
@@ -141,10 +138,11 @@ public class HttpChannelOverFCGI extends HttpChannel
         super.exchangeTerminated(exchange, result);
         idle.onClose();
         HttpFields responseHeaders = result.getResponse().getHeaders();
-        if (result.isFailed())
-            connection.close(result.getFailure());
-        else if (!connection.closeByHTTP(responseHeaders))
-            release();
+        if (result.isFailed()) {
+			connection.close(result.getFailure());
+		} else if (!connection.closeByHTTP(responseHeaders)) {
+			release();
+		}
     }
 
     protected void flush(Generator.Result... results)
@@ -182,8 +180,9 @@ public class HttpChannelOverFCGI extends HttpChannel
         @Override
         protected void onIdleExpired(TimeoutException timeout)
         {
-            if (LOG.isDebugEnabled())
-                LOG.debug("Idle timeout for request {}", request);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Idle timeout for request {}", request);
+			}
             connection.abort(timeout);
         }
 

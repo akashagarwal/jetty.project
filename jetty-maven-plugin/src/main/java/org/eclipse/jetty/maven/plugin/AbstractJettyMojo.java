@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.maven.plugin;
 
@@ -123,7 +118,7 @@ public abstract class AbstractJettyMojo extends AbstractMojo
     protected int scanIntervalSeconds;
     
     /**
-     * reload can be set to either 'automatic' or 'manual'
+     * Reload can be set to either 'automatic' or 'manual'
      *
      * if 'manual' then the context can be reloaded by a linefeed in the console
      * if 'automatic' then traditional reloading on changed files is enabled.
@@ -184,7 +179,7 @@ public abstract class AbstractJettyMojo extends AbstractMojo
     protected String stopKey;
 
     /**
-     * Use the dump() facility of jetty to print out the server configuration to logging
+     * Use the dump() facility of jetty to print out the server configuration to logging.
      * 
      * @parameter property="dumponStart" default-value="false"
      */
@@ -253,21 +248,21 @@ public abstract class AbstractJettyMojo extends AbstractMojo
     
     
     /**
-     * A wrapper for the Server object
+     * A wrapper for the Server object.
      * @parameter
      */
     protected Server server;
     
     
     /**
-     * A scanner to check for changes to the webapp
+     * A scanner to check for changes to the webapp.
      */
     protected PathWatcher scanner;
     
     
     
     /**
-     * A scanner to check ENTER hits on the console
+     * A scanner to check ENTER hits on the console.
      */
     protected Thread consoleScanner;
     
@@ -288,7 +283,7 @@ public abstract class AbstractJettyMojo extends AbstractMojo
      * is the behaviour of the jetty:start and default behaviour of the jetty:deploy goals.
      * </p>
      */
-    protected boolean nonblocking = false;
+    protected boolean nonblocking;
       
     
     public abstract void restartWebApp(boolean reconfigureScanner) throws Exception;
@@ -303,9 +298,6 @@ public abstract class AbstractJettyMojo extends AbstractMojo
     
 
 
-    /** 
-     * @see org.apache.maven.plugin.Mojo#execute()
-     */
     public void execute() throws MojoExecutionException, MojoFailureException
     {
         getLog().info("Configuring Jetty for project: " + this.project.getName());
@@ -372,16 +364,18 @@ public abstract class AbstractJettyMojo extends AbstractMojo
     
     public boolean isPluginArtifact(Artifact artifact)
     {
-        if (pluginArtifacts == null || pluginArtifacts.isEmpty())
-            return false;
+        if (pluginArtifacts == null || pluginArtifacts.isEmpty()) {
+			return false;
+		}
         
         boolean isPluginArtifact = false;
         for (Iterator<Artifact> iter = pluginArtifacts.iterator(); iter.hasNext() && !isPluginArtifact; )
         {
             Artifact pluginArtifact = iter.next();
             if (getLog().isDebugEnabled()) { getLog().debug("Checking "+pluginArtifact);}
-            if (pluginArtifact.getGroupId().equals(artifact.getGroupId()) && pluginArtifact.getArtifactId().equals(artifact.getArtifactId()))
-                isPluginArtifact = true;
+            if (pluginArtifact.getGroupId().equals(artifact.getGroupId()) && pluginArtifact.getArtifactId().equals(artifact.getArtifactId())) {
+				isPluginArtifact = true;
+			}
         }
         
         return isPluginArtifact;
@@ -389,11 +383,12 @@ public abstract class AbstractJettyMojo extends AbstractMojo
 
     public void finishConfigurationBeforeStart() throws Exception
     {
-        HandlerCollection contexts = (HandlerCollection)server.getChildHandlerByClass(ContextHandlerCollection.class);
-        if (contexts==null)
-            contexts = (HandlerCollection)server.getChildHandlerByClass(HandlerCollection.class);
+        HandlerCollection contexts = server.getChildHandlerByClass(ContextHandlerCollection.class);
+        if (contexts==null) {
+			contexts = server.getChildHandlerByClass(HandlerCollection.class);
+		}
         
-        for (int i=0; (this.contextHandlers != null) && (i < this.contextHandlers.length); i++)
+        for (int i=0; this.contextHandlers != null && i < this.contextHandlers.length; i++)
         {
             contexts.addHandler(this.contextHandlers[i]);
         }
@@ -402,11 +397,13 @@ public abstract class AbstractJettyMojo extends AbstractMojo
     public void applyJettyXml() throws Exception
     {        
         Server tmp = ServerSupport.applyXmlConfigurations(server, getJettyXmlFiles());
-        if (server == null)
-            server = tmp;
+        if (server == null) {
+			server = tmp;
+		}
         
-        if (server == null)
-            server = new Server();
+        if (server == null) {
+			server = new Server();
+		}
     }
 
     public void startJetty () throws MojoExecutionException
@@ -515,15 +512,16 @@ public abstract class AbstractJettyMojo extends AbstractMojo
     
     /**
      * Subclasses should invoke this to setup basic info
-     * on the webapp
+     * on the webapp.
      * 
      * @throws Exception if unable to configure web application 
      */
     public void configureWebApplication () throws Exception
     {
         //As of jetty-7, you must use a <webApp> element
-        if (webApp == null)
-            webApp = new JettyWebAppContext();
+        if (webApp == null) {
+			webApp = new JettyWebAppContext();
+		}
         
         //Apply any context xml file to set up the webapp
         //CAUTION: if you've defined a <webApp> element then the
@@ -549,8 +547,9 @@ public abstract class AbstractJettyMojo extends AbstractMojo
         {
             File target = new File(project.getBuild().getDirectory());
             File tmp = new File(target,"tmp");
-            if (!tmp.exists())
-                tmp.mkdirs();            
+            if (!tmp.exists()) {
+				tmp.mkdirs();
+			}            
             webApp.setTempDirectory(tmp);
         }
       
@@ -571,8 +570,9 @@ public abstract class AbstractJettyMojo extends AbstractMojo
      */
     public void startScanner() throws Exception
     {
-        if (!isScanningEnabled())
-            return;
+        if (!isScanningEnabled()) {
+			return;
+		}
 
         scanner.setNotifyExistingOnStart(false);
        
@@ -583,18 +583,18 @@ public abstract class AbstractJettyMojo extends AbstractMojo
     
     public boolean isScanningEnabled ()
     {
-        if (scanIntervalSeconds <=0 || "manual".equalsIgnoreCase( reload ))
-            return false;
-        return true;
+        return scanIntervalSeconds > 0 && !"manual".equalsIgnoreCase( reload );
     }
     
     public void stopScanner() throws Exception
     {
-        if (!isScanningEnabled())
-            return;
+        if (!isScanningEnabled()) {
+			return;
+		}
         
-        if (scanner != null)
-            scanner.stop();
+        if (scanner != null) {
+			scanner.stop();
+		}
     }
     
     
@@ -615,18 +615,14 @@ public abstract class AbstractJettyMojo extends AbstractMojo
     protected void printSystemProperties ()
     {
         // print out which system properties were set up
-        if (getLog().isDebugEnabled())
-        {
-            if (systemProperties != null)
-            {
-                Iterator itor = systemProperties.getSystemProperties().iterator();
-                while (itor.hasNext())
-                {
-                    SystemProperty prop = (SystemProperty)itor.next();
-                    getLog().debug("Property "+prop.getName()+"="+prop.getValue()+" was "+ (prop.isSet() ? "set" : "skipped"));
-                }
-            }
-        }
+        if (getLog().isDebugEnabled() && systemProperties != null) {
+		    Iterator itor = systemProperties.getSystemProperties().iterator();
+		    while (itor.hasNext())
+		    {
+		        SystemProperty prop = (SystemProperty)itor.next();
+		        getLog().debug("Property "+prop.getName()+"="+prop.getValue()+" was "+ (prop.isSet() ? "set" : "skipped"));
+		    }
+		}
     }
 
     /**
@@ -637,19 +633,23 @@ public abstract class AbstractJettyMojo extends AbstractMojo
      */
     public File findJettyWebXmlFile (File webInfDir)
     {
-        if (webInfDir == null)
-            return null;
-        if (!webInfDir.exists())
-            return null;
+        if (webInfDir == null) {
+			return null;
+		}
+        if (!webInfDir.exists()) {
+			return null;
+		}
 
         File f = new File (webInfDir, "jetty-web.xml");
-        if (f.exists())
-            return f;
+        if (f.exists()) {
+			return f;
+		}
 
         //try some historical alternatives
         f = new File (webInfDir, "web-jetty.xml");
-        if (f.exists())
-            return f;
+        if (f.exists()) {
+			return f;
+		}
         
         return null;
     }
@@ -662,8 +662,9 @@ public abstract class AbstractJettyMojo extends AbstractMojo
         {
             properties.load(propFile);
         }
-        if (this.systemProperties == null )
-            this.systemProperties = new SystemProperties();
+        if (this.systemProperties == null ) {
+			this.systemProperties = new SystemProperties();
+		}
         
         for (Enumeration<?> keys = properties.keys(); keys.hasMoreElements();  )
         {
@@ -681,9 +682,9 @@ public abstract class AbstractJettyMojo extends AbstractMojo
     
     public void setSystemProperties(SystemProperties systemProperties)
     {
-        if (this.systemProperties == null)
-            this.systemProperties = systemProperties;
-        else
+        if (this.systemProperties == null) {
+			this.systemProperties = systemProperties;
+		} else
         {
             for (SystemProperty prop: systemProperties.getSystemProperties())
             {
@@ -720,18 +721,21 @@ public abstract class AbstractJettyMojo extends AbstractMojo
 
     public boolean isExcluded (String goal)
     {
-        if (excludedGoals == null || goal == null)
-            return false;
+        if (excludedGoals == null || goal == null) {
+			return false;
+		}
         
         goal = goal.trim();
-        if ("".equals(goal))
-            return false;
+        if ("".equals(goal)) {
+			return false;
+		}
         
         boolean excluded = false;
         for (int i=0; i<excludedGoals.length && !excluded; i++)
         {
-            if (excludedGoals[i].equalsIgnoreCase(goal))
-                excluded = true;
+            if (excludedGoals[i].equalsIgnoreCase(goal)) {
+				excluded = true;
+			}
         }
         
         return excluded;

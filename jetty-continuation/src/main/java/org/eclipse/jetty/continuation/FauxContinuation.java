@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 
 package org.eclipse.jetty.continuation;
@@ -36,15 +31,22 @@ import org.eclipse.jetty.continuation.ContinuationFilter.FilteredContinuation;
  */
 class FauxContinuation implements FilteredContinuation
 {
-    // common exception used for all continuations.
-    // Turn on debug in ContinuationFilter to see real stack trace.
-    private final static ContinuationThrowable __exception = new ContinuationThrowable();
+    /**
+     * Common exception used for all continuations.
+     * Turn on debug in ContinuationFilter to see real stack trace.
+     */
+    private static final ContinuationThrowable __exception = new ContinuationThrowable();
 
-    private static final int __HANDLING=1;   // Request dispatched to filter/servlet
-    private static final int __SUSPENDING=2;   // Suspend called, but not yet returned to container
-    private static final int __RESUMING=3;     // resumed while suspending
-    private static final int __COMPLETING=4;   // resumed while suspending or suspended
-    private static final int __SUSPENDED=5;    // Suspended and parked
+    /** Request dispatched to filter/servlet. */
+    private static final int __HANDLING=1;
+    /** Suspend called, but not yet returned to container. */
+    private static final int __SUSPENDING=2;
+    /** Resumed while suspending. */
+    private static final int __RESUMING=3;
+    /** Resumed while suspending or suspended. */
+    private static final int __COMPLETING=4;
+    /** Suspended and parked. */
+    private static final int __SUSPENDED=5;
     private static final int __UNSUSPENDING=6;
     private static final int __COMPLETE=7;
 
@@ -53,9 +55,9 @@ class FauxContinuation implements FilteredContinuation
 
     private int _state=__HANDLING;
     private boolean _initial=true;
-    private boolean _resumed=false;
-    private boolean _timeout=false;
-    private boolean _responseWrapped=false;
+    private boolean _resumed;
+    private boolean _timeout;
+    private boolean _responseWrapped;
     private long _timeoutMs=30000;
 
     private ArrayList<ContinuationListener> _listeners;
@@ -65,33 +67,34 @@ class FauxContinuation implements FilteredContinuation
         _request=request;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void onComplete()
     {
-        if (_listeners!=null)
-            for (ContinuationListener l:_listeners)
-                l.onComplete(this);
+        if (_listeners!=null) {
+			for (ContinuationListener l:_listeners) {
+				l.onComplete(this);
+			}
+		}
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void onTimeout()
     {
-        if (_listeners!=null)
-            for (ContinuationListener l:_listeners)
-                l.onTimeout(this);
+        if (_listeners!=null) {
+			for (ContinuationListener l:_listeners) {
+				l.onTimeout(this);
+			}
+		}
     }
 
-    /* ------------------------------------------------------------ */
-    /**
-     * @see org.eclipse.jetty.continuation.Continuation#isResponseWrapped()
-     */
+    /** ------------------------------------------------------------. */
     @Override
     public boolean isResponseWrapped()
     {
         return _responseWrapped;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public boolean isInitial()
     {
@@ -101,7 +104,7 @@ class FauxContinuation implements FilteredContinuation
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public boolean isResumed()
     {
@@ -111,7 +114,7 @@ class FauxContinuation implements FilteredContinuation
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public boolean isSuspended()
     {
@@ -133,7 +136,7 @@ class FauxContinuation implements FilteredContinuation
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public boolean isExpired()
     {
@@ -143,14 +146,14 @@ class FauxContinuation implements FilteredContinuation
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void setTimeout(long timeoutMs)
     {
         _timeoutMs = timeoutMs;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void suspend(ServletResponse response)
     {
@@ -159,7 +162,7 @@ class FauxContinuation implements FilteredContinuation
         suspend();
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void suspend()
     {
@@ -180,7 +183,7 @@ class FauxContinuation implements FilteredContinuation
                 case __COMPLETING:
                 case __SUSPENDED:
                 case __UNSUSPENDING:
-                    throw new IllegalStateException(this.getStatusString());
+                    throw new IllegalStateException(getStatusString());
 
                 default:
                     throw new IllegalStateException(""+_state);
@@ -191,7 +194,7 @@ class FauxContinuation implements FilteredContinuation
 
 
     /* ------------------------------------------------------------ */
-    /* (non-Javadoc)
+    /** (non-Javadoc)
      * @see org.mortbay.jetty.Suspendor#resume()
      */
     @Override
@@ -225,14 +228,14 @@ class FauxContinuation implements FilteredContinuation
                     return;
 
                 default:
-                    throw new IllegalStateException(this.getStatusString());
+                    throw new IllegalStateException(getStatusString());
             }
         }
 
     }
 
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void complete()
     {
@@ -242,7 +245,7 @@ class FauxContinuation implements FilteredContinuation
             switch(_state)
             {
                 case __HANDLING:
-                    throw new IllegalStateException(this.getStatusString());
+                    throw new IllegalStateException(getStatusString());
 
                 case __SUSPENDING:
                     _state=__COMPLETING;
@@ -263,15 +266,12 @@ class FauxContinuation implements FilteredContinuation
                     return;
 
                 default:
-                    throw new IllegalStateException(this.getStatusString());
+                    throw new IllegalStateException(getStatusString());
             }
         }
     }
 
-    /* ------------------------------------------------------------ */
-    /**
-     * @see org.eclipse.jetty.continuation.Continuation#getServletResponse()
-     */
+    /** ------------------------------------------------------------. */
     @Override
     public boolean enter(ServletResponse response)
     {
@@ -279,10 +279,7 @@ class FauxContinuation implements FilteredContinuation
         return true;
     }
 
-    /* ------------------------------------------------------------ */
-    /**
-     * @see org.eclipse.jetty.continuation.Continuation#getServletResponse()
-     */
+    /** ------------------------------------------------------------. */
     @Override
     public ServletResponse getServletResponse()
     {
@@ -290,7 +287,7 @@ class FauxContinuation implements FilteredContinuation
     }
 
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     void handling()
     {
         synchronized (this)
@@ -299,11 +296,11 @@ class FauxContinuation implements FilteredContinuation
             switch(_state)
             {
                 case __HANDLING:
-                    throw new IllegalStateException(this.getStatusString());
+                    throw new IllegalStateException(getStatusString());
 
                 case __SUSPENDING:
                 case __RESUMING:
-                    throw new IllegalStateException(this.getStatusString());
+                    throw new IllegalStateException(getStatusString());
 
                 case __COMPLETING:
                     return;
@@ -368,12 +365,12 @@ class FauxContinuation implements FilteredContinuation
                 case __SUSPENDED:
                 case __UNSUSPENDING:
                 default:
-                    throw new IllegalStateException(this.getStatusString());
+                    throw new IllegalStateException(getStatusString());
             }
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected void expire()
     {
         // just like resume, except don't set _resumed=true;
@@ -414,7 +411,7 @@ class FauxContinuation implements FilteredContinuation
                     return;
 
                 default:
-                    throw new IllegalStateException(this.getStatusString());
+                    throw new IllegalStateException(getStatusString());
             }
         }
     }
@@ -427,7 +424,7 @@ class FauxContinuation implements FilteredContinuation
         {
             try
             {
-                this.wait(wait);
+                wait(wait);
             }
             catch (InterruptedException e)
             {
@@ -436,14 +433,15 @@ class FauxContinuation implements FilteredContinuation
             wait=expire_at-System.currentTimeMillis();
         }
 
-        if (_timeoutMs>0 && wait<=0)
-            expire();
+        if (_timeoutMs>0 && wait<=0) {
+			expire();
+		}
     }
 
     private void fauxResume()
     {
         _timeoutMs=0;
-        this.notifyAll();
+        notifyAll();
     }
 
     @Override
@@ -474,53 +472,43 @@ class FauxContinuation implements FilteredContinuation
     @Override
     public void addContinuationListener(ContinuationListener listener)
     {
-        if (_listeners==null)
-            _listeners=new ArrayList<ContinuationListener>();
+        if (_listeners==null) {
+			_listeners=new ArrayList<ContinuationListener>();
+		}
         _listeners.add(listener);
 
     }
 
-    /* ------------------------------------------------------------ */
-    /**
-     * @see org.eclipse.jetty.continuation.Continuation#getAttribute(java.lang.String)
-     */
+    /** ------------------------------------------------------------. */
     @Override
     public Object getAttribute(String name)
     {
         return _request.getAttribute(name);
     }
 
-    /* ------------------------------------------------------------ */
-    /**
-     * @see org.eclipse.jetty.continuation.Continuation#removeAttribute(java.lang.String)
-     */
+    /** ------------------------------------------------------------. */
     @Override
     public void removeAttribute(String name)
     {
         _request.removeAttribute(name);
     }
 
-    /* ------------------------------------------------------------ */
-    /**
-     * @see org.eclipse.jetty.continuation.Continuation#setAttribute(java.lang.String, java.lang.Object)
-     */
+    /** ------------------------------------------------------------. */
     @Override
     public void setAttribute(String name, Object attribute)
     {
         _request.setAttribute(name,attribute);
     }
 
-    /* ------------------------------------------------------------ */
-    /**
-     * @see org.eclipse.jetty.continuation.Continuation#undispatch()
-     */
+    /** ------------------------------------------------------------. */
     @Override
     public void undispatch()
     {
         if (isSuspended())
         {
-            if (ContinuationFilter.__debug)
-                throw new ContinuationThrowable();
+            if (ContinuationFilter.__debug) {
+				throw new ContinuationThrowable();
+			}
             throw __exception;
         }
         throw new IllegalStateException("!suspended");

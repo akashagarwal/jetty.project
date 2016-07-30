@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.osgi.boot.utils.internal;
 
@@ -42,20 +37,20 @@ public class DefaultBundleClassLoaderHelper implements BundleClassLoaderHelper
     private static Class Equinox_EquinoxBundle_Class;
     private static Class Felix_BundleImpl_Class;
     private static Class Felix_BundleWiring_Class;
-    //old equinox
+    /** Old equinox. */
     private static Method Equinox_BundleHost_getBundleLoader_method;
     private static Method Equinox_BundleLoader_createClassLoader_method;
-    //new equinox
+    /** New equinox. */
     private static Method Equinox_EquinoxBundle_getModuleClassLoader_Method;
   
-    //new felix
+    /** New felix. */
     private static Method Felix_BundleImpl_Adapt_Method;
-    //old felix
+    /** Old felix. */
     private static Field Felix_BundleImpl_m_Modules_Field;
     private static Field Felix_ModuleImpl_m_ClassLoader_Field;
     private static Method Felix_BundleWiring_getClassLoader_Method;
     
-    // Concierge
+    /** Concierge. */
     private static Class Concierge_BundleImpl_Class;
     private static Class Concierge_BundleWiring_Class;
     private static Method Concierge_BundleImpl_Adapt_Method;
@@ -64,8 +59,9 @@ public class DefaultBundleClassLoaderHelper implements BundleClassLoaderHelper
     
     private static void checkContainerType (Bundle bundle)
     {
-        if (osgiContainer != null)
-            return;
+        if (osgiContainer != null) {
+			return;
+		}
         
         try
         {
@@ -159,10 +155,6 @@ public class DefaultBundleClassLoaderHelper implements BundleClassLoaderHelper
         return getBundleClassLoaderForContainer(bundle);
     }
     
-    /**
-     * @param bundle
-     * @return
-     */
     private ClassLoader getBundleClassLoaderForContainer (Bundle bundle)
     {
         checkContainerType (bundle);
@@ -202,10 +194,6 @@ public class DefaultBundleClassLoaderHelper implements BundleClassLoaderHelper
     
     
 
-    /**
-     * @param bundle
-     * @return
-     */
     private static ClassLoader internalGetEquinoxBundleClassLoader(Bundle bundle)
     {
         if (osgiContainer == OSGiContainerType.EquinoxOld)
@@ -243,8 +231,9 @@ public class DefaultBundleClassLoaderHelper implements BundleClassLoaderHelper
         {
             try
             {
-                if (Equinox_EquinoxBundle_getModuleClassLoader_Method == null)
-                    Equinox_EquinoxBundle_getModuleClassLoader_Method = Equinox_EquinoxBundle_Class.getDeclaredMethod("getModuleClassLoader", new Class[] {Boolean.TYPE});
+                if (Equinox_EquinoxBundle_getModuleClassLoader_Method == null) {
+					Equinox_EquinoxBundle_getModuleClassLoader_Method = Equinox_EquinoxBundle_Class.getDeclaredMethod("getModuleClassLoader", new Class[] {Boolean.TYPE});
+				}
 
                 Equinox_EquinoxBundle_getModuleClassLoader_Method.setAccessible(true);
                 return (ClassLoader)Equinox_EquinoxBundle_getModuleClassLoader_Method.invoke(bundle, new Object[] {Boolean.FALSE});
@@ -263,10 +252,6 @@ public class DefaultBundleClassLoaderHelper implements BundleClassLoaderHelper
    
 
 
-    /**
-     * @param bundle
-     * @return
-     */
     private static ClassLoader internalGetFelixBundleClassLoader(Bundle bundle)
     {
         
@@ -274,8 +259,9 @@ public class DefaultBundleClassLoaderHelper implements BundleClassLoaderHelper
         {
             try
             {
-                if (Felix_BundleWiring_Class == null)
-                    Felix_BundleWiring_Class = bundle.getClass().getClassLoader().loadClass("org.osgi.framework.wiring.BundleWiring");
+                if (Felix_BundleWiring_Class == null) {
+					Felix_BundleWiring_Class = bundle.getClass().getClassLoader().loadClass("org.osgi.framework.wiring.BundleWiring");
+				}
 
 
                 Felix_BundleImpl_Adapt_Method.setAccessible(true);
@@ -351,8 +337,9 @@ public class DefaultBundleClassLoaderHelper implements BundleClassLoaderHelper
                 try
                 {
                     cl = (ClassLoader) Felix_ModuleImpl_m_ClassLoader_Field.get(currentModuleImpl);
-                    if (cl != null)
-                        return cl;
+                    if (cl != null) {
+						return cl;
+					}
                 }
                 catch (Exception e)
                 {
@@ -367,8 +354,7 @@ public class DefaultBundleClassLoaderHelper implements BundleClassLoaderHelper
                 try
                 {
                     bundle.loadClass("java.lang.Object");
-                    cl = (ClassLoader) Felix_ModuleImpl_m_ClassLoader_Field.get(currentModuleImpl);
-                    return cl;
+                    return (ClassLoader) Felix_ModuleImpl_m_ClassLoader_Field.get(currentModuleImpl);
                 }
                 catch (Exception e)
                 {
@@ -387,17 +373,13 @@ public class DefaultBundleClassLoaderHelper implements BundleClassLoaderHelper
         return null;
     }
     
-    /**
-     * @param bundle
-     * @return
-     */
     private static ClassLoader internalGetConciergeBundleClassLoader(Bundle bundle)
     {
         if (osgiContainer == OSGiContainerType.Concierge)
         {
             try
             {
-                /** 
+                /* 
                  * In Concierge:
                  * 
                  * Option A:
@@ -424,8 +406,7 @@ public class DefaultBundleClassLoaderHelper implements BundleClassLoaderHelper
                 }
 
                 Object wiring = Concierge_BundleImpl_Adapt_Method.invoke(bundle, new Object[] {Concierge_BundleWiring_Class});
-                ClassLoader cl = (ClassLoader)Concierge_BundleWiring_getClassLoader_Method.invoke(wiring);
-                return cl;
+                return (ClassLoader)Concierge_BundleWiring_getClassLoader_Method.invoke(wiring);
             }
             catch (Exception e)
             {

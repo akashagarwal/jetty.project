@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.nosql;
 
@@ -34,26 +29,23 @@ import org.eclipse.jetty.util.log.Logger;
 /**
  * NoSqlSessionManager
  *
- * Base class for SessionManager implementations using nosql frameworks
+ * Base class for SessionManager implementations using nosql frameworks.
  */
 public abstract class NoSqlSessionManager extends AbstractSessionManager implements SessionManager
 {
-    private final static Logger __log = Log.getLogger("org.eclipse.jetty.server.session");
+    private static final Logger __log = Log.getLogger("org.eclipse.jetty.server.session");
 
     protected final ConcurrentMap<String,NoSqlSession> _sessions=new ConcurrentHashMap<String,NoSqlSession>();
 
-    private int _stalePeriod=0;
-    private int _savePeriod=0;
+    private int _stalePeriod;
+    private int _savePeriod;
     private int _idlePeriod=-1;
     private boolean _deidleBeforeExpiry = true;
     private boolean _invalidateOnStop;
     private boolean _preserveOnStop = true;
     private boolean _saveAllAttributes;
     
-    /* ------------------------------------------------------------ */
-    /**
-     * @see org.eclipse.jetty.server.session.AbstractSessionManager#doStart()
-     */
+    /** ------------------------------------------------------------. */
     @Override
     public void doStart() throws Exception
     {
@@ -61,7 +53,7 @@ public abstract class NoSqlSessionManager extends AbstractSessionManager impleme
        
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     protected void addSession(AbstractSession session)
     {
@@ -74,7 +66,7 @@ public abstract class NoSqlSessionManager extends AbstractSessionManager impleme
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public AbstractSession getSession(String idInCluster)
     {
@@ -97,28 +89,28 @@ public abstract class NoSqlSessionManager extends AbstractSessionManager impleme
                     session.willPassivate();
                     session.clearAttributes();
                     session=race;
-                }
-                else
-                    __log.debug("session loaded ", idInCluster);
+                } else {
+					__log.debug("session loaded ", idInCluster);
+				}
                 
                 //check if the session we just loaded has actually expired, maybe while we weren't running
-                if (session.getMaxInactiveInterval() > 0 && session.getAccessed() > 0 && ((session.getMaxInactiveInterval()*1000L)+session.getAccessed()) < System.currentTimeMillis())
+                if (session.getMaxInactiveInterval() > 0 && session.getAccessed() > 0 && session.getMaxInactiveInterval()*1000L+session.getAccessed() < System.currentTimeMillis())
                 {
                     __log.debug("session expired ", idInCluster);
                     expire(idInCluster);
                     session = null;
                 }
-            }
-            else
-                __log.debug("session does not exist {}", idInCluster);
-        }
-        else
-            session.deIdle();
+            } else {
+				__log.debug("session does not exist {}", idInCluster);
+			}
+        } else {
+			session.deIdle();
+		}
 
         return session;
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     protected void shutdownSessions() throws Exception
     {
@@ -130,13 +122,14 @@ public abstract class NoSqlSessionManager extends AbstractSessionManager impleme
         //the session (which may remove it).
         long gracefulStopMs = getContextHandler().getServer().getStopTimeout();
         long stopTime = 0;
-        if (gracefulStopMs > 0)
-            stopTime = System.nanoTime() + (TimeUnit.NANOSECONDS.convert(gracefulStopMs, TimeUnit.MILLISECONDS));        
+        if (gracefulStopMs > 0) {
+			stopTime = System.nanoTime() + TimeUnit.NANOSECONDS.convert(gracefulStopMs, TimeUnit.MILLISECONDS);
+		}        
         
         ArrayList<NoSqlSession> sessions=new ArrayList<NoSqlSession>(_sessions.values());
 
         // loop while there are sessions, and while there is stop time remaining, or if no stop time, just 1 loop
-        while (sessions.size() > 0 && ((stopTime > 0 && (System.nanoTime() < stopTime)) || (stopTime == 0)))
+        while (sessions.size() > 0 && ((stopTime > 0 && System.nanoTime() < stopTime) || stopTime == 0))
         {
             for (NoSqlSession session : sessions)
             {
@@ -165,7 +158,7 @@ public abstract class NoSqlSessionManager extends AbstractSessionManager impleme
     }
     
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     protected AbstractSession newSession(HttpServletRequest request)
     {
@@ -198,7 +191,7 @@ public abstract class NoSqlSessionManager extends AbstractSessionManager impleme
 
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected void expire( String idInCluster )
     {
         //get the session from memory
@@ -210,17 +203,15 @@ public abstract class NoSqlSessionManager extends AbstractSessionManager impleme
             {
                 //we need to expire the session with its listeners, so load it
                 session = loadSession(idInCluster);
-            }
-            else
-            {
-                //deidle if the session was idled
-                if (isDeidleBeforeExpiry())
-                    session.deIdle();
-            }
+            } else //deidle if the session was idled
+			if (isDeidleBeforeExpiry()) {
+				session.deIdle();
+			}
 
             //check that session is still valid after potential de-idle
-            if (session != null && session.isValid())
-                session.timeout();
+            if (session != null && session.isValid()) {
+				session.timeout();
+			}
         }
         catch (Exception e)
         {
@@ -395,19 +386,19 @@ public abstract class NoSqlSessionManager extends AbstractSessionManager impleme
         _saveAllAttributes = saveAllAttributes;
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public boolean isDeidleBeforeExpiry()
     {
         return _deidleBeforeExpiry;
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void setDeidleBeforeExpiry(boolean deidleBeforeExpiry)
     {
         _deidleBeforeExpiry = deidleBeforeExpiry;
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void renewSessionId(String oldClusterId, String oldNodeId, String newClusterId, String newNodeId)
     {
@@ -436,19 +427,19 @@ public abstract class NoSqlSessionManager extends AbstractSessionManager impleme
     }
 
     
-    /* ------------------------------------------------------------ */
-    abstract protected NoSqlSession loadSession(String clusterId);
+    /** ------------------------------------------------------------. */
+    protected abstract NoSqlSession loadSession(String clusterId);
     
-    /* ------------------------------------------------------------ */
-    abstract protected Object save(NoSqlSession session,Object version, boolean activateAfterSave);
+    /** ------------------------------------------------------------. */
+    protected abstract Object save(NoSqlSession session,Object version, boolean activateAfterSave);
 
-    /* ------------------------------------------------------------ */
-    abstract protected Object refresh(NoSqlSession session, Object version);
+    /** ------------------------------------------------------------. */
+    protected abstract Object refresh(NoSqlSession session, Object version);
 
-    /* ------------------------------------------------------------ */
-    abstract protected boolean remove(NoSqlSession session);
+    /** ------------------------------------------------------------. */
+    protected abstract boolean remove(NoSqlSession session);
 
-    /* ------------------------------------------------------------ */
-    abstract protected void update(NoSqlSession session, String newClusterId, String newNodeId) throws Exception;
+    /** ------------------------------------------------------------. */
+    protected abstract void update(NoSqlSession session, String newClusterId, String newNodeId) throws Exception;
     
 }

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http2.client;
 
@@ -170,8 +165,9 @@ public class HTTP2Test extends AbstractTest
                 public void onData(Stream stream, DataFrame frame, Callback callback)
                 {
                     callback.succeeded();
-                    if (frame.isEndStream())
-                        latch.countDown();
+                    if (frame.isEndStream()) {
+						latch.countDown();
+					}
                 }
             });
         }
@@ -204,8 +200,9 @@ public class HTTP2Test extends AbstractTest
             {
                 MetaData.Response response = (MetaData.Response)frame.getMetaData();
                 Assert.assertEquals(status, response.getStatus());
-                if (frame.isEndStream())
-                    latch.countDown();
+                if (frame.isEndStream()) {
+					latch.countDown();
+				}
             }
         });
 
@@ -241,8 +238,9 @@ public class HTTP2Test extends AbstractTest
             {
                 MetaData.Response response = (MetaData.Response)frame.getMetaData();
                 Assert.assertEquals(200, response.getStatus());
-                if (frame.isEndStream())
-                    latch.countDown();
+                if (frame.isEndStream()) {
+					latch.countDown();
+				}
             }
         });
 
@@ -335,8 +333,9 @@ public class HTTP2Test extends AbstractTest
             @Override
             public void onHeaders(Stream stream, HeadersFrame frame)
             {
-                if (frame.isEndStream())
-                    exchangeLatch1.countDown();
+                if (frame.isEndStream()) {
+					exchangeLatch1.countDown();
+				}
             }
         });
         Stream stream1 = promise1.get(5, TimeUnit.SECONDS);
@@ -349,8 +348,9 @@ public class HTTP2Test extends AbstractTest
             @Override
             public void onHeaders(Stream stream, HeadersFrame frame)
             {
-                if (frame.isEndStream())
-                    exchangeLatch2.countDown();
+                if (frame.isEndStream()) {
+					exchangeLatch2.countDown();
+				}
             }
         });
         Stream stream2 = promise2.get(5, TimeUnit.SECONDS);
@@ -363,8 +363,9 @@ public class HTTP2Test extends AbstractTest
             @Override
             public void failed(Throwable x)
             {
-                if (x instanceof IllegalStateException)
-                    maxStreamsLatch.countDown();
+                if (x instanceof IllegalStateException) {
+					maxStreamsLatch.countDown();
+				}
             }
         }, new Stream.Listener.Adapter());
 
@@ -398,8 +399,9 @@ public class HTTP2Test extends AbstractTest
             @Override
             public void onHeaders(Stream stream, HeadersFrame frame)
             {
-                if (frame.isEndStream())
-                    exchangeLatch4.countDown();
+                if (frame.isEndStream()) {
+					exchangeLatch4.countDown();
+				}
             }
         });
         Assert.assertTrue(exchangeLatch4.await(5, TimeUnit.SECONDS));

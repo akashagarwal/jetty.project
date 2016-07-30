@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.gcloud.session;
 
@@ -60,21 +55,22 @@ import com.google.cloud.datastore.QueryResults;
 /**
  * GCloudSessionManager
  * 
- * 
+ *. 
  */
 public class GCloudSessionManager extends AbstractSessionManager
 {
-    private  final static Logger LOG = Log.getLogger("org.eclipse.jetty.server.session");
+    private static final Logger LOG = Log.getLogger("org.eclipse.jetty.server.session");
     
     
     public static final String KIND = "GCloudSession";
     public static final int DEFAULT_MAX_QUERY_RESULTS = 100;
     public static final long DEFAULT_SCAVENGE_SEC = 600; 
-    public static final int DEFAULT_BACKOFF_MS = 1000; //start at 1 sec
+    /** Start at 1 sec. */
+    public static final int DEFAULT_BACKOFF_MS = 1000;
     public static final int DEFAULT_MAX_RETRIES = 5;
     
     /**
-     * Sessions known to this node held in memory
+     * Sessions known to this node held in memory.
      */
     private ConcurrentHashMap<String, GCloudSessionManager.Session> _sessions;
 
@@ -85,12 +81,14 @@ public class GCloudSessionManager extends AbstractSessionManager
      * the cluster - the current node is considered to be the master for the session.
      *
      */
-    private long _staleIntervalSec = 0;
+    private long _staleIntervalSec;
     
-    protected Scheduler.Task _task; //scavenge task
+    /** Scavenge task. */
+    protected Scheduler.Task _task;
     protected Scheduler _scheduler;
     protected Scavenger _scavenger;
-    protected long _scavengeIntervalMs = 1000L * DEFAULT_SCAVENGE_SEC; //10mins
+    /** 10mins. */
+    protected long _scavengeIntervalMs = 1000L * DEFAULT_SCAVENGE_SEC;
     protected boolean _ownScheduler;
     
     private Datastore _datastore;
@@ -110,7 +108,7 @@ public class GCloudSessionManager extends AbstractSessionManager
 
     /**
      * Scavenger
-     *
+     *.
      */
     protected class Scavenger implements Runnable
     {
@@ -124,8 +122,9 @@ public class GCloudSessionManager extends AbstractSessionManager
            }
            finally
            {
-               if (_scheduler != null && _scheduler.isRunning())
-                   _task = _scheduler.schedule(this, _scavengeIntervalMs, TimeUnit.MILLISECONDS);
+               if (_scheduler != null && _scheduler.isRunning()) {
+				_task = _scheduler.schedule(this, _scavengeIntervalMs, TimeUnit.MILLISECONDS);
+			}
            }
         }
     }
@@ -133,7 +132,7 @@ public class GCloudSessionManager extends AbstractSessionManager
     /**
      * SessionEntityConverter
      *
-     *
+     *.
      */
     public class SessionEntityConverter
     {
@@ -153,8 +152,9 @@ public class GCloudSessionManager extends AbstractSessionManager
         
         public Entity entityFromSession (Session session, Key key) throws Exception
         {
-            if (session == null)
-                return null;
+            if (session == null) {
+				return null;
+			}
             
             Entity entity = null;
             
@@ -164,8 +164,7 @@ public class GCloudSessionManager extends AbstractSessionManager
             oos.writeObject(session.getAttributeMap());
             oos.flush();
             
-            //turn a session into an entity
-            entity = Entity.builder(key)
+            return Entity.builder(key)
                     .set(CLUSTERID, session.getId())
                     .set(CONTEXTPATH, session.getContextPath())
                     .set(VHOST, session.getVHost())
@@ -177,14 +176,13 @@ public class GCloudSessionManager extends AbstractSessionManager
                     .set(EXPIRY, session.getExpiry())
                     .set(MAXINACTIVE, session.getMaxInactiveInterval())
                     .set(ATTRIBUTES, Blob.copyFrom(baos.toByteArray())).build();
-                     
-            return entity;
         }
         
         public Session sessionFromEntity (Entity entity) throws Exception
         {
-            if (entity == null)
-                return null;
+            if (entity == null) {
+				return null;
+			}
 
             final AtomicReference<Session> reference = new AtomicReference<Session>();
             final AtomicReference<Exception> exception = new AtomicReference<Exception>();
@@ -205,7 +203,7 @@ public class GCloudSessionManager extends AbstractSessionManager
                         String lastNode = entity.getString(LASTNODE);
                         long expiry = entity.getLong(EXPIRY);
                         long maxInactive = entity.getLong(MAXINACTIVE);
-                        Blob blob = (Blob) entity.getBlob(ATTRIBUTES);
+                        Blob blob = entity.getBlob(ATTRIBUTES);
 
                         Session session = new Session (clusterId, createTime, accessed, maxInactive);
                         session.setLastNode(lastNode);
@@ -229,10 +227,11 @@ public class GCloudSessionManager extends AbstractSessionManager
                 }
             };
             
-            if (_context==null)
-                load.run();
-            else
-                _context.getContextHandler().handle(null,load);
+            if (_context!=null) {
+				_context.getContextHandler().handle(null,load);
+			} else {
+				load.run();
+			}
    
            
             if (exception.get() != null)
@@ -260,46 +259,46 @@ public class GCloudSessionManager extends AbstractSessionManager
         private ReentrantLock _lock = new ReentrantLock();
         
         /**
-         * The (canonical) context path for with which this session is associated
+         * The (canonical) context path for with which this session is associated.
          */
         private String _contextPath;
         
         
         
         /**
-         * The time in msec since the epoch at which this session should expire
+         * The time in msec since the epoch at which this session should expire.
          */
         private long _expiryTime; 
         
         
         /**
-         * Time in msec since the epoch at which this session was last read from cluster
+         * Time in msec since the epoch at which this session was last read from cluster.
          */
         private long _lastSyncTime;
         
         
         /**
-         * The workername of last node known to be managing the session
+         * The workername of last node known to be managing the session.
          */
         private String _lastNode;
         
         
         /**
-         * If dirty, session needs to be (re)sent to cluster
+         * If dirty, session needs to be (re)sent to cluster.
          */
-        protected boolean _dirty=false;
+        protected boolean _dirty;
         
         
      
 
         /**
-         * Any virtual hosts for the context with which this session is associated
+         * Any virtual hosts for the context with which this session is associated.
          */
         private String _vhost;
 
         
         /**
-         * Count of how many threads are active in this session
+         * Count of how many threads are active in this session.
          */
         private AtomicInteger _activeThreads = new AtomicInteger(0);
         
@@ -315,7 +314,7 @@ public class GCloudSessionManager extends AbstractSessionManager
         {
             super(GCloudSessionManager.this,request);
             long maxInterval = getMaxInactiveInterval();
-            _expiryTime = (maxInterval <= 0 ? 0 : (System.currentTimeMillis() + maxInterval*1000L));
+            _expiryTime = maxInterval <= 0 ? 0 : (System.currentTimeMillis() + maxInterval*1000L);
             _lastNode = getSessionIdManager().getWorkerName();
            setVHost(GCloudSessionManager.getVirtualHost(_context));
            setContextPath(GCloudSessionManager.getContextPath(_context));
@@ -336,7 +335,7 @@ public class GCloudSessionManager extends AbstractSessionManager
         protected Session (String sessionId, long created, long accessed, long maxInterval)
         {
             super(GCloudSessionManager.this, created, accessed, sessionId);
-            _expiryTime = (maxInterval <= 0 ? 0 : (System.currentTimeMillis() + maxInterval*1000L));
+            _expiryTime = maxInterval <= 0 ? 0 : (System.currentTimeMillis() + maxInterval*1000L);
         }
         
         /** 
@@ -347,8 +346,9 @@ public class GCloudSessionManager extends AbstractSessionManager
         @Override
         protected boolean access(long time)
         {
-            if (LOG.isDebugEnabled())
-                LOG.debug("Access session({}) for context {} on worker {}", getId(), getContextPath(), getSessionIdManager().getWorkerName());
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Access session({}) for context {} on worker {}", getId(), getContextPath(), getSessionIdManager().getWorkerName());
+			}
             try
             {
 
@@ -356,16 +356,12 @@ public class GCloudSessionManager extends AbstractSessionManager
                 //lock so that no other thread can call access or complete until the first one has refreshed the session object if necessary
                 _lock.lock();
                 //a request thread is entering
-                if (_activeThreads.incrementAndGet() == 1)
-                {
-                    //if the first thread, check that the session in memory is not stale, if we're checking for stale sessions
-                    if (getStaleIntervalSec() > 0  && (now - getLastSyncTime()) >= (getStaleIntervalSec() * 1000L))
-                    {
-                        if (LOG.isDebugEnabled())
-                            LOG.debug("Acess session({}) for context {} on worker {} stale session. Reloading.", getId(), getContextPath(), getSessionIdManager().getWorkerName());
-                        refresh();
-                    }
-                }
+                if (_activeThreads.incrementAndGet() == 1 && getStaleIntervalSec() > 0  && now - getLastSyncTime() >= getStaleIntervalSec() * 1000L) {
+				    if (LOG.isDebugEnabled()) {
+						LOG.debug("Acess session({}) for context {} on worker {} stale session. Reloading.", getId(), getContextPath(), getSessionIdManager().getWorkerName());
+					}
+				    refresh();
+				}
             }
             catch (Exception e)
             {
@@ -379,7 +375,7 @@ public class GCloudSessionManager extends AbstractSessionManager
             if (super.access(time))
             {
                 int maxInterval=getMaxInactiveInterval();
-                _expiryTime = (maxInterval <= 0 ? 0 : (time + maxInterval*1000L));
+                _expiryTime = maxInterval <= 0 ? 0 : (time + maxInterval*1000L);
                 return true;
             }
             return false;
@@ -410,17 +406,11 @@ public class GCloudSessionManager extends AbstractSessionManager
                         //it to the cluster.
                         //TODO consider doing only periodic saves if only the last access
                         //time to the session changes
-                        if (isValid())
-                        {
-                            //if session still valid && its dirty or stale or never been synced, write it to the cluster
-                            //otherwise, we just keep the updated last access time in memory
-                            if (_dirty || getLastSyncTime() == 0 || isStale(System.currentTimeMillis()))
-                            {
-                                willPassivate();
-                                save(this);
-                                didActivate();
-                            }
-                        }
+                        if (isValid() && (_dirty || getLastSyncTime() == 0 || isStale(System.currentTimeMillis()))) {
+						    willPassivate();
+						    save(this);
+						    didActivate();
+						}
                     }
                     catch (Exception e)
                     {
@@ -438,17 +428,17 @@ public class GCloudSessionManager extends AbstractSessionManager
             }
         }
         
-        /** Test if the session is stale
+        /** Test if the session is stale.
          * @param atTime
          * @return true if the session is stale at the time given
          */
         protected boolean isStale (long atTime)
         {
-            return (getStaleIntervalSec() > 0) && (atTime - getLastSyncTime() >= (getStaleIntervalSec()*1000L));
+            return getStaleIntervalSec() > 0 && atTime - getLastSyncTime() >= getStaleIntervalSec()*1000L;
         }
         
         
-        /** Test if the session is dirty
+        /** Test if the session is dirty.
          * @return true if the dirty flag is set
          */
         protected boolean isDirty ()
@@ -464,7 +454,9 @@ public class GCloudSessionManager extends AbstractSessionManager
         @Override
         protected void timeout()
         {
-            if (LOG.isDebugEnabled()) LOG.debug("Timing out session {}", getId());
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Timing out session {}", getId());
+			}
             super.timeout();
         }
         
@@ -493,8 +485,9 @@ public class GCloudSessionManager extends AbstractSessionManager
 
             //cluster copy assumed to be the same as we were the last
             //node to manage it
-            if (fresh.getLastNode().equals(getLastNode()))
-                return;
+            if (fresh.getLastNode().equals(getLastNode())) {
+				return;
+			}
 
             setLastNode(getSessionIdManager().getWorkerName());
             
@@ -502,24 +495,20 @@ public class GCloudSessionManager extends AbstractSessionManager
             willPassivate();
 
             //if fresh has no attributes, remove them
-            if (fresh.getAttributes() == 0)
-                this.clearAttributes();
-            else
+            if (fresh.getAttributes() == 0) {
+				clearAttributes();
+			} else
             {
                 //reconcile attributes
                 for (String key:fresh.getAttributeMap().keySet())
                 {
                     Object freshvalue = fresh.getAttribute(key);
 
-                    //session does not already contain this attribute, so bind it
+                    doPutOrRemove(key,freshvalue);
+					//session does not already contain this attribute, so bind it
                     if (getAttribute(key) == null)
                     { 
-                        doPutOrRemove(key,freshvalue);
                         bindValue(key,freshvalue);
-                    }
-                    else //session already contains this attribute, update its value
-                    {
-                        doPutOrRemove(key,freshvalue);
                     }
 
                 }
@@ -552,10 +541,7 @@ public class GCloudSessionManager extends AbstractSessionManager
         
         public boolean isExpiredAt (long time)
         {
-            if (_expiryTime <= 0)
-                return false; //never expires
-            
-            return  (_expiryTime <= time);
+            return _expiryTime > 0 && _expiryTime <= time;
         }
         
         public void swapId (String newId, String newNodeId)
@@ -572,7 +558,9 @@ public class GCloudSessionManager extends AbstractSessionManager
         {
             Object old = changeAttribute(name, value);
             if (value == null && old == null)
-                return; //if same as remove attribute but attribute was already removed, no change
+			 {
+				return; //if same as remove attribute but attribute was already removed, no change
+			}
             
            _dirty = true;
         }
@@ -645,11 +633,13 @@ public class GCloudSessionManager extends AbstractSessionManager
     @Override
     public void doStart() throws Exception
     {
-        if (_sessionIdManager == null)
-            throw new IllegalStateException("No session id manager defined");
+        if (_sessionIdManager == null) {
+			throw new IllegalStateException("No session id manager defined");
+		}
 
-        if (!_dsSet)
-            _datastore = DatastoreOptions.defaultInstance().service();
+        if (!_dsSet) {
+			_datastore = DatastoreOptions.defaultInstance().service();
+		}
         _keyFactory = _datastore.newKeyFactory().kind(KIND);
         _converter = new SessionEntityConverter();       
         _sessions = new ConcurrentHashMap<String, Session>();
@@ -662,8 +652,9 @@ public class GCloudSessionManager extends AbstractSessionManager
             _ownScheduler = true;
             _scheduler.start();
         }
-        else if (!_scheduler.isStarted())
-            throw new IllegalStateException("Shared scheduler not started");
+        else if (!_scheduler.isStarted()) {
+			throw new IllegalStateException("Shared scheduler not started");
+		}
  
         setScavengeIntervalSec(getScavengeIntervalSec());
         
@@ -681,18 +672,21 @@ public class GCloudSessionManager extends AbstractSessionManager
     {
         super.doStop();
 
-        if (_task!=null)
-            _task.cancel();
+        if (_task!=null) {
+			_task.cancel();
+		}
         _task=null;
-        if (_ownScheduler && _scheduler !=null)
-            _scheduler.stop();
+        if (_ownScheduler && _scheduler !=null) {
+			_scheduler.stop();
+		}
         _scheduler = null;
 
         _sessions.clear();
         _sessions = null;
         
-        if (!_dsSet)
-            _datastore = null;
+        if (!_dsSet) {
+			_datastore = null;
+		}
     }
 
 
@@ -723,10 +717,11 @@ public class GCloudSessionManager extends AbstractSessionManager
         long now = System.currentTimeMillis();
         
         //give a bit of leeway so we don't immediately something that has only just expired a nanosecond ago
-        now = now - (_scavengeIntervalMs/2);
+        now = now - _scavengeIntervalMs/2;
         
-        if (LOG.isDebugEnabled())
-            LOG.debug("Scavenging for sessions expired before "+now);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Scavenging for sessions expired before "+now);
+		}
 
 
         GqlQuery.Builder builder = Query.gqlQueryBuilder(ResultType.ENTITY, "select * from "+KIND+" where expiry < @1 limit "+_maxResults);
@@ -744,7 +739,7 @@ public class GCloudSessionManager extends AbstractSessionManager
     }
 
     /**
-     * Scavenge a session that has expired
+     * Scavenge a session that has expired.
      * @param e the session info from datastore
      * @throws Exception
      */
@@ -753,11 +748,13 @@ public class GCloudSessionManager extends AbstractSessionManager
     {
         long now = System.currentTimeMillis();
         Session session = _converter.sessionFromEntity(e);
-        if (session == null)
-            return;
+        if (session == null) {
+			return;
+		}
 
-        if (LOG.isDebugEnabled())
-            LOG.debug("Scavenging session: {}",session.getId());
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Scavenging session: {}",session.getId());
+		}
         //if the session isn't in memory already, put it there so we can do a normal timeout call
          Session memSession =  _sessions.putIfAbsent(session.getId(), session);
          if (memSession == null)
@@ -768,7 +765,9 @@ public class GCloudSessionManager extends AbstractSessionManager
         //final check
         if (memSession.isExpiredAt(now))
         {
-            if (LOG.isDebugEnabled()) LOG.debug("Session {} is definitely expired", memSession.getId());
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Session {} is definitely expired", memSession.getId());
+			}
             memSession.timeout();   
         }
     }
@@ -800,16 +799,15 @@ public class GCloudSessionManager extends AbstractSessionManager
             //add a bit of variability into the scavenge time so that not all
             //nodes with the same scavenge time sync up
             long tenPercent = _scavengeIntervalMs/10;
-            if ((System.currentTimeMillis()%2) == 0)
-                _scavengeIntervalMs += tenPercent;
-            if (LOG.isDebugEnabled())
-                LOG.debug("Scavenging every "+_scavengeIntervalMs+" ms");
-        }
-        else
-        {
-            if (LOG.isDebugEnabled())
-                LOG.debug("Scavenging disabled"); 
-        }
+            if ((System.currentTimeMillis()%2) == 0) {
+				_scavengeIntervalMs += tenPercent;
+			}
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Scavenging every "+_scavengeIntervalMs+" ms");
+			}
+        } else if (LOG.isDebugEnabled()) {
+			LOG.debug("Scavenging disabled");
+		}
 
  
         
@@ -818,14 +816,16 @@ public class GCloudSessionManager extends AbstractSessionManager
             if (_scheduler != null && (period!=old_period || _task==null))
             {
                 //clean up any previously scheduled scavenger
-                if (_task!=null)
-                    _task.cancel();
+                if (_task!=null) {
+					_task.cancel();
+				}
 
                 //start a new one
                 if (_scavengeIntervalMs > 0)
                 {
-                    if (_scavenger == null)
-                        _scavenger = new Scavenger();
+                    if (_scavenger == null) {
+						_scavenger = new Scavenger();
+					}
 
                     _task = _scheduler.schedule(_scavenger,_scavengeIntervalMs,TimeUnit.MILLISECONDS);
                 }
@@ -854,10 +854,11 @@ public class GCloudSessionManager extends AbstractSessionManager
 
     public void setMaxResults(int maxResults)
     {
-        if (_maxResults <= 0)
-            _maxResults = DEFAULT_MAX_QUERY_RESULTS;
-        else
-            _maxResults = maxResults;
+        if (_maxResults <= 0) {
+			_maxResults = DEFAULT_MAX_QUERY_RESULTS;
+		} else {
+			_maxResults = maxResults;
+		}
     }
 
 
@@ -869,16 +870,19 @@ public class GCloudSessionManager extends AbstractSessionManager
     @Override
     protected void addSession(AbstractSession session)
     {
-        if (session==null)
-            return;
+        if (session==null) {
+			return;
+		}
         
-        if (LOG.isDebugEnabled()) LOG.debug("Adding session({}) to session manager for context {} on worker {}",session.getClusterId(), getContextPath(getContext()),getSessionIdManager().getWorkerName() + " with lastnode="+((Session)session).getLastNode());
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Adding session({}) to session manager for context {} on worker {}",session.getClusterId(), getContextPath(getContext()),getSessionIdManager().getWorkerName() + " with lastnode="+((Session)session).getLastNode());
+		}
         _sessions.put(session.getClusterId(), (Session)session);
         
         try
         {     
                 session.willPassivate();
-                save(((GCloudSessionManager.Session)session));
+                save((GCloudSessionManager.Session)session);
                 session.didActivate();
             
         }
@@ -899,10 +903,11 @@ public class GCloudSessionManager extends AbstractSessionManager
         Session session = null;
 
         //try and find the session in this node's memory
-        Session memSession = (Session)_sessions.get(idInCluster);
+        Session memSession = _sessions.get(idInCluster);
 
-        if (LOG.isDebugEnabled())
-            LOG.debug("getSession({}) {} in session map",idInCluster,(memSession==null?"not":""));
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("getSession({}) {} in session map",idInCluster,memSession==null?"not":"");
+		}
 
         long now = System.currentTimeMillis();
         try
@@ -910,8 +915,9 @@ public class GCloudSessionManager extends AbstractSessionManager
             //if the session is not in this node's memory, then load it from the datastore
             if (memSession == null)
             {
-                if (LOG.isDebugEnabled())
-                    LOG.debug("getSession({}): loading session data from cluster", idInCluster);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("getSession({}): loading session data from cluster", idInCluster);
+				}
 
                 session = load(makeKey(idInCluster, _context));
                 if (session != null)
@@ -919,7 +925,9 @@ public class GCloudSessionManager extends AbstractSessionManager
                     //Check that it wasn't expired
                     if (session.getExpiry() > 0 && session.getExpiry() <= now)
                     {
-                        if (LOG.isDebugEnabled()) LOG.debug("getSession ({}): Session expired", idInCluster);
+                        if (LOG.isDebugEnabled()) {
+							LOG.debug("getSession ({}): Session expired", idInCluster);
+						}
                         //ensure that the session id for the expired session is deleted so that a new session with the 
                         //same id cannot be created (because the idInUse() test would succeed)
                         ((GCloudSessionIdManager)getSessionIdManager()).removeSession(session);
@@ -989,8 +997,9 @@ public class GCloudSessionManager extends AbstractSessionManager
             {
                 if (session.isDirty())
                 {
-                    if (LOG.isDebugEnabled())
-                        LOG.debug("Saving dirty session {} before exiting ", session.getId());
+                    if (LOG.isDebugEnabled()) {
+						LOG.debug("Saving dirty session {} before exiting ", session.getId());
+					}
                     save(session);
                 }
             }
@@ -1017,7 +1026,7 @@ public class GCloudSessionManager extends AbstractSessionManager
     @Override
     protected boolean removeSession(String idInCluster)
     {
-        Session session = (Session)_sessions.remove(idInCluster);
+        Session session = _sessions.remove(idInCluster);
         try
         {
             if (session != null)
@@ -1042,7 +1051,7 @@ public class GCloudSessionManager extends AbstractSessionManager
         try
         {
             //take the session with that id out of our managed list
-            session = (Session)_sessions.remove(oldClusterId);
+            session = _sessions.remove(oldClusterId);
             if (session != null)
             {
                 //TODO consider transactionality and ramifications if the session is live on another node
@@ -1070,15 +1079,20 @@ public class GCloudSessionManager extends AbstractSessionManager
     protected Session load (Key key)
     throws Exception
     {
-        if (_datastore == null)
-            throw new IllegalStateException("No DataStore");
+        if (_datastore == null) {
+			throw new IllegalStateException("No DataStore");
+		}
         
-        if (LOG.isDebugEnabled()) LOG.debug("Loading session {} from DataStore ", key);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Loading session {} from DataStore ", key);
+		}
 
         Entity entity = _datastore.get(key);
         if (entity == null)
         {
-            if (LOG.isDebugEnabled()) LOG.debug("No session {} in DataStore ",key);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("No session {} in DataStore ",key);
+			}
             return null;
         }
         else
@@ -1092,7 +1106,7 @@ public class GCloudSessionManager extends AbstractSessionManager
     
     
     /**
-     * Save or update the session to the cluster cache
+     * Save or update the session to the cluster cache.
      * 
      * @param session the session to save to datastore
      * @throws Exception
@@ -1100,10 +1114,13 @@ public class GCloudSessionManager extends AbstractSessionManager
     protected void save (GCloudSessionManager.Session session)
     throws Exception
     {
-        if (_datastore == null)
-            throw new IllegalStateException("No DataStore");
+        if (_datastore == null) {
+			throw new IllegalStateException("No DataStore");
+		}
         
-        if (LOG.isDebugEnabled()) LOG.debug("Writing session {} to DataStore", session.getId());
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Writing session {} to DataStore", session.getId());
+		}
     
         Entity entity = _converter.entityFromSession(session, makeKey(session, _context));
         
@@ -1122,7 +1139,9 @@ public class GCloudSessionManager extends AbstractSessionManager
             {
                 if (e.retryable())
                 {
-                    if (LOG.isDebugEnabled()) LOG.debug("Datastore put retry {} waiting {}ms", attempts, backoff);
+                    if (LOG.isDebugEnabled()) {
+						LOG.debug("Datastore put retry {} waiting {}ms", attempts, backoff);
+					}
                         
                     try
                     {
@@ -1181,21 +1200,24 @@ public class GCloudSessionManager extends AbstractSessionManager
      */
     protected void delete (GCloudSessionManager.Session session)
     {  
-        if (_datastore == null)
-            throw new IllegalStateException("No DataStore");
-        if (LOG.isDebugEnabled()) LOG.debug("Removing session {} from DataStore", session.getId());
+        if (_datastore == null) {
+			throw new IllegalStateException("No DataStore");
+		}
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Removing session {} from DataStore", session.getId());
+		}
         _datastore.delete(makeKey(session, _context));
     }
 
     
     /**
-     * Invalidate a session for this context with the given id
+     * Invalidate a session for this context with the given id.
      * 
      * @param idInCluster the id of the session to invalidate
      */
     public void invalidateSession (String idInCluster)
     {
-        Session session = (Session)_sessions.get(idInCluster);
+        Session session = _sessions.get(idInCluster);
 
         if (session != null)
         {
@@ -1244,7 +1266,7 @@ public class GCloudSessionManager extends AbstractSessionManager
     
     
     /**
-     * Make a unique string from the session id and info from its Context
+     * Make a unique string from the session id and info from its Context.
      * @param id the id of the Session
      * @param context the Context in which the Session exists
      * @return a unique string representing the id of the session in the context
@@ -1253,12 +1275,11 @@ public class GCloudSessionManager extends AbstractSessionManager
     {
         String key = getContextPath(context);
         key = key + "_" + getVirtualHost(context);
-        key = key+"_"+id;
-        return key;
+        return key+"_"+id;
     }
     
     /**
-     * Turn the context path into an acceptable string
+     * Turn the context path into an acceptable string.
      * 
      * @param context a context
      * @return a stringified version of the context
@@ -1280,12 +1301,14 @@ public class GCloudSessionManager extends AbstractSessionManager
     {
         String vhost = "0.0.0.0";
 
-        if (context==null)
-            return vhost;
+        if (context==null) {
+			return vhost;
+		}
 
         String [] vhosts = context.getContextHandler().getVirtualHosts();
-        if (vhosts==null || vhosts.length==0 || vhosts[0]==null)
-            return vhost;
+        if (vhosts==null || vhosts.length==0 || vhosts[0]==null) {
+			return vhost;
+		}
 
         return vhosts[0];
     }
@@ -1298,10 +1321,11 @@ public class GCloudSessionManager extends AbstractSessionManager
      */
     private static String canonicalize (String path)
     {
-        if (path==null)
-            return "";
+        if (path!=null) {
+			return path.replace('/', '_').replace('.','_').replace('\\','_');
+		}
 
-        return path.replace('/', '_').replace('.','_').replace('\\','_');
+        return "";
     }
 
 }

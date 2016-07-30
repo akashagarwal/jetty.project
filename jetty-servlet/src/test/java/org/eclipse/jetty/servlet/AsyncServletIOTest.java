@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.servlet;
 
@@ -62,7 +57,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-// TODO need  these on HTTP2 as well!
+/** TODO need  these on HTTP2 as well! */
 public class AsyncServletIOTest 
 {    
     private static final Logger LOG = Log.getLogger(AsyncServletIOTest.class);
@@ -199,8 +194,9 @@ public class AsyncServletIOTest
             {
                 line = in.readLine();
                 LOG.debug("header-line: "+line);
-                if (line.length()==0)
-                    break;
+                if (line.length()==0) {
+					break;
+				}
             }
 
             // Get body slowly
@@ -208,8 +204,9 @@ public class AsyncServletIOTest
             {
                 line = in.readLine();
                 LOG.debug("body: "+line);
-                if (line==null)
-                    break;
+                if (line==null) {
+					break;
+				}
                 list.add(line);
             }
         }
@@ -248,8 +245,9 @@ public class AsyncServletIOTest
             {
                 line = in.readLine();
                 LOG.debug("header-line: "+line);
-                if (line.length()==0)
-                    break;
+                if (line.length()==0) {
+					break;
+				}
             }
 
             // Get body
@@ -288,9 +286,10 @@ public class AsyncServletIOTest
         .append("Host: localhost\r\n")
         .append("Connection: close\r\n");
         
-        if (content!=null)
-            request.append("Content-Length: ").append(content.length).append("\r\n")
+        if (content!=null) {
+			request.append("Content-Length: ").append(content.length).append("\r\n")
             .append("Content-Type: text/plain\r\n");
+		}
         
         request.append("\r\n");
         
@@ -325,16 +324,18 @@ public class AsyncServletIOTest
             {
                 line = in.readLine();
                 LOG.debug("header-line:  "+line);
-                if (line.length()==0)
-                    break;
+                if (line.length()==0) {
+					break;
+				}
             }
 
             // Get body slowly
             while (true)
             {
                 line = in.readLine();
-                if (line==null)
-                    break;
+                if (line==null) {
+					break;
+				}
                 LOG.debug("body:  "+brief(line));
                 list.add(line);
                 Thread.sleep(50);
@@ -346,18 +347,21 @@ public class AsyncServletIOTest
         for (String line : list)
         {
             LOG.debug("line:  "+brief(line));
-            if ("-".equals(line))
-                continue;
+            if ("-".equals(line)) {
+				continue;
+			}
             assertEquals("Line Length",writes[w],line.length());
-            assertEquals("Line Contents",line.charAt(0),'0'+(w%10));
+            assertEquals("Line Contents",line.charAt(0),'0'+w%10);
             
             w++;
-            if (w<writes.length && writes[w]<=0)
-                w++;
+            if (w<writes.length && writes[w]<=0) {
+				w++;
+			}
         }
         
-        if (content!=null)
-            Assert.assertEquals("Content Length",content.length,_read.get());
+        if (content!=null) {
+			Assert.assertEquals("Content Length",content.length,_read.get());
+		}
         
         return list;
     }
@@ -397,15 +401,17 @@ public class AsyncServletIOTest
                     @Override
                     public void onError(Throwable t)
                     {      
-                        if (complete.decrementAndGet()==0)
-                            async.complete();                  
+                        if (complete.decrementAndGet()==0) {
+							async.complete();
+						}                  
                     }
                     
                     @Override
                     public void onDataAvailable() throws IOException
                     {                
-                        if (!onDataAvailable.compareAndSet(false,true))
-                            throw new IllegalStateException();
+                        if (!onDataAvailable.compareAndSet(false,true)) {
+							throw new IllegalStateException();
+						}
                         
                         //System.err.println("ODA");
                         while (in.isReady() && !in.isFinished())
@@ -413,12 +419,14 @@ public class AsyncServletIOTest
                             _oda.incrementAndGet();
                             int len=in.read(_buf);
                             //System.err.println("read "+len);
-                            if (len>0)
-                                _read.addAndGet(len);
+                            if (len>0) {
+								_read.addAndGet(len);
+							}
                         }
 
-                        if (!onDataAvailable.compareAndSet(true,false))
-                            throw new IllegalStateException();
+                        if (!onDataAvailable.compareAndSet(true,false)) {
+							throw new IllegalStateException();
+						}
                     }
                     
                     @Override
@@ -431,13 +439,14 @@ public class AsyncServletIOTest
                         }
                         
                         // System.err.println("OADR");
-                        if (complete.decrementAndGet()==0)
-                            async.complete();
+                        if (complete.decrementAndGet()==0) {
+							async.complete();
+						}
                     }
                 });
-            }
-            else
-                complete.decrementAndGet();
+            } else {
+				complete.decrementAndGet();
+			}
             
             
             // Asynchronous Write
@@ -455,24 +464,26 @@ public class AsyncServletIOTest
 
                     while (writes!=null && _w< writes.length)
                     {
-                        int write=Integer.valueOf(writes[_w++]);
+                        int write=Integer.parseInt(writes[_w++]);
                         
-                        if (write==0)
-                            out.flush();
-                        else
+                        if (write==0) {
+							out.flush();
+						} else
                         {
                             byte[] buf=new byte[write+1];
-                            Arrays.fill(buf,(byte)('0'+((_w-1)%10)));
+                            Arrays.fill(buf,(byte)('0'+(_w-1)%10));
                             buf[write]='\n';
                             out.write(buf);
                         }
                         
-                        if (!out.isReady())
-                            return;
+                        if (!out.isReady()) {
+							return;
+						}
                     }
                     
-                    if (complete.decrementAndGet()==0)
-                        async.complete();
+                    if (complete.decrementAndGet()==0) {
+						async.complete();
+					}
                 }
 
                 @Override
@@ -500,7 +511,7 @@ public class AsyncServletIOTest
             final ServletResponse response;
             final ServletOutputStream servletOutputStream;
             final AsyncContext asyncContext;
-            volatile boolean written=false;
+            volatile boolean written;
 
             SampleAsycListener(HttpServletRequest request,HttpServletResponse response) throws IOException
             {

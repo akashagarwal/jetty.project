@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server.handler;
 
@@ -58,7 +53,7 @@ import org.junit.Test;
 
 public class DebugHandlerTest
 {
-    public final static HostnameVerifier __hostnameverifier = new HostnameVerifier()
+    public static final HostnameVerifier __hostnameverifier = new HostnameVerifier()
     {
         public boolean verify(String hostname, SSLSession session)
         {
@@ -116,7 +111,9 @@ public class DebugHandlerTest
         server.start();
         
         String host = httpConnector.getHost();
-        if(host == null) host = "localhost";
+        if(host == null) {
+			host = "localhost";
+		}
         
         serverURI = URI.create(String.format("http://%s:%d/", host, httpConnector.getLocalPort()));
         secureServerURI = URI.create(String.format("https://%s:%d/", host, sslConnector.getLocalPort()));

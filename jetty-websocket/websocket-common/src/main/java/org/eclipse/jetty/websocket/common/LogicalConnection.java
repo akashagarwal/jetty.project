@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.common;
 
@@ -38,7 +33,7 @@ public interface LogicalConnection extends OutgoingFrames, SuspendToken
      * @see org.eclipse.jetty.websocket.api.StatusCode
      * @see #close(int, String)
      */
-    public void close();
+    void close();
 
     /**
      * Send a websocket Close frame, with status code.
@@ -51,15 +46,15 @@ public interface LogicalConnection extends OutgoingFrames, SuspendToken
      *            the (optional) reason. (can be null for no reason)
      * @see org.eclipse.jetty.websocket.api.StatusCode
      */
-    public void close(int statusCode, String reason);
+    void close(int statusCode, String reason);
 
     /**
-     * Terminate the connection (no close frame sent)
+     * Terminate the connection (no close frame sent).
      */
     void disconnect();
 
     /**
-     * Get the ByteBufferPool in use by the connection
+     * Get the ByteBufferPool in use by the connection.
      * @return the buffer pool
      */
     ByteBufferPool getBufferPool();
@@ -75,7 +70,7 @@ public interface LogicalConnection extends OutgoingFrames, SuspendToken
      * 
      * @return the idle timeout in milliseconds
      */
-    public long getIdleTimeout();
+    long getIdleTimeout();
 
     /**
      * Get the IOState of the connection.
@@ -94,7 +89,7 @@ public interface LogicalConnection extends OutgoingFrames, SuspendToken
     InetSocketAddress getLocalAddress();
 
     /**
-     * Set the maximum number of milliseconds of idleness before the connection is closed/disconnected, (ie no frames are either sent or received)
+     * Set the maximum number of milliseconds of idleness before the connection is closed/disconnected, (ie no frames are either sent or received).
      * @return the idle timeout in milliseconds
      */
     long getMaxIdleTimeout();
@@ -115,11 +110,11 @@ public interface LogicalConnection extends OutgoingFrames, SuspendToken
     InetSocketAddress getRemoteAddress();
 
     /**
-     * Test if logical connection is still open
+     * Test if logical connection is still open.
      * 
      *  @return true if connection is open
      */
-    public boolean isOpen();
+    boolean isOpen();
 
     /**
      * Tests if the connection is actively reading.
@@ -156,8 +151,8 @@ public interface LogicalConnection extends OutgoingFrames, SuspendToken
     SuspendToken suspend();
 
     /**
-     * Get Unique ID for the Connection
+     * Get Unique ID for the Connection.
      * @return the unique ID for the connection
      */
-    public String getId();
+    String getId();
 }

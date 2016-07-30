@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package com.acme;
 
@@ -36,9 +31,9 @@ import javax.servlet.http.HttpServletResponse;
 @SuppressWarnings("serial")
 public class CookieDump extends HttpServlet
 {
-    int redirectCount=0;
+    int redirectCount;
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected void handleForm(HttpServletRequest request,
                           HttpServletResponse response)
     {
@@ -49,13 +44,14 @@ public class CookieDump extends HttpServlet
         if (name!=null && name.length()>0)
         {
             Cookie cookie = new Cookie(name,value);
-            if (age!=null && age.length()>0)
-                cookie.setMaxAge(Integer.parseInt(age));
+            if (age!=null && age.length()>0) {
+				cookie.setMaxAge(Integer.parseInt(age));
+			}
             response.addCookie(cookie);
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void doPost(HttpServletRequest request,
                        HttpServletResponse response)
@@ -67,7 +63,7 @@ public class CookieDump extends HttpServlet
         response.sendRedirect(encodedUrl);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void doGet(HttpServletRequest request,
                       HttpServletResponse response)
@@ -97,30 +93,31 @@ public class CookieDump extends HttpServlet
 
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public String getServletInfo() {
         return "Session Dump Servlet";
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     private String getURI(HttpServletRequest request)
     {
         String uri=(String)request.getAttribute(RequestDispatcher.FORWARD_REQUEST_URI);
-        if (uri==null)
-            uri=request.getRequestURI();
+        if (uri==null) {
+			uri=request.getRequestURI();
+		}
         return uri;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected String deScript(String string)
     {
-        if (string==null)
-            return null;
+        if (string==null) {
+			return null;
+		}
         string=string.replace("&", "&amp;");
         string=string.replace( "<", "&lt;");
-        string=string.replace( ">", "&gt;");
-        return string;
+        return string.replace( ">", "&gt;");
     }
 
     @Override

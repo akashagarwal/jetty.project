@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.fcgi.parser;
 
@@ -102,15 +97,17 @@ public class ResponseContentParser extends StreamContentParser
             int remaining = buffer.remaining();
             while (remaining > 0)
             {
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Response {} {}, state {} {}", request, FCGI.StreamType.STD_OUT, state, buffer);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("Response {} {}, state {} {}", request, FCGI.StreamType.STD_OUT, state, buffer);
+				}
 
                 switch (state)
                 {
                     case HEADERS:
                     {
-                        if (httpParser.parseNext(buffer))
-                            state = State.CONTENT_MODE;
+                        if (httpParser.parseNext(buffer)) {
+							state = State.CONTENT_MODE;
+						}
                         remaining = buffer.remaining();
                         break;
                     }
@@ -128,15 +125,17 @@ public class ResponseContentParser extends StreamContentParser
                     }
                     case RAW_CONTENT:
                     {
-                        if (notifyContent(buffer))
-                            return true;
+                        if (notifyContent(buffer)) {
+							return true;
+						}
                         remaining = 0;
                         break;
                     }
                     case HTTP_CONTENT:
                     {
-                        if (httpParser.parseNext(buffer))
-                            return true;
+                        if (httpParser.parseNext(buffer)) {
+							return true;
+						}
                         remaining = buffer.remaining();
                         break;
                     }
@@ -191,14 +190,16 @@ public class ResponseContentParser extends StreamContentParser
                 else
                 {
                     fields.add(httpField);
-                    if (seenResponseCode)
-                        notifyHeader(httpField);
+                    if (seenResponseCode) {
+						notifyHeader(httpField);
+					}
                 }
             }
             catch (Throwable x)
             {
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Exception while invoking listener " + listener, x);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("Exception while invoking listener " + listener, x);
+				}
             }
         }
 
@@ -210,8 +211,9 @@ public class ResponseContentParser extends StreamContentParser
             }
             catch (Throwable x)
             {
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Exception while invoking listener " + listener, x);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("Exception while invoking listener " + listener, x);
+				}
             }
         }
 
@@ -223,8 +225,9 @@ public class ResponseContentParser extends StreamContentParser
             }
             catch (Throwable x)
             {
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Exception while invoking listener " + listener, x);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("Exception while invoking listener " + listener, x);
+				}
             }
         }
 
@@ -232,8 +235,9 @@ public class ResponseContentParser extends StreamContentParser
         {
             if (fields != null)
             {
-                for (HttpField field : fields)
-                    notifyHeader(field);
+                for (HttpField field : fields) {
+					notifyHeader(field);
+				}
             }
         }
 
@@ -245,8 +249,9 @@ public class ResponseContentParser extends StreamContentParser
             }
             catch (Throwable x)
             {
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Exception while invoking listener " + listener, x);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("Exception while invoking listener " + listener, x);
+				}
             }
         }
 
@@ -278,8 +283,9 @@ public class ResponseContentParser extends StreamContentParser
             }
             catch (Throwable x)
             {
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Exception while invoking listener " + listener, x);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("Exception while invoking listener " + listener, x);
+				}
                 return false;
             }
         }
@@ -312,13 +318,14 @@ public class ResponseContentParser extends StreamContentParser
             }
             catch (Throwable x)
             {
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Exception while invoking listener " + listener, x);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("Exception while invoking listener " + listener, x);
+				}
             }
         }
     }
 
-    // Methods overridden to make them visible here
+    /** Methods overridden to make them visible here. */
     private static class FCGIHttpParser extends HttpParser
     {
         private FCGIHttpParser(ResponseHandler handler)

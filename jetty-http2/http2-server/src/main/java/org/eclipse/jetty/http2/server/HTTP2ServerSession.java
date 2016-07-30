@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http2.server;
 
@@ -59,8 +54,9 @@ public class HTTP2ServerSession extends HTTP2Session implements ServerParser.Lis
     {
         // SPEC: send a SETTINGS frame upon receiving the preface.
         Map<Integer, Integer> settings = notifyPreface(this);
-        if (settings == null)
-            settings = Collections.emptyMap();
+        if (settings == null) {
+			settings = Collections.emptyMap();
+		}
         SettingsFrame settingsFrame = new SettingsFrame(settings, false);
 
         WindowUpdateFrame windowFrame = null;
@@ -71,17 +67,19 @@ public class HTTP2ServerSession extends HTTP2Session implements ServerParser.Lis
             windowFrame = new WindowUpdateFrame(0, sessionWindow);
         }
 
-        if (windowFrame == null)
-            frames(null, Callback.NOOP, settingsFrame, Frame.EMPTY_ARRAY);
-        else
-            frames(null, Callback.NOOP, settingsFrame, windowFrame);
+        if (windowFrame != null) {
+			frames(null, Callback.NOOP, settingsFrame, windowFrame);
+		} else {
+			frames(null, Callback.NOOP, settingsFrame, Frame.EMPTY_ARRAY);
+		}
     }
 
     @Override
     public void onHeaders(HeadersFrame frame)
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("Received {}", frame);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Received {}", frame);
+		}
 
         MetaData metaData = frame.getMetaData();
         if (metaData.isRequest())

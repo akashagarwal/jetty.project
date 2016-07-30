@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util.component;
 
@@ -323,7 +318,7 @@ public class ContainerLifeCycleTest
             @Override
             public void dump(Appendable out, String indent) throws IOException
             {
-                out.append(this.toString()).append("\n");
+                out.append(this).append("\n");
                 dump(out,indent,TypeUtil.asList(new Object[]{a1,a2}),TypeUtil.asList(new Object[]{a3,a4}));
             }
         };
@@ -553,8 +548,9 @@ public class ContainerLifeCycleTest
 
         for (String line=reader.readLine();line!=null;line=reader.readLine())
         {
-            if (line.length()>50)
-                line=line.substring(0,50);
+            if (line.length()>50) {
+				line=line.substring(0,50);
+			}
             b.append(line).append('\n');
         }
 

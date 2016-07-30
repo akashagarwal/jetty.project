@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.fcgi.parser;
 
@@ -45,7 +40,7 @@ public class ClientParser extends Parser
 
     public interface Listener extends Parser.Listener
     {
-        public void onBegin(int request, int code, String reason);
+        void onBegin(int request, int code, String reason);
 
         public static class Adapter extends Parser.Listener.Adapter implements Listener
         {
@@ -95,16 +90,18 @@ public class ClientParser extends Parser
         public void onEnd(int request)
         {
             listener.onEnd(request);
-            for (StreamContentParser streamParser : streamParsers)
-                streamParser.end(request);
+            for (StreamContentParser streamParser : streamParsers) {
+				streamParser.end(request);
+			}
         }
 
         @Override
         public void onFailure(int request, Throwable failure)
         {
             listener.onFailure(request, failure);
-            for (StreamContentParser streamParser : streamParsers)
-                streamParser.end(request);
+            for (StreamContentParser streamParser : streamParsers) {
+				streamParser.end(request);
+			}
         }
     }
 }

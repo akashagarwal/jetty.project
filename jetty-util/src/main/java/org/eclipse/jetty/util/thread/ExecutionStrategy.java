@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util.thread;
 
@@ -43,7 +38,7 @@ public interface ExecutionStrategy
      *
      * @see #execute()
      */
-    public void dispatch();
+    void dispatch();
 
     /**
      * <p>Initiates (or resumes) the task production and execution.</p>
@@ -52,14 +47,14 @@ public interface ExecutionStrategy
      *
      * @see #dispatch()
      */
-    public void execute();
+    void execute();
 
     /**
-     * A task that can handle {@link RejectedExecutionException}
+     * A task that can handle {@link RejectedExecutionException}.
      */
     public interface Rejectable
     {
-        public void reject();
+        void reject();
     }
 
     /**
@@ -93,12 +88,12 @@ public interface ExecutionStrategy
          * @param executor the execution strategy executor
          * @return a new {@link ExecutionStrategy}
          */
-        public ExecutionStrategy newExecutionStrategy(Producer producer, Executor executor);
+        ExecutionStrategy newExecutionStrategy(Producer producer, Executor executor);
 
         /**
          * @return the default {@link ExecutionStrategy}
          */
-        public static Factory getDefault()
+        static Factory getDefault()
         {
             return DefaultExecutionStrategyFactory.INSTANCE;
         }
@@ -109,7 +104,7 @@ public interface ExecutionStrategy
          * @deprecated use {@code getDefault().newExecutionStrategy(Producer, Executor)} instead
          */
         @Deprecated
-        public static ExecutionStrategy instanceFor(Producer producer, Executor executor)
+        static ExecutionStrategy instanceFor(Producer producer, Executor executor)
         {
             return getDefault().newExecutionStrategy(producer, executor);
         }

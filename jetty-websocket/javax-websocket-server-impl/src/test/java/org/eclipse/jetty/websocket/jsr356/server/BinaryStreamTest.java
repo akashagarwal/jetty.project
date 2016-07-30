@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.jsr356.server;
 
@@ -115,8 +110,9 @@ public class BinaryStreamTest
 
         try (OutputStream output = session.getBasicRemote().getSendStream())
         {
-            for (int i = 0; i < size; ++i)
-                output.write(data[i]);
+            for (int i = 0; i < size; ++i) {
+				output.write(data[i]);
+			}
         }
 
         Assert.assertTrue(client.await(5, TimeUnit.SECONDS));
@@ -142,8 +138,9 @@ public class BinaryStreamTest
             while (true)
             {
                 int read = input.read();
-                if (read < 0)
-                    break;
+                if (read < 0) {
+					break;
+				}
                 output.write(read);
             }
             latch.countDown();
@@ -170,8 +167,9 @@ public class BinaryStreamTest
             try (OutputStream output = session.getBasicRemote().getSendStream())
             {
                 int read;
-                while ((read = input.read(buffer)) >= 0)
-                    output.write(buffer, 0, read);
+                while ((read = input.read(buffer)) >= 0) {
+					output.write(buffer, 0, read);
+				}
             }
         }
     }

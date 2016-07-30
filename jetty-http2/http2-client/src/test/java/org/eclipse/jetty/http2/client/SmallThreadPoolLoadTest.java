@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http2.client;
 
@@ -112,8 +107,9 @@ public class SmallThreadPoolLoadTest extends AbstractTest
             for (int i = 0; i < iterations; ++i)
             {
                 boolean success = test(session, latch);
-                if (success)
-                    ++successes;
+                if (success) {
+					++successes;
+				}
             }
 
             Assert.assertTrue(latch.await(iterations, TimeUnit.SECONDS));
@@ -146,8 +142,9 @@ public class SmallThreadPoolLoadTest extends AbstractTest
 
         long requestId = requestIds.incrementAndGet();
         MetaData.Request request = newRequest(method.asString(), "/" + requestId, new HttpFields());
-        if (download)
-            request.getFields().put("X-Download", String.valueOf(contentLength));
+        if (download) {
+			request.getFields().put("X-Download", String.valueOf(contentLength));
+		}
         HeadersFrame requestFrame = new HeadersFrame(request, null, download);
         FuturePromise<Stream> promise = new FuturePromise<>();
         CountDownLatch requestLatch = new CountDownLatch(1);
@@ -157,16 +154,18 @@ public class SmallThreadPoolLoadTest extends AbstractTest
             @Override
             public void onHeaders(Stream stream, HeadersFrame frame)
             {
-                if (frame.isEndStream())
-                    requestLatch.countDown();
+                if (frame.isEndStream()) {
+					requestLatch.countDown();
+				}
             }
 
             @Override
             public void onData(Stream stream, DataFrame frame, Callback callback)
             {
                 callback.succeeded();
-                if (frame.isEndStream())
-                    requestLatch.countDown();
+                if (frame.isEndStream()) {
+					requestLatch.countDown();
+				}
             }
 
             @Override
@@ -183,12 +182,13 @@ public class SmallThreadPoolLoadTest extends AbstractTest
         }
 
         boolean success = requestLatch.await(5, TimeUnit.SECONDS);
-        if (success)
-            latch.countDown();
-        else
-            logger.warn("Request {} took too long{}{}{}{}", requestId,
+        if (success) {
+			latch.countDown();
+		} else {
+			logger.warn("Request {} took too long{}{}{}{}", requestId,
                     System.lineSeparator(), server.dump(),
                     System.lineSeparator(), client.dump());
+		}
         return !reset.get();
     }
 
@@ -203,8 +203,9 @@ public class SmallThreadPoolLoadTest extends AbstractTest
                 case "GET":
                 {
                     int contentLength = request.getIntHeader("X-Download");
-                    if (contentLength > 0)
-                        response.getOutputStream().write(new byte[contentLength]);
+                    if (contentLength > 0) {
+						response.getOutputStream().write(new byte[contentLength]);
+					}
                     break;
                 }
                 case "POST":

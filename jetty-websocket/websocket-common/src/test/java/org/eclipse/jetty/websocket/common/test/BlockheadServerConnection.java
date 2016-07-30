@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.common.test;
 
@@ -81,8 +76,8 @@ public class BlockheadServerConnection implements IncomingFrames, OutgoingFrames
     private final AtomicBoolean echoing = new AtomicBoolean(false);
     private Thread echoThread;
 
-    /** Set to true to disable timeouts (for debugging reasons) */
-    private boolean debug = false;
+    /** Set to true to disable timeouts (for debugging reasons). */
+    private boolean debug;
     private OutputStream out;
     private InputStream in;
 
@@ -114,7 +109,7 @@ public class BlockheadServerConnection implements IncomingFrames, OutgoingFrames
         extraResponseHeaders.put(rawkey,rawvalue);
     }
 
-    /* (non-Javadoc)
+    /** (non-Javadoc)
      * @see org.eclipse.jetty.websocket.common.test.IBlockheadServerConnection#close()
      */
     @Override
@@ -124,7 +119,7 @@ public class BlockheadServerConnection implements IncomingFrames, OutgoingFrames
         flush();
     }
 
-    /* (non-Javadoc)
+    /** (non-Javadoc)
      * @see org.eclipse.jetty.websocket.common.test.IBlockheadServerConnection#close(int)
      */
     @Override
@@ -256,8 +251,9 @@ public class BlockheadServerConnection implements IncomingFrames, OutgoingFrames
         try
         {
             BufferUtil.writeTo(headerBuf,out);
-            if (frame.hasPayload())
-                BufferUtil.writeTo(frame.getPayload(),out);
+            if (frame.hasPayload()) {
+				BufferUtil.writeTo(frame.getPayload(),out);
+			}
             out.flush();
             if (callback != null)
             {
@@ -304,14 +300,13 @@ public class BlockheadServerConnection implements IncomingFrames, OutgoingFrames
         
         Assert.assertThat("Number of Sec-WebSocket-Key headers", hits.size(), is(1));
         
-        String key = hits.get(0);
-        return key;
+        return hits.get(0);
     }
 
     public int read(ByteBuffer buf) throws IOException
     {
         int len = 0;
-        while ((in.available() > 0) && (buf.remaining() > 0))
+        while (in.available() > 0 && buf.remaining() > 0)
         {
             buf.put((byte)in.read());
             len++;
@@ -334,7 +329,7 @@ public class BlockheadServerConnection implements IncomingFrames, OutgoingFrames
             LOG.debug("Now: {} - expireOn: {} ({} ms)",now,expireOn,msDur);
 
             int len = 0;
-            while (incomingFrames.size() < (startCount + expectedCount))
+            while (incomingFrames.size() < startCount + expectedCount)
             {
                 BufferUtil.clearToFill(buf);
                 len = read(buf);
@@ -352,7 +347,7 @@ public class BlockheadServerConnection implements IncomingFrames, OutgoingFrames
                 {
                     /* ignore */
                 }
-                if (!debug && (System.currentTimeMillis() > expireOn))
+                if (!debug && System.currentTimeMillis() > expireOn)
                 {
                     incomingFrames.dump();
                     throw new TimeoutException(String.format("Timeout reading all %d expected frames. (managed to only read %d frame(s))",expectedCount,
@@ -588,7 +583,7 @@ public class BlockheadServerConnection implements IncomingFrames, OutgoingFrames
         getOutputStream().write(buf,offset,length);
     }
 
-    /* (non-Javadoc)
+    /** (non-Javadoc)
      * @see org.eclipse.jetty.websocket.common.test.IBlockheadServerConnection#write(org.eclipse.jetty.websocket.api.extensions.Frame)
      */
     @Override
@@ -606,7 +601,7 @@ public class BlockheadServerConnection implements IncomingFrames, OutgoingFrames
     public void write(ByteBuffer buf) throws IOException
     {
         byte arr[] = BufferUtil.toArray(buf);
-        if ((arr != null) && (arr.length > 0))
+        if (arr != null && arr.length > 0)
         {
             getOutputStream().write(arr);
         }

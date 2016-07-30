@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util;
 
@@ -97,8 +92,9 @@ public class TreeTrie<V> extends AbstractTrie<V>
             int index=c>=0&&c<0x7f?__lookup[c]:-1;
             if (index>=0)
             {
-                if (t._nextIndex[index] == null)
-                    t._nextIndex[index] = new TreeTrie<V>(c);
+                if (t._nextIndex[index] == null) {
+					t._nextIndex[index] = new TreeTrie<V>(c);
+				}
                 t = t._nextIndex[index];
             }
             else
@@ -107,8 +103,9 @@ public class TreeTrie<V> extends AbstractTrie<V>
                 for (int i=t._nextOther.size();i-->0;)
                 {
                     n=t._nextOther.get(i);
-                    if (n._c==c)
-                        break;
+                    if (n._c==c) {
+						break;
+					}
                     n=null;
                 }
                 if (n==null)
@@ -134,8 +131,9 @@ public class TreeTrie<V> extends AbstractTrie<V>
             int index=c>=0&&c<0x7f?__lookup[c]:-1;
             if (index>=0)
             {
-                if (t._nextIndex[index] == null) 
-                    return null;
+                if (t._nextIndex[index] == null) {
+					return null;
+				}
                 t = t._nextIndex[index];
             }
             else
@@ -144,12 +142,14 @@ public class TreeTrie<V> extends AbstractTrie<V>
                 for (int j=t._nextOther.size();j-->0;)
                 {
                     n=t._nextOther.get(j);
-                    if (n._c==c)
-                        break;
+                    if (n._c==c) {
+						break;
+					}
                     n=null;
                 }
-                if (n==null)
-                    return null;
+                if (n==null) {
+					return null;
+				}
                 t=n;
             }
         }
@@ -166,8 +166,9 @@ public class TreeTrie<V> extends AbstractTrie<V>
             int index=c>=0&&c<0x7f?__lookup[c]:-1;
             if (index>=0)
             {
-                if (t._nextIndex[index] == null) 
-                    return null;
+                if (t._nextIndex[index] == null) {
+					return null;
+				}
                 t = t._nextIndex[index];
             }
             else
@@ -176,12 +177,14 @@ public class TreeTrie<V> extends AbstractTrie<V>
                 for (int j=t._nextOther.size();j-->0;)
                 {
                     n=t._nextOther.get(j);
-                    if (n._c==c)
-                        break;
+                    if (n._c==c) {
+						break;
+					}
                     n=null;
                 }
-                if (n==null)
-                    return null;
+                if (n==null) {
+					return null;
+				}
                 t=n;
             }
         }
@@ -198,8 +201,9 @@ public class TreeTrie<V> extends AbstractTrie<V>
             int index=c>=0&&c<0x7f?__lookup[c]:-1;
             if (index>=0)
             {
-                if (t._nextIndex[index] == null) 
-                    break;
+                if (t._nextIndex[index] == null) {
+					break;
+				}
                 t = t._nextIndex[index];
             }
             else
@@ -208,12 +212,14 @@ public class TreeTrie<V> extends AbstractTrie<V>
                 for (int j=t._nextOther.size();j-->0;)
                 {
                     n=t._nextOther.get(j);
-                    if (n._c==c)
-                        break;
+                    if (n._c==c) {
+						break;
+					}
                     n=null;
                 }
-                if (n==null)
-                    break;
+                if (n==null) {
+					break;
+				}
                 t=n;
             }
             
@@ -222,8 +228,9 @@ public class TreeTrie<V> extends AbstractTrie<V>
             {
                 // Recurse so we can remember this possibility
                 V best=t.getBest(b,offset+i+1,len-i-1);
-                if (best!=null)
-                    return best;
+                if (best!=null) {
+					return best;
+				}
                 break;
             }
         }
@@ -240,8 +247,9 @@ public class TreeTrie<V> extends AbstractTrie<V>
             int index=c>=0&&c<0x7f?__lookup[c]:-1;
             if (index>=0)
             {
-                if (t._nextIndex[index] == null) 
-                    break;
+                if (t._nextIndex[index] == null) {
+					break;
+				}
                 t = t._nextIndex[index];
             }
             else
@@ -250,12 +258,14 @@ public class TreeTrie<V> extends AbstractTrie<V>
                 for (int j=t._nextOther.size();j-->0;)
                 {
                     n=t._nextOther.get(j);
-                    if (n._c==c)
-                        break;
+                    if (n._c==c) {
+						break;
+					}
                     n=null;
                 }
-                if (n==null)
-                    break;
+                if (n==null) {
+					break;
+				}
                 t=n;
             }
             
@@ -264,8 +274,9 @@ public class TreeTrie<V> extends AbstractTrie<V>
             {
                 // Recurse so we can remember this possibility
                 V best=t.getBest(s,offset+i+1,len-i-1);
-                if (best!=null)
-                    return best;
+                if (best!=null) {
+					return best;
+				}
                 break;
             }
         }
@@ -275,8 +286,9 @@ public class TreeTrie<V> extends AbstractTrie<V>
     @Override
     public V getBest(ByteBuffer b,int offset,int len)
     {
-        if (b.hasArray())
-            return getBest(b.array(),b.arrayOffset()+b.position()+offset,len);
+        if (b.hasArray()) {
+			return getBest(b.array(),b.arrayOffset()+b.position()+offset,len);
+		}
         return getBestByteBuffer(b,offset,len);
     }
     
@@ -290,8 +302,9 @@ public class TreeTrie<V> extends AbstractTrie<V>
             int index=c>=0&&c<0x7f?__lookup[c]:-1;
             if (index>=0)
             {
-                if (t._nextIndex[index] == null) 
-                    break;
+                if (t._nextIndex[index] == null) {
+					break;
+				}
                 t = t._nextIndex[index];
             }
             else
@@ -300,12 +313,14 @@ public class TreeTrie<V> extends AbstractTrie<V>
                 for (int j=t._nextOther.size();j-->0;)
                 {
                     n=t._nextOther.get(j);
-                    if (n._c==c)
-                        break;
+                    if (n._c==c) {
+						break;
+					}
                     n=null;
                 }
-                if (n==null)
-                    break;
+                if (n==null) {
+					break;
+				}
                 t=n;
             }
             
@@ -314,8 +329,9 @@ public class TreeTrie<V> extends AbstractTrie<V>
             {
                 // Recurse so we can remember this possibility
                 V best=t.getBest(b,offset+i+1,len-i-1);
-                if (best!=null)
-                    return best;
+                if (best!=null) {
+					return best;
+				}
                 break;
             }
         }
@@ -329,8 +345,9 @@ public class TreeTrie<V> extends AbstractTrie<V>
         StringBuilder buf = new StringBuilder();
         toString(buf,this);
         
-        if (buf.length()==0)
-            return "{}";
+        if (buf.length()==0) {
+			return "{}";
+		}
         
         buf.setCharAt(0,'{');
         buf.append('}');
@@ -348,7 +365,7 @@ public class TreeTrie<V> extends AbstractTrie<V>
                     out.append(',');
                     out.append(t._key);
                     out.append('=');
-                    out.append(t._value.toString());
+                    out.append(t._value);
                 }
                 catch (IOException e)
                 {
@@ -358,11 +375,13 @@ public class TreeTrie<V> extends AbstractTrie<V>
            
             for(int i=0; i < INDEX; i++)
             {
-                if (t._nextIndex[i] != null)
-                    toString(out,t._nextIndex[i]);
+                if (t._nextIndex[i] != null) {
+					toString(out,t._nextIndex[i]);
+				}
             }
-            for (int i=t._nextOther.size();i-->0;)
-                toString(out,t._nextOther.get(i));
+            for (int i=t._nextOther.size();i-->0;) {
+				toString(out,t._nextOther.get(i));
+			}
         }           
     }
 
@@ -378,16 +397,19 @@ public class TreeTrie<V> extends AbstractTrie<V>
     {
         if (t != null)
         {
-            if (t._key!=null)
-                set.add(t._key);
+            if (t._key!=null) {
+				set.add(t._key);
+			}
            
             for(int i=0; i < INDEX; i++)
             {
-                if (t._nextIndex[i] != null)
-                    keySet(set,t._nextIndex[i]);
+                if (t._nextIndex[i] != null) {
+					keySet(set,t._nextIndex[i]);
+				}
             }
-            for (int i=t._nextOther.size();i-->0;)
-                keySet(set,t._nextOther.get(i));
+            for (int i=t._nextOther.size();i-->0;) {
+				keySet(set,t._nextOther.get(i));
+			}
         }           
     }
     

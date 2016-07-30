@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.webapp;
 
@@ -75,9 +70,9 @@ public class WebInfConfiguration extends AbstractConfiguration
         //Apply an initial ordering to the jars which governs which will be scanned for META-INF
         //info and annotations. The ordering is based on inclusion patterns.
         String tmp = (String)context.getAttribute(WEBINF_JAR_PATTERN);
-        Pattern webInfPattern = (tmp==null?null:Pattern.compile(tmp));
+        Pattern webInfPattern = tmp==null?null:Pattern.compile(tmp);
         tmp = (String)context.getAttribute(CONTAINER_JAR_PATTERN);
-        Pattern containerPattern = (tmp==null?null:Pattern.compile(tmp));
+        Pattern containerPattern = tmp==null?null:Pattern.compile(tmp);
 
         //Apply ordering to container jars - if no pattern is specified, we won't
         //match any of the container jars
@@ -89,10 +84,11 @@ public class WebInfConfiguration extends AbstractConfiguration
             }
         };
         ClassLoader loader = null;
-        if (context.getClassLoader() != null)
-            loader = context.getClassLoader().getParent();
+        if (context.getClassLoader() != null) {
+			loader = context.getClassLoader().getParent();
+		}
 
-        while (loader != null && (loader instanceof URLClassLoader))
+        while (loader instanceof URLClassLoader)
         {
             URL[] urls = ((URLClassLoader)loader).getURLs();
             if (urls != null)
@@ -151,8 +147,9 @@ public class WebInfConfiguration extends AbstractConfiguration
         //cannot configure if the context is already started
         if (context.isStarted())
         {
-            if (LOG.isDebugEnabled())
-                LOG.debug("Cannot configure webapp "+context+" after it is started");
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Cannot configure webapp "+context+" after it is started");
+			}
             return;
         }
 
@@ -163,13 +160,15 @@ public class WebInfConfiguration extends AbstractConfiguration
         {
             // Look for classes directory
             Resource classes= web_inf.addPath("classes/");
-            if (classes.exists())
-                ((WebAppClassLoader)context.getClassLoader()).addClassPath(classes);
+            if (classes.exists()) {
+				((WebAppClassLoader)context.getClassLoader()).addClassPath(classes);
+			}
 
             // Look for jars
             Resource lib= web_inf.addPath("lib/");
-            if (lib.exists() || lib.isDirectory())
-                ((WebAppClassLoader)context.getClassLoader()).addJars(lib);
+            if (lib.exists() || lib.isDirectory()) {
+				((WebAppClassLoader)context.getClassLoader()).addJars(lib);
+			}
         }
 
         // Look for extra resource
@@ -180,8 +179,9 @@ public class WebInfConfiguration extends AbstractConfiguration
             Resource[] collection=new Resource[resources.size()+1];
             int i=0;
             collection[i++]=context.getBaseResource();
-            for (Resource resource : resources)
-                collection[i++]=resource;
+            for (Resource resource : resources) {
+				collection[i++]=resource;
+			}
             context.setBaseResource(new ResourceCollection(collection));
         }
     }
@@ -197,19 +197,18 @@ public class WebInfConfiguration extends AbstractConfiguration
         
         //if it wasn't explicitly configured by the user, then unset it
        Boolean tmpdirConfigured = (Boolean)context.getAttribute(TEMPDIR_CONFIGURED);
-        if (tmpdirConfigured != null && !tmpdirConfigured) 
-            context.setTempDirectory(null);
+        if (tmpdirConfigured != null && !tmpdirConfigured) {
+			context.setTempDirectory(null);
+		}
 
         //reset the base resource back to what it was before we did any unpacking of resources
-        if (context.getBaseResource() != null)
-            context.getBaseResource().close();
+        if (context.getBaseResource() != null) {
+			context.getBaseResource().close();
+		}
         context.setBaseResource(_preUnpackBaseResource);
     }
 
-    /* ------------------------------------------------------------ */
-    /**
-     * @see org.eclipse.jetty.webapp.AbstractConfiguration#cloneConfigure(org.eclipse.jetty.webapp.WebAppContext, org.eclipse.jetty.webapp.WebAppContext)
-     */
+    /** ------------------------------------------------------------. */
     @Override
     public void cloneConfigure(WebAppContext template, WebAppContext context) throws Exception
     {
@@ -336,8 +335,9 @@ public class WebInfConfiguration extends AbstractConfiguration
     public void makeTempDirectory (File parent, WebAppContext context)
             throws Exception
     {
-        if (parent == null || !parent.exists() || !parent.canWrite() || !parent.isDirectory())
-            throw new IllegalStateException("Parent for temp dir not configured correctly: "+(parent==null?"null":"writeable="+parent.canWrite()));
+        if (parent == null || !parent.exists() || !parent.canWrite() || !parent.isDirectory()) {
+			throw new IllegalStateException("Parent for temp dir not configured correctly: "+(parent==null?"null":"writeable="+parent.canWrite()));
+		}
 
         //Create a name for the webapp     
         String temp = getCanonicalNameForWebAppTmpDir(context);
@@ -359,33 +359,36 @@ public class WebInfConfiguration extends AbstractConfiguration
         }
         configureTempDirectory(tmpDir, context);
 
-        if(LOG.isDebugEnabled())
-            LOG.debug("Set temp dir "+tmpDir);
+        if(LOG.isDebugEnabled()) {
+			LOG.debug("Set temp dir "+tmpDir);
+		}
         context.setTempDirectory(tmpDir);
     }
 
     public void configureTempDirectory (File dir, WebAppContext context)
     {
-        if (dir == null)
-            throw new IllegalArgumentException("Null temp dir");
+        if (dir == null) {
+			throw new IllegalArgumentException("Null temp dir");
+		}
 
         //if dir exists and we don't want it persisted, delete it
-        if (dir.exists() && !context.isPersistTempDirectory())
-        {
-            if (!IO.delete(dir))
-                throw new IllegalStateException("Failed to delete temp dir "+dir);
-        }
+        if (dir.exists() && !context.isPersistTempDirectory() && !IO.delete(dir)) {
+			throw new IllegalStateException("Failed to delete temp dir "+dir);
+		}
 
         //if it doesn't exist make it
-        if (!dir.exists())
-            dir.mkdirs();
+        if (!dir.exists()) {
+			dir.mkdirs();
+		}
 
-        if (!context.isPersistTempDirectory())
-            dir.deleteOnExit();
+        if (!context.isPersistTempDirectory()) {
+			dir.deleteOnExit();
+		}
 
         //is it useable
-        if (!dir.canWrite() || !dir.isDirectory())   
-            throw new IllegalStateException("Temp dir "+dir+" not useable: writeable="+dir.canWrite()+", dir="+dir.isDirectory());
+        if (!dir.canWrite() || !dir.isDirectory()) {
+			throw new IllegalStateException("Temp dir "+dir+" not useable: writeable="+dir.canWrite()+", dir="+dir.isDirectory());
+		}
     }
 
 
@@ -397,13 +400,15 @@ public class WebInfConfiguration extends AbstractConfiguration
         if (web_app == null)
         {
             String war = context.getWar();
-            if (war!=null && war.length()>0)
-                web_app = context.newResource(war);
-            else
-                web_app=context.getBaseResource();
+            if (war!=null && war.length()>0) {
+				web_app = context.newResource(war);
+			} else {
+				web_app=context.getBaseResource();
+			}
             
-            if (web_app == null)
-                throw new IllegalStateException("No resourceBase or war set for context");
+            if (web_app == null) {
+				throw new IllegalStateException("No resourceBase or war set for context");
+			}
 
             // Accept aliases for WAR files
             if (web_app.isAlias())
@@ -412,15 +417,17 @@ public class WebInfConfiguration extends AbstractConfiguration
                 web_app = context.newResource(web_app.getAlias());
             }
 
-            if (LOG.isDebugEnabled())
-                LOG.debug("Try webapp=" + web_app + ", exists=" + web_app.exists() + ", directory=" + web_app.isDirectory()+" file="+(web_app.getFile()));
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Try webapp=" + web_app + ", exists=" + web_app.exists() + ", directory=" + web_app.isDirectory()+" file="+web_app.getFile());
+			}
             // Is the WAR usable directly?
             if (web_app.exists() && !web_app.isDirectory() && !web_app.toString().startsWith("jar:"))
             {
                 // No - then lets see if it can be turned into a jar URL.
                 Resource jarWebApp = JarResource.newJarResource(web_app);
-                if (jarWebApp.exists() && jarWebApp.isDirectory())
-                    web_app= jarWebApp;
+                if (jarWebApp.exists() && jarWebApp.isDirectory()) {
+					web_app= jarWebApp;
+				}
             }
 
             // If we should extract or the URL is still not usable
@@ -441,14 +448,16 @@ public class WebInfConfiguration extends AbstractConfiguration
                     if (warfile!=null && warfile.getName().toLowerCase(Locale.ENGLISH).endsWith(".war"))
                     {
                         File sibling = new File(warfile.getParent(),warfile.getName().substring(0,warfile.getName().length()-4));
-                        if (sibling.exists() && sibling.isDirectory() && sibling.canWrite())
-                            extractedWebAppDir=sibling;
+                        if (sibling.exists() && sibling.isDirectory() && sibling.canWrite()) {
+							extractedWebAppDir=sibling;
+						}
                     }
                 }
 
-                if (extractedWebAppDir==null)
-                    // Then extract it if necessary to the temporary location
+                if (extractedWebAppDir==null) {
+					// Then extract it if necessary to the temporary location
                     extractedWebAppDir= new File(context.getTempDirectory(), "webapp");
+				}
 
                 if (web_app.getFile()!=null && web_app.getFile().isDirectory())
                 {
@@ -471,21 +480,17 @@ public class WebInfConfiguration extends AbstractConfiguration
                         Resource jar_web_app = JarResource.newJarResource(web_app);
                         jar_web_app.copyTo(extractedWebAppDir);
                         extractionLock.delete();
-                    }
-                    else
-                    {
-                        //only extract if the war file is newer, or a .extract_lock file is left behind meaning a possible partial extraction
-                        if (web_app.lastModified() > extractedWebAppDir.lastModified() || extractionLock.exists())
-                        {
-                            extractionLock.createNewFile();
-                            IO.delete(extractedWebAppDir);
-                            extractedWebAppDir.mkdir();
-                            LOG.debug("Extract " + web_app + " to " + extractedWebAppDir);
-                            Resource jar_web_app = JarResource.newJarResource(web_app);
-                            jar_web_app.copyTo(extractedWebAppDir);
-                            extractionLock.delete();
-                        }
-                    }
+                    } else //only extract if the war file is newer, or a .extract_lock file is left behind meaning a possible partial extraction
+					if (web_app.lastModified() > extractedWebAppDir.lastModified() || extractionLock.exists())
+					{
+					    extractionLock.createNewFile();
+					    IO.delete(extractedWebAppDir);
+					    extractedWebAppDir.mkdir();
+					    LOG.debug("Extract " + web_app + " to " + extractedWebAppDir);
+					    Resource jar_web_app = JarResource.newJarResource(web_app);
+					    jar_web_app.copyTo(extractedWebAppDir);
+					    extractionLock.delete();
+					}
                 }
                 web_app = Resource.newResource(extractedWebAppDir.getCanonicalPath());
             }
@@ -499,8 +504,9 @@ public class WebInfConfiguration extends AbstractConfiguration
 
             context.setBaseResource(web_app);
 
-            if (LOG.isDebugEnabled())
-                LOG.debug("webapp=" + web_app);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("webapp=" + web_app);
+			}
         }
 
 
@@ -510,8 +516,9 @@ public class WebInfConfiguration extends AbstractConfiguration
             Resource web_inf= web_app.addPath("WEB-INF/");
 
             File extractedWebInfDir= new File(context.getTempDirectory(), "webinf");
-            if (extractedWebInfDir.exists())
-                IO.delete(extractedWebInfDir);
+            if (extractedWebInfDir.exists()) {
+				IO.delete(extractedWebInfDir);
+			}
             extractedWebInfDir.mkdir();
             Resource web_inf_lib = web_inf.addPath("lib/");
             File webInfDir=new File(extractedWebInfDir,"WEB-INF");
@@ -520,8 +527,9 @@ public class WebInfConfiguration extends AbstractConfiguration
             if (web_inf_lib.exists())
             {
                 File webInfLibDir = new File(webInfDir, "lib");
-                if (webInfLibDir.exists())
-                    IO.delete(webInfLibDir);
+                if (webInfLibDir.exists()) {
+					IO.delete(webInfLibDir);
+				}
                 webInfLibDir.mkdir();
 
                 LOG.debug("Copying WEB-INF/lib " + web_inf_lib + " to " + webInfLibDir);
@@ -532,8 +540,9 @@ public class WebInfConfiguration extends AbstractConfiguration
             if (web_inf_classes.exists())
             {
                 File webInfClassesDir = new File(webInfDir, "classes");
-                if (webInfClassesDir.exists())
-                    IO.delete(webInfClassesDir);
+                if (webInfClassesDir.exists()) {
+					IO.delete(webInfClassesDir);
+				}
                 webInfClassesDir.mkdir();
                 LOG.debug("Copying WEB-INF/classes from "+web_inf_classes+" to "+webInfClassesDir.getAbsolutePath());
                 web_inf_classes.copyTo(webInfClassesDir);
@@ -543,8 +552,9 @@ public class WebInfConfiguration extends AbstractConfiguration
 
             ResourceCollection rc = new ResourceCollection(web_inf,web_app);
 
-            if (LOG.isDebugEnabled())
-                LOG.debug("context.resourcebase = "+rc);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("context.resourcebase = "+rc);
+			}
 
             context.setBaseResource(rc);
         }
@@ -580,16 +590,18 @@ public class WebInfConfiguration extends AbstractConfiguration
                 //Get the host
                 String host=null;
                 int port=0;
-                if (connectors!=null && (connectors[0] instanceof NetworkConnector))
+                if (connectors!=null && connectors[0] instanceof NetworkConnector)
                 {
                     NetworkConnector connector = (NetworkConnector)connectors[0];
                     host=connector.getHost();
                     port=connector.getLocalPort();
-                    if (port < 0)
-                        port = connector.getPort();
+                    if (port < 0) {
+						port = connector.getPort();
+					}
                 }
-                if (host == null)
-                    host = "0.0.0.0";
+                if (host == null) {
+					host = "0.0.0.0";
+				}
                 canonicalName.append(host);
 
                 //Get the port
@@ -608,21 +620,24 @@ public class WebInfConfiguration extends AbstractConfiguration
             Resource resource = context.getBaseResource();
             if (resource == null)
             {
-                if (context.getWar()==null || context.getWar().length()==0)
-                   throw new IllegalStateException("No resourceBase or war set for context");
+                if (context.getWar()==null || context.getWar().length()==0) {
+					throw new IllegalStateException("No resourceBase or war set for context");
+				}
 
                 // Set dir or WAR
                 resource = context.newResource(context.getWar());
             }
 
             String tmp = URIUtil.decodePath(resource.getURL().getPath());
-            if (tmp.endsWith("/"))
-                tmp = tmp.substring(0, tmp.length()-1);
-            if (tmp.endsWith("!"))
-                tmp = tmp.substring(0, tmp.length() -1);
+            if (tmp.endsWith("/")) {
+				tmp = tmp.substring(0, tmp.length()-1);
+			}
+            if (tmp.endsWith("!")) {
+				tmp = tmp.substring(0, tmp.length() -1);
+			}
             //get just the last part which is the filename
             int i = tmp.lastIndexOf("/");
-            canonicalName.append(tmp.substring(i+1, tmp.length()));
+            canonicalName.append(tmp, i+1, tmp.length());
             canonicalName.append("-");
         }
         catch (Exception e)
@@ -640,17 +655,19 @@ public class WebInfConfiguration extends AbstractConfiguration
         //Virtual host (if there is one)
         canonicalName.append("-");
         String[] vhosts = context.getVirtualHosts();
-        if (vhosts == null || vhosts.length <= 0)
-            canonicalName.append("any");
-        else
-            canonicalName.append(vhosts[0]);
+        if (vhosts == null || vhosts.length <= 0) {
+			canonicalName.append("any");
+		} else {
+			canonicalName.append(vhosts[0]);
+		}
 
         // sanitize
         for (int i=0;i<canonicalName.length();i++)
         {
             char c=canonicalName.charAt(i);
-            if (!Character.isJavaIdentifierPart(c) && "-.".indexOf(c)<0)
-                canonicalName.setCharAt(i,'.');
+            if (!Character.isJavaIdentifierPart(c) && "-.".indexOf(c)<0) {
+				canonicalName.setCharAt(i,'.');
+			}
         }
 
         canonicalName.append("-");
@@ -662,24 +679,27 @@ public class WebInfConfiguration extends AbstractConfiguration
     protected List<Resource> findClassDirs (WebAppContext context)
     throws Exception
     {
-        if (context == null)
-            return null;
+        if (context == null) {
+			return null;
+		}
         
         List<Resource> classDirs = new ArrayList<Resource>();
 
         Resource webInfClasses = findWebInfClassesDir(context);
-        if (webInfClasses != null)
-            classDirs.add(webInfClasses);
+        if (webInfClasses != null) {
+			classDirs.add(webInfClasses);
+		}
         List<Resource> extraClassDirs = findExtraClasspathDirs(context);
-        if (extraClassDirs != null)
-            classDirs.addAll(extraClassDirs);
+        if (extraClassDirs != null) {
+			classDirs.addAll(extraClassDirs);
+		}
         
         return classDirs;
     }
     
     
     /**
-     * Look for jars that should be treated as if they are in WEB-INF/lib
+     * Look for jars that should be treated as if they are in WEB-INF/lib.
      * 
      * @param context the context to find the jars in
      * @return the list of jar resources found within context
@@ -690,16 +710,18 @@ public class WebInfConfiguration extends AbstractConfiguration
     {
         List<Resource> jarResources = new ArrayList<Resource>();
         List<Resource> webInfLibJars = findWebInfLibJars(context);
-        if (webInfLibJars != null)
-            jarResources.addAll(webInfLibJars);
+        if (webInfLibJars != null) {
+			jarResources.addAll(webInfLibJars);
+		}
         List<Resource> extraClasspathJars = findExtraClasspathJars(context);
-        if (extraClasspathJars != null)
-            jarResources.addAll(extraClasspathJars);
+        if (extraClasspathJars != null) {
+			jarResources.addAll(extraClasspathJars);
+		}
         return jarResources;
     }
     
     /**
-     * Look for jars in <code>WEB-INF/lib</code>
+     * Look for jars in <code>WEB-INF/lib</code>.
      *  
      * @param context the context to find the lib jars in
      * @return the list of jars as {@link Resource}
@@ -709,8 +731,9 @@ public class WebInfConfiguration extends AbstractConfiguration
     throws Exception
     {
         Resource web_inf = context.getWebInf();
-        if (web_inf==null || !web_inf.exists())
-            return null;
+        if (web_inf==null || !web_inf.exists()) {
+			return null;
+		}
 
         List<Resource> jarResources = new ArrayList<Resource>();
         Resource web_inf_lib = web_inf.addPath("/lib");
@@ -724,8 +747,8 @@ public class WebInfConfiguration extends AbstractConfiguration
                     Resource file = web_inf_lib.addPath(files[f]);
                     String fnlc = file.getName().toLowerCase(Locale.ENGLISH);
                     int dot = fnlc.lastIndexOf('.');
-                    String extension = (dot < 0 ? null : fnlc.substring(dot));
-                    if (extension != null && (extension.equals(".jar") || extension.equals(".zip")))
+                    String extension = dot < 0 ? null : fnlc.substring(dot);
+                    if (extension != null && (".jar".equals(extension) || ".zip".equals(extension)))
                     {
                         jarResources.add(file);
                     }
@@ -751,8 +774,9 @@ public class WebInfConfiguration extends AbstractConfiguration
     protected List<Resource>  findExtraClasspathJars(WebAppContext context)
     throws Exception
     { 
-        if (context == null || context.getExtraClasspath() == null)
-            return null;
+        if (context == null || context.getExtraClasspath() == null) {
+			return null;
+		}
         
         List<Resource> jarResources = new ArrayList<Resource>();
         StringTokenizer tokenizer = new StringTokenizer(context.getExtraClasspath(), ",;");
@@ -761,8 +785,8 @@ public class WebInfConfiguration extends AbstractConfiguration
             Resource resource = context.newResource(tokenizer.nextToken().trim());
             String fnlc = resource.getName().toLowerCase(Locale.ENGLISH);
             int dot = fnlc.lastIndexOf('.');
-            String extension = (dot < 0 ? null : fnlc.substring(dot));
-            if (extension != null && (extension.equals(".jar") || extension.equals(".zip")))
+            String extension = dot < 0 ? null : fnlc.substring(dot);
+            if (extension != null && (".jar".equals(extension) || ".zip".equals(extension)))
             {
                 jarResources.add(resource);
             }
@@ -772,7 +796,7 @@ public class WebInfConfiguration extends AbstractConfiguration
     }
     
     /**
-     * Get <code>WEB-INF/classes</code> dir
+     * Get <code>WEB-INF/classes</code> dir.
      * 
      * @param context the context to look for the <code>WEB-INF/classes</code> directory
      * @return the Resource for the <code>WEB-INF/classes</code> directory
@@ -781,8 +805,9 @@ public class WebInfConfiguration extends AbstractConfiguration
     protected Resource findWebInfClassesDir (WebAppContext context)
     throws Exception
     {
-        if (context == null)
-            return null;
+        if (context == null) {
+			return null;
+		}
         
         Resource web_inf = context.getWebInf();
 
@@ -791,8 +816,9 @@ public class WebInfConfiguration extends AbstractConfiguration
         {
             // Look for classes directory
             Resource classes= web_inf.addPath("classes/");
-            if (classes.exists())
-                return classes;
+            if (classes.exists()) {
+				return classes;
+			}
         }
         return null;
     }
@@ -808,16 +834,18 @@ public class WebInfConfiguration extends AbstractConfiguration
     protected List<Resource>  findExtraClasspathDirs(WebAppContext context)
     throws Exception
     { 
-        if (context == null || context.getExtraClasspath() == null)
-            return null;
+        if (context == null || context.getExtraClasspath() == null) {
+			return null;
+		}
         
         List<Resource> dirResources = new ArrayList<Resource>();
         StringTokenizer tokenizer = new StringTokenizer(context.getExtraClasspath(), ",;");
         while (tokenizer.hasMoreTokens())
         {
             Resource resource = context.newResource(tokenizer.nextToken().trim());
-            if (resource.exists() && resource.isDirectory())
-                dirResources.add(resource);
+            if (resource.exists() && resource.isDirectory()) {
+				dirResources.add(resource);
+			}
         }
         
         return dirResources;

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.security.authentication;
 
@@ -81,8 +76,9 @@ public class DigestAuthenticator extends LoginAuthenticator
         {
             synchronized (this)
             {
-                if (count>=_seen.size())
-                    return true;
+                if (count>=_seen.size()) {
+					return true;
+				}
                 boolean s=_seen.get(count);
                 _seen.set(count);
                 return s;
@@ -90,16 +86,13 @@ public class DigestAuthenticator extends LoginAuthenticator
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public DigestAuthenticator()
     {
         super();
     }
 
-    /* ------------------------------------------------------------ */
-    /**
-     * @see org.eclipse.jetty.security.authentication.LoginAuthenticator#setConfiguration(org.eclipse.jetty.security.Authenticator.AuthConfiguration)
-     */
+    /** ------------------------------------------------------------. */
     @Override
     public void setConfiguration(AuthConfiguration configuration)
     {
@@ -117,38 +110,38 @@ public class DigestAuthenticator extends LoginAuthenticator
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public int getMaxNonceCount()
     {
         return _maxNC;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void setMaxNonceCount(int maxNC)
     {
         _maxNC = maxNC;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public long getMaxNonceAge()
     {
         return _maxNonceAgeMs;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public synchronized void setMaxNonceAge(long maxNonceAgeInMillis)
     {
         _maxNonceAgeMs = maxNonceAgeInMillis;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public String getAuthMethod()
     {
         return Constraint.__DIGEST_AUTH;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public boolean secureResponse(ServletRequest req, ServletResponse res, boolean mandatory, User validatedUser) throws ServerAuthException
     {
@@ -157,12 +150,13 @@ public class DigestAuthenticator extends LoginAuthenticator
     
 
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public Authentication validateRequest(ServletRequest req, ServletResponse res, boolean mandatory) throws ServerAuthException
     {
-        if (!mandatory)
-            return new DeferredAuthentication(this);
+        if (!mandatory) {
+			return new DeferredAuthentication(this);
+		}
 
         HttpServletRequest request = (HttpServletRequest)req;
         HttpServletResponse response = (HttpServletResponse)res;
@@ -173,8 +167,9 @@ public class DigestAuthenticator extends LoginAuthenticator
             boolean stale = false;
             if (credentials != null)
             {
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Credentials: " + credentials);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("Credentials: " + credentials);
+				}
                 QuotedStringTokenizer tokenizer = new QuotedStringTokenizer(credentials, "=, ", true, false);
                 final Digest digest = new Digest(request.getMethod());
                 String last = null;
@@ -201,22 +196,23 @@ public class DigestAuthenticator extends LoginAuthenticator
                             last = tok;
                             if (name != null)
                             {
-                                if ("username".equalsIgnoreCase(name))
-                                    digest.username = tok;
-                                else if ("realm".equalsIgnoreCase(name))
-                                    digest.realm = tok;
-                                else if ("nonce".equalsIgnoreCase(name))
-                                    digest.nonce = tok;
-                                else if ("nc".equalsIgnoreCase(name))
-                                    digest.nc = tok;
-                                else if ("cnonce".equalsIgnoreCase(name))
-                                    digest.cnonce = tok;
-                                else if ("qop".equalsIgnoreCase(name))
-                                    digest.qop = tok;
-                                else if ("uri".equalsIgnoreCase(name))
-                                    digest.uri = tok;
-                                else if ("response".equalsIgnoreCase(name))
-                                    digest.response = tok;
+                                if ("username".equalsIgnoreCase(name)) {
+									digest.username = tok;
+								} else if ("realm".equalsIgnoreCase(name)) {
+									digest.realm = tok;
+								} else if ("nonce".equalsIgnoreCase(name)) {
+									digest.nonce = tok;
+								} else if ("nc".equalsIgnoreCase(name)) {
+									digest.nc = tok;
+								} else if ("cnonce".equalsIgnoreCase(name)) {
+									digest.cnonce = tok;
+								} else if ("qop".equalsIgnoreCase(name)) {
+									digest.qop = tok;
+								} else if ("uri".equalsIgnoreCase(name)) {
+									digest.uri = tok;
+								} else if ("response".equalsIgnoreCase(name)) {
+									digest.response = tok;
+								}
                                 name=null;
                             }
                     }
@@ -233,16 +229,18 @@ public class DigestAuthenticator extends LoginAuthenticator
                         return new UserAuthentication(getAuthMethod(),user);
                     }
                 }
-                else if (n == 0)
-                    stale = true;
+                else if (n == 0) {
+					stale = true;
+				}
 
             }
 
             if (!DeferredAuthentication.isDeferred(response))
             {
                 String domain = request.getContextPath();
-                if (domain == null)
-                    domain = "/";
+                if (domain == null) {
+					domain = "/";
+				}
                 response.setHeader(HttpHeader.WWW_AUTHENTICATE.asString(), "Digest realm=\"" + _loginService.getName()
                         + "\", domain=\""
                         + domain
@@ -264,7 +262,7 @@ public class DigestAuthenticator extends LoginAuthenticator
 
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public String newNonce(Request request)
     {
         Nonce nonce;
@@ -304,15 +302,18 @@ public class DigestAuthenticator extends LoginAuthenticator
         try
         {
             nonce = _nonceMap.get(digest.nonce);
-            if (nonce==null)
-                return 0;
+            if (nonce==null) {
+				return 0;
+			}
 
             long count = Long.parseLong(digest.nc,16);
-            if (count>=_maxNC)
-                return 0;
+            if (count>=_maxNC) {
+				return 0;
+			}
             
-            if (nonce.seen((int)count))
-                return -1;
+            if (nonce.seen((int)count)) {
+				return -1;
+			}
 
             return 1;
         }
@@ -325,7 +326,7 @@ public class DigestAuthenticator extends LoginAuthenticator
 
     /* ------------------------------------------------------------ */
     /* ------------------------------------------------------------ */
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     private static class Digest extends Credential
     {
         private static final long serialVersionUID = -2484639019549527724L;
@@ -339,18 +340,19 @@ public class DigestAuthenticator extends LoginAuthenticator
         String uri = "";
         String response = "";
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         Digest(String m)
         {
             method = m;
         }
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         @Override
         public boolean check(Object credentials)
         {
-            if (credentials instanceof char[])
-                credentials=new String((char[])credentials);
+            if (credentials instanceof char[]) {
+				credentials=new String((char[])credentials);
+			}
             String password = (credentials instanceof String) ? (String) credentials : credentials.toString();
 
             try
@@ -402,7 +404,7 @@ public class DigestAuthenticator extends LoginAuthenticator
                 byte[] digest = md.digest();
 
                 // check digest
-                return (TypeUtil.toString(digest, 16).equalsIgnoreCase(response));
+                return TypeUtil.toString(digest, 16).equalsIgnoreCase(response);
             }
             catch (Exception e)
             {

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 
@@ -117,8 +112,9 @@ public class StressTest
     public void reset()
     {
         _handled.set(0);
-        for (Queue q : _latencies)
-            q.clear();
+        for (Queue q : _latencies) {
+			q.clear();
+		}
     }
 
     @Test
@@ -221,16 +217,19 @@ public class StressTest
                     }
                     else
                     {
-                        if (l<min)
-                            min=l;
-                        if (l>max)
-                            max=l;
+                        if (l<min) {
+							min=l;
+						}
+                        if (l>max) {
+							max=l;
+						}
                         total+=l;
-                        if (l==loops)
-                            finished++;
+                        if (l==loops) {
+							finished++;
+						}
                     }
                 }
-                String status = "min/ave/max/target="+min+"/"+(total/ threadCount)+"/"+max+"/"+loops+" errors/finished/loops="+errors+"/"+finished+"/"+ threadCount +" idle/threads="+(_threads.getIdleThreads())+"/"+_threads.getThreads();
+                String status = "min/ave/max/target="+min+"/"+total/ threadCount+"/"+max+"/"+loops+" errors/finished/loops="+errors+"/"+finished+"/"+ threadCount +" idle/threads="+_threads.getIdleThreads()+"/"+_threads.getThreads();
                 if (status.equals(last))
                 {
                     if (same++>5)
@@ -240,24 +239,29 @@ public class StressTest
                         Thread.sleep(5000);
                         System.exit(1);
                     }
-                }
-                else
-                    same=0;
+                } else {
+					same=0;
+				}
                 last=status;
-                LOG.info(_server.getThreadPool().toString()+" "+status);
-                if ((finished+errors)== threadCount)
-                    break;
+                LOG.info(_server.getThreadPool()+" "+status);
+                if ((finished+errors)== threadCount) {
+					break;
+				}
             }
 
-            for (Thread thread : threads)
-                thread.join();
+            for (Thread thread : threads) {
+				thread.join();
+			}
 
-            for (Throwable throwable : throwables)
-                if (throwable!=null)
-                    throw throwable;
+            for (Throwable throwable : throwables) {
+				if (throwable!=null) {
+					throw throwable;
+				}
+			}
 
-            for (ConcurrentLinkedQueue _latency : _latencies)
-                assertEquals(_handled.get(), _latency.size());
+            for (ConcurrentLinkedQueue _latency : _latencies) {
+				assertEquals(_handled.get(), _latency.size());
+			}
         }
         finally
         {
@@ -277,11 +281,12 @@ public class StressTest
                 loop:
                 for (long latency : latencies)
                 {
-                    if (i==4)
-                        total+=latency;
+                    if (i==4) {
+						total+=latency;
+					}
                     for (int q=0;q<quantums;q++)
                     {
-                        if (latency>=(q*100) && latency<((q+1)*100))
+                        if (latency>=q*100 && latency<(q+1)*100)
                         {
                             count[i][q]++;
                             continue loop;
@@ -295,24 +300,28 @@ public class StressTest
             System.out.println("           stage:\tbind\twrite\trecv\tdispatch\twrote\ttotal");
             for (int q=0;q<quantums;q++)
             {
-                System.out.printf("%02d00<=l<%02d00",q,(q+1));
-                for (int i=0;i<_latencies.length;i++)
-                    System.out.print("\t"+count[i][q]);
+                System.out.printf("%02d00<=l<%02d00",q,q+1);
+                for (int i=0;i<_latencies.length;i++) {
+					System.out.print("\t"+count[i][q]);
+				}
                 System.out.println();
             }
 
             System.out.print("other       ");
-            for (int i=0;i<_latencies.length;i++)
-                System.out.print("\t"+other[i]);
+            for (int i=0;i<_latencies.length;i++) {
+				System.out.print("\t"+other[i]);
+			}
             System.out.println();
 
             System.out.print("HANDLED     ");
-            for (int i=0;i<_latencies.length;i++)
-                System.out.print("\t"+_handled.get());
+            for (int i=0;i<_latencies.length;i++) {
+				System.out.print("\t"+_handled.get());
+			}
             System.out.println();
             System.out.print("TOTAL       ");
-            for (int i=0;i<_latencies.length;i++)
-                System.out.print("\t"+length[i]);
+            for (int i=0;i<_latencies.length;i++) {
+				System.out.print("\t"+length[i]);
+			}
             System.out.println();
             long ave=total/_latencies[4].size();
             System.out.println("ave="+ave);
@@ -355,7 +364,7 @@ public class StressTest
             {
                 String uri=__tests[i]+"/"+name+"/"+i;
 
-                String close=((i+1)<__tests.length)?"":"Connection: close\r\n";
+                String close=(i+1<__tests.length)?"":"Connection: close\r\n";
                 String request =
                         "GET "+uri+" HTTP/1.1\r\n"+
                                 "Host: localhost\r\n"+
@@ -375,8 +384,9 @@ public class StressTest
             long end=System.currentTimeMillis();
 
             int bodies = count(response,"HTTP/1.1 200 OK");
-            if (__tests.length!=bodies)
-                System.err.println("responses=\n"+response+"\n---");
+            if (__tests.length!=bodies) {
+				System.err.println("responses=\n"+response+"\n---");
+			}
             assertEquals(name,__tests.length,bodies);
 
             long bind=connected-start;
@@ -395,9 +405,9 @@ public class StressTest
                     System.err.println(bind+","+flush+","+read);
                 }
 
-                _latencies[0].add((i==0)?new Long(bind):0);
-                _latencies[1].add((i==0)?new Long(bind+flush):flush);
-                _latencies[5].add((i==0)?new Long(bind+flush+read):(flush+read));
+                _latencies[0].add((i==0)?Long.valueOf(bind):0);
+                _latencies[1].add((i==0)?Long.valueOf(bind+flush):flush);
+                _latencies[5].add((i==0)?Long.valueOf(bind+flush+read):(flush+read));
             }
         }
         else
@@ -418,12 +428,12 @@ public class StressTest
                 socket.setSoTimeout(10000);
                 socket.setSoLinger(false,0);
 
-                _latencies[0].add(new Long(System.currentTimeMillis()-start));
+                _latencies[0].add(Long.valueOf(System.currentTimeMillis()-start));
 
                 socket.getOutputStream().write(request.getBytes());
                 socket.getOutputStream().flush();
 
-                _latencies[1].add(new Long(System.currentTimeMillis()-start));
+                _latencies[1].add(Long.valueOf(System.currentTimeMillis()-start));
 
                 String response = IO.toString(socket.getInputStream());
                 socket.close();
@@ -436,7 +446,7 @@ public class StressTest
                 assertTrue(uri,response.startsWith("DATA "+__tests[i]));
                 long latency=end-start;
 
-                _latencies[5].add(new Long(latency));
+                _latencies[5].add(Long.valueOf(latency));
             }
         }
     }
@@ -465,16 +475,17 @@ public class StressTest
 
             _handled.incrementAndGet();
             long delay=received-start;
-            if (delay<0)
-                delay=0;
-            _latencies[2].add(new Long(delay));
-            _latencies[3].add(new Long(now-start));
+            if (delay<0) {
+				delay=0;
+			}
+            _latencies[2].add(Long.valueOf(delay));
+            _latencies[3].add(Long.valueOf(now-start));
 
             response.setStatus(200);
             response.getOutputStream().print("DATA "+request.getPathInfo()+"\n\n");
             baseRequest.setHandled(true);
 
-            _latencies[4].add(new Long(System.currentTimeMillis()-start));
+            _latencies[4].add(Long.valueOf(System.currentTimeMillis()-start));
 
             return;
         }

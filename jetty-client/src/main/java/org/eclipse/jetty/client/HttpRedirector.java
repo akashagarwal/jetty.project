@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.client;
 
@@ -62,7 +57,7 @@ public class HttpRedirector
     private static final Logger LOG = Log.getLogger(HttpRedirector.class);
     private static final String SCHEME_REGEXP = "(^https?)";
     private static final String AUTHORITY_REGEXP = "([^/\\?#]+)";
-    // The location may be relative so the scheme://authority part may be missing
+    /** The location may be relative so the scheme://authority part may be missing */
     private static final String DESTINATION_REGEXP = "(" + SCHEME_REGEXP + "://" + AUTHORITY_REGEXP + ")?";
     private static final String PATH_REGEXP = "([^\\?#]*)";
     private static final String QUERY_REGEXP = "([^#]*)";
@@ -129,8 +124,9 @@ public class HttpRedirector
         {
             latch.await();
             Result result = resultRef.get();
-            if (result.isFailed())
-                throw new ExecutionException(result.getFailure());
+            if (result.isFailed()) {
+				throw new ExecutionException(result.getFailure());
+			}
             return result;
         }
         catch (InterruptedException x)
@@ -157,8 +153,9 @@ public class HttpRedirector
             URI newURI = extractRedirectURI(response);
             if (newURI != null)
             {
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Redirecting to {} (Location: {})", newURI, location);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("Redirecting to {} (Location: {})", newURI, location);
+				}
                 return redirect(request, response, listener, newURI);
             }
             else
@@ -184,8 +181,9 @@ public class HttpRedirector
     public URI extractRedirectURI(Response response)
     {
         String location = response.getHeaders().get("location");
-        if (location != null)
-            return sanitize(location);
+        if (location != null) {
+			return sanitize(location);
+		}
         return null;
     }
 
@@ -208,11 +206,13 @@ public class HttpRedirector
                 String authority = matcher.group(3);
                 String path = matcher.group(4);
                 String query = matcher.group(5);
-                if (query.length() == 0)
-                    query = null;
+                if (query.length() == 0) {
+					query = null;
+				}
                 String fragment = matcher.group(6);
-                if (fragment.length() == 0)
-                    fragment = null;
+                if (fragment.length() == 0) {
+					fragment = null;
+				}
                 try
                 {
                     return new URI(scheme, authority, path, query, fragment);
@@ -235,8 +235,9 @@ public class HttpRedirector
             {
                 String uri = request.getScheme() + "://" + request.getHost();
                 int port = request.getPort();
-                if (port > 0)
-                    uri += ":" + port;
+                if (port > 0) {
+					uri += ":" + port;
+				}
                 requestURI = URI.create(uri);
             }
             newURI = requestURI.resolve(newURI);
@@ -248,28 +249,31 @@ public class HttpRedirector
             case 301:
             {
                 String method = request.getMethod();
-                if (HttpMethod.GET.is(method) || HttpMethod.HEAD.is(method) || HttpMethod.PUT.is(method))
-                    return redirect(request, response, listener, newURI, method);
-                else if (HttpMethod.POST.is(method))
-                    return redirect(request, response, listener, newURI, HttpMethod.GET.asString());
+                if (HttpMethod.GET.is(method) || HttpMethod.HEAD.is(method) || HttpMethod.PUT.is(method)) {
+					return redirect(request, response, listener, newURI, method);
+				} else if (HttpMethod.POST.is(method)) {
+					return redirect(request, response, listener, newURI, HttpMethod.GET.asString());
+				}
                 fail(request, response, new HttpResponseException("HTTP protocol violation: received 301 for non GET/HEAD/POST/PUT request", response));
                 return null;
             }
             case 302:
             {
                 String method = request.getMethod();
-                if (HttpMethod.HEAD.is(method) || HttpMethod.PUT.is(method))
-                    return redirect(request, response, listener, newURI, method);
-                else
-                    return redirect(request, response, listener, newURI, HttpMethod.GET.asString());
+                if (HttpMethod.HEAD.is(method) || HttpMethod.PUT.is(method)) {
+					return redirect(request, response, listener, newURI, method);
+				} else {
+					return redirect(request, response, listener, newURI, HttpMethod.GET.asString());
+				}
             }
             case 303:
             {
                 String method = request.getMethod();
-                if (HttpMethod.HEAD.is(method))
-                    return redirect(request, response, listener, newURI, method);
-                else
-                    return redirect(request, response, listener, newURI, HttpMethod.GET.asString());
+                if (HttpMethod.HEAD.is(method)) {
+					return redirect(request, response, listener, newURI, method);
+				} else {
+					return redirect(request, response, listener, newURI, HttpMethod.GET.asString());
+				}
             }
             case 307:
             case 308:
@@ -290,8 +294,9 @@ public class HttpRedirector
         HttpRequest httpRequest = (HttpRequest)request;
         HttpConversation conversation = httpRequest.getConversation();
         Integer redirects = (Integer)conversation.getAttribute(ATTRIBUTE);
-        if (redirects == null)
-            redirects = 0;
+        if (redirects == null) {
+			redirects = 0;
+		}
         if (redirects < client.getMaxRedirects())
         {
             ++redirects;
@@ -320,8 +325,9 @@ public class HttpRedirector
                 public void onBegin(Request redirect)
                 {
                     Throwable cause = httpRequest.getAbortCause();
-                    if (cause != null)
-                        redirect.abort(cause);
+                    if (cause != null) {
+						redirect.abort(cause);
+					}
                 }
             });
 

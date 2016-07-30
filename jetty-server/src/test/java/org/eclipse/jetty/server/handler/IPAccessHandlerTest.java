@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server.handler;
 
@@ -89,7 +84,7 @@ public class IPAccessHandlerTest
         _server.start();
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @AfterClass
     public static void tearDown()
         throws Exception
@@ -97,7 +92,7 @@ public class IPAccessHandlerTest
         _server.stop();
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public IPAccessHandlerTest(String white, String black, String host, String uri, String code, boolean byPath)
     {
         _white = white;
@@ -108,7 +103,7 @@ public class IPAccessHandlerTest
         _byPath = byPath;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Test
     public void testHandler()
         throws Exception
@@ -140,14 +135,15 @@ public class IPAccessHandlerTest
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected Response readResponse(BufferedReader reader)
         throws IOException
     {
         // Simplified parser for HTTP responses
         String line = reader.readLine();
-        if (line == null)
-            throw new EOFException();
+        if (line == null) {
+			throw new EOFException();
+		}
         Matcher responseLine = Pattern.compile("HTTP/1\\.1\\s+(\\d+)").matcher(line);
         assertTrue(responseLine.lookingAt());
         String code = responseLine.group(1);
@@ -155,8 +151,9 @@ public class IPAccessHandlerTest
         Map<String, String> headers = new LinkedHashMap<String, String>();
         while ((line = reader.readLine()) != null)
         {
-            if (line.trim().length() == 0)
-                break;
+            if (line.trim().length() == 0) {
+				break;
+			}
 
             Matcher header = Pattern.compile("([^:]+):\\s*(.*)").matcher(line);
             assertTrue(header.lookingAt());
@@ -200,14 +197,14 @@ public class IPAccessHandlerTest
         return new Response(code, headers, body.toString().trim());
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
    protected class Response
     {
         private final String code;
         private final Map<String, String> headers;
         private final String body;
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         private Response(String code, Map<String, String> headers, String body)
         {
             this.code = code;
@@ -215,39 +212,40 @@ public class IPAccessHandlerTest
             this.body = body;
         }
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         public String getCode()
         {
             return code;
         }
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         public Map<String, String> getHeaders()
         {
             return headers;
         }
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         public String getBody()
         {
             return body;
         }
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         @Override
         public String toString()
         {
             StringBuilder builder = new StringBuilder();
             builder.append(code).append("\r\n");
-            for (Map.Entry<String, String> entry : headers.entrySet())
-                builder.append(entry.getKey()).append(": ").append(entry.getValue()).append("\r\n");
+            for (Map.Entry<String, String> entry : headers.entrySet()) {
+				builder.append(entry.getKey()).append(": ").append(entry.getValue()).append("\r\n");
+			}
             builder.append("\r\n");
             builder.append(body);
             return builder.toString();
         }
     }
 
-   /* ------------------------------------------------------------ */
+   /** ------------------------------------------------------------. */
     @Parameters
     public static Collection<Object[]> data() {
         Object[][] data = new Object[][] {

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.rewrite.handler;
 
@@ -32,7 +27,7 @@ public abstract class HeaderRule extends Rule
     private String _header;
     private String _headerValue;
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public String getHeader()
     {
         return _header;
@@ -48,7 +43,7 @@ public abstract class HeaderRule extends Rule
         _header = header;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public String getHeaderValue()
     {
         return _headerValue;
@@ -65,23 +60,23 @@ public abstract class HeaderRule extends Rule
         _headerValue = headerValue;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public String matchAndApply(String target, HttpServletRequest request,
             HttpServletResponse response) throws IOException
     {
         String requestHeaderValue = request.getHeader(_header);
         
-        if (requestHeaderValue != null)
-            if (_headerValue == null || _headerValue.equals(requestHeaderValue))
-                apply(target, requestHeaderValue, request, response);
+        if (requestHeaderValue != null && (_headerValue == null || _headerValue.equals(requestHeaderValue))) {
+			apply(target, requestHeaderValue, request, response);
+		}
         
         return null;
     }
 
     /* ------------------------------------------------------------ */
     /**
-     * Apply the rule to the request
+     * Apply the rule to the request.
      * 
      * @param target
      *                field to attempt match
@@ -98,7 +93,7 @@ public abstract class HeaderRule extends Rule
      */
     protected abstract String apply(String target, String value, HttpServletRequest request, HttpServletResponse response) throws IOException;
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public String toString()
     {

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http2.client;
 
@@ -353,8 +348,9 @@ public abstract class FlowControlStrategyTest
                     {
                         // Consume totally.
                         callback.succeeded();
-                        if (frame.isEndStream())
-                            dataLatch.countDown();
+                        if (frame.isEndStream()) {
+							dataLatch.countDown();
+						}
                     }
                     else
                     {
@@ -426,8 +422,9 @@ public abstract class FlowControlStrategyTest
                             {
                                 // Consume totally.
                                 callback.succeeded();
-                                if (frame.isEndStream())
-                                    dataLatch.countDown();
+                                if (frame.isEndStream()) {
+									dataLatch.countDown();
+								}
                             }
                             else
                             {
@@ -507,8 +504,6 @@ public abstract class FlowControlStrategyTest
                     // Send data to consume most of the session window.
                     ByteBuffer data = ByteBuffer.allocate(FlowControlStrategy.DEFAULT_WINDOW_SIZE - windowSize);
                     DataFrame dataFrame = new DataFrame(stream.getId(), data, true);
-                    stream.data(dataFrame, Callback.NOOP);
-                    return null;
                 }
                 else
                 {
@@ -517,9 +512,9 @@ public abstract class FlowControlStrategyTest
                     HeadersFrame responseFrame = new HeadersFrame(stream.getId(), metaData, null, false);
                     stream.headers(responseFrame, Callback.NOOP);
                     DataFrame dataFrame = new DataFrame(stream.getId(), ByteBuffer.allocate(windowSize / 2), true);
-                    stream.data(dataFrame, Callback.NOOP);
-                    return null;
                 }
+				stream.data(dataFrame, Callback.NOOP);
+				return null;
             }
         });
 
@@ -536,8 +531,9 @@ public abstract class FlowControlStrategyTest
             {
                 // Do not consume the data to reduce the session window.
                 callbacks1.add(callback);
-                if (frame.isEndStream())
-                    prepareLatch.countDown();
+                if (frame.isEndStream()) {
+					prepareLatch.countDown();
+				}
             }
         });
         Assert.assertTrue(prepareLatch.await(5, TimeUnit.SECONDS));
@@ -574,8 +570,9 @@ public abstract class FlowControlStrategyTest
             public void onData(Stream stream, DataFrame frame, Callback callback)
             {
                 callback.succeeded();
-                if (frame.isEndStream())
-                    latch.countDown();
+                if (frame.isEndStream()) {
+					latch.countDown();
+				}
             }
         });
 
@@ -584,8 +581,9 @@ public abstract class FlowControlStrategyTest
 
         // Consume the data of the first response.
         // This will open up the session window, allowing the fourth stream to send data.
-        for (Callback callback : callbacks1)
-            callback.succeeded();
+        for (Callback callback : callbacks1) {
+			callback.succeeded();
+		}
 
         Assert.assertTrue(latch.await(5, TimeUnit.SECONDS));
     }
@@ -626,8 +624,9 @@ public abstract class FlowControlStrategyTest
                 frame.getData().get(bytes, received, remaining);
                 this.received += remaining;
                 callback.succeeded();
-                if (frame.isEndStream())
-                    latch.countDown();
+                if (frame.isEndStream()) {
+					latch.countDown();
+				}
             }
         });
 
@@ -688,8 +687,9 @@ public abstract class FlowControlStrategyTest
             {
                 buffer.put(frame.getData());
                 callback.succeeded();
-                if (frame.isEndStream())
-                    responseLatch.countDown();
+                if (frame.isEndStream()) {
+					responseLatch.countDown();
+				}
             }
         });
         Assert.assertTrue(dataLatch.await(5, TimeUnit.SECONDS));
@@ -767,8 +767,9 @@ public abstract class FlowControlStrategyTest
             {
                 responseContent.put(frame.getData());
                 callback.succeeded();
-                if (frame.isEndStream())
-                    latch.countDown();
+                if (frame.isEndStream()) {
+					latch.countDown();
+				}
             }
         });
         Stream stream = streamPromise.get(5, TimeUnit.SECONDS);
@@ -795,8 +796,9 @@ public abstract class FlowControlStrategyTest
             @Override
             public void onClose(Session session, GoAwayFrame frame)
             {
-                if (frame.getError() == ErrorCode.FLOW_CONTROL_ERROR.code)
-                    closeLatch.countDown();
+                if (frame.getError() == ErrorCode.FLOW_CONTROL_ERROR.code) {
+					closeLatch.countDown();
+				}
             }
         });
 
@@ -860,8 +862,9 @@ public abstract class FlowControlStrategyTest
             @Override
             public void onClose(Session session, GoAwayFrame frame)
             {
-                if (frame.getError() == ErrorCode.FLOW_CONTROL_ERROR.code)
-                    closeLatch.countDown();
+                if (frame.getError() == ErrorCode.FLOW_CONTROL_ERROR.code) {
+					closeLatch.countDown();
+				}
             }
         });
 
@@ -911,8 +914,9 @@ public abstract class FlowControlStrategyTest
             {
                 MetaData.Request request = (MetaData.Request)frame.getMetaData();
 
-                if (HttpMethod.GET.is(request.getMethod()))
-                    return new Stream.Listener.Adapter();
+                if (HttpMethod.GET.is(request.getMethod())) {
+					return new Stream.Listener.Adapter();
+				}
 
                 return new Stream.Listener.Adapter()
                 {

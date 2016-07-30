@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 
 package org.eclipse.jetty.http2.hpack;
@@ -73,8 +68,9 @@ public class MetaDataBuilder
         String value = field.getValue();
         int field_size = name.length() + (value == null ? 0 : value.length());
         _size+=field_size+32;
-        if (_size>_maxSize)
-            throw new BadMessageException(HttpStatus.REQUEST_HEADER_FIELDS_TOO_LARGE_431,"Header size "+_size+">"+_maxSize);
+        if (_size>_maxSize) {
+			throw new BadMessageException(HttpStatus.REQUEST_HEADER_FIELDS_TOO_LARGE_431,"Header size "+_size+">"+_maxSize);
+		}
 
         if (field instanceof StaticTableHttpField)
         {
@@ -110,25 +106,28 @@ public class MetaDataBuilder
                     break;
 
                 case C_SCHEME:
-                    if (value != null)
-                        _scheme = HttpScheme.CACHE.get(value);
+                    if (value != null) {
+						_scheme = HttpScheme.CACHE.get(value);
+					}
                     break;
 
                 case C_AUTHORITY:
-                    if (field instanceof HostPortHttpField)
-                        _authority = (HostPortHttpField)field;
-                    else if (value != null)
-                        _authority = new AuthorityHttpField(value);
+                    if (field instanceof HostPortHttpField) {
+						_authority = (HostPortHttpField)field;
+					} else if (value != null) {
+						_authority = new AuthorityHttpField(value);
+					}
                     break;
 
                 case HOST:
                     // :authority fields must come first.  If we have one, ignore the host header as far as authority goes.
                     if (_authority==null)
                     {
-                        if (field instanceof HostPortHttpField)
-                            _authority = (HostPortHttpField)field;
-                        else if (value != null)
-                            _authority = new AuthorityHttpField(value);
+                        if (field instanceof HostPortHttpField) {
+							_authority = (HostPortHttpField)field;
+						} else if (value != null) {
+							_authority = new AuthorityHttpField(value);
+						}
                     }
                     _fields.add(field);
                     break;
@@ -143,16 +142,14 @@ public class MetaDataBuilder
                     break;
 
                 default:
-                    if (name.charAt(0)!=':')
-                        _fields.add(field);
+                    if (name.charAt(0)!=':') {
+						_fields.add(field);
+					}
                     break;
             }
-        }
-        else
-        {
-            if (name.charAt(0)!=':')
-                _fields.add(field);
-        }
+        } else if (name.charAt(0)!=':') {
+			_fields.add(field);
+		}
     }
 
     public MetaData build()
@@ -162,10 +159,12 @@ public class MetaDataBuilder
             HttpFields fields = _fields;
             _fields = new HttpFields(Math.max(10,fields.size()+5));
 
-            if (_method!=null)
-                return new MetaData.Request(_method,_scheme,_authority,_path,HttpVersion.HTTP_2,fields,_contentLength);
-            if (_status!=0)
-                return new MetaData.Response(HttpVersion.HTTP_2,_status,fields,_contentLength);
+            if (_method!=null) {
+				return new MetaData.Request(_method,_scheme,_authority,_path,HttpVersion.HTTP_2,fields,_contentLength);
+			}
+            if (_status!=0) {
+				return new MetaData.Response(HttpVersion.HTTP_2,_status,fields,_contentLength);
+			}
             return new MetaData(HttpVersion.HTTP_2,fields,_contentLength);
         }
         finally
@@ -188,9 +187,11 @@ public class MetaDataBuilder
     public void checkSize(int length, boolean huffman)
     {
         // Apply a huffman fudge factor
-        if (huffman)
-            length=(length*4)/3;
-        if ((_size+length)>_maxSize)
-            throw new BadMessageException(HttpStatus.REQUEST_HEADER_FIELDS_TOO_LARGE_431,"Header size "+(_size+length)+">"+_maxSize);
+        if (huffman) {
+			length=(length*4)/3;
+		}
+        if (_size+length>_maxSize) {
+			throw new BadMessageException(HttpStatus.REQUEST_HEADER_FIELDS_TOO_LARGE_431,"Header size "+(_size+length)+">"+_maxSize);
+		}
     }
 }

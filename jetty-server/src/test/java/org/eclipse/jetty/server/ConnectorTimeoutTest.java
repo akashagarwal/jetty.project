@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 
@@ -72,8 +67,9 @@ public abstract class ConnectorTimeoutTest extends HttpServerTestFixture
     public void before()
     {
         super.before();
-        if (_httpConfiguration!=null)
-            _httpConfiguration.setBlockingTimeout(-1L);
+        if (_httpConfiguration!=null) {
+			_httpConfiguration.setBlockingTimeout(-1L);
+		}
     }
 
     @Test(timeout=60000)
@@ -178,8 +174,9 @@ public abstract class ConnectorTimeoutTest extends HttpServerTestFixture
 
         // Get the server side endpoint
         EndPoint endPoint = exchanger.exchange(null,10,TimeUnit.SECONDS);
-        if (endPoint instanceof SslConnection.DecryptedEndPoint)
-            endPoint=endPoint.getConnection().getEndPoint();
+        if (endPoint instanceof SslConnection.DecryptedEndPoint) {
+			endPoint=endPoint.getConnection().getEndPoint();
+		}
 
         // read the response
         String result=IO.toString(is);
@@ -252,8 +249,9 @@ public abstract class ConnectorTimeoutTest extends HttpServerTestFixture
 
         // Get the server side endpoint
         EndPoint endPoint = exchanger.exchange(null,10,TimeUnit.SECONDS);
-        if (endPoint instanceof SslConnection.DecryptedEndPoint)
-            endPoint=endPoint.getConnection().getEndPoint();
+        if (endPoint instanceof SslConnection.DecryptedEndPoint) {
+			endPoint=endPoint.getConnection().getEndPoint();
+		}
 
         // read the response
         String result=IO.toString(is);
@@ -513,10 +511,11 @@ public abstract class ConnectorTimeoutTest extends HttpServerTestFixture
         // read the header
         String line=is.readLine();
         Assert.assertThat(line,Matchers.startsWith("HTTP/1.1 200 OK"));
-        while(line.length()!=0)
-            line=is.readLine();
+        while(line.length()!=0) {
+			line=is.readLine();
+		}
         
-        for (int i=0;i<(128*1024);i++)
+        for (int i=0;i<128*1024;i++)
         {
             if (i%1028==0)
             {
@@ -554,13 +553,14 @@ public abstract class ConnectorTimeoutTest extends HttpServerTestFixture
         // read the header
         String line=is.readLine();
         Assert.assertThat(line,Matchers.startsWith("HTTP/1.1 200 OK"));
-        while(line.length()!=0)
-            line=is.readLine();
+        while(line.length()!=0) {
+			line=is.readLine();
+		}
 
         long start=System.currentTimeMillis();
         try (StacklessLogging stackless = new StacklessLogging(HttpChannel.class,AbstractConnection.class))
         {
-            for (int i=0;i<(128*1024);i++)
+            for (int i=0;i<128*1024;i++)
             {
                 if (i%1028==0)
                 {
@@ -568,8 +568,9 @@ public abstract class ConnectorTimeoutTest extends HttpServerTestFixture
                     // System.err.println("read "+System.currentTimeMillis());
                 }
                 line=is.readLine();
-                if (line==null)
-                    break;
+                if (line==null) {
+					break;
+				}
             }
         }
         catch(Throwable e)
@@ -657,7 +658,7 @@ public abstract class ConnectorTimeoutTest extends HttpServerTestFixture
                 "GET / HTTP/1.0\r\n"+
                 "host: "+_serverURI.getHost()+":"+_serverURI.getPort()+"\r\n"+
                 "connection: keep-alive\r\n"+
-                "Content-Length: "+(contentB.length*20)+"\r\n"+
+                "Content-Length: "+contentB.length*20+"\r\n"+
                 "Content-Type: text/plain\r\n"+
                 "Connection: close\r\n"+
         "\r\n").getBytes("utf-8"));

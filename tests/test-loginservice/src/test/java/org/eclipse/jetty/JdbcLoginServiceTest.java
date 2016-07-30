@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty;
 
@@ -133,7 +128,7 @@ public class JdbcLoginServiceTest
              request.content(new BytesContentProvider(_content.getBytes()));
              ContentResponse response = request.send();
              int responseStatus = response.getStatus();
-             boolean statusOk = (responseStatus == 200 || responseStatus == 201);
+             boolean statusOk = responseStatus == 200 || responseStatus == 201;
              assertTrue(statusOk);
              String content = IO.toString(new FileInputStream(new File(_docRoot,"output.txt")));
              assertEquals(_content,content);
@@ -176,7 +171,7 @@ public class JdbcLoginServiceTest
          }
      }
 
-     //Head requests to jetty-client are not working: see https://bugs.eclipse.org/bugs/show_bug.cgi?id=394552
+     /** Head requests to jetty-client are not working: see https://bugs.eclipse.org/bugs/show_bug.cgi?id=394552 */
      @Ignore
      public void testHead() throws Exception
      {

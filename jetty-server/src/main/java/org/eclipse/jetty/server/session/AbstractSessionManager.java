@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server.session;
 
@@ -64,7 +59,7 @@ import org.eclipse.jetty.util.statistic.SampleStatistic;
 @ManagedObject("Abstract Session Manager")
 public abstract class AbstractSessionManager extends ContainerLifeCycle implements SessionManager
 {
-    final static Logger __log = SessionHandler.LOG;
+    static final Logger __log = SessionHandler.LOG;
 
     public Set<SessionTrackingMode> __defaultSessionTrackingModes =
         Collections.unmodifiableSet(
@@ -73,8 +68,8 @@ public abstract class AbstractSessionManager extends ContainerLifeCycle implemen
 
     
 
-    /* ------------------------------------------------------------ */
-    public final static int __distantFuture=60*60*24*7*52*20;
+    /** ------------------------------------------------------------. */
+    public static final int __distantFuture=60*60*24*7*52*20;
     
     
     /**
@@ -82,7 +77,7 @@ public abstract class AbstractSessionManager extends ContainerLifeCycle implemen
      * the sessionmanager. Thus MAX_INT is the max number of seconds that can be set, and MAX_INT/60 is the
      * max number of minutes that you can set.
      */
-    public final static java.math.BigDecimal MAX_INACTIVE_MINUTES = new java.math.BigDecimal(Integer.MAX_VALUE/60);
+    public static final java.math.BigDecimal MAX_INACTIVE_MINUTES = new java.math.BigDecimal(Integer.MAX_VALUE/60);
 
     static final HttpSessionContext __nullSessionContext=new HttpSessionContext()
     {
@@ -103,13 +98,15 @@ public abstract class AbstractSessionManager extends ContainerLifeCycle implemen
     private boolean _usingCookies=true;
 
     /* ------------------------------------------------------------ */
-    // Setting of max inactive interval for new sessions
-    // -1 means no timeout
+    /**
+     * Setting of max inactive interval for new sessions
+     * -1 means no timeout.
+     */
     protected int _dftMaxIdleSecs=-1;
     protected SessionHandler _sessionHandler;
-    protected boolean _httpOnly=false;
+    protected boolean _httpOnly;
     protected SessionIdManager _sessionIdManager;
-    protected boolean _secureCookies=false;
+    protected boolean _secureCookies;
     protected boolean _secureRequestOnly=true;
 
     protected final List<HttpSessionAttributeListener> _sessionAttributeListeners = new CopyOnWriteArrayList<HttpSessionAttributeListener>();
@@ -137,19 +134,19 @@ public abstract class AbstractSessionManager extends ContainerLifeCycle implemen
     protected final SampleStatistic _sessionTimeStats = new SampleStatistic();
 
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public AbstractSessionManager()
     {
         setSessionTrackingModes(__defaultSessionTrackingModes);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public ContextHandler.Context getContext()
     {
         return _context;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public ContextHandler getContextHandler()
     {
         return _context.getContextHandler();
@@ -167,7 +164,7 @@ public abstract class AbstractSessionManager extends ContainerLifeCycle implemen
         return _maxCookieAge;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public HttpCookie access(HttpSession session,boolean secure)
     {
@@ -175,49 +172,47 @@ public abstract class AbstractSessionManager extends ContainerLifeCycle implemen
 
         AbstractSession s = ((SessionIf)session).getSession();
 
-       if (s.access(now))
-       {
-            // Do we need to refresh the cookie?
-            if (isUsingCookies() &&
-                (s.isIdChanged() ||
-                (getSessionCookieConfig().getMaxAge()>0 && getRefreshCookieAge()>0 && ((now-s.getCookieSetTime())/1000>getRefreshCookieAge()))
-                )
-               )
-            {
-                HttpCookie cookie=getSessionCookie(session,_context==null?"/":(_context.getContextPath()),secure);
-                s.cookieSet();
-                s.setIdChanged(false);
-                return cookie;
-            }
-        }
+       if (s.access(now) && isUsingCookies() &&
+	    (s.isIdChanged() ||
+	    (getSessionCookieConfig().getMaxAge()>0 && getRefreshCookieAge()>0 && (now-s.getCookieSetTime())/1000>getRefreshCookieAge())
+	    )) {
+	    HttpCookie cookie=getSessionCookie(session,_context==null?"/":_context.getContextPath(),secure);
+	    s.cookieSet();
+	    s.setIdChanged(false);
+	    return cookie;
+	}
         return null;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void addEventListener(EventListener listener)
     {
-        if (listener instanceof HttpSessionAttributeListener)
-            _sessionAttributeListeners.add((HttpSessionAttributeListener)listener);
-        if (listener instanceof HttpSessionListener)
-            _sessionListeners.add((HttpSessionListener)listener);
-        if (listener instanceof HttpSessionIdListener)
-            _sessionIdListeners.add((HttpSessionIdListener)listener);
+        if (listener instanceof HttpSessionAttributeListener) {
+			_sessionAttributeListeners.add((HttpSessionAttributeListener)listener);
+		}
+        if (listener instanceof HttpSessionListener) {
+			_sessionListeners.add((HttpSessionListener)listener);
+		}
+        if (listener instanceof HttpSessionIdListener) {
+			_sessionIdListeners.add((HttpSessionIdListener)listener);
+		}
         addBean(listener,false);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void clearEventListeners()
     {
-        for (EventListener e :getBeans(EventListener.class))
-            removeBean(e);
+        for (EventListener e :getBeans(EventListener.class)) {
+			removeBean(e);
+		}
         _sessionAttributeListeners.clear();
         _sessionListeners.clear();
         _sessionIdListeners.clear();
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void complete(HttpSession session)
     {
@@ -225,7 +220,7 @@ public abstract class AbstractSessionManager extends ContainerLifeCycle implemen
         s.complete();
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void doStart() throws Exception
     {
@@ -269,38 +264,44 @@ public abstract class AbstractSessionManager extends ContainerLifeCycle implemen
         if (_context!=null)
         {
             String tmp=_context.getInitParameter(SessionManager.__SessionCookieProperty);
-            if (tmp!=null)
-                _sessionCookie=tmp;
+            if (tmp!=null) {
+				_sessionCookie=tmp;
+			}
 
             tmp=_context.getInitParameter(SessionManager.__SessionIdPathParameterNameProperty);
-            if (tmp!=null)
-                setSessionIdPathParameterName(tmp);
+            if (tmp!=null) {
+				setSessionIdPathParameterName(tmp);
+			}
 
             // set up the max session cookie age if it isn't already
             if (_maxCookieAge==-1)
             {
                 tmp=_context.getInitParameter(SessionManager.__MaxAgeProperty);
-                if (tmp!=null)
-                    _maxCookieAge=Integer.parseInt(tmp.trim());
+                if (tmp!=null) {
+					_maxCookieAge=Integer.parseInt(tmp.trim());
+				}
             }
 
             // set up the session domain if it isn't already
-            if (_sessionDomain==null)
-                _sessionDomain=_context.getInitParameter(SessionManager.__SessionDomainProperty);
+            if (_sessionDomain==null) {
+				_sessionDomain=_context.getInitParameter(SessionManager.__SessionDomainProperty);
+			}
 
             // set up the sessionPath if it isn't already
-            if (_sessionPath==null)
-                _sessionPath=_context.getInitParameter(SessionManager.__SessionPathProperty);
+            if (_sessionPath==null) {
+				_sessionPath=_context.getInitParameter(SessionManager.__SessionPathProperty);
+			}
 
             tmp=_context.getInitParameter(SessionManager.__CheckRemoteSessionEncoding);
-            if (tmp!=null)
-                _checkingRemoteSessionIdEncoding=Boolean.parseBoolean(tmp);
+            if (tmp!=null) {
+				_checkingRemoteSessionIdEncoding=Boolean.parseBoolean(tmp);
+			}
         }
 
         super.doStart();
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void doStop() throws Exception
     {
@@ -322,15 +323,16 @@ public abstract class AbstractSessionManager extends ContainerLifeCycle implemen
         return _httpOnly;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public HttpSession getHttpSession(String nodeId)
     {
         String cluster_id = getSessionIdManager().getClusterId(nodeId);
 
         AbstractSession session = getSession(cluster_id);
-        if (session!=null && !session.getNodeId().equals(nodeId))
-            session.setIdChanged(true);
+        if (session!=null && !session.getNodeId().equals(nodeId)) {
+			session.setIdChanged(true);
+		}
         return session;
     }
 
@@ -377,7 +379,7 @@ public abstract class AbstractSessionManager extends ContainerLifeCycle implemen
         return (int)_sessionsStats.getTotal();
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @ManagedAttribute("time before a session cookie is re-set (in s)")
     public int getRefreshCookieAge()
     {
@@ -417,7 +419,7 @@ public abstract class AbstractSessionManager extends ContainerLifeCycle implemen
         _secureRequestOnly = secureRequestOnly;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @ManagedAttribute("the set session cookie")
     public String getSessionCookie()
     {
@@ -461,18 +463,7 @@ public abstract class AbstractSessionManager extends ContainerLifeCycle implemen
             sessionPath = (sessionPath==null||sessionPath.length()==0) ? "/" : sessionPath;
             String id = getNodeId(session);
             HttpCookie cookie = null;
-            if (_sessionComment == null)
-            {
-                cookie = new HttpCookie(
-                                        _cookieConfig.getName(),
-                                        id,
-                                        _cookieConfig.getDomain(),
-                                        sessionPath,
-                                        _cookieConfig.getMaxAge(),
-                                        _cookieConfig.isHttpOnly(),
-                                        _cookieConfig.isSecure() || (isSecureRequestOnly() && requestIsSecure));
-            }
-            else
+            if (_sessionComment != null)
             {
                 cookie = new HttpCookie(
                                         _cookieConfig.getName(),
@@ -484,6 +475,17 @@ public abstract class AbstractSessionManager extends ContainerLifeCycle implemen
                                         _cookieConfig.isSecure() || (isSecureRequestOnly() && requestIsSecure),
                                         _sessionComment,
                                         1);
+            }
+            else
+            {
+                cookie = new HttpCookie(
+                                        _cookieConfig.getName(),
+                                        id,
+                                        _cookieConfig.getDomain(),
+                                        sessionPath,
+                                        _cookieConfig.getMaxAge(),
+                                        _cookieConfig.isHttpOnly(),
+                                        _cookieConfig.isSecure() || (isSecureRequestOnly() && requestIsSecure));
             }
 
             return cookie;
@@ -506,14 +508,14 @@ public abstract class AbstractSessionManager extends ContainerLifeCycle implemen
         return _sessionHandler;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @ManagedAttribute("number of currently active sessions")
     public int getSessions()
     {
         return (int)_sessionsStats.getCurrent();
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     @ManagedAttribute("name of use for URL session tracking")
     public String getSessionIdPathParameterName()
@@ -521,7 +523,7 @@ public abstract class AbstractSessionManager extends ContainerLifeCycle implemen
         return _sessionIdPathParameterName;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public String getSessionIdPathParameterNamePrefix()
     {
@@ -538,7 +540,7 @@ public abstract class AbstractSessionManager extends ContainerLifeCycle implemen
         return _usingCookies;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public boolean isValid(HttpSession session)
     {
@@ -546,7 +548,7 @@ public abstract class AbstractSessionManager extends ContainerLifeCycle implemen
         return s.isValid();
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public String getClusterId(HttpSession session)
     {
@@ -554,7 +556,7 @@ public abstract class AbstractSessionManager extends ContainerLifeCycle implemen
         return s.getClusterId();
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public String getNodeId(HttpSession session)
     {
@@ -564,35 +566,39 @@ public abstract class AbstractSessionManager extends ContainerLifeCycle implemen
 
     /* ------------------------------------------------------------ */
     /**
-     * Create a new HttpSession for a request
+     * Create a new HttpSession for a request.
      */
     @Override
     public HttpSession newHttpSession(HttpServletRequest request)
     {
         AbstractSession session=newSession(request);
         session.setMaxInactiveInterval(_dftMaxIdleSecs);
-        if (request.isSecure())
-            session.setAttribute(AbstractSession.SESSION_CREATED_SECURE, Boolean.TRUE);
+        if (request.isSecure()) {
+			session.setAttribute(AbstractSession.SESSION_CREATED_SECURE, Boolean.TRUE);
+		}
         addSession(session,true);
         return session;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void removeEventListener(EventListener listener)
     {
-        if (listener instanceof HttpSessionAttributeListener)
-            _sessionAttributeListeners.remove(listener);
-        if (listener instanceof HttpSessionListener)
-            _sessionListeners.remove(listener);
-        if (listener instanceof HttpSessionIdListener)
-            _sessionIdListeners.remove(listener);
+        if (listener instanceof HttpSessionAttributeListener) {
+			_sessionAttributeListeners.remove(listener);
+		}
+        if (listener instanceof HttpSessionListener) {
+			_sessionListeners.remove(listener);
+		}
+        if (listener instanceof HttpSessionIdListener) {
+			_sessionIdListeners.remove(listener);
+		}
         removeBean(listener);
     }
     
     /* ------------------------------------------------------------ */
     /**
-     * Reset statistics values
+     * Reset statistics values.
      */
     @ManagedOperation(value="reset statistics", impact="ACTION")
     public void statsReset()
@@ -622,28 +628,29 @@ public abstract class AbstractSessionManager extends ContainerLifeCycle implemen
         _sessionIdManager=metaManager;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void setMaxInactiveInterval(int seconds)
     {
         _dftMaxIdleSecs=seconds;
         if (__log.isDebugEnabled())
         {
-            if (_dftMaxIdleSecs <= 0)
-                __log.debug("Sessions created by this manager are immortal (default maxInactiveInterval={})",_dftMaxIdleSecs);
-            else
-                __log.debug("SessionManager default maxInactiveInterval={}", _dftMaxIdleSecs);
+            if (_dftMaxIdleSecs <= 0) {
+				__log.debug("Sessions created by this manager are immortal (default maxInactiveInterval={})",_dftMaxIdleSecs);
+			} else {
+				__log.debug("SessionManager default maxInactiveInterval={}", _dftMaxIdleSecs);
+			}
         }
 
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void setRefreshCookieAge(int ageInSeconds)
     {
         _refreshCookieAge=ageInSeconds;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void setSessionCookie(String cookieName)
     {
         _sessionCookie=cookieName;
@@ -661,7 +668,7 @@ public abstract class AbstractSessionManager extends ContainerLifeCycle implemen
     }
 
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void setSessionIdPathParameterName(String param)
     {
@@ -684,7 +691,7 @@ public abstract class AbstractSessionManager extends ContainerLifeCycle implemen
     /* ------------------------------------------------------------ */
     /**
      * Add the session Registers the session with this manager and registers the
-     * session ID with the sessionIDManager;
+     * session ID with the sessionIDManager;.
      * @param session the session
      * @param created true if session was created
      */
@@ -702,8 +709,9 @@ public abstract class AbstractSessionManager extends ContainerLifeCycle implemen
             if (_sessionListeners!=null)
             {
                 HttpSessionEvent event=new HttpSessionEvent(session);
-                for (HttpSessionListener listener : _sessionListeners)
-                    listener.sessionCreated(event);
+                for (HttpSessionListener listener : _sessionListeners) {
+					listener.sessionCreated(event);
+				}
             }
         }
     }
@@ -717,7 +725,7 @@ public abstract class AbstractSessionManager extends ContainerLifeCycle implemen
     public abstract AbstractSession getSession(String idInCluster);
 
     /**
-     * Prepare sessions for session manager shutdown
+     * Prepare sessions for session manager shutdown.
      * 
      * @throws Exception if unable to shutdown sesssions
      */
@@ -726,7 +734,7 @@ public abstract class AbstractSessionManager extends ContainerLifeCycle implemen
 
     /* ------------------------------------------------------------ */
     /**
-     * Create a new session instance
+     * Create a new session instance.
      * @param request the request to build the session from
      * @return the new session
      */
@@ -783,8 +791,9 @@ public abstract class AbstractSessionManager extends ContainerLifeCycle implemen
 
             // Remove session from all context and global id maps
             _sessionIdManager.removeSession(session);
-            if (invalidate)
-                _sessionIdManager.invalidateAll(session.getClusterId());
+            if (invalidate) {
+				_sessionIdManager.invalidateAll(session.getClusterId());
+			}
 
             if (invalidate && _sessionListeners!=null)
             {
@@ -799,7 +808,7 @@ public abstract class AbstractSessionManager extends ContainerLifeCycle implemen
         return removed;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected abstract boolean removeSession(String idInCluster);
 
     /* ------------------------------------------------------------ */
@@ -812,21 +821,21 @@ public abstract class AbstractSessionManager extends ContainerLifeCycle implemen
         return _sessionTimeStats.getMax();
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public Set<SessionTrackingMode> getDefaultSessionTrackingModes()
     {
         return __defaultSessionTrackingModes;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public Set<SessionTrackingMode> getEffectiveSessionTrackingModes()
     {
         return Collections.unmodifiableSet(_sessionTrackingModes);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void setSessionTrackingModes(Set<SessionTrackingMode> sessionTrackingModes)
     {
@@ -835,21 +844,21 @@ public abstract class AbstractSessionManager extends ContainerLifeCycle implemen
         _usingURLs=_sessionTrackingModes.contains(SessionTrackingMode.URL);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public boolean isUsingURLs()
     {
         return _usingURLs;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public SessionCookieConfig getSessionCookieConfig()
     {
         return _cookieConfig;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     private SessionCookieConfig _cookieConfig =
         new CookieConfig();
 
@@ -884,10 +893,7 @@ public abstract class AbstractSessionManager extends ContainerLifeCycle implemen
         return _sessionTimeStats.getStdDev();
     }
 
-    /* ------------------------------------------------------------ */
-    /**
-     * @see org.eclipse.jetty.server.SessionManager#isCheckingRemoteSessionIdEncoding()
-     */
+    /** ------------------------------------------------------------. */
     @Override
     @ManagedAttribute("check remote session id encoding")
     public boolean isCheckingRemoteSessionIdEncoding()
@@ -895,10 +901,7 @@ public abstract class AbstractSessionManager extends ContainerLifeCycle implemen
         return _checkingRemoteSessionIdEncoding;
     }
 
-    /* ------------------------------------------------------------ */
-    /**
-     * @see org.eclipse.jetty.server.SessionManager#setCheckingRemoteSessionIdEncoding(boolean)
-     */
+    /** ------------------------------------------------------------. */
     @Override
     public void setCheckingRemoteSessionIdEncoding(boolean remote)
     {
@@ -980,56 +983,63 @@ public abstract class AbstractSessionManager extends ContainerLifeCycle implemen
         @Override
         public void setComment(String comment)
         {  
-            if (_context != null && _context.getContextHandler().isAvailable())
-                throw new IllegalStateException("CookieConfig cannot be set after ServletContext is started");
+            if (_context != null && _context.getContextHandler().isAvailable()) {
+				throw new IllegalStateException("CookieConfig cannot be set after ServletContext is started");
+			}
             _sessionComment = comment;
         }
 
         @Override
         public void setDomain(String domain)
         {
-            if (_context != null && _context.getContextHandler().isAvailable())
-                throw new IllegalStateException("CookieConfig cannot be set after ServletContext is started");
+            if (_context != null && _context.getContextHandler().isAvailable()) {
+				throw new IllegalStateException("CookieConfig cannot be set after ServletContext is started");
+			}
             _sessionDomain=domain;
         }
 
         @Override
         public void setHttpOnly(boolean httpOnly)
         {   
-            if (_context != null && _context.getContextHandler().isAvailable())
-                throw new IllegalStateException("CookieConfig cannot be set after ServletContext is started");
+            if (_context != null && _context.getContextHandler().isAvailable()) {
+				throw new IllegalStateException("CookieConfig cannot be set after ServletContext is started");
+			}
             _httpOnly=httpOnly;
         }
 
         @Override
         public void setMaxAge(int maxAge)
         {               
-            if (_context != null && _context.getContextHandler().isAvailable())
-                throw new IllegalStateException("CookieConfig cannot be set after ServletContext is started");
+            if (_context != null && _context.getContextHandler().isAvailable()) {
+				throw new IllegalStateException("CookieConfig cannot be set after ServletContext is started");
+			}
             _maxCookieAge=maxAge;
         }
 
         @Override
         public void setName(String name)
         {  
-                if (_context != null && _context.getContextHandler().isAvailable())
-                    throw new IllegalStateException("CookieConfig cannot be set after ServletContext is started");
+                if (_context != null && _context.getContextHandler().isAvailable()) {
+					throw new IllegalStateException("CookieConfig cannot be set after ServletContext is started");
+				}
             _sessionCookie=name;
         }
 
         @Override
         public void setPath(String path)
         {
-            if (_context != null && _context.getContextHandler().isAvailable())
-                throw new IllegalStateException("CookieConfig cannot be set after ServletContext is started"); 
+            if (_context != null && _context.getContextHandler().isAvailable()) {
+				throw new IllegalStateException("CookieConfig cannot be set after ServletContext is started");
+			} 
             _sessionPath=path;
         }
 
         @Override
         public void setSecure(boolean secure)
         {
-            if (_context != null && _context.getContextHandler().isAvailable())
-                throw new IllegalStateException("CookieConfig cannot be set after ServletContext is started");
+            if (_context != null && _context.getContextHandler().isAvailable()) {
+				throw new IllegalStateException("CookieConfig cannot be set after ServletContext is started");
+			}
             _secureCookies=secure;
         }
     }
@@ -1044,7 +1054,7 @@ public abstract class AbstractSessionManager extends ContainerLifeCycle implemen
      */
     public interface SessionIf extends HttpSession
     {
-        public AbstractSession getSession();
+        AbstractSession getSession();
     }
 
     public void doSessionAttributeListeners(AbstractSession session, String name, Object old, Object value)
@@ -1055,12 +1065,13 @@ public abstract class AbstractSessionManager extends ContainerLifeCycle implemen
 
             for (HttpSessionAttributeListener l : _sessionAttributeListeners)
             {
-                if (old==null)
-                    l.attributeAdded(event);
-                else if (value==null)
-                    l.attributeRemoved(event);
-                else
-                    l.attributeReplaced(event);
+                if (old==null) {
+					l.attributeAdded(event);
+				} else if (value!=null) {
+					l.attributeReplaced(event);
+				} else {
+					l.attributeRemoved(event);
+				}
             }
         }
     }

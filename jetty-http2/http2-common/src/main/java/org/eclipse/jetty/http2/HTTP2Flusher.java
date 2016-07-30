@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http2;
 
@@ -61,12 +56,14 @@ public class HTTP2Flusher extends IteratingCallback
         synchronized (this)
         {
             closed = terminated;
-            if (!closed)
-                windows.offer(new WindowEntry(stream, frame));
+            if (!closed) {
+				windows.offer(new WindowEntry(stream, frame));
+			}
         }
         // Flush stalled data.
-        if (!closed)
-            iterate();
+        if (!closed) {
+			iterate();
+		}
     }
 
     public boolean prepend(Entry entry)
@@ -78,12 +75,14 @@ public class HTTP2Flusher extends IteratingCallback
             if (!closed)
             {
                 frames.add(0, entry);
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Prepended {}, frames={}", entry, frames.size());
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("Prepended {}, frames={}", entry, frames.size());
+				}
             }
         }
-        if (closed)
-            closed(entry, new ClosedChannelException());
+        if (closed) {
+			closed(entry, new ClosedChannelException());
+		}
         return !closed;
     }
 
@@ -96,12 +95,14 @@ public class HTTP2Flusher extends IteratingCallback
             if (!closed)
             {
                 frames.add(entry);
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Appended {}, frames={}", entry, frames.size());
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("Appended {}, frames={}", entry, frames.size());
+				}
             }
         }
-        if (closed)
-            closed(entry, new ClosedChannelException());
+        if (closed) {
+			closed(entry, new ClosedChannelException());
+		}
         return !closed;
     }
 
@@ -124,13 +125,15 @@ public class HTTP2Flusher extends IteratingCallback
     @Override
     protected Action process() throws Exception
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("Flushing {}", session);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Flushing {}", session);
+		}
 
         synchronized (this)
         {
-            if (terminated)
-                throw new ClosedChannelException();
+            if (terminated) {
+				throw new ClosedChannelException();
+			}
 
             // First thing, update the window sizes, so we can
             // reason about the frames to remove from the queue.
@@ -158,8 +161,9 @@ public class HTTP2Flusher extends IteratingCallback
                     remove(index);
                     --size;
                     resets.add(entry);
-                    if (LOG.isDebugEnabled())
-                        LOG.debug("Gathered for reset {}", entry);
+                    if (LOG.isDebugEnabled()) {
+						LOG.debug("Gathered for reset {}", entry);
+					}
                     continue;
                 }
 
@@ -195,8 +199,9 @@ public class HTTP2Flusher extends IteratingCallback
 
                     // The frame fits both flow control windows, reduce them.
                     sessionWindow -= remaining;
-                    if (stream != null)
-                        streams.put(stream, streams.get(stream) - remaining);
+                    if (stream != null) {
+						streams.put(stream, streams.get(stream) - remaining);
+					}
                 }
 
                 // The frame will be written, remove it from the queue.
@@ -204,8 +209,9 @@ public class HTTP2Flusher extends IteratingCallback
                 --size;
                 actives.add(entry);
 
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Gathered for write {}", entry);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("Gathered for write {}", entry);
+				}
             }
             streams.clear();
         }
@@ -220,8 +226,9 @@ public class HTTP2Flusher extends IteratingCallback
 
         if (actives.isEmpty())
         {
-            if (LOG.isDebugEnabled())
-                LOG.debug("Flushed {}", session);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Flushed {}", session);
+			}
             return Action.IDLE;
         }
 
@@ -238,8 +245,9 @@ public class HTTP2Flusher extends IteratingCallback
         }
 
         List<ByteBuffer> byteBuffers = lease.getByteBuffers();
-        if (LOG.isDebugEnabled())
-            LOG.debug("Writing {} buffers ({} bytes) for {} frames {}", byteBuffers.size(), lease.getTotalLength(), actives.size(), actives);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Writing {} buffers ({} bytes) for {} frames {}", byteBuffers.size(), lease.getTotalLength(), actives.size(), actives);
+		}
         session.getEndPoint().write(this, byteBuffers.toArray(new ByteBuffer[byteBuffers.size()]));
         return Action.SCHEDULED;
     }
@@ -249,8 +257,9 @@ public class HTTP2Flusher extends IteratingCallback
     {
         lease.recycle();
 
-        if (LOG.isDebugEnabled())
-            LOG.debug("Written {} frames for {}", actives.size(), actives);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Written {} frames for {}", actives.size(), actives);
+		}
 
         actives.forEach(Entry::succeeded);
         actives.clear();
@@ -274,8 +283,9 @@ public class HTTP2Flusher extends IteratingCallback
         {
             closed = terminated;
             terminated = true;
-            if (LOG.isDebugEnabled())
-                LOG.debug("{}, active/queued={}/{}", closed ? "Closing" : "Failing", actives.size(), frames.size());
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("{}, active/queued={}/{}", closed ? "Closing" : "Failing", actives.size(), frames.size());
+			}
             actives.addAll(frames);
             frames.clear();
         }
@@ -285,8 +295,9 @@ public class HTTP2Flusher extends IteratingCallback
 
         // If the failure came from within the
         // flusher, we need to close the connection.
-        if (!closed)
-            session.abort(x);
+        if (!closed) {
+			session.abort(x);
+		}
     }
 
     void terminate()
@@ -296,11 +307,13 @@ public class HTTP2Flusher extends IteratingCallback
         {
             closed = terminated;
             terminated = true;
-            if (LOG.isDebugEnabled())
-                LOG.debug("{}", closed ? "Terminated" : "Terminating");
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("{}", closed ? "Terminated" : "Terminating");
+			}
         }
-        if (!closed)
-            iterate();
+        if (!closed) {
+			iterate();
+		}
     }
 
     private void closed(Entry entry, Throwable failure)

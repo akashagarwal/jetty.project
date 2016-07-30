@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util;
 
@@ -45,23 +40,26 @@ import org.eclipse.jetty.util.resource.Resource;
  */
 public class Loader
 {
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public static URL getResource(Class<?> loadClass,String name)
     {
         URL url =null;
         ClassLoader context_loader=Thread.currentThread().getContextClassLoader();
-        if (context_loader!=null)
-            url=context_loader.getResource(name); 
+        if (context_loader!=null) {
+			url=context_loader.getResource(name);
+		} 
         
         if (url==null && loadClass!=null)
         {
             ClassLoader load_loader=loadClass.getClassLoader();
-            if (load_loader!=null && load_loader!=context_loader)
-                url=load_loader.getResource(name);
+            if (load_loader!=null && load_loader!=context_loader) {
+				url=load_loader.getResource(name);
+			}
         }
 
-        if (url==null)
-            url=ClassLoader.getSystemResource(name);
+        if (url==null) {
+			url=ClassLoader.getSystemResource(name);
+		}
 
         return url;
     }
@@ -93,7 +91,9 @@ public class Loader
             if (load_loader!=null && load_loader!=context_loader)
             {
                 try { c=load_loader.loadClass(name); }
-                catch (ClassNotFoundException e) {if(ex==null)ex=e;}
+                catch (ClassNotFoundException e) {if(ex==null) {
+					ex=e;
+				}}
             }
         }
 
@@ -102,8 +102,9 @@ public class Loader
             try { c=Class.forName(name); }
             catch (ClassNotFoundException e) 
             {
-                if(ex!=null)
-                    throw ex;
+                if(ex!=null) {
+					throw ex;
+				}
                 throw e;
             }
         }   
@@ -113,7 +114,7 @@ public class Loader
     
     
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public static ResourceBundle getResourceBundle(Class<?> loadClass,String name,boolean checkParents, Locale locale)
         throws MissingResourceException
     {
@@ -123,7 +124,9 @@ public class Loader
         while (bundle==null && loader!=null )
         {
             try { bundle=ResourceBundle.getBundle(name, locale, loader); }
-            catch (MissingResourceException e) {if(ex==null)ex=e;}
+            catch (MissingResourceException e) {if(ex==null) {
+				ex=e;
+			}}
             loader=(bundle==null&&checkParents)?loader.getParent():null;
         }      
         
@@ -131,18 +134,23 @@ public class Loader
         while (bundle==null && loader!=null )
         {
             try { bundle=ResourceBundle.getBundle(name, locale, loader); }
-            catch (MissingResourceException e) {if(ex==null)ex=e;}
+            catch (MissingResourceException e) {if(ex==null) {
+				ex=e;
+			}}
             loader=(bundle==null&&checkParents)?loader.getParent():null;
         }       
 
         if (bundle==null)
         {
             try { bundle=ResourceBundle.getBundle(name, locale); }
-            catch (MissingResourceException e) {if(ex==null)ex=e;}
+            catch (MissingResourceException e) {if(ex==null) {
+				ex=e;
+			}}
         }   
 
-        if (bundle!=null)
-            return bundle;
+        if (bundle!=null) {
+			return bundle;
+		}
         throw ex;
     }
     
@@ -160,7 +168,7 @@ public class Loader
     public static String getClassPath(ClassLoader loader) throws Exception
     {
         StringBuilder classpath=new StringBuilder();
-        while (loader != null && (loader instanceof URLClassLoader))
+        while (loader instanceof URLClassLoader)
         {
             URL[] urls = ((URLClassLoader)loader).getURLs();
             if (urls != null)
@@ -171,8 +179,9 @@ public class Loader
                     File file=resource.getFile();
                     if (file!=null && file.exists())
                     {
-                        if (classpath.length()>0)
-                            classpath.append(File.pathSeparatorChar);
+                        if (classpath.length()>0) {
+							classpath.append(File.pathSeparatorChar);
+						}
                         classpath.append(file.getAbsolutePath());
                     }
                 }

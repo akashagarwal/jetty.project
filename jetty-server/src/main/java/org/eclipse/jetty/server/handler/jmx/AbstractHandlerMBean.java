@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server.handler.jmx;
 
@@ -32,13 +27,13 @@ public class AbstractHandlerMBean extends ObjectMBean
 {
     private static final Logger LOG = Log.getLogger(AbstractHandlerMBean.class);
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public AbstractHandlerMBean(Object managedObject)
     {
         super(managedObject);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public String getObjectContextBasis()
     {
@@ -49,10 +44,12 @@ public class AbstractHandlerMBean extends ObjectMBean
             {
                 ContextHandler handler = (ContextHandler)_managed;
                 String context = getContextName(handler);
-                if (context==null)
-                    context=handler.getDisplayName();
-                if (context!=null)
-                    return context;
+                if (context==null) {
+					context=handler.getDisplayName();
+				}
+                if (context!=null) {
+					return context;
+				}
             }
             else if (_managed instanceof AbstractHandler)
             {
@@ -64,17 +61,19 @@ public class AbstractHandlerMBean extends ObjectMBean
                         AbstractHandlerContainer.findContainerOf(server,
                                 ContextHandler.class, handler);
                     
-                    if (context != null)
-                        basis = getContextName(context);
+                    if (context != null) {
+						basis = getContextName(context);
+					}
                 }
             }
-            if (basis != null)
-                return basis;
+            if (basis != null) {
+				return basis;
+			}
         }
         return super.getObjectContextBasis();
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected String getContextName(ContextHandler context)
     {
         String name = null;
@@ -83,16 +82,18 @@ public class AbstractHandlerMBean extends ObjectMBean
         {
             int idx = context.getContextPath().lastIndexOf('/');
             name = idx < 0 ? context.getContextPath() : context.getContextPath().substring(++idx);
-            if (name==null || name.length()==0)
-                name= "ROOT";
+            if (name==null || name.length()==0) {
+				name= "ROOT";
+			}
         }
         
         if (name==null && context.getBaseResource()!=null)
         {
             try
             {
-                if (context.getBaseResource().getFile()!=null)
-                    name = context.getBaseResource().getFile().getName();
+                if (context.getBaseResource().getFile()!=null) {
+					name = context.getBaseResource().getFile().getName();
+				}
             }
             catch(IOException e)
             {
@@ -101,8 +102,9 @@ public class AbstractHandlerMBean extends ObjectMBean
             }
         }
         
-        if (context.getVirtualHosts()!=null && context.getVirtualHosts().length>0)
-            name='"'+name+"@"+context.getVirtualHosts()[0]+'"';
+        if (context.getVirtualHosts()!=null && context.getVirtualHosts().length>0) {
+			name='"'+name+"@"+context.getVirtualHosts()[0]+'"';
+		}
         
         return name;
     }

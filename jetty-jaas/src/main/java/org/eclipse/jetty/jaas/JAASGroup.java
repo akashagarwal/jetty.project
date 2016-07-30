@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.jaas;
 
@@ -28,8 +23,8 @@ public class JAASGroup implements Group
 {
     public static final String ROLES = "__roles__";
     
-    private String _name = null;
-    private HashSet<Principal> _members = null;
+    private String _name;
+    private HashSet<Principal> _members;
    
     public JAASGroup(String n)
     {
@@ -37,7 +32,7 @@ public class JAASGroup implements Group
         this._members = new HashSet<Principal>();
     }
    
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public synchronized boolean addMember(Principal principal)
     {
         return _members.add(principal);
@@ -88,10 +83,7 @@ public class JAASGroup implements Group
 
     public boolean equals(Object object)
     {
-        if (! (object instanceof JAASGroup))
-            return false;
-
-        return ((JAASGroup)object).getName().equals(getName());
+        return object instanceof JAASGroup && ((JAASGroup)object).getName().equals(getName());
     }
 
     public String toString()

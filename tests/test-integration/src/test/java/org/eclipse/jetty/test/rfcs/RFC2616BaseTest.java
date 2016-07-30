@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.test.rfcs;
 
@@ -60,7 +55,7 @@ import org.junit.Test;
 public abstract class RFC2616BaseTest
 {
     private static final String ALPHA = "ABCDEFGHIJKLMNOPQRSTUVWXYZ\n";
-    /** STRICT RFC TESTS */
+    /** STRICT RFC TESTS. */
     private static final boolean STRICT = false;
     private static TestableJettyServer server;
     private HttpTesting http;
@@ -422,35 +417,6 @@ public abstract class RFC2616BaseTest
         // fails to provide a Content-Length.
         // Server can respond with 400 (Bad Request) or 411 (Length Required).
 
-        // NOTE: MSIE breaks this rule
-        // TODO: Document which version of MSIE Breaks Rule.
-        // TODO: Document which versions of MSIE pass this rule (if any).
-        if (STRICT)
-        {
-            StringBuffer req3 = new StringBuffer();
-            req3.append("GET /echo/R2 HTTP/1.1\n");
-            req3.append("Host: localhost\n");
-            req3.append("Content-Type: text/plain\n");
-            req3.append("Connection: close\n");
-            req3.append("\n");
-            req3.append("123456");
-
-            response = http.request(req3);
-
-            assertEquals("4.4 Valid Content-Length Required",HttpStatus.LENGTH_REQUIRED_411, response.getStatus());
-            assertTrue("4.4 Valid Content-Length Required", response.getContent() == null);
-
-            StringBuffer req4 = new StringBuffer();
-            req4.append("GET /echo/R2 HTTP/1.0\n");
-            req4.append("Content-Type: text/plain\n");
-            req4.append("\n");
-            req4.append("123456");
-
-            response = http.request(req4);
-
-            assertEquals("4.4 Valid Content-Length Required",HttpStatus.LENGTH_REQUIRED_411, response.getStatus());
-            assertTrue("4.4 Valid Content-Length Required", response.getContent() == null);
-        }
     }
 
     /**
@@ -820,31 +786,7 @@ public abstract class RFC2616BaseTest
         // Server can handle many webapps, each with their own set of supported OPTIONS.
         // Both www.cnn.com and www.apache.org do NOT support this request as well.
 
-        if (STRICT)
-        {
-            // Server OPTIONS
-
-            StringBuffer req1 = new StringBuffer();
-            req1.append("OPTIONS * HTTP/1.1\n"); // Apply to server in general, rather than a specific resource
-            req1.append("Connection: close\n");
-            req1.append("Host: localhost\n");
-            req1.append("\n");
-
-            HttpTester.Response response = http.request(req1);
-
-            assertEquals("9.2 OPTIONS", HttpStatus.OK_200, response.getStatus());
-            assertTrue("9.2 OPTIONS",response.get("Allow") != null);
-            // Header expected ...
-            // Allow: GET, HEAD, POST, PUT, DELETE, MOVE, OPTIONS, TRACE
-            String allow = response.get("Allow");
-            String expectedMethods[] =
-            { "GET", "HEAD", "POST", "PUT", "DELETE", "MOVE", "OPTIONS", "TRACE" };
-            for (String expectedMethod : expectedMethods)
-            {
-                assertThat(allow,containsString(expectedMethod));
-            }
-            assertEquals("9.2 OPTIONS","0", response.get("Content-Length")); // Required if no response body.
-        }
+        
     }
 
     /**
@@ -1003,8 +945,8 @@ public abstract class RFC2616BaseTest
 
         HttpTester.Response response = http.request(req1);
 
-        boolean noRangeHasContentLocation = (response.get("Content-Location") != null);
-        boolean noRangeHasETag = (response.get("ETag") != null);
+        boolean noRangeHasContentLocation = response.get("Content-Location") != null;
+        boolean noRangeHasETag = response.get("ETag") != null;
 
         // now try again for the same resource but this time WITH range header
 
@@ -1205,10 +1147,8 @@ public abstract class RFC2616BaseTest
     @Test
     public void test14_16_NoRange() throws Exception
     {
-        //
         // calibrate with normal request (no ranges); if this doesnt
         // work, dont expect ranges to work either
-        //
 
         StringBuffer req1 = new StringBuffer();
         req1.append("GET /rfc2616-webapp/alpha.txt HTTP/1.1\n");
@@ -1276,11 +1216,9 @@ public abstract class RFC2616BaseTest
 
         // server should not return a 416 if at least one syntactically valid ranges
         // are is satisfiable
-        //
         // should test for combinations of good and syntactically
         // invalid ranges here, but I am not certain what the right
         // behavior is anymore
-        //
         // return data for valid ranges while ignoring unsatisfiable
         // ranges
 
@@ -1317,11 +1255,9 @@ public abstract class RFC2616BaseTest
 
         // server should not return a 416 if at least one syntactically valid ranges
         // are is satisfiable
-        //
         // should test for combinations of good and syntactically
         // invalid ranges here, but I am not certain what the right
         // behavior is anymore
-        //
         // return data for valid ranges while ignoring unsatisfiable
         // ranges
 
@@ -1356,11 +1292,9 @@ public abstract class RFC2616BaseTest
 
         // server should not return a 416 if at least one syntactically valid ranges
         // are is satisfiable
-        //
         // should test for combinations of good and syntactically
         // invalid ranges here, but I am not certain what the right
         // behavior is anymore
-        //
         // return data for valid ranges while ignoring unsatisfiable
         // ranges
 
@@ -1500,10 +1434,8 @@ public abstract class RFC2616BaseTest
     @Test
     public void test14_35_Range() throws Exception
     {
-        //
         // test various valid range specs that have not been
         // tested yet
-        //
 
         String alpha = ALPHA;
 
@@ -1656,10 +1588,8 @@ public abstract class RFC2616BaseTest
     @Test
     public void test14_35_PartialRange() throws Exception
     {
-        //
         // test various valid range specs that have not been
         // tested yet
-        //
 
         String alpha = ALPHA;
 
@@ -1709,24 +1639,6 @@ public abstract class RFC2616BaseTest
     @Test
     public void test14_39_TEGzip() throws Exception
     {
-        if (STRICT)
-        {
-            String specId;
-
-            // Gzip accepted
-
-            StringBuffer req1 = new StringBuffer();
-            req1.append("GET /rfc2616-webapp/solutions.html HTTP/1.1\n");
-            req1.append("Host: localhost\n");
-            req1.append("TE: gzip\n");
-            req1.append("Connection: close\n");
-            req1.append("\n");
-
-            HttpTester.Response response = http.request(req1);
-            specId = "14.39 TE Header";
-            assertEquals(specId, HttpStatus.OK_200, response.getStatus());
-            assertEquals(specId,"gzip", response.get("Transfer-Encoding"));
-        }
     }
 
     /**
@@ -1737,22 +1649,6 @@ public abstract class RFC2616BaseTest
     @Test
     public void test14_39_TEDeflate() throws Exception
     {
-        if (STRICT)
-        {
-            String specId;
-
-            // Deflate not accepted
-            StringBuffer req2 = new StringBuffer();
-            req2.append("GET /rfc2616-webapp/solutions.html HTTP/1.1\n");
-            req2.append("Host: localhost\n");
-            req2.append("TE: deflate\n"); // deflate not accepted
-            req2.append("Connection: close\n");
-            req2.append("\n");
-
-            HttpTester.Response response = http.request(req2);
-            specId = "14.39 TE Header";
-            assertEquals(specId,HttpStatus.NOT_IMPLEMENTED_501, response.getStatus()); // Error on TE (deflate not supported)
-        }
     }
 
     /**

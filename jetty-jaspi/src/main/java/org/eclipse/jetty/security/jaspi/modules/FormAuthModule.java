@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.security.jaspi.modules;
 
@@ -49,18 +44,18 @@ public class FormAuthModule extends BaseAuthModule
 {
     private static final Logger LOG = Log.getLogger(FormAuthModule.class);
 
-    /* ------------------------------------------------------------ */
-    public final static String __J_URI = "org.eclipse.jetty.util.URI";
+    /** ------------------------------------------------------------. */
+    public static final String __J_URI = "org.eclipse.jetty.util.URI";
 
-    public final static String __J_AUTHENTICATED = "org.eclipse.jetty.server.Auth";
+    public static final String __J_AUTHENTICATED = "org.eclipse.jetty.server.Auth";
 
-    public final static String __J_SECURITY_CHECK = "/j_security_check";
+    public static final String __J_SECURITY_CHECK = "/j_security_check";
 
-    public final static String __J_USERNAME = "j_username";
+    public static final String __J_USERNAME = "j_username";
 
-    public final static String __J_PASSWORD = "j_password";
+    public static final String __J_PASSWORD = "j_password";
 
-    // private String realmName;
+    /** Private String realmName;. */
     public static final String LOGIN_PAGE_KEY = "org.eclipse.jetty.security.jaspi.modules.LoginPage";
 
     public static final String ERROR_PAGE_KEY = "org.eclipse.jetty.security.jaspi.modules.ErrorPage";
@@ -107,10 +102,12 @@ public class FormAuthModule extends BaseAuthModule
         }
         _formLoginPage = path;
         _formLoginPath = path;
-        if (_formLoginPath.indexOf('?') > 0) _formLoginPath = _formLoginPath.substring(0, _formLoginPath.indexOf('?'));
+        if (_formLoginPath.indexOf('?') > 0) {
+			_formLoginPath = _formLoginPath.substring(0, _formLoginPath.indexOf('?'));
+		}
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     private void setErrorPage(String path)
     {
         if (path == null || path.trim().length() == 0)
@@ -128,7 +125,9 @@ public class FormAuthModule extends BaseAuthModule
             _formErrorPage = path;
             _formErrorPath = path;
 
-            if (_formErrorPath.indexOf('?') > 0) _formErrorPath = _formErrorPath.substring(0, _formErrorPath.indexOf('?'));
+            if (_formErrorPath.indexOf('?') > 0) {
+				_formErrorPath = _formErrorPath.substring(0, _formErrorPath.indexOf('?'));
+			}
         }
     }
 
@@ -139,16 +138,19 @@ public class FormAuthModule extends BaseAuthModule
         HttpServletRequest request = (HttpServletRequest) messageInfo.getRequestMessage();
         HttpServletResponse response = (HttpServletResponse) messageInfo.getResponseMessage();
         String uri = request.getRequestURI();
-        if (uri==null)
-            uri=URIUtil.SLASH;
+        if (uri==null) {
+			uri=URIUtil.SLASH;
+		}
         
         boolean mandatory = isMandatory(messageInfo);  
         mandatory |= isJSecurityCheck(uri);
         HttpSession session = request.getSession(mandatory);
         
         // not mandatory or its the login or login error page don't authenticate
-        if (!mandatory || isLoginOrErrorPage(URIUtil.addPaths(request.getServletPath(),request.getPathInfo()))) 
-            return AuthStatus.SUCCESS;  // TODO return null for do nothing?
+        if (!mandatory || isLoginOrErrorPage(URIUtil.addPaths(request.getServletPath(),request.getPathInfo())))
+		 {
+			return AuthStatus.SUCCESS;  // TODO return null for do nothing?
+		}
 
         try
         {
@@ -171,8 +173,9 @@ public class FormAuthModule extends BaseAuthModule
                     if (nuri == null || nuri.length() == 0)
                     {
                         nuri = request.getContextPath();
-                        if (nuri.length() == 0) 
-                            nuri = URIUtil.SLASH;
+                        if (nuri.length() == 0) {
+							nuri = URIUtil.SLASH;
+						}
                     }
                    
                     response.setContentLength(0);   
@@ -180,10 +183,14 @@ public class FormAuthModule extends BaseAuthModule
                     return AuthStatus.SEND_CONTINUE;
                 }
                 // not authenticated
-                if (LOG.isDebugEnabled()) LOG.debug("Form authentication FAILED for " + StringUtil.printable(username));
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("Form authentication FAILED for " + StringUtil.printable(username));
+				}
                 if (_formErrorPage == null)
                 {
-                    if (response != null) response.sendError(HttpServletResponse.SC_FORBIDDEN);
+                    if (response != null) {
+						response.sendError(HttpServletResponse.SC_FORBIDDEN);
+					}
                 }
                 else
                 {
@@ -203,12 +210,15 @@ public class FormAuthModule extends BaseAuthModule
                 //TODO: ideally we would like the form auth module to be able to invoke the 
                 //loginservice.validate() method to check the previously authed user, but it is not visible
                 //to FormAuthModule
-                if (sessionAuth.getUserIdentity().getSubject() == null)
-                    return AuthStatus.SEND_FAILURE;
+                if (sessionAuth.getUserIdentity().getSubject() == null) {
+					return AuthStatus.SEND_FAILURE;
+				}
 
                 Set<Object> credentials = sessionAuth.getUserIdentity().getSubject().getPrivateCredentials();
                 if (credentials == null || credentials.isEmpty())
-                    return AuthStatus.SEND_FAILURE; //if no private credentials, assume it cannot be authenticated
+				 {
+					return AuthStatus.SEND_FAILURE; //if no private credentials, assume it cannot be authenticated
+				}
 
                 clientSubject.getPrivateCredentials().addAll(credentials);
                 clientSubject.getPrivateCredentials().add(sessionAuth.getUserIdentity());
@@ -218,14 +228,16 @@ public class FormAuthModule extends BaseAuthModule
             
 
             // if we can't send challenge
-            if (DeferredAuthentication.isDeferred(response))
-                return AuthStatus.SUCCESS; 
+            if (DeferredAuthentication.isDeferred(response)) {
+				return AuthStatus.SUCCESS;
+			} 
             
 
             // redirect to login page  
             StringBuffer buf = request.getRequestURL();
-            if (request.getQueryString() != null)
-                buf.append("?").append(request.getQueryString());
+            if (request.getQueryString() != null) {
+				buf.append("?").append(request.getQueryString());
+			}
 
             synchronized (session)
             {
@@ -247,16 +259,18 @@ public class FormAuthModule extends BaseAuthModule
 
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public boolean isJSecurityCheck(String uri)
     {
         int jsc = uri.indexOf(__J_SECURITY_CHECK);
         
-        if (jsc<0)
-            return false;
+        if (jsc<0) {
+			return false;
+		}
         int e=jsc+__J_SECURITY_CHECK.length();
-        if (e==uri.length())
-            return true;
+        if (e==uri.length()) {
+			return true;
+		}
         char c = uri.charAt(e);
         return c==';'||c=='#'||c=='/'||c=='?';
     }

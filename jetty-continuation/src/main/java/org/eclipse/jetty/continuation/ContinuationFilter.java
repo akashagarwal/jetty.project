@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.continuation;
 
@@ -52,7 +47,8 @@ import javax.servlet.ServletResponse;
 public class ContinuationFilter implements Filter
 {
     static boolean _initialized;
-    static boolean __debug; // shared debug status
+    /** Shared debug status. */
+    static boolean __debug;
     private boolean _faux;
     private boolean _filtered;
     ServletContext _context;
@@ -65,23 +61,26 @@ public class ContinuationFilter implements Filter
 
         String param=filterConfig.getInitParameter("debug");
         _debug=param!=null&&Boolean.parseBoolean(param);
-        if (_debug)
-            __debug=true;
+        if (_debug) {
+			__debug=true;
+		}
 
         param=filterConfig.getInitParameter("partial");
         param=filterConfig.getInitParameter("faux");
-        if (param!=null)
-            _faux=Boolean.parseBoolean(param);
-        else
-            _faux=!(jetty_7_or_greater || _context.getMajorVersion()>=3);
+        if (param!=null) {
+			_faux=Boolean.parseBoolean(param);
+		} else {
+			_faux=!jetty_7_or_greater && _context.getMajorVersion() < 3;
+		}
 
         _filtered=_faux;
-        if (_debug)
-            _context.log("ContinuationFilter "+
+        if (_debug) {
+			_context.log("ContinuationFilter "+
                     " jetty="+jetty_7_or_greater+
                     " faux="+_faux+
                     " filtered="+_filtered+
                     " servlet3="+ContinuationSupport.__servlet3);
+		}
         _initialized=true;
     }
 
@@ -95,17 +94,18 @@ public class ContinuationFilter implements Filter
             {
                 fc = new FauxContinuation(request);
                 request.setAttribute(Continuation.ATTRIBUTE,fc);
-            }
-            else
-                fc=(FilteredContinuation)c;
+            } else {
+				fc=(FilteredContinuation)c;
+			}
 
             boolean complete=false;
             while (!complete)
             {
                 try
                 {
-                    if (fc==null || (fc).enter(response))
-                        chain.doFilter(request,response);
+                    if (fc==null || fc.enter(response)) {
+						chain.doFilter(request,response);
+					}
                 }
                 catch (ContinuationThrowable e)
                 {
@@ -113,10 +113,11 @@ public class ContinuationFilter implements Filter
                 }
                 finally
                 {
-                    if (fc==null)
-                        fc = (FilteredContinuation) request.getAttribute(Continuation.ATTRIBUTE);
+                    if (fc==null) {
+						fc = (FilteredContinuation) request.getAttribute(Continuation.ATTRIBUTE);
+					}
 
-                    complete=fc==null || (fc).exit();
+                    complete=fc==null || fc.exit();
                 }
             }
         }
@@ -145,10 +146,11 @@ public class ContinuationFilter implements Filter
     {
         if (_debug)
         {
-            if (th instanceof ContinuationThrowable)
-                _context.log(string+":"+th);
-            else
-                _context.log(string,th);
+            if (th instanceof ContinuationThrowable) {
+				_context.log(string+":"+th);
+			} else {
+				_context.log(string,th);
+			}
         }
     }
 

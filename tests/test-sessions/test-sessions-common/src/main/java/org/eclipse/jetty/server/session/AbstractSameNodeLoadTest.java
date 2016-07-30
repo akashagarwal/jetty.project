@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server.session;
 
@@ -130,7 +125,7 @@ public abstract class AbstractSameNodeLoadTest
 
     public static class Worker implements Runnable
     {
-        public static int COUNT = 0;
+        public static int COUNT;
         
         private final HttpClient client;
 
@@ -152,7 +147,7 @@ public abstract class AbstractSameNodeLoadTest
             this.requestsCount = requestsCount;
             this.sessionCookie = sessionCookie;
             this.url = url;
-            this.name = ""+(COUNT++);
+            this.name = ""+COUNT++;
         }
 
 

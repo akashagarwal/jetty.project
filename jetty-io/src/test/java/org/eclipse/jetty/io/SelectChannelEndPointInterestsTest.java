@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.io;
 
@@ -102,14 +97,18 @@ public class SelectChannelEndPointInterestsTest
     @After
     public void destroy() throws Exception
     {
-        if (scheduler!=null)
-            scheduler.stop();
-        if (selectorManager != null)
-            selectorManager.stop();
-        if (connector != null)
-            connector.close();
-        if (threadPool != null)
-            threadPool.stop();
+        if (scheduler!=null) {
+			scheduler.stop();
+		}
+        if (selectorManager != null) {
+			selectorManager.stop();
+		}
+        if (connector != null) {
+			connector.close();
+		}
+        if (threadPool != null) {
+			threadPool.stop();
+		}
     }
 
     @Test
@@ -195,8 +194,9 @@ public class SelectChannelEndPointInterestsTest
 
         // Now read what was written, waking up the server for write
         InputStream clientInput = client.getInputStream();
-        while (size.getAndDecrement() > 0)
-            clientInput.read();
+        while (size.getAndDecrement() > 0) {
+			clientInput.read();
+		}
 
         client.close();
 

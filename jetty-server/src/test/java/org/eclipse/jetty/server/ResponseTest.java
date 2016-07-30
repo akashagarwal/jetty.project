@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 
@@ -89,10 +84,11 @@ public class ResponseTest
             @Override
             public void send(MetaData.Response info, boolean head, ByteBuffer content, boolean lastContent, Callback callback)
             {
-                if (_channelError==null)
-                    callback.succeeded();
-                else
-                    callback.failed(_channelError);
+                if (_channelError!=null) {
+					callback.failed(_channelError);
+				} else {
+					callback.succeeded();
+				}
             }
 
             @Override
@@ -676,8 +672,9 @@ public class ResponseTest
             String line = reader.readLine();
             Assert.assertThat(line, Matchers.startsWith("HTTP/1.1 200 OK"));
             // look for blank line
-            while (line != null && line.length() > 0)
-                line = reader.readLine();
+            while (line != null && line.length() > 0) {
+				line = reader.readLine();
+			}
 
             // Read the first line of the GET
             line = reader.readLine();

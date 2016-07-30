@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server.session;
 
@@ -37,7 +32,7 @@ import org.junit.Test;
 
 
 /**
- * AbstractSessionValueSavingTest
+ * AbstractSessionValueSavingTest.
  */
 public abstract class AbstractSessionValueSavingTest
 {
@@ -96,8 +91,9 @@ public abstract class AbstractSessionValueSavingTest
                         sessionTestValue = Long.parseLong(response2.getContentAsString());
 
                         String setCookie = response1.getHeaders().get("Set-Cookie");
-                        if (setCookie!=null)
-                            sessionCookie = setCookie.replaceFirst("(\\W)(P|p)ath=", "$1\\$Path=");
+                        if (setCookie!=null) {
+							sessionCookie = setCookie.replaceFirst("(\\W)(P|p)ath=", "$1\\$Path=");
+						}
 
                         Thread.sleep(requestInterval);
                     }
@@ -124,8 +120,6 @@ public abstract class AbstractSessionValueSavingTest
             {
                 HttpSession session = request.getSession(true);
                 session.setAttribute("test", System.currentTimeMillis());
-
-                sendResult(session, httpServletResponse.getWriter());
             }
             else
             {
@@ -139,9 +133,8 @@ public abstract class AbstractSessionValueSavingTest
 
                 }
 
-                sendResult(session, httpServletResponse.getWriter());
-
             }
+			sendResult(session, httpServletResponse.getWriter());
 
 
         }

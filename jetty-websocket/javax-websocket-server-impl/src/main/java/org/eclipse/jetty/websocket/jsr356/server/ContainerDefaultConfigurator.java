@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.jsr356.server;
 
@@ -86,14 +81,14 @@ public final class ContainerDefaultConfigurator extends Configurator
     @Override
     public String getNegotiatedSubprotocol(List<String> supported, List<String> requested)
     {
-        if ((requested == null) || (requested.size() == 0))
+        if (requested == null || requested.size() == 0)
         {
             // nothing requested, don't return anything
             return NO_SUBPROTOCOL;
         }
 
         // Nothing specifically called out as being supported by the endpoint
-        if ((supported == null) || (supported.isEmpty()))
+        if (supported == null || supported.isEmpty())
         {
             // Just return the first hit in this case
             LOG.warn("Client requested Subprotocols on endpoint with none supported: {}",QuoteUtil.join(requested,","));

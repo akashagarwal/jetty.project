@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server.handler;
 
@@ -80,7 +75,7 @@ public class ShutdownHandler extends HandlerWrapper
 
     private final String _shutdownToken;
     private boolean _sendShutdownAtStart;
-    private boolean _exitJvm = false;
+    private boolean _exitJvm;
 
 
     /**
@@ -152,10 +147,11 @@ public class ShutdownHandler extends HandlerWrapper
             }
         }
 
-        if (connector==null)
-            return "http://localhost";
+        if (connector!=null) {
+			return "http://localhost:" + connector.getPort();
+		}
 
-        return "http://localhost:" + connector.getPort();
+        return "http://localhost";
     }
     
     
@@ -163,20 +159,21 @@ public class ShutdownHandler extends HandlerWrapper
     protected void doStart() throws Exception
     {
         super.doStart();
-        if (_sendShutdownAtStart)
-            sendShutdown();
+        if (_sendShutdownAtStart) {
+			sendShutdown();
+		}
     }
     
     @Override
     public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
     {
-        if (!target.equals("/shutdown"))
+        if (!"/shutdown".equals(target))
         {
             super.handle(target,baseRequest,request,response);
             return;
         }
 
-        if (!request.getMethod().equals("POST"))
+        if (!"POST".equals(request.getMethod()))
         {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
@@ -233,18 +230,15 @@ public class ShutdownHandler extends HandlerWrapper
     private boolean requestFromLocalhost(Request request)
     {
         InetSocketAddress addr = request.getRemoteInetSocketAddress();
-        if (addr == null)
-        {
-            return false;
-        }
-        return addr.getAddress().isLoopbackAddress();
+        return addr != null && addr.getAddress().isLoopbackAddress();
     }
 
     private boolean hasCorrectSecurityToken(HttpServletRequest request)
     {
         String tok = request.getParameter("token");
-        if (LOG.isDebugEnabled())
-            LOG.debug("Token: {}", tok);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Token: {}", tok);
+		}
         return _shutdownToken.equals(tok);
     }
 

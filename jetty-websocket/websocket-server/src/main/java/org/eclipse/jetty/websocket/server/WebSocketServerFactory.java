@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.server;
 
@@ -78,7 +73,7 @@ import org.eclipse.jetty.websocket.servlet.WebSocketCreator;
 import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;
 
 /**
- * Factory to create WebSocket connections
+ * Factory to create WebSocket connections.
  */
 public class WebSocketServerFactory extends ContainerLifeCycle implements WebSocketCreator, WebSocketContainerScope, WebSocketServletFactory
 {
@@ -138,11 +133,7 @@ public class WebSocketServerFactory extends ContainerLifeCycle implements WebSoc
         this.creator = this;
 
         // Create supportedVersions
-        List<Integer> versions = new ArrayList<>();
-        for (int v : handshakes.keySet())
-        {
-            versions.add(v);
-        }
+        List<Integer> versions = new ArrayList<Integer>(handshakes.keySet());
         Collections.sort(versions, Collections.reverseOrder()); // newest first
         StringBuilder rv = new StringBuilder();
         for (int v : versions)
@@ -233,7 +224,7 @@ public class WebSocketServerFactory extends ContainerLifeCycle implements WebSoc
     {
         try
         {
-            this.stop();
+            stop();
         }
         catch (Exception e)
         {
@@ -273,7 +264,7 @@ public class WebSocketServerFactory extends ContainerLifeCycle implements WebSoc
     }
 
     /**
-     * Default Creator logic
+     * Default Creator logic.
      */
     @Override
     public Object createWebSocket(ServletUpgradeRequest req, ServletUpgradeResponse resp)
@@ -545,13 +536,13 @@ public class WebSocketServerFactory extends ContainerLifeCycle implements WebSoc
             warn.append(" (:").append(request.getRemotePort());
             warn.append(") User Agent: ");
             String ua = request.getHeader("User-Agent");
-            if (ua == null)
+            if (ua != null)
             {
-                warn.append("[unset] ");
+                warn.append('"').append(StringUtil.sanitizeXmlString(ua)).append("\" ");
             }
             else
             {
-                warn.append('"').append(StringUtil.sanitizeXmlString(ua)).append("\" ");
+                warn.append("[unset] ");
             }
             warn.append("requested WebSocket version [").append(version);
             warn.append("], Jetty supports version");
@@ -622,7 +613,7 @@ public class WebSocketServerFactory extends ContainerLifeCycle implements WebSoc
 
         // Start Components
         session.addManaged(extensionStack);
-        this.addManaged(session);
+        addManaged(session);
 
         if (session.isFailed())
         {
@@ -632,17 +623,20 @@ public class WebSocketServerFactory extends ContainerLifeCycle implements WebSoc
         // Tell jetty about the new upgraded connection
         request.setServletAttribute(HttpConnection.UPGRADE_CONNECTION_ATTRIBUTE, wsConnection);
 
-        if (LOG.isDebugEnabled())
-            LOG.debug("Handshake Response: {}", handshaker);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Handshake Response: {}", handshaker);
+		}
 
-        if (getSendServerVersion(connector))
-            response.setHeader("Server",HttpConfiguration.SERVER_VERSION);
+        if (getSendServerVersion(connector)) {
+			response.setHeader("Server",HttpConfiguration.SERVER_VERSION);
+		}
 
         // Process (version specific) handshake response
         handshaker.doHandshakeResponse(request, response);
 
-        if (LOG.isDebugEnabled())
-            LOG.debug("Websocket upgrade {} {} {} {}", request.getRequestURI(), version, response.getAcceptedSubProtocol(), wsConnection);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Websocket upgrade {} {} {} {}", request.getRequestURI(), version, response.getAcceptedSubProtocol(), wsConnection);
+		}
 
         return true;
     }
@@ -650,14 +644,16 @@ public class WebSocketServerFactory extends ContainerLifeCycle implements WebSoc
     private boolean getSendServerVersion(Connector connector)
     {
         ConnectionFactory connFactory = connector.getConnectionFactory(HttpVersion.HTTP_1_1.asString());
-        if (connFactory == null)
-            return false;
+        if (connFactory == null) {
+			return false;
+		}
 
         if (connFactory instanceof HttpConnectionFactory)
         {
             HttpConfiguration httpConf = ((HttpConnectionFactory)connFactory).getHttpConfiguration();
-            if (httpConf != null)
-                return httpConf.getSendServerVersion();
+            if (httpConf != null) {
+				return httpConf.getSendServerVersion();
+			}
         }
         return false;
     }

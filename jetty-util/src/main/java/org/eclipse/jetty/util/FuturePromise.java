@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util;
 
@@ -116,37 +111,46 @@ public class FuturePromise<C> implements Future<C>,Promise<C>
     public C get() throws InterruptedException, ExecutionException
     {
         _latch.await();
-        if (_cause==COMPLETED)
-            return _result;
-        if (_cause instanceof CancellationException)
-            throw (CancellationException) new CancellationException().initCause(_cause);
+        if (_cause==COMPLETED) {
+			return _result;
+		}
+        if (_cause instanceof CancellationException) {
+			throw (CancellationException) new CancellationException().initCause(_cause);
+		}
         throw new ExecutionException(_cause);
     }
 
     @Override
     public C get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException
     {
-        if (!_latch.await(timeout,unit))
-            throw new TimeoutException();
+        if (!_latch.await(timeout,unit)) {
+			throw new TimeoutException();
+		}
 
-        if (_cause==COMPLETED)
-            return _result;
-        if (_cause instanceof TimeoutException)
-            throw (TimeoutException)_cause;
-        if (_cause instanceof CancellationException)
-            throw (CancellationException) new CancellationException().initCause(_cause);
+        if (_cause==COMPLETED) {
+			return _result;
+		}
+        if (_cause instanceof TimeoutException) {
+			throw (TimeoutException)_cause;
+		}
+        if (_cause instanceof CancellationException) {
+			throw (CancellationException) new CancellationException().initCause(_cause);
+		}
         throw new ExecutionException(_cause);
     }
 
     public static void rethrow(ExecutionException e) throws IOException
     {
         Throwable cause=e.getCause();
-        if (cause instanceof IOException)
-            throw (IOException)cause;
-        if (cause instanceof Error)
-            throw (Error)cause;
-        if (cause instanceof RuntimeException)
-            throw (RuntimeException)cause;
+        if (cause instanceof IOException) {
+			throw (IOException)cause;
+		}
+        if (cause instanceof Error) {
+			throw (Error)cause;
+		}
+        if (cause instanceof RuntimeException) {
+			throw (RuntimeException)cause;
+		}
         throw new RuntimeException(cause);
     }
     

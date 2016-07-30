@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.fcgi.generator;
 
@@ -64,8 +59,9 @@ public class ServerGenerator extends Generator
             // Special 'Status' header
             bytes.add(STATUS);
             length += STATUS.length + COLON.length;
-            if (reason == null)
-                reason = HttpStatus.getMessage(code);
+            if (reason == null) {
+				reason = HttpStatus.getMessage(code);
+			}
             byte[] responseBytes = (code + " " + reason).getBytes(utf8);
             bytes.add(responseBytes);
             length += responseBytes.length + EOL.length;
@@ -91,8 +87,9 @@ public class ServerGenerator extends Generator
         final ByteBuffer buffer = byteBufferPool.acquire(length, true);
         BufferUtil.clearToFill(buffer);
 
-        for (int i = 0; i < bytes.size(); i += 2)
-            buffer.put(bytes.get(i)).put(COLON).put(bytes.get(i + 1)).put(EOL);
+        for (int i = 0; i < bytes.size(); i += 2) {
+			buffer.put(bytes.get(i)).put(COLON).put(bytes.get(i + 1)).put(EOL);
+		}
         buffer.put(EOL);
 
         BufferUtil.flipToFlush(buffer, 0);
@@ -105,19 +102,20 @@ public class ServerGenerator extends Generator
         if (aborted)
         {
             Result result = new Result(byteBufferPool, callback);
-            if (lastContent)
-                result.append(generateEndRequest(request, true), true);
-            else
-                result.append(BufferUtil.EMPTY_BUFFER, false);
-            return result;
+            if (lastContent) {
+				result.append(generateEndRequest(request, true), true);
+			} else {
+				result.append(BufferUtil.EMPTY_BUFFER, false);
+			}
         }
         else
         {
             Result result = generateContent(request, content, false, lastContent, callback, FCGI.FrameType.STDOUT);
-            if (lastContent)
-                result.append(generateEndRequest(request, false), true);
-            return result;
+            if (lastContent) {
+				result.append(generateEndRequest(request, false), true);
+			}
         }
+		return result;
     }
 
     private ByteBuffer generateEndRequest(int request, boolean aborted)

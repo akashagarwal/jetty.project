@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server.handler;
 
@@ -38,10 +33,7 @@ public class HotSwapHandler extends AbstractHandlerContainer
 {
     private volatile Handler _handler;
 
-    /* ------------------------------------------------------------ */
-    /**
-     *
-     */
+    /** ------------------------------------------------------------. */
     public HotSwapHandler()
     {
     }
@@ -63,9 +55,10 @@ public class HotSwapHandler extends AbstractHandlerContainer
     public Handler[] getHandlers()
     {
         Handler handler=_handler;
-        if (handler==null)
-            return new Handler[0];
-        return new Handler[] { handler };
+        if (handler!=null) {
+			return new Handler[] { handler };
+		}
+        return new Handler[0];
     }
 
     /* ------------------------------------------------------------ */
@@ -78,8 +71,9 @@ public class HotSwapHandler extends AbstractHandlerContainer
         try
         {
             Server server = getServer();
-            if (handler!=null)
-                handler.setServer(server);
+            if (handler!=null) {
+				handler.setServer(server);
+			}
             updateBean(_handler,handler,true);
             _handler=handler;
 
@@ -90,30 +84,21 @@ public class HotSwapHandler extends AbstractHandlerContainer
         }
     }
 
-    /* ------------------------------------------------------------ */
-    /*
-     * @see org.eclipse.thread.AbstractLifeCycle#doStart()
-     */
+    /** ------------------------------------------------------------. */
     @Override
     protected void doStart() throws Exception
     {
         super.doStart();
     }
 
-    /* ------------------------------------------------------------ */
-    /*
-     * @see org.eclipse.thread.AbstractLifeCycle#doStop()
-     */
+    /** ------------------------------------------------------------. */
     @Override
     protected void doStop() throws Exception
     {
         super.doStop();
     }
 
-    /* ------------------------------------------------------------ */
-    /*
-     * @see org.eclipse.jetty.server.server.EventHandler#handle(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-     */
+    /** ------------------------------------------------------------. */
     @Override
     public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
     {
@@ -124,21 +109,23 @@ public class HotSwapHandler extends AbstractHandlerContainer
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     protected void expandChildren(List<Handler> list, Class<?> byClass)
     {
         Handler handler=_handler;
-        if (handler!=null)
-            expandHandler(handler,list,byClass);
+        if (handler!=null) {
+			expandHandler(handler,list,byClass);
+		}
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void destroy()
     {
-        if (!isStopped())
-            throw new IllegalStateException("!STOPPED");
+        if (!isStopped()) {
+			throw new IllegalStateException("!STOPPED");
+		}
         Handler child = getHandler();
         if (child != null)
         {

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.osgi.boot.warurl.internal;
 
@@ -35,7 +30,7 @@ import org.osgi.framework.Constants;
 
 public class WarBundleManifestGenerator
 {
-    /** missing version in the url and in the manifest
+    /** Missing version in the url and in the manifest
      * use this one. */
     private static final String MISSING_VERSION = "0.0.1.unknown";
     private static final String MISSING_MANIFEST_VERSION = "2";
@@ -67,7 +62,7 @@ public class WarBundleManifestGenerator
         }
         else
         {
-            String versionInManifest = (String) res.get(Constants.BUNDLE_VERSION);
+            String versionInManifest = res.get(Constants.BUNDLE_VERSION);
             if (versionInManifest == null)
             {
                 res.put(Constants.BUNDLE_VERSION, MISSING_VERSION);
@@ -84,7 +79,7 @@ public class WarBundleManifestGenerator
         {
             int manv = 2;
             try {
-                String versionInManifest = (String) res.get(Constants.BUNDLE_MANIFESTVERSION);
+                String versionInManifest = res.get(Constants.BUNDLE_MANIFESTVERSION);
                 if (versionInManifest != null)
                 {
                     manv = Integer.parseInt(versionInManifest.trim());
@@ -105,7 +100,7 @@ public class WarBundleManifestGenerator
         }
         else
         {
-            symbname = (String) res.get(Constants.BUNDLE_SYMBOLICNAME);
+            symbname = res.get(Constants.BUNDLE_SYMBOLICNAME);
             if (symbname == null)
             {
                 //derive the symbolic name from the url.
@@ -229,10 +224,6 @@ public class WarBundleManifestGenerator
         if (jspExtractLocation != null)
         {
             res.put("Web-JSPExtractLocation", jspExtractLocation);
-        }
-        else
-        {
-            //nothing to do.
         }
         Attributes newAttrs = new Attributes();
         for (Entry<String,String> e : res.entrySet())

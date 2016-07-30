@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.osgi.boot;
 
@@ -48,25 +43,25 @@ public class BundleContextProvider extends AbstractContextProvider implements Bu
     
     private ServiceRegistration _serviceRegForBundles;
   
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public BundleContextProvider(ServerInstanceWrapper wrapper)
     {
         super(wrapper);
     }
     
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     protected void doStart() throws Exception
     {
         //register as an osgi service for deploying contexts defined in a bundle, advertising the name of the jetty Server instance we are related to
         Dictionary<String,String> properties = new Hashtable<String,String>();
         properties.put(OSGiServerConstants.MANAGED_JETTY_SERVER_NAME, getServerInstanceWrapper().getManagedServerName());
-        _serviceRegForBundles = FrameworkUtil.getBundle(this.getClass()).getBundleContext().registerService(BundleProvider.class.getName(), this, properties);
+        _serviceRegForBundles = FrameworkUtil.getBundle(getClass()).getBundleContext().registerService(BundleProvider.class.getName(), this, properties);
         super.doStart();
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     protected void doStop() throws Exception
     {
@@ -87,25 +82,30 @@ public class BundleContextProvider extends AbstractContextProvider implements Bu
 
 
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public boolean bundleAdded (Bundle bundle) throws Exception
     {
-        if (bundle == null)
-            return false;
+        if (bundle == null) {
+			return false;
+		}
 
         //If the bundle defines a Web-ContextPath then its probably a webapp and the BundleWebAppProvider should deploy it
         if ((String)bundle.getHeaders().get(OSGiWebappConstants.RFC66_WEB_CONTEXTPATH) != null)
         {
-            if (LOG.isDebugEnabled()) LOG.debug("BundleContextProvider ignoring bundle {} with {} set", bundle.getSymbolicName(), OSGiWebappConstants.RFC66_WEB_CONTEXTPATH);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("BundleContextProvider ignoring bundle {} with {} set", bundle.getSymbolicName(), OSGiWebappConstants.RFC66_WEB_CONTEXTPATH);
+			}
             return false;
         }
         
         String contextFiles  = (String)bundle.getHeaders().get(OSGiWebappConstants.JETTY_CONTEXT_FILE_PATH);
-        if (contextFiles == null)
-            contextFiles = (String)bundle.getHeaders().get(OSGiWebappConstants.SERVICE_PROP_CONTEXT_FILE_PATH);
+        if (contextFiles == null) {
+			contextFiles = (String)bundle.getHeaders().get(OSGiWebappConstants.SERVICE_PROP_CONTEXT_FILE_PATH);
+		}
         
-        if (contextFiles == null)
-            return false;
+        if (contextFiles == null) {
+			return false;
+		}
         
         
         boolean added = false;
@@ -115,7 +115,7 @@ public class BundleContextProvider extends AbstractContextProvider implements Bu
         String[] tmp = contextFiles.split("[,;]");
         for (String contextFile : tmp)
         {
-            String originId = bundle.getSymbolicName() + "-" + bundle.getVersion().toString() + "-"+contextFile;
+            String originId = bundle.getSymbolicName() + "-" + bundle.getVersion() + "-"+contextFile;
             OSGiApp app = new OSGiApp(getDeploymentManager(), this, originId, bundle, contextFile);
             _appMap.put(originId,app);
             List<App> apps = _bundleMap.get(bundle);

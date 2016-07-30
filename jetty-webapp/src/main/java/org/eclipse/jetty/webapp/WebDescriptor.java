@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.webapp;
 
@@ -45,12 +40,13 @@ public class WebDescriptor extends Descriptor
 
     protected static XmlParser _parserSingleton;
     protected MetaDataComplete _metaDataComplete;
-    protected int _majorVersion = 3; //default to container version
-    protected int _minorVersion = 0;
+    /** Default to container version. */
+    protected int _majorVersion = 3;
+    protected int _minorVersion;
     protected ArrayList<String> _classNames = new ArrayList<String>();
     protected boolean _distributable;
 
-    protected boolean _isOrdered = false;
+    protected boolean _isOrdered;
     protected List<String> _ordering = new ArrayList<String>();
 
     @Override
@@ -58,19 +54,21 @@ public class WebDescriptor extends Descriptor
     {
         synchronized (WebDescriptor.class)
         {
-            if (_parserSingleton == null)
-                _parserSingleton = newParser(isValidating());
+            if (_parserSingleton == null) {
+				_parserSingleton = newParser(isValidating());
+			}
         }
         
-        if (_parserSingleton.isValidating()==isValidating())
-            _parser = _parserSingleton;
-        else
-            _parser = newParser(isValidating());
+        if (_parserSingleton.isValidating()==isValidating()) {
+			_parser = _parserSingleton;
+		} else {
+			_parser = newParser(isValidating());
+		}
     }
 
     public static XmlParser newParser(boolean validating) throws ClassNotFoundException
     {
-        XmlParser xmlParser=new XmlParser(validating)
+        return new XmlParser(validating)
         {
             boolean mapped=false;
             
@@ -82,8 +80,7 @@ public class WebDescriptor extends Descriptor
                     mapResources();
                     mapped=true;
                 }
-                InputSource is = super.resolveEntity(pid,sid);
-                return is;
+                return super.resolveEntity(pid,sid);
             }
             
             void mapResources()
@@ -134,10 +131,18 @@ public class WebDescriptor extends Descriptor
                 }
                 finally
                 {
-                    if (jsp20xsd == null) jsp20xsd = Loader.getResource(Servlet.class, "javax/servlet/jsp/resources/jsp_2_0.xsd");
-                    if (jsp21xsd == null) jsp21xsd = Loader.getResource(Servlet.class, "javax/servlet/jsp/resources/jsp_2_1.xsd");
-                    if (jsp22xsd == null) jsp22xsd = Loader.getResource(Servlet.class, "javax/servlet/jsp/resources/jsp_2_2.xsd");
-                    if (jsp23xsd == null) jsp23xsd = Loader.getResource(Servlet.class, "javax/servlet/jsp/resources/jsp_2_3.xsd");
+                    if (jsp20xsd == null) {
+						jsp20xsd = Loader.getResource(Servlet.class, "javax/servlet/jsp/resources/jsp_2_0.xsd");
+					}
+                    if (jsp21xsd == null) {
+						jsp21xsd = Loader.getResource(Servlet.class, "javax/servlet/jsp/resources/jsp_2_1.xsd");
+					}
+                    if (jsp22xsd == null) {
+						jsp22xsd = Loader.getResource(Servlet.class, "javax/servlet/jsp/resources/jsp_2_2.xsd");
+					}
+                    if (jsp23xsd == null) {
+						jsp23xsd = Loader.getResource(Servlet.class, "javax/servlet/jsp/resources/jsp_2_3.xsd");
+					}
                 }
                 
                 redirectEntity("web-app_2_2.dtd",dtd22);
@@ -191,8 +196,6 @@ public class WebDescriptor extends Descriptor
                 redirectEntity("http://xmlns.jcp.org/xml/ns/javaee/javaee_web_services_client_1_4.xsd",webservice14xsd);
             }
         };
-        
-        return xmlParser;
     }
 
 
@@ -235,7 +238,7 @@ public class WebDescriptor extends Descriptor
             _majorVersion = 2;
             _minorVersion = 3;
             String dtd = _parser.getDTD();
-            if (dtd != null && dtd.indexOf("web-app_2_2") >= 0)
+            if (dtd != null && dtd.contains("web-app_2_2"))
             {
                 _majorVersion = 2;
                 _minorVersion = 2;
@@ -251,27 +254,30 @@ public class WebDescriptor extends Descriptor
            }
         }
 
-        if (_majorVersion <= 2 && _minorVersion < 5)
-            _metaDataComplete = MetaDataComplete.True; // does not apply before 2.5
-        else
+        if (_majorVersion <= 2 && _minorVersion < 5) {
+			_metaDataComplete = MetaDataComplete.True; // does not apply before 2.5
+		} else
         {
-            String s = (String)_root.getAttribute("metadata-complete");
-            if (s == null)
-                _metaDataComplete = MetaDataComplete.NotSet;
-            else
-                _metaDataComplete = Boolean.valueOf(s).booleanValue()?MetaDataComplete.True:MetaDataComplete.False;
+            String s = _root.getAttribute("metadata-complete");
+            if (s != null) {
+				_metaDataComplete = Boolean.valueOf(s).booleanValue()?MetaDataComplete.True:MetaDataComplete.False;
+			} else {
+				_metaDataComplete = MetaDataComplete.NotSet;
+			}
         }
 
-        if (LOG.isDebugEnabled())
-            LOG.debug(_xml.toString()+": Calculated metadatacomplete = " + _metaDataComplete + " with version=" + version);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug(_xml+": Calculated metadatacomplete = " + _metaDataComplete + " with version=" + version);
+		}
     }
 
     public void processOrdering ()
     {
         //Process the web.xml's optional <absolute-ordering> element
         XmlParser.Node ordering = _root.get("absolute-ordering");
-        if (ordering == null)
-           return;
+        if (ordering == null) {
+			return;
+		}
 
         _isOrdered = true;
         //If an absolute-ordering was already set, then ignore it in favor of this new one
@@ -282,22 +288,26 @@ public class WebDescriptor extends Descriptor
         while (iter.hasNext())
         {
             Object o = iter.next();
-            if (!(o instanceof XmlParser.Node)) continue;
+            if (!(o instanceof XmlParser.Node)) {
+				continue;
+			}
             node = (XmlParser.Node) o;
 
-            if (node.getTag().equalsIgnoreCase("others"))
-                //((AbsoluteOrdering)_processor.getOrdering()).addOthers();
+            if ("others".equalsIgnoreCase(node.getTag())) {
+				//((AbsoluteOrdering)_processor.getOrdering()).addOthers();
                 _ordering.add("others");
-            else if (node.getTag().equalsIgnoreCase("name"))
-                //((AbsoluteOrdering)_processor.getOrdering()).add(node.toString(false,true));
+			} else if ("name".equalsIgnoreCase(node.getTag())) {
+				//((AbsoluteOrdering)_processor.getOrdering()).add(node.toString(false,true));
                 _ordering.add(node.toString(false,true));
+			}
         }
     }
 
     public void addClassName (String className)
     {
-        if (!_classNames.contains(className))
-            _classNames.add(className);
+        if (!_classNames.contains(className)) {
+			_classNames.add(className);
+		}
     }
 
     public ArrayList<String> getClassNames ()

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.rewrite.handler;
 
@@ -33,19 +28,19 @@ public abstract class PatternRule extends Rule
 {
     protected String _pattern;
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected PatternRule()
     {
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected PatternRule(String pattern)
     {
         this();
         setPattern(pattern);
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public String getPattern()
     {
         return _pattern;
@@ -63,7 +58,7 @@ public abstract class PatternRule extends Rule
     }
 
     /* ------------------------------------------------------------ */
-    /* (non-Javadoc)
+    /** (non-Javadoc)
      * @see org.eclipse.jetty.server.server.handler.rules.RuleBase#matchAndApply(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     @Override
@@ -77,7 +72,7 @@ public abstract class PatternRule extends Rule
     }
 
     /* ------------------------------------------------------------ */
-    /** Apply the rule to the request
+    /** Apply the rule to the request.
      * @param target field to attempt match
      * @param request request object
      * @param response response object

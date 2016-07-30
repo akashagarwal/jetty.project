@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.continuation;
 
@@ -348,8 +343,9 @@ public class ContinuationsTest
             
             StringBuilder request = new StringBuilder("GET /");
     
-            if (query != null)
-                request.append("?").append(query);
+            if (query != null) {
+				request.append("?").append(query);
+			}
     
             request.append(" HTTP/1.1\r\n")
                     .append("Host: localhost\r\n")
@@ -422,24 +418,33 @@ public class ContinuationsTest
             long complete2_after = -1;
             boolean undispatch = false;
 
-            if (request.getParameter("read") != null)
-                read_before = Integer.parseInt(request.getParameter("read"));
-            if (request.getParameter("sleep") != null)
-                sleep_for = Integer.parseInt(request.getParameter("sleep"));
-            if (request.getParameter("suspend") != null)
-                suspend_for = Integer.parseInt(request.getParameter("suspend"));
-            if (request.getParameter("suspend2") != null)
-                suspend2_for = Integer.parseInt(request.getParameter("suspend2"));
-            if (request.getParameter("resume") != null)
-                resume_after = Integer.parseInt(request.getParameter("resume"));
-            if (request.getParameter("resume2") != null)
-                resume2_after = Integer.parseInt(request.getParameter("resume2"));
-            if (request.getParameter("complete") != null)
-                complete_after = Integer.parseInt(request.getParameter("complete"));
-            if (request.getParameter("complete2") != null)
-                complete2_after = Integer.parseInt(request.getParameter("complete2"));
-            if (request.getParameter("undispatch") != null)
-                undispatch = Boolean.parseBoolean(request.getParameter("undispatch"));
+            if (request.getParameter("read") != null) {
+				read_before = Integer.parseInt(request.getParameter("read"));
+			}
+            if (request.getParameter("sleep") != null) {
+				sleep_for = Integer.parseInt(request.getParameter("sleep"));
+			}
+            if (request.getParameter("suspend") != null) {
+				suspend_for = Integer.parseInt(request.getParameter("suspend"));
+			}
+            if (request.getParameter("suspend2") != null) {
+				suspend2_for = Integer.parseInt(request.getParameter("suspend2"));
+			}
+            if (request.getParameter("resume") != null) {
+				resume_after = Integer.parseInt(request.getParameter("resume"));
+			}
+            if (request.getParameter("resume2") != null) {
+				resume2_after = Integer.parseInt(request.getParameter("resume2"));
+			}
+            if (request.getParameter("complete") != null) {
+				complete_after = Integer.parseInt(request.getParameter("complete"));
+			}
+            if (request.getParameter("complete2") != null) {
+				complete2_after = Integer.parseInt(request.getParameter("complete2"));
+			}
+            if (request.getParameter("undispatch") != null) {
+				undispatch = Boolean.parseBoolean(request.getParameter("undispatch"));
+			}
 
             if (continuation.isInitial())
             {
@@ -453,14 +458,16 @@ public class ContinuationsTest
                 {
                     InputStream in = request.getInputStream();
                     int b = in.read();
-                    while (b != -1)
-                        b = in.read();
+                    while (b != -1) {
+						b = in.read();
+					}
                 }
 
                 if (suspend_for >= 0)
                 {
-                    if (suspend_for > 0)
-                        continuation.setTimeout(suspend_for);
+                    if (suspend_for > 0) {
+						continuation.setTimeout(suspend_for);
+					}
                     continuation.addContinuationListener(listener);
                     history.add("suspend");
                     continuation.suspend(response);
@@ -542,8 +549,9 @@ public class ContinuationsTest
                 {
                     request.setAttribute("2nd", "cycle");
 
-                    if (suspend2_for > 0)
-                        continuation.setTimeout(suspend2_for);
+                    if (suspend2_for > 0) {
+						continuation.setTimeout(suspend2_for);
+					}
 
                     history.add("suspend");
                     continuation.suspend(response);

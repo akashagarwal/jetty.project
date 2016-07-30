@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.fcgi.generator;
 
@@ -72,8 +67,9 @@ public class ClientGeneratorTest
         // times with the right arguments, and so onHeaders().
         final int[] primes = new int[]{2, 3, 5, 7, 11};
         int value = 1;
-        for (int prime : primes)
-            value *= prime;
+        for (int prime : primes) {
+			value *= prime;
+		}
 
         final AtomicInteger params = new AtomicInteger(1);
         ServerParser parser = new ServerParser(new ServerParser.Listener.Adapter()
@@ -125,8 +121,9 @@ public class ClientGeneratorTest
         for (ByteBuffer buffer : result.getByteBuffers())
         {
             buffer.flip();
-            while (buffer.hasRemaining())
-                parser.parse(ByteBuffer.wrap(new byte[]{buffer.get()}));
+            while (buffer.hasRemaining()) {
+				parser.parse(ByteBuffer.wrap(new byte[]{buffer.get()}));
+			}
             Assert.assertFalse(buffer.hasRemaining());
         }
 
@@ -183,8 +180,9 @@ public class ClientGeneratorTest
         for (ByteBuffer buffer : result.getByteBuffers())
         {
             buffer.flip();
-            while (buffer.hasRemaining())
-                parser.parse(ByteBuffer.wrap(new byte[]{buffer.get()}));
+            while (buffer.hasRemaining()) {
+				parser.parse(ByteBuffer.wrap(new byte[]{buffer.get()}));
+			}
             Assert.assertFalse(buffer.hasRemaining());
         }
     }

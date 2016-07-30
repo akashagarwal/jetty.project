@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http2.parser;
 
@@ -47,10 +42,11 @@ public class DataBodyParser extends BodyParser
     @Override
     protected void emptyBody(ByteBuffer buffer)
     {
-        if (isPadding())
-            connectionFailure(buffer, ErrorCode.PROTOCOL_ERROR.code, "invalid_data_frame");
-        else
-            onData(BufferUtil.EMPTY_BUFFER, false, 0);
+        if (isPadding()) {
+			connectionFailure(buffer, ErrorCode.PROTOCOL_ERROR.code, "invalid_data_frame");
+		} else {
+			onData(BufferUtil.EMPTY_BUFFER, false, 0);
+		}
     }
 
     @Override
@@ -64,8 +60,9 @@ public class DataBodyParser extends BodyParser
                 case PREPARE:
                 {
                     // SPEC: wrong streamId is treated as connection error.
-                    if (getStreamId() == 0)
-                        return connectionFailure(buffer, ErrorCode.PROTOCOL_ERROR.code, "invalid_data_frame");
+                    if (getStreamId() == 0) {
+						return connectionFailure(buffer, ErrorCode.PROTOCOL_ERROR.code, "invalid_data_frame");
+					}
 
                     length = getBodyLength();
                     state = isPadding() ? State.PADDING_LENGTH : State.DATA;
@@ -79,8 +76,9 @@ public class DataBodyParser extends BodyParser
                     length -= paddingLength;
                     state = State.DATA;
                     loop = length == 0;
-                    if (length < 0)
-                        return connectionFailure(buffer, ErrorCode.FRAME_SIZE_ERROR.code, "invalid_data_frame_padding");
+                    if (length < 0) {
+						return connectionFailure(buffer, ErrorCode.FRAME_SIZE_ERROR.code, "invalid_data_frame_padding");
+					}
                     break;
                 }
                 case DATA:

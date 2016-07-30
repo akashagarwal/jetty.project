@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util;
 
@@ -51,7 +46,7 @@ public class TypeUtil
     public static final int CR = '\015';
     public static final int LF = '\012';
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     private static final HashMap<String, Class<?>> name2Class=new HashMap<>();
     static
     {
@@ -99,7 +94,7 @@ public class TypeUtil
         name2Class.put("java.lang.String",java.lang.String.class);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     private static final HashMap<Class<?>, String> class2Name=new HashMap<>();
     static
     {
@@ -126,7 +121,7 @@ public class TypeUtil
         class2Name.put(java.lang.String.class,"java.lang.String");
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     private static final HashMap<Class<?>, Method> class2Value=new HashMap<>();
     static
     {
@@ -180,9 +175,10 @@ public class TypeUtil
      */
     public static <T> List<T> asList(T[] a)
     {
-        if (a==null)
-            return Collections.emptyList();
-        return Arrays.asList(a);
+        if (a!=null) {
+			return Arrays.asList(a);
+		}
+        return Collections.emptyList();
     }
 
     /* ------------------------------------------------------------ */
@@ -215,16 +211,19 @@ public class TypeUtil
     {
         try
         {
-            if (type.equals(java.lang.String.class))
-                return value;
+            if (type.equals(java.lang.String.class)) {
+				return value;
+			}
 
             Method m = class2Value.get(type);
-            if (m!=null)
-                return m.invoke(null, value);
+            if (m!=null) {
+				return m.invoke(null, value);
+			}
 
             if (type.equals(java.lang.Character.TYPE) ||
-                type.equals(java.lang.Character.class))
-                return value.charAt(0);
+                type.equals(java.lang.Character.class)) {
+				return value.charAt(0);
+			}
 
             Constructor<?> c = type.getConstructor(java.lang.String.class);
             return c.newInstance(value);
@@ -235,8 +234,9 @@ public class TypeUtil
         }
         catch (InvocationTargetException x)
         {
-            if (x.getTargetException() instanceof Error)
-                throw (Error)x.getTargetException();
+            if (x.getTargetException() instanceof Error) {
+				throw (Error)x.getTargetException();
+			}
             LOG.ignore(x);
         }
         return null;
@@ -268,16 +268,18 @@ public class TypeUtil
     {
         int value=0;
 
-        if (length<0)
-            length=s.length()-offset;
+        if (length<0) {
+			length=s.length()-offset;
+		}
 
         for (int i=0;i<length;i++)
         {
             char c=s.charAt(offset+i);
 
             int digit=convertHexDigit((int)c);
-            if (digit<0 || digit>=base)
-                throw new NumberFormatException(s.substring(offset,offset+length));
+            if (digit<0 || digit>=base) {
+				throw new NumberFormatException(s.substring(offset,offset+length));
+			}
             value=value*base+digit;
         }
         return value;
@@ -298,8 +300,9 @@ public class TypeUtil
     {
         int value=0;
 
-        if (length<0)
-            length=b.length-offset;
+        if (length<0) {
+			length=b.length-offset;
+		}
 
         for (int i=0;i<length;i++)
         {
@@ -309,26 +312,29 @@ public class TypeUtil
             if (digit<0 || digit>=base || digit>=10)
             {
                 digit=10+c-'A';
-                if (digit<10 || digit>=base)
-                    digit=10+c-'a';
+                if (digit<10 || digit>=base) {
+					digit=10+c-'a';
+				}
             }
-            if (digit<0 || digit>=base)
-                throw new NumberFormatException(new String(b,offset,length));
+            if (digit<0 || digit>=base) {
+				throw new NumberFormatException(new String(b,offset,length));
+			}
             value=value*base+digit;
         }
         return value;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public static byte[] parseBytes(String s, int base)
     {
         byte[] bytes=new byte[s.length()/2];
-        for (int i=0;i<s.length();i+=2)
-            bytes[i/2]=(byte)TypeUtil.parseInt(s,i,2,base);
+        for (int i=0;i<s.length();i+=2) {
+			bytes[i/2]=(byte)TypeUtil.parseInt(s,i,2,base);
+		}
         return bytes;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public static String toString(byte[] bytes, int base)
     {
         StringBuilder buf = new StringBuilder();
@@ -336,12 +342,14 @@ public class TypeUtil
         {
             int bi=0xff&b;
             int c='0'+(bi/base)%base;
-            if (c>'9')
-                c= 'a'+(c-'0'-10);
+            if (c>'9') {
+				c= 'a'+(c-'0'-10);
+			}
             buf.append((char)c);
             c='0'+bi%base;
-            if (c>'9')
-                c= 'a'+(c-'0'-10);
+            if (c>'9') {
+				c= 'a'+(c-'0'-10);
+			}
             buf.append((char)c);
         }
         return buf.toString();
@@ -354,9 +362,10 @@ public class TypeUtil
      */
     public static byte convertHexDigit( byte c )
     {
-        byte b = (byte)((c & 0x1f) + ((c >> 6) * 0x19) - 0x10);
-        if (b<0 || b>15)
-            throw new NumberFormatException("!hex "+c);
+        byte b = (byte)((c & 0x1f) + (c >> 6) * 0x19 - 0x10);
+        if (b<0 || b>15) {
+			throw new NumberFormatException("!hex "+c);
+		}
         return b;
     }
     
@@ -367,9 +376,10 @@ public class TypeUtil
      */
     public static int convertHexDigit( char c )
     {
-        int d= ((c & 0x1f) + ((c >> 6) * 0x19) - 0x10);
-        if (d<0 || d>15)
-            throw new NumberFormatException("!hex "+c);
+        int d= (c & 0x1f) + (c >> 6) * 0x19 - 0x10;
+        if (d<0 || d>15) {
+			throw new NumberFormatException("!hex "+c);
+		}
         return d;
     }
     
@@ -380,13 +390,14 @@ public class TypeUtil
      */
     public static int convertHexDigit( int c )
     {
-        int d= ((c & 0x1f) + ((c >> 6) * 0x19) - 0x10);
-        if (d<0 || d>15)
-            throw new NumberFormatException("!hex "+c);
+        int d= (c & 0x1f) + (c >> 6) * 0x19 - 0x10;
+        if (d<0 || d>15) {
+			throw new NumberFormatException("!hex "+c);
+		}
         return d;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public static void toHex(byte b,Appendable buf)
     {
         try
@@ -402,7 +413,7 @@ public class TypeUtil
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public static void toHex(int value,Appendable buf) throws IOException
     {
         int d=0xf&((0xF0000000&value)>>28);
@@ -426,26 +437,26 @@ public class TypeUtil
     }
     
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public static void toHex(long value,Appendable buf) throws IOException
     {
         toHex((int)(value>>32),buf);
         toHex((int)value,buf);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public static String toHexString(byte b)
     {
         return toHexString(new byte[]{b}, 0, 1);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public static String toHexString(byte[] b)
     {
         return toHexString(b, 0, b.length);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public static String toHexString(byte[] b,int offset,int length)
     {
         StringBuilder buf = new StringBuilder();
@@ -453,22 +464,25 @@ public class TypeUtil
         {
             int bi=0xff&b[i];
             int c='0'+(bi/16)%16;
-            if (c>'9')
-                c= 'A'+(c-'0'-10);
+            if (c>'9') {
+				c= 'A'+(c-'0'-10);
+			}
             buf.append((char)c);
             c='0'+bi%16;
-            if (c>'9')
-                c= 'a'+(c-'0'-10);
+            if (c>'9') {
+				c= 'a'+(c-'0'-10);
+			}
             buf.append((char)c);
         }
         return buf.toString();
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public static byte[] fromHexString(String s)
     {
-        if (s.length()%2!=0)
-            throw new IllegalArgumentException(s);
+        if (s.length()%2!=0) {
+			throw new IllegalArgumentException(s);
+		}
         byte[] array = new byte[s.length()/2];
         for (int i=0;i<array.length;i++)
         {
@@ -509,14 +523,18 @@ public class TypeUtil
         // Lets just try all methods for now
         for (Method method : oClass.getMethods())
         {
-            if (!method.getName().equals(methodName))
-                continue;            
-            if (method.getParameterTypes().length != arg.length)
-                continue;
-            if (Modifier.isStatic(method.getModifiers()) != (obj == null))
-                continue;
-            if ((obj == null) && method.getDeclaringClass() != oClass)
-                continue;
+            if (!method.getName().equals(methodName)) {
+				continue;
+			}            
+            if (method.getParameterTypes().length != arg.length) {
+				continue;
+			}
+            if (Modifier.isStatic(method.getModifiers()) != (obj == null)) {
+				continue;
+			}
+            if (obj == null && method.getDeclaringClass() != oClass) {
+				continue;
+			}
 
             try
             {
@@ -533,19 +551,25 @@ public class TypeUtil
         
         for (Method method : oClass.getMethods())
         {
-            if (!method.getName().equals(methodName))
-                continue;            
-            if (method.getParameterTypes().length != arg.length+1)
-                continue;
-            if (!method.getParameterTypes()[arg.length].isArray())
-                continue;
-            if (Modifier.isStatic(method.getModifiers()) != (obj == null))
-                continue;
-            if ((obj == null) && method.getDeclaringClass() != oClass)
-                continue;
+            if (!method.getName().equals(methodName)) {
+				continue;
+			}            
+            if (method.getParameterTypes().length != arg.length+1) {
+				continue;
+			}
+            if (!method.getParameterTypes()[arg.length].isArray()) {
+				continue;
+			}
+            if (Modifier.isStatic(method.getModifiers()) != (obj == null)) {
+				continue;
+			}
+            if (obj == null && method.getDeclaringClass() != oClass) {
+				continue;
+			}
 
-            if (args_with_opts==null)
-                args_with_opts=ArrayUtil.addToArray(arg,new Object[]{},Object.class);
+            if (args_with_opts==null) {
+				args_with_opts=ArrayUtil.addToArray(arg,new Object[]{},Object.class);
+			}
             try
             {
                 return method.invoke(obj, args_with_opts);
@@ -569,11 +593,13 @@ public class TypeUtil
             if (arguments == null)
             {
                 // null arguments in .newInstance() is allowed
-                if (constructor.getParameterTypes().length != 0)
-                    continue;
+                if (constructor.getParameterTypes().length != 0) {
+					continue;
+				}
             }
-            else if (constructor.getParameterTypes().length != arguments.length)
-                continue;
+            else if (constructor.getParameterTypes().length != arguments.length) {
+				continue;
+			}
 
             try
             {
@@ -597,11 +623,13 @@ public class TypeUtil
             if (arguments == null)
             {
                 // null arguments in .newInstance() is allowed
-                if (constructor.getParameterTypes().length != 0)
-                    continue;
+                if (constructor.getParameterTypes().length != 0) {
+					continue;
+				}
             }
-            else if (constructor.getParameterTypes().length != arguments.length)
-                continue;
+            else if (constructor.getParameterTypes().length != arguments.length) {
+				continue;
+			}
 
             try
             {
@@ -609,14 +637,16 @@ public class TypeUtil
                 
                 if (arguments == null || arguments.length == 0)
                 {
-                    if (LOG.isDebugEnabled())
-                        LOG.debug("Constructor has no arguments");
+                    if (LOG.isDebugEnabled()) {
+						LOG.debug("Constructor has no arguments");
+					}
                     return constructor.newInstance(arguments);
                 }
                 else if (parameterAnnotations == null || parameterAnnotations.length == 0)
                 {
-                    if (LOG.isDebugEnabled())
-                        LOG.debug("Constructor has no parameter annotations");
+                    if (LOG.isDebugEnabled()) {
+						LOG.debug("Constructor has no parameter annotations");
+					}
                     return constructor.newInstance(arguments);
                 }
                 else
@@ -634,23 +664,22 @@ public class TypeUtil
                                
                                if (namedArgMap.containsKey(param.value()))
                                {
-                                   if (LOG.isDebugEnabled())
-                                       LOG.debug("placing named {} in position {}", param.value(), count);
+                                   if (LOG.isDebugEnabled()) {
+									LOG.debug("placing named {} in position {}", param.value(), count);
+								}
                                    swizzled[count] = namedArgMap.get(param.value());
                                }
                                else
                                {
-                                   if (LOG.isDebugEnabled())
-                                       LOG.debug("placing {} in position {}", arguments[count], count);
+                                   if (LOG.isDebugEnabled()) {
+									LOG.debug("placing {} in position {}", arguments[count], count);
+								}
                                    swizzled[count] = arguments[count];
                                }
                                ++count;
-                           }
-                           else
-                           {
-                               if (LOG.isDebugEnabled())
-                                   LOG.debug("passing on annotation {}", annotation);
-                           }
+                           } else if (LOG.isDebugEnabled()) {
+							LOG.debug("passing on annotation {}", annotation);
+						}
                        }
                    }
                    
@@ -673,10 +702,12 @@ public class TypeUtil
      */
     public static boolean isTrue(Object o)
     {
-        if (o==null)
-            return false;
-        if (o instanceof Boolean)
-            return ((Boolean)o).booleanValue();
+        if (o==null) {
+			return false;
+		}
+        if (o instanceof Boolean) {
+			return ((Boolean)o).booleanValue();
+		}
         return Boolean.parseBoolean(o.toString());
     }
 
@@ -687,10 +718,12 @@ public class TypeUtil
      */
     public static boolean isFalse(Object o)
     {
-        if (o==null)
-            return false;
-        if (o instanceof Boolean)
-            return !((Boolean)o).booleanValue();
+        if (o==null) {
+			return false;
+		}
+        if (o instanceof Boolean) {
+			return !((Boolean)o).booleanValue();
+		}
         return "false".equalsIgnoreCase(o.toString());
     }
 }

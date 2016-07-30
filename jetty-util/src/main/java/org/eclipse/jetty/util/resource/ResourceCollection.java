@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util.resource;
 
@@ -71,21 +66,24 @@ public class ResourceCollection extends Resource
         List<Resource> list = new ArrayList<Resource>();
         for (Resource r : resources)
         {
-            if (r==null)
-                continue;
+            if (r==null) {
+				continue;
+			}
             if (r instanceof ResourceCollection)
             {
-                for (Resource r2 : ((ResourceCollection)r).getResources())
-                    list.add(r2);
-            }
-            else
-                list.add(r);
+                for (Resource r2 : ((ResourceCollection)r).getResources()) {
+					list.add(r2);
+				}
+            } else {
+				list.add(r);
+			}
         }
         _resources = list.toArray(new Resource[list.size()]);
         for(Resource r : _resources)
         {
-            if(!r.exists() || !r.isDirectory())
-                throw new IllegalArgumentException(r + " is not an existing directory.");
+            if(!r.exists() || !r.isDirectory()) {
+				throw new IllegalArgumentException(r + " is not an existing directory.");
+			}
         }
     }
     
@@ -104,8 +102,9 @@ public class ResourceCollection extends Resource
             for(int i=0; i<resources.length; i++)
             {
                 _resources[i] = Resource.newResource(resources[i]);
-                if(!_resources[i].exists() || !_resources[i].isDirectory())
-                    throw new IllegalArgumentException(_resources[i] + " is not an existing directory.");
+                if(!_resources[i].exists() || !_resources[i].isDirectory()) {
+					throw new IllegalArgumentException(_resources[i] + " is not an existing directory.");
+				}
             }
         }
         catch(IllegalArgumentException e)
@@ -176,10 +175,11 @@ public class ResourceCollection extends Resource
             while(tokenizer.hasMoreTokens())
             {
                 Resource resource = Resource.newResource(tokenizer.nextToken().trim());
-                if(!resource.exists() || !resource.isDirectory())
-                    LOG.warn(" !exist "+resource);
-                else
-                    resources.add(resource);
+                if(!resource.exists() || !resource.isDirectory()) {
+					LOG.warn(" !exist "+resource);
+				} else {
+					resources.add(resource);
+				}
             }
         }
         catch(Exception e)
@@ -198,14 +198,17 @@ public class ResourceCollection extends Resource
     @Override
     public Resource addPath(String path) throws IOException, MalformedURLException
     {
-        if(_resources==null)
-            throw new IllegalStateException("*resources* not set.");
+        if(_resources==null) {
+			throw new IllegalStateException("*resources* not set.");
+		}
         
-        if(path==null)
-            throw new MalformedURLException();
+        if(path==null) {
+			throw new MalformedURLException();
+		}
         
-        if(path.length()==0 || URIUtil.SLASH.equals(path))
-            return this;
+        if(path.length()==0 || URIUtil.SLASH.equals(path)) {
+			return this;
+		}
         
         Resource resource=null;
         ArrayList<Resource> resources = null;
@@ -215,8 +218,9 @@ public class ResourceCollection extends Resource
             resource = _resources[i].addPath(path);  
             if (resource.exists())
             {
-                if (resource.isDirectory())
-                    break;       
+                if (resource.isDirectory()) {
+					break;
+				}       
                 return resource;
             }
         }  
@@ -226,8 +230,9 @@ public class ResourceCollection extends Resource
             Resource r = _resources[i].addPath(path); 
             if (r.exists() && r.isDirectory())
             {
-                if (resources==null)
-                    resources = new ArrayList<Resource>();
+                if (resources==null) {
+					resources = new ArrayList<Resource>();
+				}
                     
                 if (resource!=null)
                 {
@@ -239,10 +244,12 @@ public class ResourceCollection extends Resource
             }
         }
 
-        if (resource!=null)
-            return resource;
-        if (resources!=null)
-            return new ResourceCollection(resources.toArray(new Resource[resources.size()]));
+        if (resource!=null) {
+			return resource;
+		}
+        if (resources!=null) {
+			return new ResourceCollection(resources.toArray(new Resource[resources.size()]));
+		}
         return null;
     }
     
@@ -263,8 +270,9 @@ public class ResourceCollection extends Resource
             resource = _resources[i].addPath(path);  
             if (resource.exists())
             {
-                if (resource.isDirectory())
-                    break;
+                if (resource.isDirectory()) {
+					break;
+				}
                
                 return resource;
             }
@@ -284,137 +292,150 @@ public class ResourceCollection extends Resource
             }
         }
         
-        if (resource!=null)
-            return resource;
-        if (resources!=null)
-            return resources;
-        return null;
+        if (resource!=null) {
+			return resource;
+		}
+        return resources;
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public boolean delete() throws SecurityException
     {
         throw new UnsupportedOperationException();
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public boolean exists()
     {
-        if(_resources==null)
-            throw new IllegalStateException("*resources* not set.");
+        if(_resources==null) {
+			throw new IllegalStateException("*resources* not set.");
+		}
         
         return true;
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public File getFile() throws IOException
     {
-        if(_resources==null)
-            throw new IllegalStateException("*resources* not set.");
+        if(_resources==null) {
+			throw new IllegalStateException("*resources* not set.");
+		}
         
         for(Resource r : _resources)
         {
             File f = r.getFile();
-            if(f!=null)
-                return f;
+            if(f!=null) {
+				return f;
+			}
         }
         return null;
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public InputStream getInputStream() throws IOException
     {
-        if(_resources==null)
-            throw new IllegalStateException("*resources* not set.");
+        if(_resources==null) {
+			throw new IllegalStateException("*resources* not set.");
+		}
         
         for(Resource r : _resources)
         {
             InputStream is = r.getInputStream();
-            if(is!=null)
-                return is;
+            if(is!=null) {
+				return is;
+			}
         }
         return null;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override 
     public ReadableByteChannel getReadableByteChannel() throws IOException
     {
-        if(_resources==null)
-            throw new IllegalStateException("*resources* not set.");
+        if(_resources==null) {
+			throw new IllegalStateException("*resources* not set.");
+		}
         
         for(Resource r : _resources)
         {
             ReadableByteChannel channel = r.getReadableByteChannel();
-            if(channel!=null)
-                return channel;
+            if(channel!=null) {
+				return channel;
+			}
         }
         return null;
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public String getName()
     {
-        if(_resources==null)
-            throw new IllegalStateException("*resources* not set.");
+        if(_resources==null) {
+			throw new IllegalStateException("*resources* not set.");
+		}
         
         for(Resource r : _resources)
         {
             String name = r.getName();
-            if(name!=null)
-                return name;
+            if(name!=null) {
+				return name;
+			}
         }
         return null;
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public URL getURL()
     {
-        if(_resources==null)
-            throw new IllegalStateException("*resources* not set.");
+        if(_resources==null) {
+			throw new IllegalStateException("*resources* not set.");
+		}
         
         for(Resource r : _resources)
         {
             URL url = r.getURL();
-            if(url!=null)
-                return url;
+            if(url!=null) {
+				return url;
+			}
         }
         return null;
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public boolean isDirectory()
     {
-        if(_resources==null)
-            throw new IllegalStateException("*resources* not set.");
+        if(_resources==null) {
+			throw new IllegalStateException("*resources* not set.");
+		}
         
         return true;
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public long lastModified()
     {
-        if(_resources==null)
-            throw new IllegalStateException("*resources* not set.");
+        if(_resources==null) {
+			throw new IllegalStateException("*resources* not set.");
+		}
         
         for(Resource r : _resources)
         {
             long lm = r.lastModified();
-            if (lm!=-1)
-                return lm;
+            if (lm!=-1) {
+				return lm;
+			}
         }
         return -1;
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public long length()
     {
@@ -428,45 +449,50 @@ public class ResourceCollection extends Resource
     @Override
     public String[] list()
     {
-        if(_resources==null)
-            throw new IllegalStateException("*resources* not set.");
+        if(_resources==null) {
+			throw new IllegalStateException("*resources* not set.");
+		}
         
         HashSet<String> set = new HashSet<String>();
         for(Resource r : _resources)
         {
-            for(String s : r.list())
-                set.add(s);
+            for(String s : r.list()) {
+				set.add(s);
+			}
         }
         String[] result=set.toArray(new String[set.size()]);
         Arrays.sort(result);
         return result;
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void close()
     {
-        if(_resources==null)
-            throw new IllegalStateException("*resources* not set.");
+        if(_resources==null) {
+			throw new IllegalStateException("*resources* not set.");
+		}
         
-        for(Resource r : _resources)
-            r.close();
+        for(Resource r : _resources) {
+			r.close();
+		}
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public boolean renameTo(Resource dest) throws SecurityException
     {
         throw new UnsupportedOperationException();
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void copyTo(File destination)
         throws IOException
     {
-        for (int r=_resources.length;r-->0;)
-            _resources[r].copyTo(destination);
+        for (int r=_resources.length;r-->0;) {
+			_resources[r].copyTo(destination);
+		}
     }
     
     /* ------------------------------------------------------------ */
@@ -476,13 +502,14 @@ public class ResourceCollection extends Resource
     @Override
     public String toString()
     {
-        if(_resources==null)
-            return "[]";
+        if(_resources!=null) {
+			return String.valueOf(Arrays.asList(_resources));
+		}
         
-        return String.valueOf(Arrays.asList(_resources));
+        return "[]";
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public boolean isContainedIn(Resource r) throws MalformedURLException
     {

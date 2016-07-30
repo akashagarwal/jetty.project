@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util.component;
 
@@ -36,7 +31,7 @@ import org.junit.Test;
 @Ignore
 public class LifeCycleListenerNestedTest
 {
-    // Set this true to use test-specific workaround.
+    /** Set this true to use test-specific workaround. */
     private final boolean WORKAROUND = false;
     
     public static class Foo extends ContainerLifeCycle
@@ -67,27 +62,31 @@ public class LifeCycleListenerNestedTest
         {
             final int prime = 31;
             int result = 1;
-            result = prime * result + ((id == null) ? 0 : id.hashCode());
-            return result;
+            return prime * result + ((id == null) ? 0 : id.hashCode());
         }
 
         @Override
         public boolean equals(Object obj)
         {
-            if (this == obj)
-                return true;
-            if (obj == null)
-                return false;
-            if (getClass() != obj.getClass())
-                return false;
+            if (this == obj) {
+				return true;
+			}
+            if (obj == null) {
+				return false;
+			}
+            if (getClass() != obj.getClass()) {
+				return false;
+			}
             Bar other = (Bar)obj;
             if (id == null)
             {
-                if (other.id != null)
-                    return false;
+                if (other.id != null) {
+					return false;
+				}
             }
-            else if (!id.equals(other.id))
-                return false;
+            else if (!id.equals(other.id)) {
+				return false;
+			}
             return true;
         }
 
@@ -186,9 +185,6 @@ public class LifeCycleListenerNestedTest
 
         CapturingListener listener = new CapturingListener();
         foo.addLifeCycleListener(listener);
-        if(WORKAROUND)
-            foo.addEventListener(listener);
-
         try
         {
             foo.start();
@@ -217,9 +213,6 @@ public class LifeCycleListenerNestedTest
 
         CapturingListener listener = new CapturingListener();
         foo.addLifeCycleListener(listener);
-        if(WORKAROUND)
-            foo.addEventListener(listener);
-
         Bar bara = new Bar("a");
         Bar barb = new Bar("b");
         foo.addBean(bara);
@@ -255,9 +248,6 @@ public class LifeCycleListenerNestedTest
 
         CapturingListener listener = new CapturingListener();
         foo.addLifeCycleListener(listener);
-        if(WORKAROUND)
-            foo.addEventListener(listener);
-
         try
         {
             foo.start();

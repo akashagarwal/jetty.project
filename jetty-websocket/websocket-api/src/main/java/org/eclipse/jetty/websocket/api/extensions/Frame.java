@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.api.extensions;
 
@@ -60,12 +55,12 @@ public interface Frame
 
         public boolean isControl()
         {
-            return (opcode >= CLOSE.getOpCode());
+            return opcode >= CLOSE.getOpCode();
         }
 
         public boolean isData()
         {
-            return (opcode == TEXT.getOpCode()) | (opcode == BINARY.getOpCode());
+            return opcode == TEXT.getOpCode() | opcode == BINARY.getOpCode();
         }
 
         public boolean isContinuation()
@@ -76,28 +71,28 @@ public interface Frame
         @Override
         public String toString()
         {
-            return this.name();
+            return name();
         }
     }
 
-    public byte[] getMask();
+    byte[] getMask();
 
-    public byte getOpCode();
+    byte getOpCode();
 
-    public ByteBuffer getPayload();
+    ByteBuffer getPayload();
 
     /**
-     * The original payload length ({@link ByteBuffer#remaining()})
+     * The original payload length ({@link ByteBuffer#remaining()}).
      * 
      * @return the original payload length ({@link ByteBuffer#remaining()})
      */
-    public int getPayloadLength();
+    int getPayloadLength();
 
-    public Type getType();
+    Type getType();
 
-    public boolean hasPayload();
+    boolean hasPayload();
 
-    public boolean isFin();
+    boolean isFin();
 
     /**
      * Same as {@link #isFin()}
@@ -105,15 +100,14 @@ public interface Frame
      * @return true if final frame.
      * @deprecated use {@link #isFin()} instead
      */
-    @Deprecated
-    public boolean isLast();
+    @Deprecated boolean isLast();
 
-    public boolean isMasked();
+    boolean isMasked();
 
-    public boolean isRsv1();
+    boolean isRsv1();
 
-    public boolean isRsv2();
+    boolean isRsv2();
 
-    public boolean isRsv3();
+    boolean isRsv3();
 
 }

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.client;
 
@@ -78,15 +73,17 @@ public class LeakTrackingConnectionPool extends ConnectionPool
     @Override
     protected void acquired(Connection connection)
     {
-        if (!leakDetector.acquired(connection))
-            LOG.info("Connection {}@{} not tracked", connection, leakDetector.id(connection));
+        if (!leakDetector.acquired(connection)) {
+			LOG.info("Connection {}@{} not tracked", connection, leakDetector.id(connection));
+		}
     }
 
     @Override
     protected void released(Connection connection)
     {
-        if (!leakDetector.released(connection))
-            LOG.info("Connection {}@{} released but not acquired", connection, leakDetector.id(connection));
+        if (!leakDetector.released(connection)) {
+			LOG.info("Connection {}@{} released but not acquired", connection, leakDetector.id(connection));
+		}
     }
 
     protected void leaked(LeakDetector.LeakInfo leakInfo)

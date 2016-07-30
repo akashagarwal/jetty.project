@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.webapp;
 
@@ -132,8 +127,9 @@ public class WebAppClassLoaderTest
             {
                 results.add(loader);
                 byte[] b = new byte[classfileBuffer.length];
-                for (int i=0;i<classfileBuffer.length;i++)
-                    b[i]=(byte)(classfileBuffer[i]^0xff);
+                for (int i=0;i<classfileBuffer.length;i++) {
+					b[i]=(byte)(classfileBuffer[i]^0xff);
+				}
                 return b;
             }
         });
@@ -144,8 +140,9 @@ public class WebAppClassLoaderTest
             {
                 results.add(className);
                 byte[] b = new byte[classfileBuffer.length];
-                for (int i=0;i<classfileBuffer.length;i++)
-                    b[i]=(byte)(classfileBuffer[i]^0xff);
+                for (int i=0;i<classfileBuffer.length;i++) {
+					b[i]=(byte)(classfileBuffer[i]^0xff);
+				}
                 return b;
             }
         });
@@ -247,7 +244,7 @@ public class WebAppClassLoaderTest
         URL webappWebInfLibAcme = new URI("jar:" + testWebappDir.resolve("WEB-INF/lib/acme.jar").toUri().toASCIIString() + "!/org/acme/resource.txt").toURL();
         URL webappWebInfClasses = testWebappDir.resolve("WEB-INF/classes/org/acme/resource.txt").toUri().toURL();
         // (from parent classloader)
-        URL targetTestClasses = this.getClass().getClassLoader().getResource("org/acme/resource.txt");
+        URL targetTestClasses = getClass().getClassLoader().getResource("org/acme/resource.txt");
 
         _context.setParentLoaderPriority(false);
         dump(_context);

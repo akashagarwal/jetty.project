@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.servlets;
 
@@ -60,8 +55,9 @@ public class ConcatServletTest
     @After
     public void destroy() throws Exception
     {
-        if (server != null)
-            server.stop();
+        if (server != null) {
+			server.stop();
+		}
     }
 
     @Test
@@ -87,21 +83,19 @@ public class ConcatServletTest
         String resource1 = "/resource/one.js";
         String resource2 = "/resource/two.js";
         String uri = contextPath + concatPath + "?" + resource1 + "&" + resource2;
-        String request = "" +
-                "GET " + uri + " HTTP/1.1\r\n" +
-                "Host: localhost\r\n" +
-                "Connection: close\r\n" +
-                "\r\n";
+        String request = "GET " + uri + " HTTP/1.1\r\n" + "Host: localhost\r\n" + "Connection: close\r\n" + "\r\n";
         String response = connector.getResponses(request);
         try (BufferedReader reader = new BufferedReader(new StringReader(response)))
         {
             while (true)
             {
                 String line = reader.readLine();
-                if (line == null)
-                    Assert.fail();
-                if (line.trim().isEmpty())
-                    break;
+                if (line == null) {
+					Assert.fail();
+				}
+                if (line.trim().isEmpty()) {
+					break;
+				}
             }
             Assert.assertEquals(resource1, reader.readLine());
             Assert.assertEquals(resource2, reader.readLine());
@@ -135,41 +129,25 @@ public class ConcatServletTest
         // Having a path segment and then ".." triggers a special case
         // that the ConcatServlet must detect and avoid.
         String uri = contextPath + concatPath + "?/trick/../WEB-INF/one.js";
-        String request = "" +
-                "GET " + uri + " HTTP/1.1\r\n" +
-                "Host: localhost\r\n" +
-                "Connection: close\r\n" +
-                "\r\n";
+        String request = "GET " + uri + " HTTP/1.1\r\n" + "Host: localhost\r\n" + "Connection: close\r\n" + "\r\n";
         String response = connector.getResponses(request);
         Assert.assertTrue(response.startsWith("HTTP/1.1 404 "));
 
         // Make sure ConcatServlet behaves well if it's case insensitive.
         uri = contextPath + concatPath + "?/trick/../web-inf/one.js";
-        request = "" +
-                "GET " + uri + " HTTP/1.1\r\n" +
-                "Host: localhost\r\n" +
-                "Connection: close\r\n" +
-                "\r\n";
+        request = "GET " + uri + " HTTP/1.1\r\n" + "Host: localhost\r\n" + "Connection: close\r\n" + "\r\n";
         response = connector.getResponses(request);
         Assert.assertTrue(response.startsWith("HTTP/1.1 404 "));
 
         // Make sure ConcatServlet behaves well if encoded.
         uri = contextPath + concatPath + "?/trick/..%2FWEB-INF%2Fone.js";
-        request = "" +
-                "GET " + uri + " HTTP/1.1\r\n" +
-                "Host: localhost\r\n" +
-                "Connection: close\r\n" +
-                "\r\n";
+        request = "GET " + uri + " HTTP/1.1\r\n" + "Host: localhost\r\n" + "Connection: close\r\n" + "\r\n";
         response = connector.getResponses(request);
         Assert.assertTrue(response.startsWith("HTTP/1.1 404 "));
 
         // Make sure ConcatServlet cannot see file system files.
         uri = contextPath + concatPath + "?/trick/../../" + directoryFile.getName();
-        request = "" +
-                "GET " + uri + " HTTP/1.1\r\n" +
-                "Host: localhost\r\n" +
-                "Connection: close\r\n" +
-                "\r\n";
+        request = "GET " + uri + " HTTP/1.1\r\n" + "Host: localhost\r\n" + "Connection: close\r\n" + "\r\n";
         response = connector.getResponses(request);
         Assert.assertTrue(response.startsWith("HTTP/1.1 404 "));
     }

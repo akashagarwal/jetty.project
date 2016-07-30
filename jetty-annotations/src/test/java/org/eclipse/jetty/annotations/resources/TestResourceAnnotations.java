@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.annotations.resources;
 
@@ -88,7 +83,6 @@ public class TestResourceAnnotations
         // java:comp/env/resA
         // java:comp/env/org.eclipse.jetty.annotations.resources.ResourceB/f
         // java:comp/env/org.eclipse.jetty.annotations.resources.ResourceA/n
-        //
         assertEquals(objB, env.lookup("myf"));
         assertEquals(objA, env.lookup("mye"));
         assertEquals(objA, env.lookup("resA"));
@@ -116,10 +110,11 @@ public class TestResourceAnnotations
         int methodCount = 0;
         for (Injection x : resAInjections)
         {
-            if (x.isField())
-                fieldCount++;
-            else
-                methodCount++;
+            if (x.isField()) {
+				fieldCount++;
+			} else {
+				methodCount++;
+			}
         }
         assertEquals(4, fieldCount);
         assertEquals(3, methodCount);

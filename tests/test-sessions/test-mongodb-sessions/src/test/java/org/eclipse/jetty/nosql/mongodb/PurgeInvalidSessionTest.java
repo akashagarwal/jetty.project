@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.nosql.mongodb;
 
@@ -47,15 +42,13 @@ import com.mongodb.MongoException;
  * PurgeInvalidSessionTest
  *
  *
- *
+ *.
  */
 public class PurgeInvalidSessionTest
 {
     public MongoTestServer createServer(int port, int max, int scavenge)
     {
-        MongoTestServer server =  new MongoTestServer(port,max,scavenge);
-       
-        return server;
+        return new MongoTestServer(port,max,scavenge);
     }
     
     
@@ -182,7 +175,7 @@ public class PurgeInvalidSessionTest
                 Thread.sleep(purgeInvalidAge * 2);
 
                 // validate that we have the right number of sessions before we purge
-                assertEquals("Expected to find right number of sessions before purge", sessionCountAtTestStart + (purgeLimit * 2), sessionManager.getSessionStoreCount());
+                assertEquals("Expected to find right number of sessions before purge", sessionCountAtTestStart + purgeLimit * 2, sessionManager.getSessionStoreCount());
 
                 // run our purge we should still have items in the DB
                 idManager.purge();
@@ -228,7 +221,7 @@ public class PurgeInvalidSessionTest
                 HttpSession existingSession = request.getSession(false);
                 assertNotNull(existingSession);
                 String id = existingSession.getId();
-                id = (id.indexOf(".") > 0?id.substring(0, id.indexOf(".")):id);
+                id = id.indexOf(".") > 0?id.substring(0, id.indexOf(".")):id;
                 DBObject dbSession = _sessions.findOne(new BasicDBObject("id",id)); 
                 assertNotNull(dbSession);
                 
@@ -239,14 +232,14 @@ public class PurgeInvalidSessionTest
                 assertNotNull(dbSession);
                 assertTrue(dbSession.containsField(MongoSessionManager.__INVALIDATED));
                 assertTrue(dbSession.containsField(MongoSessionManager.__VALID));
-                assertTrue(dbSession.get(MongoSessionManager.__VALID).equals(false));
+                assertTrue(false.equals(dbSession.get(MongoSessionManager.__VALID)));
             }
             else if ("test".equals(action))
             {
                 String id = request.getRequestedSessionId();
                 assertNotNull(id);
        
-                id = (id.indexOf(".") > 0?id.substring(0, id.indexOf(".")):id);
+                id = id.indexOf(".") > 0?id.substring(0, id.indexOf(".")):id;
   
                 HttpSession existingSession = request.getSession(false);
                 assertTrue(existingSession == null);

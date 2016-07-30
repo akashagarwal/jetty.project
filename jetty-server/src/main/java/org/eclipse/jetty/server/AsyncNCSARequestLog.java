@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 
@@ -29,7 +24,7 @@ import org.eclipse.jetty.util.log.Logger;
 
 /* ------------------------------------------------------------ */
 /**
- * An asynchronously writing NCSA Request Log
+ * An asynchronously writing NCSA Request Log.
  */
 public class AsyncNCSARequestLog extends NCSARequestLog
 {
@@ -56,8 +51,9 @@ public class AsyncNCSARequestLog extends NCSARequestLog
     public AsyncNCSARequestLog(String filename,BlockingQueue<String> queue)
     {
         super(filename);
-        if (queue==null)
-            queue=new BlockingArrayQueue<>(1024);
+        if (queue==null) {
+			queue=new BlockingArrayQueue<>(1024);
+		}
         _queue=queue;
     }
 
@@ -76,14 +72,16 @@ public class AsyncNCSARequestLog extends NCSARequestLog
                 try
                 {
                     String log = _queue.poll(10,TimeUnit.SECONDS);
-                    if (log!=null)
-                        AsyncNCSARequestLog.super.write(log);
+                    if (log!=null) {
+						AsyncNCSARequestLog.super.write(log);
+					}
 
                     while(!_queue.isEmpty())
                     {
                         log=_queue.poll();
-                        if (log!=null)
-                            AsyncNCSARequestLog.super.write(log);
+                        if (log!=null) {
+							AsyncNCSARequestLog.super.write(log);
+						}
                     }
                 }
                 catch (IOException e)
@@ -120,8 +118,9 @@ public class AsyncNCSARequestLog extends NCSARequestLog
     {
         if (!_queue.offer(log))
         {
-            if (_warnedFull)
-                LOG.warn("Log Queue overflow");
+            if (_warnedFull) {
+				LOG.warn("Log Queue overflow");
+			}
             _warnedFull=true;
         }
     }

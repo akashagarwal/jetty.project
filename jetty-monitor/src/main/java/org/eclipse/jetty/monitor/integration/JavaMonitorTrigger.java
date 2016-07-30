@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.monitor.integration;
 
@@ -34,7 +29,7 @@ public class JavaMonitorTrigger <TYPE extends Comparable<TYPE>>
     private final boolean _dynamic;
     private int _count;
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public JavaMonitorTrigger(ObjectName nameObject, String attributeName, String id, String name, boolean dynamic)
         throws IllegalArgumentException
     {   
@@ -45,10 +40,7 @@ public class JavaMonitorTrigger <TYPE extends Comparable<TYPE>>
         _dynamic = dynamic;
     }
     
-    /* ------------------------------------------------------------ */
-    /**
-     * @see org.eclipse.jetty.monitor.triggers.AttrEventTrigger#match(java.lang.Comparable)
-     */
+    /** ------------------------------------------------------------. */
     @Override
     public boolean match(Comparable<TYPE> value)
     {

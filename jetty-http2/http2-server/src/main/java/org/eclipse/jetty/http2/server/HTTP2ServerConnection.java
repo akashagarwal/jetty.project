@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http2.server;
 
@@ -83,8 +78,9 @@ public class HTTP2ServerConnection extends HTTP2Connection implements Connection
     @Override
     public void onUpgradeTo(ByteBuffer buffer)
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("HTTP2 onUpgradeTo {} {}", this, BufferUtil.toDetailString(buffer));
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("HTTP2 onUpgradeTo {} {}", this, BufferUtil.toDetailString(buffer));
+		}
         setInputBuffer(buffer);
     }
 
@@ -92,8 +88,9 @@ public class HTTP2ServerConnection extends HTTP2Connection implements Connection
     public void onOpen()
     {
         notifyAccept(getSession());
-        for (Frame frame : upgradeFrames)
-            getSession().onFrame(frame);
+        for (Frame frame : upgradeFrames) {
+			getSession().onFrame(frame);
+		}
         super.onOpen();
     }
 
@@ -111,32 +108,38 @@ public class HTTP2ServerConnection extends HTTP2Connection implements Connection
 
     public void onNewStream(Connector connector, IStream stream, HeadersFrame frame)
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("Processing {} on {}", frame, stream);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Processing {} on {}", frame, stream);
+		}
         HttpChannelOverHTTP2 channel = provideHttpChannel(connector, stream);
         Runnable task = channel.onRequest(frame);
-        if (task != null)
-            offerTask(task, false);
+        if (task != null) {
+			offerTask(task, false);
+		}
     }
 
     public void onData(IStream stream, DataFrame frame, Callback callback)
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("Processing {} on {}", frame, stream);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Processing {} on {}", frame, stream);
+		}
         HttpChannelOverHTTP2 channel = (HttpChannelOverHTTP2)stream.getAttribute(IStream.CHANNEL_ATTRIBUTE);
         Runnable task = channel.requestContent(frame, callback);
-        if (task != null)
-            offerTask(task, false);
+        if (task != null) {
+			offerTask(task, false);
+		}
     }
 
     public void push(Connector connector, IStream stream, MetaData.Request request)
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("Processing push {} on {}", request, stream);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Processing push {} on {}", request, stream);
+		}
         HttpChannelOverHTTP2 channel = provideHttpChannel(connector, stream);
         Runnable task = channel.onPushRequest(request);
-        if (task != null)
-            offerTask(task, true);
+        if (task != null) {
+			offerTask(task, true);
+		}
     }
 
     private HttpChannelOverHTTP2 provideHttpChannel(Connector connector, IStream stream)
@@ -145,16 +148,18 @@ public class HTTP2ServerConnection extends HTTP2Connection implements Connection
         if (channel != null)
         {
             channel.getHttpTransport().setStream(stream);
-            if (LOG.isDebugEnabled())
-                LOG.debug("Recycling channel {} for {}", channel, this);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Recycling channel {} for {}", channel, this);
+			}
         }
         else
         {
             HttpTransportOverHTTP2 transport = new HttpTransportOverHTTP2(connector, this);
             transport.setStream(stream);
             channel = new ServerHttpChannelOverHTTP2(connector, httpConfig, getEndPoint(), transport);
-            if (LOG.isDebugEnabled())
-                LOG.debug("Creating channel {} for {}", channel, this);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Creating channel {} for {}", channel, this);
+			}
         }
         stream.setAttribute(IStream.CHANNEL_ATTRIBUTE, channel);
         return channel;
@@ -169,13 +174,15 @@ public class HTTP2ServerConnection extends HTTP2Connection implements Connection
         else
         {
             HttpField settingsField = request.getFields().getField(HttpHeader.HTTP2_SETTINGS);
-            if (settingsField == null)
-                throw new BadMessageException("Missing " + HttpHeader.HTTP2_SETTINGS + " header");
+            if (settingsField == null) {
+				throw new BadMessageException("Missing " + HttpHeader.HTTP2_SETTINGS + " header");
+			}
             String value = settingsField.getValue();
             final byte[] settings = B64Code.decodeRFC4648URL(value == null ? "" : value);
 
-            if (LOG.isDebugEnabled())
-                LOG.debug("{} settings {}",this,TypeUtil.toHexString(settings));
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("{} settings {}",this,TypeUtil.toHexString(settings));
+			}
 
             SettingsFrame settingsFrame = SettingsBodyParser.parseBody(BufferUtil.toBuffer(settings));
             if (settingsFrame == null)
@@ -213,16 +220,18 @@ public class HTTP2ServerConnection extends HTTP2Connection implements Connection
         public void onCompleted()
         {
             super.onCompleted();
-            if (!getStream().isReset())
-                recycle();
+            if (!getStream().isReset()) {
+				recycle();
+			}
         }
 
         @Override
         public void reject()
         {
             IStream stream = getStream();
-            if (LOG.isDebugEnabled())
-                LOG.debug("HTTP2 Request #{}/{} rejected", stream.getId(), Integer.toHexString(stream.getSession().hashCode()));
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("HTTP2 Request #{}/{} rejected", stream.getId(), Integer.toHexString(stream.getSession().hashCode()));
+			}
             stream.reset(new ResetFrame(stream.getId(), ErrorCode.ENHANCE_YOUR_CALM_ERROR.code), Callback.NOOP);
             // Consume the existing queued data frames to
             // avoid stalling the session flow control.

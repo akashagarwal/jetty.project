@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util.thread;
 
@@ -43,7 +38,7 @@ public class ExecutorThreadPool extends AbstractLifeCycle implements ThreadPool,
     private static final Logger LOG = Log.getLogger(ExecutorThreadPool.class);
     private final ExecutorService _executor;
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public ExecutorThreadPool(ExecutorService executor)
     {
         _executor = executor;
@@ -79,7 +74,7 @@ public class ExecutorThreadPool extends AbstractLifeCycle implements ThreadPool,
     /* ------------------------------------------------------------ */
     /**
      * Wraps an {@link ThreadPoolExecutor} using
-     * an unbounded {@link LinkedBlockingQueue} is used for the jobs queue;
+     * an unbounded {@link LinkedBlockingQueue} is used for the jobs queue;.
      * @param corePoolSize must be equal to maximumPoolSize
      * @param maximumPoolSize the maximum number of threads to allow in the pool
      * @param keepAliveTime the max time a thread can remain idle, in milliseconds
@@ -106,7 +101,7 @@ public class ExecutorThreadPool extends AbstractLifeCycle implements ThreadPool,
     /* ------------------------------------------------------------ */
 
     /**
-     * Wraps an {@link ThreadPoolExecutor}
+     * Wraps an {@link ThreadPoolExecutor}.
      * @param corePoolSize the number of threads to keep in the pool, even if they are idle
      * @param maximumPoolSize the maximum number of threads to allow in the pool
      * @param keepAliveTime the max time a thread can remain idle
@@ -119,14 +114,14 @@ public class ExecutorThreadPool extends AbstractLifeCycle implements ThreadPool,
     }
 
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void execute(Runnable job)
     {
         _executor.execute(job);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public boolean dispatch(Runnable job)
     {
         try
@@ -141,7 +136,7 @@ public class ExecutorThreadPool extends AbstractLifeCycle implements ThreadPool,
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public int getIdleThreads()
     {
         if (_executor instanceof ThreadPoolExecutor)
@@ -152,7 +147,7 @@ public class ExecutorThreadPool extends AbstractLifeCycle implements ThreadPool,
         return -1;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public int getThreads()
     {
         if (_executor instanceof ThreadPoolExecutor)
@@ -163,7 +158,7 @@ public class ExecutorThreadPool extends AbstractLifeCycle implements ThreadPool,
         return -1;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public boolean isLowOnThreads()
     {
         if (_executor instanceof ThreadPoolExecutor)
@@ -176,13 +171,13 @@ public class ExecutorThreadPool extends AbstractLifeCycle implements ThreadPool,
         return false;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void join() throws InterruptedException
     {
         _executor.awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     protected void doStop() throws Exception
     {

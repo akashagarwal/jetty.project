@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util.resource;
 
@@ -82,8 +77,9 @@ public class ResourceCollectionTest
         });
 
         File dest = File.createTempFile("copyto",null);
-        if (dest.exists())
-            dest.delete();
+        if (dest.exists()) {
+			dest.delete();
+		}
         dest.mkdir();
         dest.deleteOnExit();
         rc.copyTo(dest);
@@ -106,8 +102,9 @@ public class ResourceCollectionTest
         String line = null;
         try (BufferedReader br = new BufferedReader(new InputStreamReader(r.addPath(path).getURL().openStream())))
         {
-            while((line=br.readLine())!=null)
-                buffer.append(line);
+            while((line=br.readLine())!=null) {
+				buffer.append(line);
+			}
         }
         return buffer.toString();
     }

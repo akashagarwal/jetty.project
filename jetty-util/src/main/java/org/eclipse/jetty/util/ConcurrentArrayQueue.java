@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util;
 
@@ -124,28 +119,24 @@ public class ConcurrentArrayQueue<T> extends AbstractQueue<T>
                     currentTailBlock = nextTailBlock;
                 }
                 tail = currentTailBlock.tail();
-            }
-            else
-            {
-                if (currentTailBlock.peek(tail) == null)
-                {
-                    if (currentTailBlock.store(tail, item))
-                    {
-                        // Item stored
-                        break;
-                    }
-                    else
-                    {
-                        // Concurrent store, try next index
-                        ++tail;
-                    }
-                }
-                else
-                {
-                    // Not free, try next index
-                    ++tail;
-                }
-            }
+            } else if (currentTailBlock.peek(tail) == null)
+			{
+			    if (currentTailBlock.store(tail, item))
+			    {
+			        // Item stored
+			        break;
+			    }
+			    else
+			    {
+			        // Concurrent store, try next index
+			        ++tail;
+			    }
+			}
+			else
+			{
+			    // Not free, try next index
+			    ++tail;
+			}
         }
 
         updateTailBlock(initialTailBlock, currentTailBlock);
@@ -323,36 +314,28 @@ public class ConcurrentArrayQueue<T> extends AbstractQueue<T>
                 {
                     // Removed, try next index
                     ++head;
-                }
-                else
-                {
-                    if (element == null)
-                    {
-                        // Not found
-                        break;
-                    }
-                    else
-                    {
-                        if (element.equals(o))
-                        {
-                            // Found
-                            if (currentHeadBlock.remove(head, o, false))
-                            {
-                                result = true;
-                                break;
-                            }
-                            else
-                            {
-                                ++head;
-                            }
-                        }
-                        else
-                        {
-                            // Not the one we're looking for
-                            ++head;
-                        }
-                    }
-                }
+                } else if (element == null)
+				{
+				    // Not found
+				    break;
+				} else if (element.equals(o))
+				{
+				    // Found
+				    if (currentHeadBlock.remove(head, o, false))
+				    {
+				        result = true;
+				        break;
+				    }
+				    else
+				    {
+				        ++head;
+				    }
+				}
+				else
+				{
+				    // Not the one we're looking for
+				    ++head;
+				}
             }
         }
 
@@ -394,16 +377,19 @@ public class ConcurrentArrayQueue<T> extends AbstractQueue<T>
             {
                 while (true)
                 {
-                    if (blockIndex == blocks.size())
-                        return false;
+                    if (blockIndex == blocks.size()) {
+						return false;
+					}
 
                     Object element = blocks.get(blockIndex)[index];
 
-                    if (element == null)
-                        return false;
+                    if (element == null) {
+						return false;
+					}
 
-                    if (element != REMOVED_ELEMENT)
-                        return true;
+                    if (element != REMOVED_ELEMENT) {
+						return true;
+					}
 
                     advance();
                 }
@@ -414,20 +400,20 @@ public class ConcurrentArrayQueue<T> extends AbstractQueue<T>
             {
                 while (true)
                 {
-                    if (blockIndex == blocks.size())
-                        throw new NoSuchElementException();
+                    if (blockIndex == blocks.size()) {
+						throw new NoSuchElementException();
+					}
 
                     Object element = blocks.get(blockIndex)[index];
 
-                    if (element == null)
-                        throw new NoSuchElementException();
+                    if (element == null) {
+						throw new NoSuchElementException();
+					}
 
                     advance();
 
                     if (element != REMOVED_ELEMENT) {
-                        @SuppressWarnings("unchecked")
-                        T e = (T)element;
-                        return e;
+                        return (T)element;
                     }
                 }
             }
@@ -533,16 +519,18 @@ public class ConcurrentArrayQueue<T> extends AbstractQueue<T>
         public boolean store(int index, E item)
         {
             boolean result = elements.compareAndSet(index, null, item);
-            if (result)
-                indexes.incrementAndGet(tailOffset);
+            if (result) {
+				indexes.incrementAndGet(tailOffset);
+			}
             return result;
         }
 
         public boolean remove(int index, Object item, boolean updateHead)
         {
             boolean result = elements.compareAndSet(index, item, REMOVED_ELEMENT);
-            if (result && updateHead)
-                indexes.incrementAndGet(headOffset);
+            if (result && updateHead) {
+				indexes.incrementAndGet(headOffset);
+			}
             return result;
         }
 
@@ -569,8 +557,9 @@ public class ConcurrentArrayQueue<T> extends AbstractQueue<T>
         public Object[] arrayCopy()
         {
             Object[] result = new Object[elements.length()];
-            for (int i = 0; i < result.length; ++i)
-                result[i] = elements.get(i);
+            for (int i = 0; i < result.length; ++i) {
+				result[i] = elements.get(i);
+			}
             return result;
         }
     }

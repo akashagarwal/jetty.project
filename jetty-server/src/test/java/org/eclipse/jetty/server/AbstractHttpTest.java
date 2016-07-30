@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 
@@ -49,7 +44,7 @@ import org.junit.Rule;
 
 public abstract class AbstractHttpTest
 {
-    private final static Set<String> __noBodyCodes = new HashSet<>(Arrays.asList(new String[]{"100","101","102","204","304"}));
+    private static final Set<String> __noBodyCodes = new HashSet<>(Arrays.asList(new String[]{"100","101","102","204","304"}));
     
     @Rule
     public TestTracker tracker = new TestTracker();
@@ -102,9 +97,10 @@ public abstract class AbstractHttpTest
             if ("HTTP/1.1".equals(httpVersion) 
                     && response.getHeaders().get("content-length") == null 
                     && response.getHeaders().get("transfer-encoding") == null
-                    && !__noBodyCodes.contains(response.getCode()))
-                assertThat("If HTTP/1.1 response doesn't contain transfer-encoding or content-length headers, " +
+                    && !__noBodyCodes.contains(response.getCode())) {
+				assertThat("If HTTP/1.1 response doesn't contain transfer-encoding or content-length headers, " +
                         "it should contain connection:close", response.getHeaders().get("connection"), is("close"));
+			}
             return response;
         }
     }
@@ -140,8 +136,9 @@ public abstract class AbstractHttpTest
         @Override
         public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
         {
-            if (throwException)
-                throw new TestCommitException();
+            if (throwException) {
+				throw new TestCommitException();
+			}
         }
 
         protected void markFailed(Throwable x)

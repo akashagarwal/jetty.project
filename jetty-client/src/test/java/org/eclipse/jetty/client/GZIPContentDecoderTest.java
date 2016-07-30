@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.client;
 
@@ -55,8 +50,9 @@ public class GZIPContentDecoderTest
     public void testStreamBigBlockOneByteAtATime() throws Exception
     {
         String data = "0123456789ABCDEF";
-        for (int i = 0; i < 10; ++i)
-            data += data;
+        for (int i = 0; i < 10; ++i) {
+			data += data;
+		}
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         GZIPOutputStream output = new GZIPOutputStream(baos);
         output.write(data.getBytes(StandardCharsets.UTF_8));
@@ -66,8 +62,9 @@ public class GZIPContentDecoderTest
         baos = new ByteArrayOutputStream();
         GZIPInputStream input = new GZIPInputStream(new ByteArrayInputStream(bytes), 1);
         int read;
-        while ((read = input.read()) >= 0)
-            baos.write(read);
+        while ((read = input.read()) >= 0) {
+			baos.write(read);
+		}
         assertEquals(data, new String(baos.toByteArray(), StandardCharsets.UTF_8));
     }
 
@@ -211,8 +208,9 @@ public class GZIPContentDecoderTest
     public void testBigBlock() throws Exception
     {
         String data = "0123456789ABCDEF";
-        for (int i = 0; i < 10; ++i)
-            data += data;
+        for (int i = 0; i < 10; ++i) {
+			data += data;
+		}
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         GZIPOutputStream output = new GZIPOutputStream(baos);
         output.write(data.getBytes(StandardCharsets.UTF_8));
@@ -234,8 +232,9 @@ public class GZIPContentDecoderTest
     public void testBigBlockOneByteAtATime() throws Exception
     {
         String data = "0123456789ABCDEF";
-        for (int i = 0; i < 10; ++i)
-            data += data;
+        for (int i = 0; i < 10; ++i) {
+			data += data;
+		}
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         GZIPOutputStream output = new GZIPOutputStream(baos);
         output.write(data.getBytes(StandardCharsets.UTF_8));
@@ -248,8 +247,9 @@ public class GZIPContentDecoderTest
         while (buffer.hasRemaining())
         {
             ByteBuffer decoded = decoder.decode(ByteBuffer.wrap(new byte[]{buffer.get()}));
-            if (decoded.hasRemaining())
-                result += StandardCharsets.UTF_8.decode(decoded).toString();
+            if (decoded.hasRemaining()) {
+				result += StandardCharsets.UTF_8.decode(decoded).toString();
+			}
         }
         assertEquals(data, result);
         assertTrue(decoder.isFinished());
@@ -259,8 +259,9 @@ public class GZIPContentDecoderTest
     public void testBigBlockWithExtraBytes() throws Exception
     {
         String data1 = "0123456789ABCDEF";
-        for (int i = 0; i < 10; ++i)
-            data1 += data1;
+        for (int i = 0; i < 10; ++i) {
+			data1 += data1;
+		}
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         GZIPOutputStream output = new GZIPOutputStream(baos);
         output.write(data1.getBytes(StandardCharsets.UTF_8));
@@ -280,10 +281,12 @@ public class GZIPContentDecoderTest
         while (buffer.hasRemaining())
         {
             ByteBuffer decoded = decoder.decode(buffer);
-            if (decoded.hasRemaining())
-                result += StandardCharsets.UTF_8.decode(decoded).toString();
-            if (decoder.isFinished())
-                break;
+            if (decoded.hasRemaining()) {
+				result += StandardCharsets.UTF_8.decode(decoded).toString();
+			}
+            if (decoder.isFinished()) {
+				break;
+			}
         }
         assertEquals(data1, result);
         assertTrue(buffer.hasRemaining());

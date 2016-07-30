@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util;
 
@@ -44,7 +39,7 @@ public class LazyListTest
     public static final boolean STRICT = false;
 
     /**
-     * Tests for {@link LazyList#add(Object, Object)}
+     * Tests for {@link LazyList#add(Object, Object)}.
      */
     @Test
     public void testAddObjectObject_NullInput_NullItem()
@@ -56,7 +51,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#add(Object, Object)}
+     * Tests for {@link LazyList#add(Object, Object)}.
      */
     @Test
     public void testAddObjectObject_NullInput_NonListItem()
@@ -64,14 +59,11 @@ public class LazyListTest
         String item = "a";
         Object list = LazyList.add(null, item);
         assertNotNull(list);
-        if(STRICT) {
-            assertTrue(list instanceof List);
-        }
         assertEquals(1,LazyList.size(list));
     }
 
     /**
-     * Tests for {@link LazyList#add(Object, Object)}
+     * Tests for {@link LazyList#add(Object, Object)}.
      */
     @Test
     public void testAddObjectObject_NullInput_LazyListItem()
@@ -90,7 +82,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#add(Object, Object)}
+     * Tests for {@link LazyList#add(Object, Object)}.
      */
     @Test
     public void testAddObjectObject_NonListInput()
@@ -104,7 +96,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#add(Object, Object)}
+     * Tests for {@link LazyList#add(Object, Object)}.
      */
     @Test
     public void testAddObjectObject_LazyListInput()
@@ -123,7 +115,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#add(Object, Object)}
+     * Tests for {@link LazyList#add(Object, Object)}.
      */
     @Test
     public void testAddObjectObject_GenericListInput()
@@ -143,7 +135,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#add(Object, Object)}
+     * Tests for {@link LazyList#add(Object, Object)}.
      */
     @Test
     public void testAddObjectObject_AddNull()
@@ -167,7 +159,7 @@ public class LazyListTest
     }
 
     /**
-     * Test for {@link LazyList#add(Object, int, Object)}
+     * Test for {@link LazyList#add(Object, int, Object)}.
      */
     @Test
     public void testAddObjectIntObject_NullInput_NullItem()
@@ -179,7 +171,7 @@ public class LazyListTest
     }
 
     /**
-     * Test for {@link LazyList#add(Object, int, Object)}
+     * Test for {@link LazyList#add(Object, int, Object)}.
      */
     @Test
     public void testAddObjectIntObject_NullInput_NonListItem()
@@ -187,14 +179,11 @@ public class LazyListTest
         String item = "a";
         Object list = LazyList.add(null, 0, item);
         assertNotNull(list);
-        if(STRICT) {
-            assertTrue(list instanceof List);
-        }
         assertEquals(1,LazyList.size(list));
     }
 
     /**
-     * Test for {@link LazyList#add(Object, int, Object)}
+     * Test for {@link LazyList#add(Object, int, Object)}.
      */
     @Test
     public void testAddObjectIntObject_NullInput_NonListItem2()
@@ -210,7 +199,7 @@ public class LazyListTest
     }
 
     /**
-     * Test for {@link LazyList#add(Object, int, Object)}
+     * Test for {@link LazyList#add(Object, int, Object)}.
      */
     @Test
     public void testAddObjectIntObject_NullInput_LazyListItem()
@@ -228,7 +217,7 @@ public class LazyListTest
     }
 
     /**
-     * Test for {@link LazyList#add(Object, int, Object)}
+     * Test for {@link LazyList#add(Object, int, Object)}.
      */
     @Test
     public void testAddObjectIntObject_NullInput_GenericListItem()
@@ -243,7 +232,7 @@ public class LazyListTest
     }
 
     /**
-     * Test for {@link LazyList#add(Object, int, Object)}
+     * Test for {@link LazyList#add(Object, int, Object)}.
      */
     @Test
     public void testAddObjectIntObject_NonListInput_NullItem()
@@ -258,7 +247,7 @@ public class LazyListTest
     }
 
     /**
-     * Test for {@link LazyList#add(Object, int, Object)}
+     * Test for {@link LazyList#add(Object, int, Object)}.
      */
     @Test
     public void testAddObjectIntObject_NonListInput_NonListItem()
@@ -274,7 +263,7 @@ public class LazyListTest
     }
 
     /**
-     * Test for {@link LazyList#add(Object, int, Object)}
+     * Test for {@link LazyList#add(Object, int, Object)}.
      */
     @Test
     public void testAddObjectIntObject_LazyListInput()
@@ -413,7 +402,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#addArray(Object, Object[])}
+     * Tests for {@link LazyList#addArray(Object, Object[])}.
      */
     @Test
     public void testAddArray_NullInput_NullArray()
@@ -424,21 +413,17 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#addArray(Object, Object[])}
+     * Tests for {@link LazyList#addArray(Object, Object[])}.
      */
     @Test
     public void testAddArray_NullInput_EmptyArray()
     {
         String arr[] = new String[0];
         Object list = LazyList.addArray(null,arr);
-        if(STRICT) {
-            assertNotNull(list);
-            assertTrue(list instanceof List);
-        }
     }
 
     /**
-     * Tests for {@link LazyList#addArray(Object, Object[])}
+     * Tests for {@link LazyList#addArray(Object, Object[])}.
      */
     @Test
     public void testAddArray_NullInput_SingleArray()
@@ -446,15 +431,12 @@ public class LazyListTest
         String arr[] = new String[] { "a" };
         Object list = LazyList.addArray(null,arr);
         assertNotNull(list);
-        if(STRICT) {
-            assertTrue(list instanceof List);
-        }
         assertEquals(1, LazyList.size(list));
         assertEquals("a", LazyList.get(list,0));
     }
 
     /**
-     * Tests for {@link LazyList#addArray(Object, Object[])}
+     * Tests for {@link LazyList#addArray(Object, Object[])}.
      */
     @Test
     public void testAddArray_NullInput_Array()
@@ -470,7 +452,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#addArray(Object, Object[])}
+     * Tests for {@link LazyList#addArray(Object, Object[])}.
      */
     @Test
     public void testAddArray_NonListInput_NullArray()
@@ -479,15 +461,12 @@ public class LazyListTest
         String arr[] = null;
         Object list = LazyList.addArray(input,arr);
         assertNotNull(list);
-        if(STRICT) {
-            assertTrue(list instanceof List);
-        }
         assertEquals(1, LazyList.size(list));
         assertEquals("z", LazyList.get(list,0));
     }
 
     /**
-     * Tests for {@link LazyList#addArray(Object, Object[])}
+     * Tests for {@link LazyList#addArray(Object, Object[])}.
      */
     @Test
     public void testAddArray_NonListInput_EmptyArray()
@@ -496,15 +475,12 @@ public class LazyListTest
         String arr[] = new String[0];
         Object list = LazyList.addArray(input,arr);
         assertNotNull(list);
-        if(STRICT) {
-            assertTrue(list instanceof List);
-        }
         assertEquals(1, LazyList.size(list));
         assertEquals("z", LazyList.get(list,0));
     }
 
     /**
-     * Tests for {@link LazyList#addArray(Object, Object[])}
+     * Tests for {@link LazyList#addArray(Object, Object[])}.
      */
     @Test
     public void testAddArray_NonListInput_SingleArray()
@@ -520,7 +496,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#addArray(Object, Object[])}
+     * Tests for {@link LazyList#addArray(Object, Object[])}.
      */
     @Test
     public void testAddArray_NonListInput_Array()
@@ -538,7 +514,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#addArray(Object, Object[])}
+     * Tests for {@link LazyList#addArray(Object, Object[])}.
      */
     @Test
     public void testAddArray_LazyListInput_NullArray()
@@ -558,7 +534,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#addArray(Object, Object[])}
+     * Tests for {@link LazyList#addArray(Object, Object[])}.
      */
     @Test
     public void testAddArray_LazyListInput_EmptyArray()
@@ -578,7 +554,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#addArray(Object, Object[])}
+     * Tests for {@link LazyList#addArray(Object, Object[])}.
      */
     @Test
     public void testAddArray_LazyListInput_SingleArray()
@@ -599,7 +575,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#addArray(Object, Object[])}
+     * Tests for {@link LazyList#addArray(Object, Object[])}.
      */
     @Test
     public void testAddArray_LazyListInput_Array()
@@ -622,7 +598,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#addArray(Object, Object[])}
+     * Tests for {@link LazyList#addArray(Object, Object[])}.
      */
     @Test
     public void testAddArray_GenericListInput_NullArray()
@@ -643,7 +619,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#addArray(Object, Object[])}
+     * Tests for {@link LazyList#addArray(Object, Object[])}.
      */
     @Test
     public void testAddArray_GenericListInput_EmptyArray()
@@ -664,7 +640,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#addArray(Object, Object[])}
+     * Tests for {@link LazyList#addArray(Object, Object[])}.
      */
     @Test
     public void testAddArray_GenericListInput_SingleArray()
@@ -686,7 +662,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#addArray(Object, Object[])}
+     * Tests for {@link LazyList#addArray(Object, Object[])}.
      */
     @Test
     public void testAddArray_GenericListInput_Array()
@@ -710,7 +686,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#ensureSize(Object, int)}
+     * Tests for {@link LazyList#ensureSize(Object, int)}.
      */
     @Test
     public void testEnsureSize_NullInput()
@@ -722,7 +698,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#ensureSize(Object, int)}
+     * Tests for {@link LazyList#ensureSize(Object, int)}.
      */
     @Test
     public void testEnsureSize_NonListInput()
@@ -737,7 +713,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#ensureSize(Object, int)}
+     * Tests for {@link LazyList#ensureSize(Object, int)}.
      */
     @Test
     public void testEnsureSize_LazyListInput()
@@ -755,7 +731,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#ensureSize(Object, int)}
+     * Tests for {@link LazyList#ensureSize(Object, int)}.
      */
     @Test
     public void testEnsureSize_GenericListInput()
@@ -774,7 +750,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#ensureSize(Object, int)}
+     * Tests for {@link LazyList#ensureSize(Object, int)}.
      */
     @Test
     public void testEnsureSize_GenericListInput_LinkedList()
@@ -797,7 +773,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#ensureSize(Object, int)}
+     * Tests for {@link LazyList#ensureSize(Object, int)}.
      */
     @Test
     public void testEnsureSize_Growth()
@@ -823,7 +799,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#ensureSize(Object, int)}
+     * Tests for {@link LazyList#ensureSize(Object, int)}.
      */
     @Test
     public void testEnsureSize_Growth_LinkedList()
@@ -854,7 +830,7 @@ public class LazyListTest
     }
 
     /**
-     * Test for {@link LazyList#remove(Object, Object)}
+     * Test for {@link LazyList#remove(Object, Object)}.
      */
     @Test
     public void testRemoveObjectObject_NullInput()
@@ -868,7 +844,7 @@ public class LazyListTest
     }
 
     /**
-     * Test for {@link LazyList#remove(Object, Object)}
+     * Test for {@link LazyList#remove(Object, Object)}.
      */
     @Test
     public void testRemoveObjectObject_NonListInput()
@@ -878,17 +854,11 @@ public class LazyListTest
         // Remove null item
         Object list = LazyList.remove(input, null);
         assertNotNull(list);
-        if(STRICT) {
-            assertTrue(list instanceof List);
-        }
         assertEquals(1, LazyList.size(list));
 
         // Remove item that doesn't exist
         list = LazyList.remove(input, "b");
         assertNotNull(list);
-        if(STRICT) {
-            assertTrue(list instanceof List);
-        }
         assertEquals(1, LazyList.size(list));
 
         // Remove item that exists
@@ -899,7 +869,7 @@ public class LazyListTest
     }
 
     /**
-     * Test for {@link LazyList#remove(Object, Object)}
+     * Test for {@link LazyList#remove(Object, Object)}.
      */
     @Test
     public void testRemoveObjectObject_LazyListInput()
@@ -930,7 +900,7 @@ public class LazyListTest
     }
 
     /**
-     * Test for {@link LazyList#remove(Object, Object)}
+     * Test for {@link LazyList#remove(Object, Object)}.
      */
     @Test
     public void testRemoveObjectObject_GenericListInput()
@@ -970,7 +940,7 @@ public class LazyListTest
     }
 
     /**
-     * Test for {@link LazyList#remove(Object, Object)}
+     * Test for {@link LazyList#remove(Object, Object)}.
      */
     @Test
     public void testRemoveObjectObject_LinkedListInput()
@@ -1006,7 +976,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#remove(Object, int)}
+     * Tests for {@link LazyList#remove(Object, int)}.
      */
     @Test
     public void testRemoveObjectInt_NullInput()
@@ -1019,7 +989,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#remove(Object, int)}
+     * Tests for {@link LazyList#remove(Object, int)}.
      */
     @Test
     public void testRemoveObjectInt_NonListInput()
@@ -1029,9 +999,6 @@ public class LazyListTest
         // Invalid index
         Object list = LazyList.remove(input, 1);
         assertNotNull(list);
-        if(STRICT) {
-            assertTrue(list instanceof List);
-        }
         assertEquals(1, LazyList.size(list));
 
         // Valid index
@@ -1042,7 +1009,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#remove(Object, int)}
+     * Tests for {@link LazyList#remove(Object, int)}.
      */
     @Test
     public void testRemoveObjectInt_LazyListInput()
@@ -1052,18 +1019,6 @@ public class LazyListTest
         input = LazyList.add(input, "c");
 
         Object list = null;
-
-        if (STRICT)
-        {
-            // Invalid index
-            // Shouldn't cause a IndexOutOfBoundsException as this is not the
-            // same behavior you experience in testRemoveObjectInt_NonListInput and
-            // testRemoveObjectInt_NullInput when using invalid indexes.
-            list = LazyList.remove(input,5);
-            assertNotNull(list);
-            assertTrue(list instanceof List);
-            assertEquals(3, LazyList.size(list));
-        }
 
         // Valid index
         list = LazyList.remove(input, 1); // remove the 'b'
@@ -1075,7 +1030,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#remove(Object, int)}
+     * Tests for {@link LazyList#remove(Object, int)}.
      */
     @Test
     public void testRemoveObjectInt_GenericListInput()
@@ -1086,18 +1041,6 @@ public class LazyListTest
         input.add("c");
 
         Object list = null;
-
-        if (STRICT)
-        {
-            // Invalid index
-            // Shouldn't cause a IndexOutOfBoundsException as this is not the
-            // same behavior you experience in testRemoveObjectInt_NonListInput and
-            // testRemoveObjectInt_NullInput when using invalid indexes.
-            list = LazyList.remove(input,5);
-            assertNotNull(list);
-            assertTrue(list instanceof List);
-            assertEquals(3, LazyList.size(list));
-        }
 
         // Valid index
         list = LazyList.remove(input, 1); // remove the 'b'
@@ -1114,7 +1057,7 @@ public class LazyListTest
     }
 
     /**
-     * Test for {@link LazyList#getList(Object)}
+     * Test for {@link LazyList#getList(Object)}.
      */
     @Test
     public void testGetListObject_NullInput()
@@ -1128,7 +1071,7 @@ public class LazyListTest
     }
 
     /**
-     * Test for {@link LazyList#getList(Object)}
+     * Test for {@link LazyList#getList(Object)}.
      */
     @Test
     public void testGetListObject_NonListInput()
@@ -1142,7 +1085,7 @@ public class LazyListTest
     }
 
     /**
-     * Test for {@link LazyList#getList(Object)}
+     * Test for {@link LazyList#getList(Object)}.
      */
     @Test
     public void testGetListObject_LazyListInput()
@@ -1161,7 +1104,7 @@ public class LazyListTest
     }
 
     /**
-     * Test for {@link LazyList#getList(Object)}
+     * Test for {@link LazyList#getList(Object)}.
      */
     @Test
     public void testGetListObject_GenericListInput()
@@ -1181,7 +1124,7 @@ public class LazyListTest
     }
 
     /**
-     * Test for {@link LazyList#getList(Object)}
+     * Test for {@link LazyList#getList(Object)}.
      */
     @Test
     public void testGetListObject_LinkedListInput()
@@ -1202,7 +1145,7 @@ public class LazyListTest
 
 
     /**
-     * Test for {@link LazyList#getList(Object)}
+     * Test for {@link LazyList#getList(Object)}.
      */
     @Test
     public void testGetListObject_NullForEmpty()
@@ -1212,7 +1155,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#toStringArray(Object)}
+     * Tests for {@link LazyList#toStringArray(Object)}.
      */
     @Test
     @SuppressWarnings("unchecked")
@@ -1227,7 +1170,7 @@ public class LazyListTest
         ArrayList l=new ArrayList();
         l.add("a");
         l.add(null);
-        l.add(new Integer(2));
+        l.add(Integer.valueOf(2));
         String[] a=LazyList.toStringArray(l);
 
         assertEquals(3,a.length);
@@ -1238,7 +1181,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#toArray(Object, Class)}
+     * Tests for {@link LazyList#toArray(Object, Class)}.
      */
     @Test
     public void testToArray_NullInput_Object() {
@@ -1250,7 +1193,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#toArray(Object, Class)}
+     * Tests for {@link LazyList#toArray(Object, Class)}.
      */
     @Test
     public void testToArray_NullInput_String() {
@@ -1263,7 +1206,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#toArray(Object, Class)}
+     * Tests for {@link LazyList#toArray(Object, Class)}.
      */
     @Test
     public void testToArray_NonListInput() {
@@ -1280,7 +1223,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#toArray(Object, Class)}
+     * Tests for {@link LazyList#toArray(Object, Class)}.
      */
     @Test
     public void testToArray_LazyListInput() {
@@ -1301,7 +1244,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#toArray(Object, Class)}
+     * Tests for {@link LazyList#toArray(Object, Class)}.
      */
     @Test
     public void testToArray_LazyListInput_Primitives() {
@@ -1324,7 +1267,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#toArray(Object, Class)}
+     * Tests for {@link LazyList#toArray(Object, Class)}.
      */
     @Test
     public void testToArray_GenericListInput() {
@@ -1346,7 +1289,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#size(Object)}
+     * Tests for {@link LazyList#size(Object)}.
      */
     @Test
     public void testSize_NullInput()
@@ -1355,7 +1298,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#size(Object)}
+     * Tests for {@link LazyList#size(Object)}.
      */
     @Test
     public void testSize_NonListInput()
@@ -1365,7 +1308,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#size(Object)}
+     * Tests for {@link LazyList#size(Object)}.
      */
     @Test
     public void testSize_LazyListInput()
@@ -1381,7 +1324,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#size(Object)}
+     * Tests for {@link LazyList#size(Object)}.
      */
     @Test
     public void testSize_GenericListInput()
@@ -1401,7 +1344,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for bad input on {@link LazyList#get(Object, int)}
+     * Tests for bad input on {@link LazyList#get(Object, int)}.
      */
     @Test(expected=IndexOutOfBoundsException.class)
     public void testGet_OutOfBounds_NullInput()
@@ -1410,7 +1353,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for bad input on {@link LazyList#get(Object, int)}
+     * Tests for bad input on {@link LazyList#get(Object, int)}.
      */
     @Test(expected=IndexOutOfBoundsException.class)
     public void testGet_OutOfBounds_NonListInput()
@@ -1420,7 +1363,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for bad input on {@link LazyList#get(Object, int)}
+     * Tests for bad input on {@link LazyList#get(Object, int)}.
      */
     @Test(expected=IndexOutOfBoundsException.class)
     public void testGet_OutOfBounds_LazyListInput()
@@ -1430,7 +1373,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for bad input on {@link LazyList#get(Object, int)}
+     * Tests for bad input on {@link LazyList#get(Object, int)}.
      */
     @Test(expected=IndexOutOfBoundsException.class)
     public void testGet_OutOfBounds_GenericListInput()
@@ -1441,7 +1384,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for non-list input on {@link LazyList#get(Object, int)}
+     * Tests for non-list input on {@link LazyList#get(Object, int)}.
      */
     @Test
     public void testGet_NonListInput()
@@ -1451,7 +1394,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for list input on {@link LazyList#get(Object, int)}
+     * Tests for list input on {@link LazyList#get(Object, int)}.
      */
     @Test
     public void testGet_LazyListInput()
@@ -1461,7 +1404,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for list input on {@link LazyList#get(Object, int)}
+     * Tests for list input on {@link LazyList#get(Object, int)}.
      */
     @Test
     public void testGet_GenericListInput()
@@ -1483,7 +1426,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#contains(Object, Object)}
+     * Tests for {@link LazyList#contains(Object, Object)}.
      */
     @Test
     public void testContains_NullInput()
@@ -1492,7 +1435,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#contains(Object, Object)}
+     * Tests for {@link LazyList#contains(Object, Object)}.
      */
     @Test
     public void testContains_NonListInput()
@@ -1503,7 +1446,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#contains(Object, Object)}
+     * Tests for {@link LazyList#contains(Object, Object)}.
      */
     @Test
     public void testContains_LazyListInput()
@@ -1518,7 +1461,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#contains(Object, Object)}
+     * Tests for {@link LazyList#contains(Object, Object)}.
      */
     @Test
     public void testContains_GenericListInput()
@@ -1534,7 +1477,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#clone(Object)}
+     * Tests for {@link LazyList#clone(Object)}.
      */
     @Test
     public void testClone_NullInput()
@@ -1546,7 +1489,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#clone(Object)}
+     * Tests for {@link LazyList#clone(Object)}.
      */
     @Test
     public void testClone_NonListInput()
@@ -1559,7 +1502,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#clone(Object)}
+     * Tests for {@link LazyList#clone(Object)}.
      */
     @Test
     public void testClone_LazyListInput()
@@ -1579,7 +1522,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#clone(Object)}
+     * Tests for {@link LazyList#clone(Object)}.
      */
     @Test
     public void testClone_GenericListInput()
@@ -1602,7 +1545,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#toString(Object)}
+     * Tests for {@link LazyList#toString(Object)}.
      */
     @Test
     public void testToString_NullInput()
@@ -1612,7 +1555,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#toString(Object)}
+     * Tests for {@link LazyList#toString(Object)}.
      */
     @Test
     public void testToString_NonListInput()
@@ -1622,7 +1565,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#toString(Object)}
+     * Tests for {@link LazyList#toString(Object)}.
      */
     @Test
     public void testToString_LazyListInput()
@@ -1639,7 +1582,7 @@ public class LazyListTest
 
 
     /**
-     * Tests for {@link LazyList#toString(Object)}
+     * Tests for {@link LazyList#toString(Object)}.
      */
     @Test
     public void testToString_GenericListInput()
@@ -1656,7 +1599,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#iterator(Object)}
+     * Tests for {@link LazyList#iterator(Object)}.
      */
     @Test
     public void testIterator_NullInput()
@@ -1667,7 +1610,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#iterator(Object)}
+     * Tests for {@link LazyList#iterator(Object)}.
      */
     @Test
     public void testIterator_NonListInput()
@@ -1682,7 +1625,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#iterator(Object)}
+     * Tests for {@link LazyList#iterator(Object)}.
      */
     @Test
     public void testIterator_LazyListInput()
@@ -1701,7 +1644,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#iterator(Object)}
+     * Tests for {@link LazyList#iterator(Object)}.
      */
     @Test
     public void testIterator_GenericListInput()
@@ -1721,7 +1664,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#listIterator(Object)}
+     * Tests for {@link LazyList#listIterator(Object)}.
      */
     @Test
     public void testListIterator_NullInput()
@@ -1733,7 +1676,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#listIterator(Object)}
+     * Tests for {@link LazyList#listIterator(Object)}.
      */
     @Test
     public void testListIterator_NonListInput()
@@ -1750,7 +1693,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#listIterator(Object)}
+     * Tests for {@link LazyList#listIterator(Object)}.
      */
     @Test
     public void testListIterator_LazyListInput()
@@ -1775,7 +1718,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link LazyList#listIterator(Object)}
+     * Tests for {@link LazyList#listIterator(Object)}.
      */
     @Test
     public void testListIterator_GenericListInput()
@@ -1802,7 +1745,7 @@ public class LazyListTest
 
 
     /**
-     * Tests for {@link ArrayUtil#asMutableList(Object[])}
+     * Tests for {@link ArrayUtil#asMutableList(Object[])}.
      */
     @Test
     public void testArray2List_NullInput()
@@ -1816,7 +1759,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link ArrayUtil#asMutableList(Object[])}
+     * Tests for {@link ArrayUtil#asMutableList(Object[])}.
      */
     @Test
     public void testArray2List_EmptyInput()
@@ -1830,7 +1773,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link ArrayUtil#asMutableList(Object[])}
+     * Tests for {@link ArrayUtil#asMutableList(Object[])}.
      */
     @Test
     public void testArray2List_SingleInput()
@@ -1845,7 +1788,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link ArrayUtil#asMutableList(Object[])}
+     * Tests for {@link ArrayUtil#asMutableList(Object[])}.
      */
     @Test
     public void testArray2List_MultiInput()
@@ -1862,7 +1805,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link ArrayUtil#asMutableList(Object[])}
+     * Tests for {@link ArrayUtil#asMutableList(Object[])}.
      */
     @Test
     public void testArray2List_GenericsInput()
@@ -1880,7 +1823,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link ArrayUtil#addToArray(Object[], Object, Class)}
+     * Tests for {@link ArrayUtil#addToArray(Object[], Object, Class)}.
      */
     @Test
     public void testAddToArray_NullInput_NullItem()
@@ -1889,16 +1832,13 @@ public class LazyListTest
 
         Object arr[] = ArrayUtil.addToArray(input,null,Object.class);
         assertNotNull(arr);
-        if(STRICT) {
-            // Adding null item to array should result in nothing added?
-            assertEquals(0, arr.length);
-        } else {
+        {
             assertEquals(1, arr.length);
         }
     }
 
     /**
-     * Tests for {@link ArrayUtil#addToArray(Object[], Object, Class)}
+     * Tests for {@link ArrayUtil#addToArray(Object[], Object, Class)}.
      */
     @Test
     public void testAddToArray_NullNullNull()
@@ -1911,16 +1851,13 @@ public class LazyListTest
 
         Object arr[] = ArrayUtil.addToArray(input,null,null);
         assertNotNull(arr);
-        if(STRICT) {
-            // Adding null item to array should result in nothing added?
-            assertEquals(0, arr.length);
-        } else {
+        {
             assertEquals(1, arr.length);
         }
     }
 
     /**
-     * Tests for {@link ArrayUtil#addToArray(Object[], Object, Class)}
+     * Tests for {@link ArrayUtil#addToArray(Object[], Object, Class)}.
      */
     @Test
     public void testAddToArray_NullInput_SimpleItem()
@@ -1940,7 +1877,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link ArrayUtil#addToArray(Object[], Object, Class)}
+     * Tests for {@link ArrayUtil#addToArray(Object[], Object, Class)}.
      */
     @Test
     public void testAddToArray_EmptyInput_NullItem()
@@ -1949,16 +1886,13 @@ public class LazyListTest
 
         String arr[] = ArrayUtil.addToArray(input,null,Object.class);
         assertNotNull(arr);
-        if(STRICT) {
-            // Adding null item to array should result in nothing added?
-            assertEquals(0, arr.length);
-        } else {
+        {
             assertEquals(1, arr.length);
         }
     }
 
     /**
-     * Tests for {@link ArrayUtil#addToArray(Object[], Object, Class)}
+     * Tests for {@link ArrayUtil#addToArray(Object[], Object, Class)}.
      */
     @Test
     public void testAddToArray_EmptyInput_SimpleItem()
@@ -1972,7 +1906,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link ArrayUtil#addToArray(Object[], Object, Class)}
+     * Tests for {@link ArrayUtil#addToArray(Object[], Object, Class)}.
      */
     @Test
     public void testAddToArray_SingleInput_NullItem()
@@ -1981,10 +1915,7 @@ public class LazyListTest
 
         String arr[] = ArrayUtil.addToArray(input,null,Object.class);
         assertNotNull(arr);
-        if(STRICT) {
-            // Should a null item be added to an array?
-            assertEquals(1, arr.length);
-        } else {
+        {
             assertEquals(2, arr.length);
             assertEquals("z", arr[0]);
             assertEquals(null, arr[1]);
@@ -1992,7 +1923,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link ArrayUtil#addToArray(Object[], Object, Class)}
+     * Tests for {@link ArrayUtil#addToArray(Object[], Object, Class)}.
      */
     @Test
     public void testAddToArray_SingleInput_SimpleItem()
@@ -2007,7 +1938,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link ArrayUtil#removeFromArray(Object[], Object)}
+     * Tests for {@link ArrayUtil#removeFromArray(Object[], Object)}.
      */
     @Test
     public void testRemoveFromArray_NullInput_NullItem() {
@@ -2018,7 +1949,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link ArrayUtil#removeFromArray(Object[], Object)}
+     * Tests for {@link ArrayUtil#removeFromArray(Object[], Object)}.
      */
     @Test
     public void testRemoveFromArray_NullInput_SimpleItem() {
@@ -2029,7 +1960,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link ArrayUtil#removeFromArray(Object[], Object)}
+     * Tests for {@link ArrayUtil#removeFromArray(Object[], Object)}.
      */
     @Test
     public void testRemoveFromArray_EmptyInput_NullItem() {
@@ -2041,7 +1972,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link ArrayUtil#removeFromArray(Object[], Object)}
+     * Tests for {@link ArrayUtil#removeFromArray(Object[], Object)}.
      */
     @Test
     public void testRemoveFromArray_EmptyInput_SimpleItem() {
@@ -2053,7 +1984,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link ArrayUtil#removeFromArray(Object[], Object)}
+     * Tests for {@link ArrayUtil#removeFromArray(Object[], Object)}.
      */
     @Test
     public void testRemoveFromArray_SingleInput() {
@@ -2071,7 +2002,7 @@ public class LazyListTest
     }
 
     /**
-     * Tests for {@link ArrayUtil#removeFromArray(Object[], Object)}
+     * Tests for {@link ArrayUtil#removeFromArray(Object[], Object)}.
      */
     @Test
     public void testRemoveFromArray_MultiInput() {

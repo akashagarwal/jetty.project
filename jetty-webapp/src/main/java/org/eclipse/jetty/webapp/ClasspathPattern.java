@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 
 package org.eclipse.jetty.webapp;
@@ -69,33 +64,33 @@ public class ClasspathPattern extends AbstractList<String>
         }
     }
     
-    final private List<Entry> _entries = new ArrayList<Entry>();
+    private final List<Entry> _entries = new ArrayList<Entry>();
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public ClasspathPattern()
     {
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public ClasspathPattern(String[] patterns)
     {
         setAll(patterns);
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public ClasspathPattern(String pattern)
     {
         add(pattern);
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public String get(int index)
     {
         return _entries.get(index)._pattern;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public String set(int index, String element)
     {
@@ -103,21 +98,21 @@ public class ClasspathPattern extends AbstractList<String>
         return e==null?null:e._pattern;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void add(int index, String element)
     {
         _entries.add(index,new Entry(element));
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Deprecated
     public void addPattern(String element)
     {
         add(element);
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public String remove(int index)
     {
@@ -125,7 +120,7 @@ public class ClasspathPattern extends AbstractList<String>
         return e==null?null:e._pattern;
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public boolean remove(String pattern)
     {
         for (int i=_entries.size();i-->0;)
@@ -139,7 +134,7 @@ public class ClasspathPattern extends AbstractList<String>
         return false;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public int size()
     {
@@ -148,7 +143,7 @@ public class ClasspathPattern extends AbstractList<String>
 
     /* ------------------------------------------------------------ */
     /**
-     * Initialize the matcher by parsing each classpath pattern in an array
+     * Initialize the matcher by parsing each classpath pattern in an array.
      * 
      * @param classes array of classpath patterns
      */
@@ -164,8 +159,9 @@ public class ClasspathPattern extends AbstractList<String>
      */
     private void addAll(String[] classes)
     {
-        if (classes!=null)
-            addAll(Arrays.asList(classes));
+        if (classes!=null) {
+			addAll(Arrays.asList(classes));
+		}
     }
     
     /* ------------------------------------------------------------ */
@@ -185,7 +181,7 @@ public class ClasspathPattern extends AbstractList<String>
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void prependPattern(String pattern)
     {
         add(0,pattern);
@@ -209,15 +205,16 @@ public class ClasspathPattern extends AbstractList<String>
         List<String> list = new ArrayList<>();
         for (Entry e:_entries)
         {
-            if (e._inclusive && !e._package)
-                list.add(e._name);
+            if (e._inclusive && !e._package) {
+				list.add(e._name);
+			}
         }
         return list;
     }
     
     /* ------------------------------------------------------------ */
     /**
-     * Match the class name against the pattern
+     * Match the class name against the pattern.
      *
      * @param name name of the class to match
      * @return true if class matches the pattern
@@ -228,20 +225,24 @@ public class ClasspathPattern extends AbstractList<String>
 
         for (Entry entry : _entries)
         {
-            if (entry==null)
-                continue;
+            if (entry==null) {
+				continue;
+			}
             if (entry._package)
             {
-                if (name.startsWith(entry._name) || ".".equals(entry._pattern))
-                    return entry._inclusive;
+                if (name.startsWith(entry._name) || ".".equals(entry._pattern)) {
+					return entry._inclusive;
+				}
             }
             else
             {
-                if (name.equals(entry._name))
-                    return entry._inclusive;
+                if (name.equals(entry._name)) {
+					return entry._inclusive;
+				}
                 
-                if (name.length()>entry._name.length() && '$'==name.charAt(entry._name.length()) && name.startsWith(entry._name))
-                    return entry._inclusive;
+                if (name.length()>entry._name.length() && '$'==name.charAt(entry._name.length()) && name.startsWith(entry._name)) {
+					return entry._inclusive;
+				}
             }
         }
         return false;
@@ -257,8 +258,9 @@ public class ClasspathPattern extends AbstractList<String>
                 String cc=iter.next();
                 if (afterPattern.equals(cc))
                 {
-                    for (int i=0;i<patterns.length;i++)
-                        iter.add(patterns[i]);
+                    for (int i=0;i<patterns.length;i++) {
+						iter.add(patterns[i]);
+					}
                     return;
                 }
             }
@@ -277,8 +279,9 @@ public class ClasspathPattern extends AbstractList<String>
                 if (beforePattern.equals(cc))
                 {
                     iter.previous();
-                    for (int i=0;i<patterns.length;i++)
-                        iter.add(patterns[i]);
+                    for (int i=0;i<patterns.length;i++) {
+						iter.add(patterns[i]);
+					}
                     return;
                 }
             }

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.io;
 
@@ -59,8 +54,9 @@ public abstract class SelectorManager extends ContainerLifeCycle implements Dump
 
     protected SelectorManager(Executor executor, Scheduler scheduler, int selectors)
     {
-        if (selectors <= 0)
-            throw new IllegalArgumentException("No selectors");
+        if (selectors <= 0) {
+			throw new IllegalArgumentException("No selectors");
+		}
         this.executor = executor;
         this.scheduler = scheduler;
         _selectors = new ManagedSelector[selectors];
@@ -77,7 +73,7 @@ public abstract class SelectorManager extends ContainerLifeCycle implements Dump
     }
 
     /**
-     * Get the connect timeout
+     * Get the connect timeout.
      *
      * @return the connect timeout (in milliseconds)
      */
@@ -87,7 +83,7 @@ public abstract class SelectorManager extends ContainerLifeCycle implements Dump
     }
 
     /**
-     * Set the connect timeout (in milliseconds)
+     * Set the connect timeout (in milliseconds).
      *
      * @param milliseconds the number of milliseconds for the timeout
      */
@@ -109,8 +105,9 @@ public abstract class SelectorManager extends ContainerLifeCycle implements Dump
      */
     public void setExecutionStrategyFactory(ExecutionStrategy.Factory _executionFactory)
     {
-        if (isRunning())
-            throw new IllegalStateException("Cannot change " + ExecutionStrategy.Factory.class.getSimpleName() + " after start()");
+        if (isRunning()) {
+			throw new IllegalStateException("Cannot change " + ExecutionStrategy.Factory.class.getSimpleName() + " after start()");
+		}
         this._executionFactory = _executionFactory;
     }
 
@@ -187,8 +184,9 @@ public abstract class SelectorManager extends ContainerLifeCycle implements Dump
         int index = (int)(s % getSelectorCount());
         ManagedSelector candidate2 = _selectors[index];
 
-        if (candidate1 == null || candidate1.size() >= candidate2.size() * 2)
-            return candidate2;
+        if (candidate1 == null || candidate1.size() >= candidate2.size() * 2) {
+			return candidate2;
+		}
         return candidate1;
     }
 
@@ -288,8 +286,9 @@ public abstract class SelectorManager extends ContainerLifeCycle implements Dump
     protected void doStop() throws Exception
     {
         super.doStop();
-        for (ManagedSelector selector : _selectors)
-            removeBean(selector);
+        for (ManagedSelector selector : _selectors) {
+			removeBean(selector);
+		}
     }
 
     /**
@@ -325,10 +324,11 @@ public abstract class SelectorManager extends ContainerLifeCycle implements Dump
         }
         catch (Throwable x)
         {
-            if (isRunning())
-                LOG.warn("Exception while notifying connection " + connection, x);
-            else
-                LOG.debug("Exception while notifying connection " + connection, x);
+            if (isRunning()) {
+				LOG.warn("Exception while notifying connection " + connection, x);
+			} else {
+				LOG.debug("Exception while notifying connection " + connection, x);
+			}
             throw x;
         }
     }

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http;
 
@@ -42,8 +37,9 @@ public class MetaData implements Iterable<HttpField>
     protected void recycle()
     {
         _httpVersion = null;
-        if (_fields != null)
-            _fields.clear();
+        if (_fields != null) {
+			_fields.clear();
+		}
         _contentLength = Long.MIN_VALUE;
     }
 
@@ -86,14 +82,10 @@ public class MetaData implements Iterable<HttpField>
      */
     public long getContentLength()
     {
-        if (_contentLength == Long.MIN_VALUE)
-        {
-            if (_fields != null)
-            {
-                HttpField field = _fields.getField(HttpHeader.CONTENT_LENGTH);
-                _contentLength = field == null ? -1 : field.getLongValue();
-            }
-        }
+        if (_contentLength == Long.MIN_VALUE && _fields != null) {
+		    HttpField field = _fields.getField(HttpHeader.CONTENT_LENGTH);
+		    _contentLength = field == null ? -1 : field.getLongValue();
+		}
         return _contentLength;
     }
 
@@ -111,8 +103,9 @@ public class MetaData implements Iterable<HttpField>
     public String toString()
     {
         StringBuilder out = new StringBuilder();
-        for (HttpField field : this)
-            out.append(field).append(System.lineSeparator());
+        for (HttpField field : this) {
+			out.append(field).append(System.lineSeparator());
+		}
         return out.toString();
     }
 
@@ -158,13 +151,14 @@ public class MetaData implements Iterable<HttpField>
             this(request.getMethod(),new HttpURI(request.getURI()), request.getVersion(), new HttpFields(request.getFields()), request.getContentLength());
         }
 
-        // TODO MetaData should be immuttable!!! 
+        /** TODO MetaData should be immuttable!!! */
         public void recycle()
         {
             super.recycle();
             _method = null;
-            if (_uri != null)
-                _uri.clear();
+            if (_uri != null) {
+				_uri.clear();
+			}
         }
 
         @Override

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.servlets;
 
@@ -202,50 +197,58 @@ public class DoSFilter implements Filter
 
         int maxRequests = __DEFAULT_MAX_REQUESTS_PER_SEC;
         String parameter = filterConfig.getInitParameter(MAX_REQUESTS_PER_S_INIT_PARAM);
-        if (parameter != null)
-            maxRequests = Integer.parseInt(parameter);
+        if (parameter != null) {
+			maxRequests = Integer.parseInt(parameter);
+		}
         setMaxRequestsPerSec(maxRequests);
 
         long delay = __DEFAULT_DELAY_MS;
         parameter = filterConfig.getInitParameter(DELAY_MS_INIT_PARAM);
-        if (parameter != null)
-            delay = Long.parseLong(parameter);
+        if (parameter != null) {
+			delay = Long.parseLong(parameter);
+		}
         setDelayMs(delay);
 
         int throttledRequests = __DEFAULT_THROTTLE;
         parameter = filterConfig.getInitParameter(THROTTLED_REQUESTS_INIT_PARAM);
-        if (parameter != null)
-            throttledRequests = Integer.parseInt(parameter);
+        if (parameter != null) {
+			throttledRequests = Integer.parseInt(parameter);
+		}
         setThrottledRequests(throttledRequests);
 
         long maxWait = __DEFAULT_MAX_WAIT_MS;
         parameter = filterConfig.getInitParameter(MAX_WAIT_INIT_PARAM);
-        if (parameter != null)
-            maxWait = Long.parseLong(parameter);
+        if (parameter != null) {
+			maxWait = Long.parseLong(parameter);
+		}
         setMaxWaitMs(maxWait);
 
         long throttle = __DEFAULT_THROTTLE_MS;
         parameter = filterConfig.getInitParameter(THROTTLE_MS_INIT_PARAM);
-        if (parameter != null)
-            throttle = Long.parseLong(parameter);
+        if (parameter != null) {
+			throttle = Long.parseLong(parameter);
+		}
         setThrottleMs(throttle);
 
         long maxRequestMs = __DEFAULT_MAX_REQUEST_MS_INIT_PARAM;
         parameter = filterConfig.getInitParameter(MAX_REQUEST_MS_INIT_PARAM);
-        if (parameter != null)
-            maxRequestMs = Long.parseLong(parameter);
+        if (parameter != null) {
+			maxRequestMs = Long.parseLong(parameter);
+		}
         setMaxRequestMs(maxRequestMs);
 
         long maxIdleTrackerMs = __DEFAULT_MAX_IDLE_TRACKER_MS_INIT_PARAM;
         parameter = filterConfig.getInitParameter(MAX_IDLE_TRACKER_MS_INIT_PARAM);
-        if (parameter != null)
-            maxIdleTrackerMs = Long.parseLong(parameter);
+        if (parameter != null) {
+			maxIdleTrackerMs = Long.parseLong(parameter);
+		}
         setMaxIdleTrackerMs(maxIdleTrackerMs);
 
         String whiteList = "";
         parameter = filterConfig.getInitParameter(IP_WHITELIST_INIT_PARAM);
-        if (parameter != null)
-            whiteList = parameter;
+        if (parameter != null) {
+			whiteList = parameter;
+		}
         setWhitelist(whiteList);
 
         parameter = filterConfig.getInitParameter(INSERT_HEADERS_INIT_PARAM);
@@ -266,8 +269,9 @@ public class DoSFilter implements Filter
         _scheduler = startScheduler();
 
         ServletContext context = filterConfig.getServletContext();
-        if (context != null && Boolean.parseBoolean(filterConfig.getInitParameter(MANAGED_ATTR_INIT_PARAM)))
-            context.setAttribute(filterConfig.getFilterName(), this);
+        if (context != null && Boolean.parseBoolean(filterConfig.getInitParameter(MANAGED_ATTR_INIT_PARAM))) {
+			context.setAttribute(filterConfig.getFilterName(), this);
+		}
     }
 
     protected Scheduler startScheduler() throws ServletException
@@ -302,8 +306,9 @@ public class DoSFilter implements Filter
         if (tracker == null)
         {
             // This is the first time we have seen this request.
-            if (LOG.isDebugEnabled())
-                LOG.debug("Filtering {}", request);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Filtering {}", request);
+			}
 
             // Get a rate tracker associated with this request, and record one hit.
             tracker = getRateTracker(request);
@@ -314,8 +319,9 @@ public class DoSFilter implements Filter
             // Pass it through if  we are not currently over the rate limit.
             if (!overRateLimit)
             {
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Allowing {}", request);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("Allowing {}", request);
+				}
                 doFilterChain(filterChain, request, response);
                 return;
             }
@@ -331,8 +337,9 @@ public class DoSFilter implements Filter
                 {
                     // Reject this request.
                     LOG.warn("DOS ALERT: Request rejected ip={}, session={}, user={}", request.getRemoteAddr(), request.getRequestedSessionId(), request.getUserPrincipal());
-                    if (insertHeaders)
-                        response.addHeader("DoSFilter", "unavailable");
+                    if (insertHeaders) {
+						response.addHeader("DoSFilter", "unavailable");
+					}
                     response.sendError(getTooManyCode());
                     return;
                 }
@@ -348,20 +355,23 @@ public class DoSFilter implements Filter
                     // Insert a delay before throttling the request,
                     // using the suspend+timeout mechanism of AsyncContext.
                     LOG.warn("DOS ALERT: Request delayed={}ms, ip={}, session={}, user={}", delayMs, request.getRemoteAddr(), request.getRequestedSessionId(), request.getUserPrincipal());
-                    if (insertHeaders)
-                        response.addHeader("DoSFilter", "delayed");
+                    if (insertHeaders) {
+						response.addHeader("DoSFilter", "delayed");
+					}
                     request.setAttribute(__TRACKER, tracker);
                     AsyncContext asyncContext = request.startAsync();
-                    if (delayMs > 0)
-                        asyncContext.setTimeout(delayMs);
+                    if (delayMs > 0) {
+						asyncContext.setTimeout(delayMs);
+					}
                     asyncContext.addListener(new DoSTimeoutAsyncListener());
                     return;
                 }
             }
         }
 
-        if (LOG.isDebugEnabled())
-            LOG.debug("Throttling {}", request);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Throttling {}", request);
+		}
 
         // Throttle the request.
         boolean accepted = false;
@@ -379,16 +389,19 @@ public class DoSFilter implements Filter
                 {
                     int priority = getPriority(request, tracker);
                     request.setAttribute(__THROTTLED, Boolean.TRUE);
-                    if (isInsertHeaders())
-                        response.addHeader("DoSFilter", "throttled");
+                    if (isInsertHeaders()) {
+						response.addHeader("DoSFilter", "throttled");
+					}
                     AsyncContext asyncContext = request.startAsync();
                     request.setAttribute(_suspended, Boolean.TRUE);
-                    if (throttleMs > 0)
-                        asyncContext.setTimeout(throttleMs);
+                    if (throttleMs > 0) {
+						asyncContext.setTimeout(throttleMs);
+					}
                     asyncContext.addListener(_listeners[priority]);
                     _queues[priority].add(asyncContext);
-                    if (LOG.isDebugEnabled())
-                        LOG.debug("Throttled {}, {}ms", request, throttleMs);
+                    if (LOG.isDebugEnabled()) {
+						LOG.debug("Throttled {}, {}ms", request, throttleMs);
+					}
                     return;
                 }
 
@@ -405,17 +418,20 @@ public class DoSFilter implements Filter
             if (accepted)
             {
                 // ...call the chain.
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Allowing {}", request);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("Allowing {}", request);
+				}
                 doFilterChain(filterChain, request, response);
             }
             else
             {
                 // ...otherwise fail the request.
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Rejecting {}", request);
-                if (isInsertHeaders())
-                    response.addHeader("DoSFilter", "unavailable");
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("Rejecting {}", request);
+				}
+                if (isInsertHeaders()) {
+					response.addHeader("DoSFilter", "unavailable");
+				}
                 response.sendError(getTooManyCode());
             }
         }
@@ -440,8 +456,9 @@ public class DoSFilter implements Filter
                             Boolean suspended = (Boolean)candidate.getAttribute(_suspended);
                             if (suspended == Boolean.TRUE)
                             {
-                                if (LOG.isDebugEnabled())
-                                    LOG.debug("Resuming {}", request);
+                                if (LOG.isDebugEnabled()) {
+									LOG.debug("Resuming {}", request);
+								}
                                 candidate.setAttribute(_resumed, Boolean.TRUE);
                                 asyncContext.dispatch();
                                 break;
@@ -492,8 +509,9 @@ public class DoSFilter implements Filter
     {
         try
         {
-            if (LOG.isDebugEnabled())
-                LOG.debug("Timing out {}", request);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Timing out {}", request);
+			}
             response.sendError(HttpStatus.SERVICE_UNAVAILABLE_503);
         }
         catch (Throwable x)
@@ -514,7 +532,7 @@ public class DoSFilter implements Filter
     }
 
     /**
-     * Get priority for this request, based on user type
+     * Get priority for this request, based on user type.
      *
      * @param request the current request
      * @param tracker the rate tracker for this request
@@ -522,10 +540,12 @@ public class DoSFilter implements Filter
      */
     protected int getPriority(HttpServletRequest request, RateTracker tracker)
     {
-        if (extractUserId(request) != null)
-            return USER_AUTH;
-        if (tracker != null)
-            return tracker.getType();
+        if (extractUserId(request) != null) {
+			return USER_AUTH;
+		}
+        if (tracker != null) {
+			return tracker.getType();
+		}
         return USER_UNKNOWN;
     }
 
@@ -562,20 +582,16 @@ public class DoSFilter implements Filter
         if (loadId != null)
         {
             type = USER_AUTH;
-        }
-        else
-        {
-            if (isTrackSessions() && session != null && !session.isNew())
-            {
-                loadId = session.getId();
-                type = USER_SESSION;
-            }
-            else
-            {
-                loadId = isRemotePort() ? (request.getRemoteAddr() + request.getRemotePort()) : request.getRemoteAddr();
-                type = USER_IP;
-            }
-        }
+        } else if (isTrackSessions() && session != null && !session.isNew())
+		{
+		    loadId = session.getId();
+		    type = USER_SESSION;
+		}
+		else
+		{
+		    loadId = isRemotePort() ? (request.getRemoteAddr() + request.getRemotePort()) : request.getRemoteAddr();
+		    type = USER_IP;
+		}
 
         RateTracker tracker = _rateTrackers.get(loadId);
 
@@ -586,8 +602,9 @@ public class DoSFilter implements Filter
             tracker = allowed ? new FixedRateTracker(loadId, type, maxRequestsPerSec)
                     : new RateTracker(loadId, type, maxRequestsPerSec);
             RateTracker existing = _rateTrackers.putIfAbsent(loadId, tracker);
-            if (existing != null)
-                tracker = existing;
+            if (existing != null) {
+				tracker = existing;
+			}
 
             if (type == USER_IP)
             {
@@ -610,14 +627,12 @@ public class DoSFilter implements Filter
         {
             if (address.contains("/"))
             {
-                if (subnetMatch(address, candidate))
-                    return true;
-            }
-            else
-            {
-                if (address.equals(candidate))
-                    return true;
-            }
+                if (subnetMatch(address, candidate)) {
+					return true;
+				}
+            } else if (address.equals(candidate)) {
+				return true;
+			}
         }
         return false;
     }
@@ -629,14 +644,12 @@ public class DoSFilter implements Filter
         {
             if (address.contains("/"))
             {
-                if (subnetMatch(address, candidate))
-                    return true;
-            }
-            else
-            {
-                if (address.equals(candidate))
-                    return true;
-            }
+                if (subnetMatch(address, candidate)) {
+					return true;
+				}
+            } else if (address.equals(candidate)) {
+				return true;
+			}
         }
         return false;
     }
@@ -644,8 +657,9 @@ public class DoSFilter implements Filter
     protected boolean subnetMatch(String subnetAddress, String address)
     {
         Matcher cidrMatcher = CIDR_PATTERN.matcher(subnetAddress);
-        if (!cidrMatcher.matches())
-            return false;
+        if (!cidrMatcher.matches()) {
+			return false;
+		}
 
         String subnet = cidrMatcher.group(1);
         int prefix;
@@ -674,15 +688,17 @@ public class DoSFilter implements Filter
 
         // Comparing IPv4 with IPv6 ?
         int length = subnetBytes.length;
-        if (length != addressBytes.length)
-            return false;
+        if (length != addressBytes.length) {
+			return false;
+		}
 
         byte[] mask = prefixToBytes(prefix, length);
 
         for (int i = 0; i < length; ++i)
         {
-            if ((subnetBytes[i] & mask[i]) != (addressBytes[i] & mask[i]))
-                return false;
+            if ((subnetBytes[i] & mask[i]) != (addressBytes[i] & mask[i])) {
+				return false;
+			}
         }
 
         return true;
@@ -694,8 +710,9 @@ public class DoSFilter implements Filter
         if (ipv4Matcher.matches())
         {
             byte[] result = new byte[4];
-            for (int i = 0; i < result.length; ++i)
-                result[i] = Integer.valueOf(ipv4Matcher.group(i + 1)).byteValue();
+            for (int i = 0; i < result.length; ++i) {
+				result[i] = Integer.valueOf(ipv4Matcher.group(i + 1)).byteValue();
+			}
             return result;
         }
         else
@@ -727,11 +744,12 @@ public class DoSFilter implements Filter
             ++index;
         }
 
-        if (index == result.length)
-            return result;
+        if (index == result.length) {
+			return result;
+		}
 
         // Sets the _prefix_ most significant bits to 1
-        result[index] = (byte)~((1 << (8 - prefix)) - 1);
+        result[index] = (byte)~((1 << 8 - prefix) - 1);
         return result;
     }
 
@@ -1036,8 +1054,9 @@ public class DoSFilter implements Filter
         {
             String address = iterator.next();
             result.append(address);
-            if (iterator.hasNext())
-                result.append(",");
+            if (iterator.hasNext()) {
+				result.append(",");
+			}
         }
         return result.toString();
     }
@@ -1050,15 +1069,16 @@ public class DoSFilter implements Filter
     public void setWhitelist(String commaSeparatedList)
     {
         List<String> result = new ArrayList<>();
-        for (String address : StringUtil.csvSplit(commaSeparatedList))
-            addWhitelistAddress(result, address);
+        for (String address : StringUtil.csvSplit(commaSeparatedList)) {
+			addWhitelistAddress(result, address);
+		}
         clearWhitelist();
         _whitelist.addAll(result);
         LOG.debug("Whitelisted IP addresses: {}", result);
     }
 
     /**
-     * Clears the list of whitelisted IP addresses
+     * Clears the list of whitelisted IP addresses.
      */
     @ManagedOperation("clears the list of IP addresses that will not be rate limited")
     public void clearWhitelist()
@@ -1134,7 +1154,7 @@ public class DoSFilter implements Filter
                 _next = (_next + 1) % _timestamps.length;
             }
 
-            return last != 0 && (now - last) < 1000L;
+            return last != 0 && now - last < 1000L;
         }
 
         public String getId()
@@ -1149,16 +1169,18 @@ public class DoSFilter implements Filter
 
         public void valueBound(HttpSessionBindingEvent event)
         {
-            if (LOG.isDebugEnabled())
-                LOG.debug("Value bound: {}", getId());
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Value bound: {}", getId());
+			}
         }
 
         public void valueUnbound(HttpSessionBindingEvent event)
         {
             //take the tracker out of the list of trackers
             _rateTrackers.remove(_id);
-            if (LOG.isDebugEnabled())
-                LOG.debug("Tracker removed: {}", getId());
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Tracker removed: {}", getId());
+			}
         }
 
         public void sessionWillPassivate(HttpSessionEvent se)
@@ -1170,8 +1192,9 @@ public class DoSFilter implements Filter
         public void sessionDidActivate(HttpSessionEvent se)
         {
             RateTracker tracker = (RateTracker)se.getSession().getAttribute(__TRACKER);
-            if (tracker!=null)
-                _rateTrackers.put(tracker.getId(),tracker);
+            if (tracker!=null) {
+				_rateTrackers.put(tracker.getId(),tracker);
+			}
         }
 
         @Override
@@ -1179,12 +1202,13 @@ public class DoSFilter implements Filter
         {
             int latestIndex = _next == 0 ? (_timestamps.length - 1) : (_next - 1);
             long last = _timestamps[latestIndex];
-            boolean hasRecentRequest = last != 0 && (System.currentTimeMillis() - last) < 1000L;
+            boolean hasRecentRequest = last != 0 && System.currentTimeMillis() - last < 1000L;
 
-            if (hasRecentRequest)
-                _scheduler.schedule(this, getMaxIdleTrackerMs(), TimeUnit.MILLISECONDS);
-            else
-                _rateTrackers.remove(_id);
+            if (hasRecentRequest) {
+				_scheduler.schedule(this, getMaxIdleTrackerMs(), TimeUnit.MILLISECONDS);
+			} else {
+				_rateTrackers.remove(_id);
+			}
         }
 
         @Override

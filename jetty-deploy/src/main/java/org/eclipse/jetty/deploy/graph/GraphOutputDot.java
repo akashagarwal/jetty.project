@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.deploy.graph;
 
@@ -52,12 +47,12 @@ public class GraphOutputDot
 
         public int compare(Node o1, Node o2)
         {
-            if (o1.getName().equals(TOPNODE))
+            if (TOPNODE.equals(o1.getName()))
             {
                 return -1;
             }
 
-            if (o2.getName().equals(TOPNODE))
+            if (TOPNODE.equals(o2.getName()))
             {
                 return 1;
             }
@@ -155,7 +150,7 @@ public class GraphOutputDot
                 continue;
             }
 
-            if ((c == ' ') || (c == '-') || (c == '_'))
+            if (c == ' ' || c == '-' || c == '_')
             {
                 buf.append(c);
                 continue;

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.quickstart;
 
@@ -39,16 +34,14 @@ public class QuickStartConfiguration extends WebInfConfiguration
 {
     private static final Logger LOG = Log.getLogger(QuickStartConfiguration.class);
 
-    /**
-     * @see org.eclipse.jetty.webapp.AbstractConfiguration#preConfigure(org.eclipse.jetty.webapp.WebAppContext)
-     */
     @Override
     public void preConfigure(WebAppContext context) throws Exception
     {
         //check that webapp is suitable for quick start - it is not a packed war
         String war = context.getWar();
-        if (war == null || war.length()<=0)
-            throw new IllegalStateException ("No location for webapp");  
+        if (war == null || war.length()<=0) {
+			throw new IllegalStateException ("No location for webapp");
+		}  
         
         //Make a temp directory for the webapp if one is not already set
         resolveTempDirectory(context);
@@ -63,8 +56,9 @@ public class QuickStartConfiguration extends WebInfConfiguration
         }
 
         // Is the WAR usable directly?
-        if (!webApp.exists() || !webApp.isDirectory() || webApp.toString().startsWith("jar:"))
-            throw new IllegalStateException("Webapp does not exist or is not unpacked");
+        if (!webApp.exists() || !webApp.isDirectory() || webApp.toString().startsWith("jar:")) {
+			throw new IllegalStateException("Webapp does not exist or is not unpacked");
+		}
         
         context.setBaseResource(webApp);
 
@@ -89,21 +83,20 @@ public class QuickStartConfiguration extends WebInfConfiguration
     public Resource getQuickStartWebXml (WebAppContext context) throws Exception
     {
         Resource webInf = context.getWebInf();
-        if (webInf == null || !webInf.exists())
-            throw new IllegalStateException("No WEB-INF");
+        if (webInf == null || !webInf.exists()) {
+			throw new IllegalStateException("No WEB-INF");
+		}
         LOG.debug("webinf={}",webInf);
   
         Resource quickStartWebXml = webInf.addPath("quickstart-web.xml");
-        if (!quickStartWebXml.exists())
-            throw new IllegalStateException ("No WEB-INF/quickstart-web.xml");
+        if (!quickStartWebXml.exists()) {
+			throw new IllegalStateException ("No WEB-INF/quickstart-web.xml");
+		}
         return quickStartWebXml;
     }
     
     
     
-    /**
-     * @see org.eclipse.jetty.webapp.AbstractConfiguration#configure(org.eclipse.jetty.webapp.WebAppContext)
-     */
     @Override
     public void configure(WebAppContext context) throws Exception
     {
@@ -121,13 +114,15 @@ public class QuickStartConfiguration extends WebInfConfiguration
         {
             // Look for classes directory
             Resource classes= webInf.addPath("classes/");
-            if (classes.exists())
-                ((WebAppClassLoader)context.getClassLoader()).addClassPath(classes);
+            if (classes.exists()) {
+				((WebAppClassLoader)context.getClassLoader()).addClassPath(classes);
+			}
 
             // Look for jars
             Resource lib= webInf.addPath("lib/");
-            if (lib.exists() || lib.isDirectory())
-                ((WebAppClassLoader)context.getClassLoader()).addJars(lib);
+            if (lib.exists() || lib.isDirectory()) {
+				((WebAppClassLoader)context.getClassLoader()).addJars(lib);
+			}
         }
 
         //add the processor to handle normal web.xml content
@@ -141,8 +136,9 @@ public class QuickStartConfiguration extends WebInfConfiguration
         
         //add a context bean that will run ServletContainerInitializers as the context starts
         ServletContainerInitializersStarter starter = (ServletContainerInitializersStarter)context.getAttribute(AnnotationConfiguration.CONTAINER_INITIALIZER_STARTER);
-        if (starter != null)
-            throw new IllegalStateException("ServletContainerInitializersStarter already exists");
+        if (starter != null) {
+			throw new IllegalStateException("ServletContainerInitializersStarter already exists");
+		}
         starter = new ServletContainerInitializersStarter(context);
         context.setAttribute(AnnotationConfiguration.CONTAINER_INITIALIZER_STARTER, starter);
         context.addBean(starter, true);       

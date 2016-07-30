@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.gcloud.session;
 
@@ -46,11 +41,11 @@ import com.google.cloud.datastore.KeyFactory;
  * GCloudSessionIdManager
  *
  * 
- * 
+ *. 
  */
 public class GCloudSessionIdManager extends AbstractSessionIdManager
 {
-    private  final static Logger LOG = Log.getLogger("org.eclipse.jetty.server.session");
+    private static final Logger LOG = Log.getLogger("org.eclipse.jetty.server.session");
     public static final int DEFAULT_IDLE_EXPIRY_MULTIPLE = 2;
     public static final String KIND = "GCloudSessionId";
     private Server _server;
@@ -60,19 +55,12 @@ public class GCloudSessionIdManager extends AbstractSessionIdManager
     
     
  
-    /**
-     * @param server
-     */
     public GCloudSessionIdManager(Server server)
     {
         super();
         _server = server;
     }
 
-    /**
-     * @param server
-     * @param random
-     */
     public GCloudSessionIdManager(Server server, Random random)
     {
        super(random);
@@ -121,8 +109,9 @@ public class GCloudSessionIdManager extends AbstractSessionIdManager
     @Override
     public boolean idInUse(String id)
     {
-        if (id == null)
-            return false;
+        if (id == null) {
+			return false;
+		}
         
         String clusterId = getClusterId(id);
         
@@ -150,8 +139,9 @@ public class GCloudSessionIdManager extends AbstractSessionIdManager
     @Override
     public void addSession(HttpSession session)
     {
-        if (session == null)
-            return;
+        if (session == null) {
+			return;
+		}
 
         //insert into the store
         insert (((AbstractSession)session).getClusterId());
@@ -170,8 +160,9 @@ public class GCloudSessionIdManager extends AbstractSessionIdManager
     @Override
     public void removeSession(HttpSession session)
     {
-        if (session == null)
-            return;
+        if (session == null) {
+			return;
+		}
 
         //delete from the cache
         delete (((AbstractSession)session).getClusterId());
@@ -200,7 +191,7 @@ public class GCloudSessionIdManager extends AbstractSessionIdManager
             {
                 SessionManager manager = sessionHandler.getSessionManager();
 
-                if (manager != null && manager instanceof GCloudSessionManager)
+                if (manager instanceof GCloudSessionManager)
                 {
                     ((GCloudSessionManager)manager).invalidateSession(id);
                 }
@@ -235,7 +226,7 @@ public class GCloudSessionIdManager extends AbstractSessionIdManager
             {
                 SessionManager manager = sessionHandler.getSessionManager();
 
-                if (manager != null && manager instanceof GCloudSessionManager)
+                if (manager instanceof GCloudSessionManager)
                 {
                     ((GCloudSessionManager)manager).renewSessionId(oldClusterId, oldNodeId, newClusterId, getNodeId(newClusterId, request));
                 }
@@ -254,8 +245,9 @@ public class GCloudSessionIdManager extends AbstractSessionIdManager
      */
     protected boolean exists (String id)
     {
-        if (_datastore == null)
-            throw new IllegalStateException ("No DataStore");
+        if (_datastore == null) {
+			throw new IllegalStateException ("No DataStore");
+		}
         Key key = _keyFactory.newKey(id);
         return _datastore.get(key) != null;
     }
@@ -268,8 +260,9 @@ public class GCloudSessionIdManager extends AbstractSessionIdManager
      */
     protected void insert (String id)
     {        
-        if (_datastore == null)
-            throw new IllegalStateException ("No DataStore");
+        if (_datastore == null) {
+			throw new IllegalStateException ("No DataStore");
+		}
 
         Entity entity = Entity.builder(makeKey(id))
                         .set("id", id).build();
@@ -286,8 +279,9 @@ public class GCloudSessionIdManager extends AbstractSessionIdManager
      */
     protected void delete (String id)
     {
-        if (_datastore == null)
-            throw new IllegalStateException ("No DataStore");
+        if (_datastore == null) {
+			throw new IllegalStateException ("No DataStore");
+		}
         
         _datastore.delete(makeKey(id));
     }

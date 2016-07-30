@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.osgi.boot.internal.serverfactory;
 
@@ -81,7 +76,7 @@ public class ServerInstanceWrapper
     private final String _managedServerName;
 
     /**
-     * The managed jetty server
+     * The managed jetty server.
      */
     private Server _server;
 
@@ -98,13 +93,13 @@ public class ServerInstanceWrapper
     
     
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public static void addContainerTldBundleDiscoverer (TldBundleDiscoverer tldBundleDiscoverer)
     {
         __containerTldBundleDiscoverers.add(tldBundleDiscoverer);
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public static Collection<TldBundleDiscoverer> getContainerTldBundleDiscoverers()
     {
         return __containerTldBundleDiscoverers;
@@ -113,7 +108,7 @@ public class ServerInstanceWrapper
  
 
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public static Server configure(Server server, List<URL> jettyConfigurations, Dictionary props) throws Exception
     {
        
@@ -138,7 +133,9 @@ public class ServerInstanceWrapper
                 String keyStr = String.valueOf(key);
                 String valStr = String.valueOf(value);
                 properties.put(keyStr, valStr);
-                if (server != null) server.setAttribute(keyStr, valStr);
+                if (server != null) {
+					server.setAttribute(keyStr, valStr);
+				}
             }
         }
 
@@ -170,8 +167,9 @@ public class ServerInstanceWrapper
         		}
 
         		Object o = config.configure();
-        		if (server == null)
-        			server = (Server)o;
+        		if (server == null) {
+					server = (Server)o;
+				}
 
         		id_map = config.getIdMap();
         	}
@@ -188,13 +186,13 @@ public class ServerInstanceWrapper
     
     
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public ServerInstanceWrapper(String managedServerName)
     {
         _managedServerName = managedServerName;
     }
 
-    /* ------------------------------------------------------------ */ 
+    /** ------------------------------------------------------------. */ 
     public String getManagedServerName()
     {
         return _managedServerName;
@@ -242,7 +240,7 @@ public class ServerInstanceWrapper
         return _ctxtCollection;
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void start(Server server, Dictionary props) throws Exception
     {
         _server = server;
@@ -257,7 +255,9 @@ public class ServerInstanceWrapper
             List<File> shared = sharedURLs != null ? extractFiles(sharedURLs) : null;
             libExtClassLoader = LibExtClassLoaderHelper.createLibExtClassLoader(shared, null,JettyBootstrapActivator.class.getClassLoader());
 
-            if (LOG.isDebugEnabled()) LOG.debug("LibExtClassLoader = "+libExtClassLoader);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("LibExtClassLoader = "+libExtClassLoader);
+			}
             
             Thread.currentThread().setContextClassLoader(libExtClassLoader);
 
@@ -281,17 +281,20 @@ public class ServerInstanceWrapper
                     URL[] list = d.getUrlsForBundlesWithTlds(_deploymentManager, BundleFileLocatorHelperFactory.getFactory().getHelper());
                     if (list != null)
                     {
-                        for (URL u:list)
-                            urls.add(u);
+                        for (URL u:list) {
+							urls.add(u);
+						}
                     }
                 }
                 _commonParentClassLoaderForWebapps =  new FakeURLClassLoader(libExtClassLoader, urls.toArray(new URL[urls.size()]));
-            }
-            else
-                _commonParentClassLoaderForWebapps = libExtClassLoader;
+            } else {
+				_commonParentClassLoaderForWebapps = libExtClassLoader;
+			}
 
             
-            if (LOG.isDebugEnabled()) LOG.debug("common classloader = "+_commonParentClassLoaderForWebapps);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("common classloader = "+_commonParentClassLoaderForWebapps);
+			}
 
             server.start();
         }
@@ -316,7 +319,7 @@ public class ServerInstanceWrapper
         }
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void stop()
     {
         try
@@ -345,10 +348,11 @@ public class ServerInstanceWrapper
     private void init()
     {
         // Get the context handler
-        _ctxtCollection = (ContextHandlerCollection) _server.getChildHandlerByClass(ContextHandlerCollection.class);
+        _ctxtCollection = _server.getChildHandlerByClass(ContextHandlerCollection.class);
 
-        if (_ctxtCollection == null) 
-            throw new IllegalStateException("ERROR: No ContextHandlerCollection configured in Server");
+        if (_ctxtCollection == null) {
+			throw new IllegalStateException("ERROR: No ContextHandlerCollection configured in Server");
+		}
         
         List<String> providerClassNames = new ArrayList<String>();
         
@@ -441,7 +445,7 @@ public class ServerInstanceWrapper
     /* ------------------------------------------------------------ */
     /**
      * Get the folders that might contain jars for the legacy J2EE shared
-     * libraries
+     * libraries.
      */
     private List<File> extractFiles(String propertyValue)
     {
@@ -454,7 +458,7 @@ public class ServerInstanceWrapper
             {
                 URL url = new URL(tok);
                 url = BundleFileLocatorHelperFactory.getFactory().getHelper().getFileURL(url);
-                if (url.getProtocol().equals("file"))
+                if ("file".equals(url.getProtocol()))
                 {
                     Resource res = Resource.newResource(url);
                     File folder = res.getFile();

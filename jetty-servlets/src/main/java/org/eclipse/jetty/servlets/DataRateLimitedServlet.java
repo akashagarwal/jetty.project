@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.servlets;
 
@@ -72,11 +67,13 @@ public class DataRateLimitedServlet extends HttpServlet
     {
         // read the init params
         String tmp = getInitParameter("buffersize");
-        if (tmp!=null)
-            buffersize=Integer.parseInt(tmp);
+        if (tmp!=null) {
+			buffersize=Integer.parseInt(tmp);
+		}
         tmp = getInitParameter("pause");
-        if (tmp!=null)
-            pauseNS=TimeUnit.MILLISECONDS.toNanos(Integer.parseInt(tmp));
+        if (tmp!=null) {
+			pauseNS=TimeUnit.MILLISECONDS.toNanos(Integer.parseInt(tmp));
+		}
         tmp = getInitParameter("pool");
         int pool=tmp==null?Runtime.getRuntime().availableProcessors():Integer.parseInt(tmp);
         
@@ -132,8 +129,9 @@ public class DataRateLimitedServlet extends HttpServlet
                     {
                         ByteBuffer buf = raf.getChannel().map(MapMode.READ_ONLY,0,raf.length());
                         mapped=cache.putIfAbsent(path,buf);
-                        if (mapped==null)
-                            mapped=buf;
+                        if (mapped==null) {
+							mapped=buf;
+						}
                     }
                 }
 
@@ -161,7 +159,7 @@ public class DataRateLimitedServlet extends HttpServlet
     }
 
     /**
-     * A standard API Stream writer
+     * A standard API Stream writer.
      */
     private final class StandardDataStream implements WriteListener, Runnable
     {
@@ -236,7 +234,7 @@ public class DataRateLimitedServlet extends HttpServlet
 
     /**
      * A Jetty API DataStream
-     *
+     *.
      */
     private final class JettyDataStream implements WriteListener, Runnable
     {
@@ -265,8 +263,9 @@ public class DataRateLimitedServlet extends HttpServlet
                 // Position our buffers limit to allow only buffersize bytes to be written
                 int l=content.position()+buffersize;
                 // respect the ultimate limit
-                if (l>limit)
-                    l=limit;
+                if (l>limit) {
+					l=limit;
+				}
                 content.limit(l);
 
                 // if all content has been written

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.monitor;
 
@@ -55,7 +50,7 @@ public class JMXMonitor
 
     /* ------------------------------------------------------------ */
     /**
-     * Adds monitor actions to the monitor
+     * Adds monitor actions to the monitor.
      *
      * @param actions monitor actions to add
      * @return true if successful
@@ -67,7 +62,7 @@ public class JMXMonitor
 
     /* ------------------------------------------------------------ */
     /**
-     * Removes monitor actions from the monitor
+     * Removes monitor actions from the monitor.
      * 
      * @param actions monitor actions to remove
      * @return true if successful
@@ -79,7 +74,7 @@ public class JMXMonitor
 
     /* ------------------------------------------------------------ */
     /**
-     * Sets the JMX server URL
+     * Sets the JMX server URL.
      *
      * @param url URL of the JMX server
      */
@@ -116,7 +111,7 @@ public class JMXMonitor
     
     /* ------------------------------------------------------------ */
     /**
-     * Retrieves a connection to JMX service
+     * Retrieves a connection to JMX service.
      *
      * @return server connection
      * @throws IOException if unable to obtain server connection

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util.statistic;
 
@@ -98,7 +93,7 @@ public class SampleStatistic
         final long variance100 = _totalVariance100.sum();
         final long count = _count.get();
 
-        return count>1?((double)variance100)/100.0/(count-1):0.0;
+        return count>1?(double)variance100/100.0/(count-1):0.0;
     }
 
     public double getStdDev()
@@ -106,10 +101,10 @@ public class SampleStatistic
         return Math.sqrt(getVariance());
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public String toString()
     {
-        return String.format("%s@%x{c=%d,m=%d,t=%d,v100=%d}",this.getClass().getSimpleName(),hashCode(),_count.get(),_max.get(),_total.get(),_totalVariance100.sum());
+        return String.format("%s@%x{c=%d,m=%d,t=%d,v100=%d}",getClass().getSimpleName(),hashCode(),_count.get(),_max.get(),_total.get(),_totalVariance100.sum());
     }
 }

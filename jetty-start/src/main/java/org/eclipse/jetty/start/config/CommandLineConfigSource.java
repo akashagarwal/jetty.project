@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.start.config;
 
@@ -107,7 +102,7 @@ public class CommandLineConfigSource implements ConfigSource
         // Attempt to find path relative to content in jetty's start.jar
         // based on lookup for the Main class (from jetty's start.jar)
         String classRef = "org/eclipse/jetty/start/Main.class";
-        URL jarfile = this.getClass().getClassLoader().getResource(classRef);
+        URL jarfile = getClass().getClassLoader().getResource(classRef);
         if (jarfile != null)
         {
             Matcher m = Pattern.compile("jar:(file:.*)!/" + classRef).matcher(jarfile.toString());
@@ -206,8 +201,7 @@ public class CommandLineConfigSource implements ConfigSource
     {
         final int prime = 31;
         int result = 1;
-        result = (prime * result) + ((args == null)?0:args.hashCode());
-        return result;
+        return prime * result + ((args == null)?0:args.hashCode());
     }
 
     public void setProperty(String key, String value, String origin)
@@ -223,6 +217,6 @@ public class CommandLineConfigSource implements ConfigSource
     @Override
     public String toString()
     {
-        return String.format("%s[%s,args.length=%d]",this.getClass().getSimpleName(),getId(),getArgs().size());
+        return String.format("%s[%s,args.length=%d]",getClass().getSimpleName(),getId(),getArgs().size());
     }
 }

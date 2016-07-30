@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.servlets;
 
@@ -62,10 +57,10 @@ import org.eclipse.jetty.util.URIUtil;
  */
 public class PutFilter implements Filter
 {
-    public final static String __PUT="PUT";
-    public final static String __DELETE="DELETE";
-    public final static String __MOVE="MOVE";
-    public final static String __OPTIONS="OPTIONS";
+    public static final String __PUT="PUT";
+    public static final String __DELETE="DELETE";
+    public static final String __MOVE="MOVE";
+    public static final String __OPTIONS="OPTIONS";
 
     Set<String> _operations = new HashSet<String>();
     private ConcurrentMap<String,String> _hidden = new ConcurrentHashMap<String, String>();
@@ -77,15 +72,16 @@ public class PutFilter implements Filter
     private File _tmpdir;
 
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void init(FilterConfig config) throws ServletException
     {
         _context=config.getServletContext();
 
         _tmpdir=(File)_context.getAttribute("javax.servlet.context.tempdir");
 
-        if (_context.getRealPath("/")==null)
-           throw new UnavailableException("Packed war");
+        if (_context.getRealPath("/")==null) {
+			throw new UnavailableException("Packed war");
+		}
 
         String b = config.getInitParameter("baseURI");
         if (b != null)
@@ -110,14 +106,14 @@ public class PutFilter implements Filter
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     private boolean getInitBoolean(FilterConfig config,String name)
     {
         String value = config.getInitParameter(name);
         return value != null && value.length() > 0 && (value.startsWith("t") || value.startsWith("T") || value.startsWith("y") || value.startsWith("Y") || value.startsWith("1"));
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException
     {
         HttpServletRequest request=(HttpServletRequest)req;
@@ -137,23 +133,25 @@ public class PutFilter implements Filter
             File file = null;
             try
             {
-                if (method.equals(__OPTIONS))
-                    handleOptions(chain,request, response);
-                else
+                if (__OPTIONS.equals(method)) {
+					handleOptions(chain,request, response);
+				} else
                 {
                     file=new File(new URI(resource));
                     boolean exists = file.exists();
-                    if (exists && !passConditionalHeaders(request, response, file))
-                        return;
+                    if (exists && !passConditionalHeaders(request, response, file)) {
+						return;
+					}
 
-                    if (method.equals(__PUT))
-                        handlePut(request, response,pathInContext, file);
-                    else if (method.equals(__DELETE))
-                        handleDelete(request, response, pathInContext, file);
-                    else if (method.equals(__MOVE))
-                        handleMove(request, response, pathInContext, file);
-                    else
-                        throw new IllegalStateException();
+                    if (__PUT.equals(method)) {
+						handlePut(request, response,pathInContext, file);
+					} else if (__DELETE.equals(method)) {
+						handleDelete(request, response, pathInContext, file);
+					} else if (__MOVE.equals(method)) {
+						handleMove(request, response, pathInContext, file);
+					} else {
+						throw new IllegalStateException();
+					}
                 }
             }
             catch(Exception e)
@@ -164,26 +162,27 @@ public class PutFilter implements Filter
         }
         else
         {
-            if (isHidden(pathInContext))
-                response.sendError(HttpServletResponse.SC_NOT_FOUND);
-            else
-                chain.doFilter(request,response);
+            if (isHidden(pathInContext)) {
+				response.sendError(HttpServletResponse.SC_NOT_FOUND);
+			} else {
+				chain.doFilter(request,response);
+			}
             return;
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     private boolean isHidden(String pathInContext)
     {
         return _hidden.containsKey(pathInContext);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void destroy()
     {
     }
 
-    /* ------------------------------------------------------------------- */
+    /** -------------------------------------------------------------------. */
     public void handlePut(HttpServletRequest request, HttpServletResponse response, String pathInContext, File file) throws ServletException, IOException
     {
         boolean exists = file.exists();
@@ -191,9 +190,9 @@ public class PutFilter implements Filter
         {
             if (!exists)
             {
-                if (!file.mkdirs())
-                    response.sendError(HttpServletResponse.SC_FORBIDDEN);
-                else
+                if (!file.mkdirs()) {
+					response.sendError(HttpServletResponse.SC_FORBIDDEN);
+				} else
                 {
                     response.setStatus(HttpServletResponse.SC_CREATED);
                     response.flushBuffer();
@@ -222,23 +221,26 @@ public class PutFilter implements Filter
                     File tmp=File.createTempFile(file.getName(),null,_tmpdir);
                     try (OutputStream out = new FileOutputStream(tmp,false))
                     {
-                        if (toRead >= 0)
-                            IO.copy(in, out, toRead);
-                        else
-                            IO.copy(in, out);
+                        if (toRead >= 0) {
+							IO.copy(in, out, toRead);
+						} else {
+							IO.copy(in, out);
+						}
                     }
 
-                    if (!tmp.renameTo(file))
-                        throw new IOException("rename from "+tmp+" to "+file+" failed");
+                    if (!tmp.renameTo(file)) {
+						throw new IOException("rename from "+tmp+" to "+file+" failed");
+					}
                 }
                 else
                 {
                     try (OutputStream out = new FileOutputStream(file,false))
                     {
-                        if (toRead >= 0)
-                            IO.copy(in, out, toRead);
-                        else
-                            IO.copy(in, out);
+                        if (toRead >= 0) {
+							IO.copy(in, out, toRead);
+						} else {
+							IO.copy(in, out);
+						}
                     }
                 }
 
@@ -257,8 +259,9 @@ public class PutFilter implements Filter
                 {
                     try
                     {
-                        if (file.exists())
-                            file.delete();
+                        if (file.exists()) {
+							file.delete();
+						}
                     }
                     catch(Exception e)
                     {
@@ -270,7 +273,7 @@ public class PutFilter implements Filter
         }
     }
 
-    /* ------------------------------------------------------------------- */
+    /** -------------------------------------------------------------------. */
     public void handleDelete(HttpServletRequest request, HttpServletResponse response, String pathInContext, File file) throws ServletException, IOException
     {
         try
@@ -280,9 +283,9 @@ public class PutFilter implements Filter
             {
                 response.setStatus(HttpServletResponse.SC_NO_CONTENT);
                 response.flushBuffer();
-            }
-            else
-                response.sendError(HttpServletResponse.SC_FORBIDDEN);
+            } else {
+				response.sendError(HttpServletResponse.SC_FORBIDDEN);
+			}
         }
         catch (SecurityException sex)
         {
@@ -291,7 +294,7 @@ public class PutFilter implements Filter
         }
     }
 
-    /* ------------------------------------------------------------------- */
+    /** -------------------------------------------------------------------. */
     public void handleMove(HttpServletRequest request, HttpServletResponse response, String pathInContext, File file)
         throws ServletException, IOException, URISyntaxException
     {
@@ -309,8 +312,9 @@ public class PutFilter implements Filter
             return;
         }
         String newInfo = newPath;
-        if (contextPath != null)
-            newInfo = newInfo.substring(contextPath.length());
+        if (contextPath != null) {
+			newInfo = newInfo.substring(contextPath.length());
+		}
 
         String new_resource = URIUtil.addPaths(_baseURI,newInfo);
         File new_file=new File(new URI(new_resource));
@@ -321,7 +325,7 @@ public class PutFilter implements Filter
         response.flushBuffer();
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void handleOptions(FilterChain chain, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
     {
         chain.doFilter(request,new HttpServletResponseWrapper(response)
@@ -331,12 +335,12 @@ public class PutFilter implements Filter
             {
                 if ("Allow".equalsIgnoreCase(name))
                 {
-                    Set<String> options = new HashSet<String>();
-                    options.addAll(Arrays.asList(StringUtil.csvSplit(value)));
+                    Set<String> options = new HashSet<String>(Arrays.asList(StringUtil.csvSplit(value)));
                     options.addAll(_operations);
                     value=null;
-                    for (String o : options)
-                        value=value==null?o:(value+", "+o);
+                    for (String o : options) {
+						value=value==null?o:(value+", "+o);
+					}
                 }
 
                 super.setHeader(name,value);
@@ -346,32 +350,25 @@ public class PutFilter implements Filter
     }
 
     /* ------------------------------------------------------------ */
-    /*
+    /**
      * Check modification date headers.
      */
     protected boolean passConditionalHeaders(HttpServletRequest request, HttpServletResponse response, File file) throws IOException
     {
-        long date = 0;
+        long date = request.getDateHeader("if-unmodified-since");
 
-        if ((date = request.getDateHeader("if-unmodified-since")) > 0)
-        {
-            if (file.lastModified() / 1000 > date / 1000)
-            {
-                response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED);
-                return false;
-            }
-        }
+        if (date > 0 && file.lastModified() / 1000 > date / 1000) {
+		    response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED);
+		    return false;
+		}
 
-        if ((date = request.getDateHeader("if-modified-since")) > 0)
-        {
-            if (file.lastModified() / 1000 <= date / 1000)
-            {
-                response.reset();
-                response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-                response.flushBuffer();
-                return false;
-            }
-        }
+        date = request.getDateHeader("if-modified-since");
+		if (date > 0 && file.lastModified() / 1000 <= date / 1000) {
+		    response.reset();
+		    response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+		    response.flushBuffer();
+		    return false;
+		}
         return true;
     }
 }

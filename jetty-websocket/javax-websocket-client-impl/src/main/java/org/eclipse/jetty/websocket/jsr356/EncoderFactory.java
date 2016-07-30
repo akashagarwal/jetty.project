@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.jsr356;
 
@@ -94,11 +89,11 @@ public class EncoderFactory implements Configurable
     public Encoder getEncoderFor(Class<?> type)
     {
         Wrapper wrapper = getWrapperFor(type);
-        if (wrapper == null)
+        if (wrapper != null)
         {
-            return null;
+            return wrapper.encoder;
         }
-        return wrapper.encoder;
+        return null;
     }
 
     public EncoderMetadata getMetadataFor(Class<?> type)
@@ -129,7 +124,7 @@ public class EncoderFactory implements Configurable
             Wrapper wrapper = activeWrappers.get(type);
 
             // Try parent (if needed)
-            if ((wrapper == null) && (parentFactory != null))
+            if (wrapper == null && parentFactory != null)
             {
                 wrapper = parentFactory.getWrapperFor(type);
             }

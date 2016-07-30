@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.nosql.mongodb;
 
@@ -72,12 +67,10 @@ public class SessionSavingValueTest extends AbstractSessionValueSavingTest
         }
         catch (MalformedURLException e)
         {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         catch (Exception e)
         {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         
@@ -144,8 +137,9 @@ public class SessionSavingValueTest extends AbstractSessionValueSavingTest
                     sessionTestValue = sessionTestResponse;
 
                     String setCookie = response2.getHeaders().get("Set-Cookie");
-                    if (setCookie != null)
-                        sessionCookie = setCookie.replaceFirst("(\\W)(P|p)ath=","$1\\$Path=");
+                    if (setCookie != null) {
+						sessionCookie = setCookie.replaceFirst("(\\W)(P|p)ath=","$1\\$Path=");
+					}
 
                     Thread.sleep(requestInterval);
                 }
@@ -201,13 +195,13 @@ public class SessionSavingValueTest extends AbstractSessionValueSavingTest
         {
             if (session != null)
             {
-                if (session.getVersion() == null)
+                if (session.getVersion() != null)
                 {
-                    writer.print(session.getAttribute("test") + "/-1");
+                    writer.print(session.getAttribute("test") + "/" + session.getVersion());
                 }
                 else
                 {
-                    writer.print(session.getAttribute("test") + "/" + session.getVersion());
+                    writer.print(session.getAttribute("test") + "/-1");
                 }
             }
             else

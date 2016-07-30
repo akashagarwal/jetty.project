@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.client;
 
@@ -56,8 +51,9 @@ public class ServerConnectionCloseTest
     @After
     public void dispose() throws Exception
     {
-        if (client != null)
-            client.stop();
+        if (client != null) {
+			client.stop();
+		}
     }
 
     @Test
@@ -113,23 +109,17 @@ public class ServerConnectionCloseTest
         consumeRequest(input);
 
         OutputStream output = socket.getOutputStream();
-        String serverResponse = "" +
-                "HTTP/1.1 200 OK\r\n" +
-                "Connection: close\r\n";
+        String serverResponse = "HTTP/1.1 200 OK\r\n" + "Connection: close\r\n";
         if (chunked)
         {
-            serverResponse += "" +
-                    "Transfer-Encoding: chunked\r\n" +
-                    "\r\n";
+            serverResponse += "Transfer-Encoding: chunked\r\n" + "\r\n";
                     for (int i = 0; i < 2; ++i)
                     {
                         serverResponse +=
                                 Integer.toHexString(content.length()) + "\r\n" +
                                 content + "\r\n";
                     }
-            serverResponse += "" +
-                    "0\r\n" +
-                    "\r\n";
+            serverResponse += "0\r\n" + "\r\n";
         }
         else
         {
@@ -140,8 +130,9 @@ public class ServerConnectionCloseTest
 
         output.write(serverResponse.getBytes("UTF-8"));
         output.flush();
-        if (shutdownOutput)
-            socket.shutdownOutput();
+        if (shutdownOutput) {
+			socket.shutdownOutput();
+		}
 
         ContentResponse response = listener.get(5, TimeUnit.SECONDS);
         Assert.assertEquals(HttpStatus.OK_200, response.getStatus());
@@ -163,14 +154,17 @@ public class ServerConnectionCloseTest
         while (true)
         {
             int read = input.read();
-            if (read < 0)
-                return true;
-            if (read == '\r' || read == '\n')
-                ++crlfs;
-            else
-                crlfs = 0;
-            if (crlfs == 4)
-                return false;
+            if (read < 0) {
+				return true;
+			}
+            if (read == '\r' || read == '\n') {
+				++crlfs;
+			} else {
+				crlfs = 0;
+			}
+            if (crlfs == 4) {
+				return false;
+			}
         }
     }
 }

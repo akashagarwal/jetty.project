@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util;
 
@@ -49,7 +44,7 @@ public class URIUtil
     public static final String HTTP="http";
     public static final String HTTPS="https";
 
-    // Use UTF-8 as per http://www.w3.org/TR/html40/appendix/notes.html#non-ascii-chars
+    /** Use UTF-8 as per http://www.w3.org/TR/html40/appendix/notes.html#non-ascii-chars */
     public static final Charset __CHARSET=StandardCharsets.UTF_8 ;
 
     private URIUtil()
@@ -64,8 +59,9 @@ public class URIUtil
      */
     public static String encodePath(String path)
     {
-        if (path==null || path.length()==0)
-            return path;
+        if (path==null || path.length()==0) {
+			return path;
+		}
         
         StringBuilder buf = encodePath(null,path,0);
         return buf==null?path:buf.toString();
@@ -126,8 +122,9 @@ public class URIUtil
                         }
                 }
             }
-            if (buf==null)
-                return null;
+            if (buf==null) {
+				return null;
+			}
         }
 
         int i;
@@ -262,9 +259,9 @@ public class URIUtil
                         {
                             buf.append('%');
                             TypeUtil.toHex(c,buf);
-                        }
-                        else
-                            buf.append((char)c);
+                        } else {
+							buf.append((char)c);
+						}
                 }
             }
         }
@@ -294,8 +291,9 @@ public class URIUtil
                     break;
                 }
             }
-            if (buf==null)
-                return null;
+            if (buf==null) {
+				return null;
+			}
         }
 
         for (int i=0;i<path.length();i++)
@@ -305,16 +303,16 @@ public class URIUtil
             {
                 buf.append('%');
                 StringUtil.append(buf,(byte)(0xff&c),16);
-            }
-            else
-                buf.append(c);
+            } else {
+				buf.append(c);
+			}
         }
 
         return buf;
     }
     
     /* ------------------------------------------------------------ */
-    /* Decode a URI path and strip parameters
+    /** Decode a URI path and strip parameters.
      */
     public static String decodePath(String path)
     {
@@ -322,7 +320,7 @@ public class URIUtil
     }
 
     /* ------------------------------------------------------------ */
-    /* Decode a URI path and strip parameters of UTF-8 path
+    /** Decode a URI path and strip parameters of UTF-8 path.
      */
     public static String decodePath(String path, int offset, int length)
     {
@@ -341,7 +339,7 @@ public class URIUtil
                             builder=new Utf8StringBuilder(path.length());
                             builder.append(path,offset,i-offset);
                         }
-                        if ((i+2)<end)
+                        if (i+2<end)
                         {
                             char u=path.charAt(i+1);
                             if (u=='u')
@@ -352,7 +350,7 @@ public class URIUtil
                             }
                             else
                             {
-                                builder.append((byte)(0xff&(TypeUtil.convertHexDigit(u)*16+TypeUtil.convertHexDigit(path.charAt(i+2)))));
+                                builder.append((byte)(0xff&TypeUtil.convertHexDigit(u)*16+TypeUtil.convertHexDigit(path.charAt(i+2))));
                                 i+=2;
                             }
                         }
@@ -382,16 +380,19 @@ public class URIUtil
                         break;
 
                     default:
-                        if (builder!=null)
-                            builder.append(c);
+                        if (builder!=null) {
+							builder.append(c);
+						}
                         break;
                 }
             }
 
-            if (builder!=null)
-                return builder.toString();
-            if (offset==0 && length==path.length())
-                return path;
+            if (builder!=null) {
+				return builder.toString();
+			}
+            if (offset==0 && length==path.length()) {
+				return path;
+			}
             return path.substring(offset,end);   
         }
         catch(NotUtf8Exception e)
@@ -404,7 +405,7 @@ public class URIUtil
 
     
     /* ------------------------------------------------------------ */
-    /* Decode a URI path and strip parameters of ISO-8859-1 path
+    /** Decode a URI path and strip parameters of ISO-8859-1 path.
      */
     private static String decodeISO88591Path(String path, int offset, int length)
     {
@@ -421,7 +422,7 @@ public class URIUtil
                         builder=new StringBuilder(path.length());
                         builder.append(path,offset,i-offset);
                     }
-                    if ((i+2)<end)
+                    if (i+2<end)
                     {
                         char u=path.charAt(i+1);
                         if (u=='u')
@@ -432,7 +433,7 @@ public class URIUtil
                         }
                         else
                         {
-                            builder.append((byte)(0xff&(TypeUtil.convertHexDigit(u)*16+TypeUtil.convertHexDigit(path.charAt(i+2)))));
+                            builder.append((byte)(0xff&TypeUtil.convertHexDigit(u)*16+TypeUtil.convertHexDigit(path.charAt(i+2))));
                             i+=2;
                         }
                     }
@@ -461,16 +462,19 @@ public class URIUtil
                     
                     
                 default:
-                    if (builder!=null)
-                        builder.append(c);
+                    if (builder!=null) {
+						builder.append(c);
+					}
                     break;
             }
         }
 
-        if (builder!=null)
-            return builder.toString();
-        if (offset==0 && length==path.length())
-            return path;
+        if (builder!=null) {
+			return builder.toString();
+		}
+        if (offset==0 && length==path.length()) {
+			return path;
+		}
         return path.substring(offset,end);        
     }
 
@@ -487,20 +491,25 @@ public class URIUtil
     {
         if (p1==null || p1.length()==0)
         {
-            if (p1!=null && p2==null)
-                return p1;
+            if (p1!=null && p2==null) {
+				return p1;
+			}
             return p2;
         }
-        if (p2==null || p2.length()==0)
-            return p1;
+        if (p2==null || p2.length()==0) {
+			return p1;
+		}
         
         int split=p1.indexOf(';');
-        if (split<0)
-            split=p1.indexOf('?');
-        if (split==0)
-            return p2+p1;
-        if (split<0)
-            split=p1.length();
+        if (split<0) {
+			split=p1.indexOf('?');
+		}
+        if (split==0) {
+			return p2+p1;
+		}
+        if (split<0) {
+			split=p1.length();
+		}
 
         StringBuilder buf = new StringBuilder(p1.length()+p2.length()+2);
         buf.append(p1);
@@ -511,20 +520,16 @@ public class URIUtil
             {
                 buf.deleteCharAt(split-1);
                 buf.insert(split-1,p2);
-            }
-            else
-                buf.insert(split,p2);
-        }
-        else
-        {
-            if (p2.startsWith(URIUtil.SLASH))
-                buf.insert(split,p2);
-            else
-            {
-                buf.insert(split,'/');
-                buf.insert(split+1,p2);
-            }
-        }
+            } else {
+				buf.insert(split,p2);
+			}
+        } else if (p2.startsWith(URIUtil.SLASH)) {
+			buf.insert(split,p2);
+		} else
+		{
+		    buf.insert(split,'/');
+		    buf.insert(split+1,p2);
+		}
 
         return buf.toString();
     }
@@ -537,11 +542,13 @@ public class URIUtil
      */
     public static String parentPath(String p)
     {
-        if (p==null || URIUtil.SLASH.equals(p))
-            return null;
+        if (p==null || URIUtil.SLASH.equals(p)) {
+			return null;
+		}
         int slash=p.lastIndexOf('/',p.length()-2);
-        if (slash>=0)
-            return p.substring(0,slash+1);
+        if (slash>=0) {
+			return p.substring(0,slash+1);
+		}
         return null;
     }
     
@@ -554,8 +561,9 @@ public class URIUtil
      */
     public static String canonicalPath(String path)
     {
-        if (path==null || path.length()==0)
-            return path;
+        if (path==null || path.length()==0) {
+			return path;
+		}
 
         int end=path.length();
         int start = path.lastIndexOf('/', end);
@@ -566,12 +574,14 @@ public class URIUtil
             switch(end-start)
             {
               case 2: // possible single dot
-                  if (path.charAt(start+1)!='.')
-                      break;
+                  if (path.charAt(start+1)!='.') {
+					break;
+				}
                   break search;
               case 3: // possible double dot
-                  if (path.charAt(start+1)!='.' || path.charAt(start+2)!='.')
-                      break;
+                  if (path.charAt(start+1)!='.' || path.charAt(start+2)!='.') {
+					break;
+				}
                   break search;
             }
             
@@ -580,8 +590,9 @@ public class URIUtil
         }
 
         // If we have checked the entire string
-        if (start>=end)
-            return path;
+        if (start>=end) {
+			return path;
+		}
         
         StringBuilder buf = new StringBuilder(path);
         int delStart=-1;
@@ -598,31 +609,37 @@ public class URIUtil
                       if (skip>0 && --skip==0)
                       {   
                           delStart=start>=0?start:0;
-                          if(delStart>0 && delEnd==buf.length() && buf.charAt(delEnd-1)=='.')
-                              delStart++;
+                          if(delStart>0 && delEnd==buf.length() && buf.charAt(delEnd-1)=='.') {
+							delStart++;
+						}
                       }
                       break;
                   }
                   
-                  if(start<0 && buf.length()>2 && buf.charAt(1)=='/' && buf.charAt(2)=='/')
-                      break;
+                  if(start<0 && buf.length()>2 && buf.charAt(1)=='/' && buf.charAt(2)=='/') {
+					break;
+				}
                   
-                  if(delEnd<0)
-                      delEnd=end;
+                  if(delEnd<0) {
+					delEnd=end;
+				}
                   delStart=start;
-                  if (delStart<0 || delStart==0&&buf.charAt(delStart)=='/')
+                  if (delStart<0 || (delStart==0&&buf.charAt(delStart)=='/'))
                   {
                       delStart++;
-                      if (delEnd<buf.length() && buf.charAt(delEnd)=='/')
-                          delEnd++;
+                      if (delEnd<buf.length() && buf.charAt(delEnd)=='/') {
+						delEnd++;
+					}
                       break;
                   }
-                  if (end==buf.length())
-                      delStart++;
+                  if (end==buf.length()) {
+					delStart++;
+				}
                   
                   end=start--;
-                  while (start>=0 && buf.charAt(start)!='/')
-                      start--;
+                  while (start>=0 && buf.charAt(start)!='/') {
+					start--;
+				}
                   continue;
                   
               case 3: // possible double dot
@@ -630,28 +647,32 @@ public class URIUtil
                   {
                       if (skip>0 && --skip==0)
                       {   delStart=start>=0?start:0;
-                          if(delStart>0 && delEnd==buf.length() && buf.charAt(delEnd-1)=='.')
-                              delStart++;
+                          if(delStart>0 && delEnd==buf.length() && buf.charAt(delEnd-1)=='.') {
+							delStart++;
+						}
                       }
                       break;
                   }
                   
                   delStart=start;
-                  if (delEnd<0)
-                      delEnd=end;
+                  if (delEnd<0) {
+					delEnd=end;
+				}
 
                   skip++;
                   end=start--;
-                  while (start>=0 && buf.charAt(start)!='/')
-                      start--;
+                  while (start>=0 && buf.charAt(start)!='/') {
+					start--;
+				}
                   continue;
 
               default:
                   if (skip>0 && --skip==0)
                   {
                       delStart=start>=0?start:0;
-                      if(delEnd==buf.length() && buf.charAt(delEnd-1)=='.')
-                          delStart++;
+                      if(delEnd==buf.length() && buf.charAt(delEnd-1)=='.') {
+						delStart++;
+					}
                   }
             }     
             
@@ -660,22 +681,26 @@ public class URIUtil
             {  
                 buf.delete(delStart,delEnd);
                 delStart=delEnd=-1;
-                if (skip>0)
-                    delEnd=end;
+                if (skip>0) {
+					delEnd=end;
+				}
             }
             
             end=start--;
-            while (start>=0 && buf.charAt(start)!='/')
-                start--;
+            while (start>=0 && buf.charAt(start)!='/') {
+				start--;
+			}
         }      
 
         // Too many ..
-        if (skip>0)
-            return null;
+        if (skip>0) {
+			return null;
+		}
         
         // Do the delete
-        if (delEnd>=0)
-            buf.delete(delStart,delEnd);
+        if (delEnd>=0) {
+			buf.delete(delStart,delEnd);
+		}
 
         return buf.toString();
     }
@@ -688,8 +713,9 @@ public class URIUtil
      */
     public static String compactPath(String path)
     {
-        if (path==null || path.length()==0)
-            return path;
+        if (path==null || path.length()==0) {
+			return path;
+		}
 
         int state=0;
         int end=path.length();
@@ -705,8 +731,9 @@ public class URIUtil
                     return path;
                 case '/':
                     state++;
-                    if (state==2)
-                        break loop;
+                    if (state==2) {
+						break loop;
+					}
                     break;
                 default:
                     state=0;
@@ -714,8 +741,9 @@ public class URIUtil
             i++;
         }
         
-        if (state<2)
-            return path;
+        if (state<2) {
+			return path;
+		}
         
         StringBuilder buf = new StringBuilder(path.length());
         buf.append(path,0,i);
@@ -730,8 +758,9 @@ public class URIUtil
                     buf.append(path,i,end);
                     break loop2;
                 case '/':
-                    if (state++==0)
-                        buf.append(c);
+                    if (state++==0) {
+						buf.append(c);
+					}
                     break;
                 default:
                     state=0;
@@ -753,23 +782,19 @@ public class URIUtil
         for (int i=0;i<uri.length();i++)
         {
             char c=uri.charAt(i);
-            if (c==':')
-                return true;
-            if (!(c>='a'&&c<='z' ||
-                  c>='A'&&c<='Z' ||
-                  (i>0 &&(c>='0'&&c<='9' ||
-                          c=='.' ||
-                          c=='+' ||
-                          c=='-'))
-                  ))
-                break;
+            if (c==':') {
+				return true;
+			}
+            if ((c < 'a' || c > 'z') && (c < 'A' || c > 'Z') && (i <= 0 || ((c < '0' || c > '9') && c != '.' && c != '+' && c != '-'))) {
+				break;
+			}
         }
         return false;
     }
 
     /* ------------------------------------------------------------ */
     /**
-     * Create a new URI from the arguments, handling IPv6 host encoding and default ports
+     * Create a new URI from the arguments, handling IPv6 host encoding and default ports.
      * @param scheme the URI scheme
      * @param server the URI server
      * @param port the URI port
@@ -781,14 +806,15 @@ public class URIUtil
     {
         StringBuilder builder = newURIBuilder(scheme, server, port);
         builder.append(path);
-        if (query!=null && query.length()>0)
-            builder.append('?').append(query);
+        if (query!=null && query.length()>0) {
+			builder.append('?').append(query);
+		}
         return builder.toString();
     }
     
     /* ------------------------------------------------------------ */
     /**
-     * Create a new URI StringBuilder from the arguments, handling IPv6 host encoding and default ports
+     * Create a new URI StringBuilder from the arguments, handling IPv6 host encoding and default ports.
      * @param scheme the URI scheme
      * @param server the URI server
      * @param port the URI port
@@ -803,7 +829,7 @@ public class URIUtil
 
     /* ------------------------------------------------------------ */
     /** 
-     * Append scheme, host and port URI prefix, handling IPv6 address encoding and default ports
+     * Append scheme, host and port URI prefix, handling IPv6 address encoding and default ports.
      * @param url StringBuilder to append to
      * @param scheme the URI scheme
      * @param server the URI server
@@ -811,23 +837,26 @@ public class URIUtil
      */
     public static void appendSchemeHostPort(StringBuilder url,String scheme,String server, int port)
     {
-        if (server.indexOf(':')>=0&&server.charAt(0)!='[')
-            url.append(scheme).append("://").append('[').append(server).append(']');
-        else
-            url.append(scheme).append("://").append(server);
+        if (server.indexOf(':')>=0&&server.charAt(0)!='[') {
+			url.append(scheme).append("://").append('[').append(server).append(']');
+		} else {
+			url.append(scheme).append("://").append(server);
+		}
 
         if (port > 0)
         {
             switch(scheme)
             {
                 case "http":
-                    if (port!=80) 
-                        url.append(':').append(port);
+                    if (port!=80) {
+						url.append(':').append(port);
+					}
                     break;
                     
                 case "https":
-                    if (port!=443) 
-                        url.append(':').append(port);
+                    if (port!=443) {
+						url.append(':').append(port);
+					}
                     break;
 
                 default:
@@ -838,7 +867,7 @@ public class URIUtil
     
     /* ------------------------------------------------------------ */
     /** 
-     * Append scheme, host and port URI prefix, handling IPv6 address encoding and default ports
+     * Append scheme, host and port URI prefix, handling IPv6 address encoding and default ports.
      * @param url StringBuffer to append to
      * @param scheme the URI scheme
      * @param server the URI server
@@ -848,23 +877,26 @@ public class URIUtil
     {
         synchronized (url)
         {
-            if (server.indexOf(':')>=0&&server.charAt(0)!='[')
-                url.append(scheme).append("://").append('[').append(server).append(']');
-            else
-                url.append(scheme).append("://").append(server);
+            if (server.indexOf(':')>=0&&server.charAt(0)!='[') {
+				url.append(scheme).append("://").append('[').append(server).append(']');
+			} else {
+				url.append(scheme).append("://").append(server);
+			}
 
             if (port > 0)
             {
                 switch(scheme)
                 {
                     case "http":
-                        if (port!=80) 
-                            url.append(':').append(port);
+                        if (port!=80) {
+							url.append(':').append(port);
+						}
                         break;
                         
                     case "https":
-                        if (port!=443) 
-                            url.append(':').append(port);
+                        if (port!=443) {
+							url.append(':').append(port);
+						}
                         break;
 
                     default:
@@ -885,43 +917,52 @@ public class URIUtil
         {
             int oa=uriA.charAt(a++);
             int ca=oa;
-            if (ca=='%')
-                ca=TypeUtil.convertHexDigit(uriA.charAt(a++))*16+TypeUtil.convertHexDigit(uriA.charAt(a++));
+            if (ca=='%') {
+				ca=TypeUtil.convertHexDigit(uriA.charAt(a++))*16+TypeUtil.convertHexDigit(uriA.charAt(a++));
+			}
             
             int ob=uriB.charAt(b++);
             int cb=ob;
-            if (cb=='%')
-                cb=TypeUtil.convertHexDigit(uriB.charAt(b++))*16+TypeUtil.convertHexDigit(uriB.charAt(b++));
+            if (cb=='%') {
+				cb=TypeUtil.convertHexDigit(uriB.charAt(b++))*16+TypeUtil.convertHexDigit(uriB.charAt(b++));
+			}
             
-            if (ca=='/' && oa!=ob)
-                return false;
+            if (ca=='/' && oa!=ob) {
+				return false;
+			}
             
-            if (ca!=cb )
-                return URIUtil.decodePath(uriA).equals(URIUtil.decodePath(uriB));
+            if (ca!=cb ) {
+				return URIUtil.decodePath(uriA).equals(URIUtil.decodePath(uriB));
+			}
         }
         return a==lenA && b==lenB;
     }
 
     public static boolean equalsIgnoreEncodings(URI uriA, URI uriB)
     {
-        if (uriA.equals(uriB))
-            return true;
+        if (uriA.equals(uriB)) {
+			return true;
+		}
 
         if (uriA.getScheme()==null)
         {
-            if (uriB.getScheme()!=null)
-                return false;
+            if (uriB.getScheme()!=null) {
+				return false;
+			}
         }
-        else if (!uriA.getScheme().equals(uriB.getScheme()))
-            return false;
+        else if (!uriA.getScheme().equals(uriB.getScheme())) {
+			return false;
+		}
 
         if (uriA.getAuthority()==null)
         {
-            if (uriB.getAuthority()!=null)
-                return false;
+            if (uriB.getAuthority()!=null) {
+				return false;
+			}
         }
-        else if (!uriA.getAuthority().equals(uriB.getAuthority()))
-            return false;
+        else if (!uriA.getAuthority().equals(uriB.getAuthority())) {
+			return false;
+		}
 
         return equalsIgnoreEncodings(uriA.getPath(),uriB.getPath());
     }
@@ -931,8 +972,9 @@ public class URIUtil
         String base = uri.toASCIIString();
         StringBuilder buf = new StringBuilder(base.length()+path.length()*3);
         buf.append(base);
-        if (buf.charAt(base.length()-1)!='/')
-            buf.append('/');
+        if (buf.charAt(base.length()-1)!='/') {
+			buf.append('/');
+		}
 
         byte[] bytes=null;
         int offset=path.charAt(0)=='/'?1:0;

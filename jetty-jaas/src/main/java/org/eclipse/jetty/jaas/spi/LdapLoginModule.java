@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.jaas.spi;
 
@@ -84,12 +79,12 @@ public class LdapLoginModule extends AbstractLoginModule
     private static final Logger LOG = Log.getLogger(LdapLoginModule.class);
 
     /**
-     * hostname of the ldap server
+     * Hostname of the ldap server.
      */
     private String _hostname;
 
     /**
-     * port of the ldap server
+     * Port of the ldap server.
      */
     private int _port;
 
@@ -104,75 +99,75 @@ public class LdapLoginModule extends AbstractLoginModule
     private String _contextFactory;
 
     /**
-     * root DN used to connect to
+     * Root DN used to connect to.
      */
     private String _bindDn;
 
     /**
-     * password used to connect to the root ldap context
+     * Password used to connect to the root ldap context.
      */
     private String _bindPassword;
 
     /**
-     * object class of a user
+     * Object class of a user.
      */
     private String _userObjectClass = "inetOrgPerson";
 
     /**
-     * attribute that the principal is located
+     * Attribute that the principal is located.
      */
     private String _userRdnAttribute = "uid";
 
     /**
-     * attribute that the principal is located
+     * Attribute that the principal is located.
      */
     private String _userIdAttribute = "cn";
 
     /**
-     * name of the attribute that a users password is stored under
+     * Name of the attribute that a users password is stored under
      * <p>
      * NOTE: not always accessible, see force binding login
      */
     private String _userPasswordAttribute = "userPassword";
 
     /**
-     * base DN where users are to be searched from
+     * Base DN where users are to be searched from.
      */
     private String _userBaseDn;
 
     /**
-     * base DN where role membership is to be searched from
+     * Base DN where role membership is to be searched from.
      */
     private String _roleBaseDn;
 
     /**
-     * object class of roles
+     * Object class of roles.
      */
     private String _roleObjectClass = "groupOfUniqueNames";
 
     /**
-     * name of the attribute that a username would be under a role class
+     * Name of the attribute that a username would be under a role class.
      */
     private String _roleMemberAttribute = "uniqueMember";
 
     /**
-     * the name of the attribute that a role would be stored under
+     * The name of the attribute that a role would be stored under.
      */
     private String _roleNameAttribute = "roleName";
 
     private boolean _debug;
 
     /**
-     * if the getUserInfo can pull a password off of the user then
+     * If the getUserInfo can pull a password off of the user then
      * password comparison is an option for authn, to force binding
-     * login checks, set this to true
+     * login checks, set this to true.
      */
-    private boolean _forceBindingLogin = false;
+    private boolean _forceBindingLogin;
 
     /**
-     * When true changes the protocol to ldaps
+     * When true changes the protocol to ldaps.
      */
-    private boolean _useLdaps = false;
+    private boolean _useLdaps;
 
     private DirContext _rootContext;
 
@@ -180,10 +175,6 @@ public class LdapLoginModule extends AbstractLoginModule
     public class LDAPUserInfo extends UserInfo
     {
 
-        /**
-         * @param userName
-         * @param credential
-         */
         public LDAPUserInfo(String userName, Credential credential)
         {
             super(userName, credential);
@@ -199,12 +190,12 @@ public class LdapLoginModule extends AbstractLoginModule
     
     
     /**
-     * get the available information about the user
+     * Get the available information about the user
      * <p>
      * for this LoginModule, the credential can be null which will result in a
      * binding ldap authentication scenario
      * <p>
-     * roles are also an optional concept if required
+     * roles are also an optional concept if required.
      *
      * @param username the user name
      * @return the userinfo for the username
@@ -256,7 +247,7 @@ public class LdapLoginModule extends AbstractLoginModule
     }
 
     /**
-     * attempts to get the users credentials from the users context
+     * Attempts to get the users credentials from the users context
      * <p>
      * NOTE: this is not an user authenticated operation
      *
@@ -319,7 +310,7 @@ public class LdapLoginModule extends AbstractLoginModule
     }
 
     /**
-     * attempts to get the users roles from the root context
+     * Attempts to get the users roles from the root context
      * <p>
      * NOTE: this is not an user authenticated operation
      *
@@ -357,7 +348,7 @@ public class LdapLoginModule extends AbstractLoginModule
 
         while (results.hasMoreElements())
         {
-            SearchResult result = (SearchResult) results.nextElement();
+            SearchResult result = results.nextElement();
 
             Attributes attributes = result.getAttributes();
 
@@ -385,11 +376,11 @@ public class LdapLoginModule extends AbstractLoginModule
 
 
     /**
-     * since ldap uses a context bind for valid authentication checking, we override login()
+     * Since ldap uses a context bind for valid authentication checking, we override login()
      * <p>
      * if credentials are not available from the users context or if we are forcing the binding check
      * then we try a binding authentication check, otherwise if we have the users encoded password then
-     * we can try authentication via that mechanic
+     * we can try authentication via that mechanic.
      *
      * @return true if authenticated, false otherwise
      * @throws LoginException if unable to login
@@ -434,15 +425,17 @@ public class LdapLoginModule extends AbstractLoginModule
 
                 setCurrentUser(new JAASUserInfo(userInfo));
 
-                if (webCredential instanceof String)
-                    authed = credentialLogin(Credential.getCredential((String) webCredential));
-                else
-                    authed = credentialLogin(webCredential);
+                if (webCredential instanceof String) {
+					authed = credentialLogin(Credential.getCredential((String) webCredential));
+				} else {
+					authed = credentialLogin(webCredential);
+				}
             }
 
             //only fetch roles if authenticated
-            if (authed)
-                getCurrentUser().fetchRoles();
+            if (authed) {
+				getCurrentUser().fetchRoles();
+			}
 
             return authed;
         }
@@ -469,7 +462,7 @@ public class LdapLoginModule extends AbstractLoginModule
     }
 
     /**
-     * password supplied authentication check
+     * Password supplied authentication check.
      *
      * @param webCredential the web credential
      * @return true if authenticated
@@ -482,7 +475,7 @@ public class LdapLoginModule extends AbstractLoginModule
     }
 
     /**
-     * binding authentication check
+     * Binding authentication check
      * This method of authentication works only if the user branch of the DIT (ldap tree)
      * has an ACI (access control instruction) that allow the access to any user or at least
      * for the user that logs in.
@@ -534,8 +527,9 @@ public class LdapLoginModule extends AbstractLoginModule
 
         String filter = "(&(objectClass={0})({1}={2}))";
 
-        if (LOG.isDebugEnabled())
-            LOG.debug("Searching for users with filter: \'" + filter + "\'" + " from base dn: " + _userBaseDn);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Searching for users with filter: \'" + filter + "\'" + " from base dn: " + _userBaseDn);
+		}
 
         Object[] filterArguments = new Object[]{
                                                 _userObjectClass,
@@ -544,15 +538,16 @@ public class LdapLoginModule extends AbstractLoginModule
         };
         NamingEnumeration<SearchResult> results = _rootContext.search(_userBaseDn, filter, filterArguments, ctls);
 
-        if (LOG.isDebugEnabled())
-            LOG.debug("Found user?: " + results.hasMoreElements());
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Found user?: " + results.hasMoreElements());
+		}
 
         if (!results.hasMoreElements())
         {
             throw new LoginException("User not found.");
         }
 
-        return (SearchResult) results.nextElement();
+        return results.nextElement();
     }
 
 
@@ -601,7 +596,7 @@ public class LdapLoginModule extends AbstractLoginModule
         _roleObjectClass = getOption(options, "roleObjectClass", _roleObjectClass);
         _roleMemberAttribute = getOption(options, "roleMemberAttribute", _roleMemberAttribute);
         _roleNameAttribute = getOption(options, "roleNameAttribute", _roleNameAttribute);
-        _debug = Boolean.parseBoolean(String.valueOf(getOption(options, "debug", Boolean.toString(_debug))));
+        _debug = Boolean.parseBoolean(getOption(options, "debug", Boolean.toString(_debug)));
 
         try
         {
@@ -645,16 +640,16 @@ public class LdapLoginModule extends AbstractLoginModule
     {
         Object value = options.get(key);
 
-        if (value == null)
+        if (value != null)
         {
-            return defaultValue;
+            return (String) value;
         }
 
-        return (String) value;
+        return defaultValue;
     }
 
     /**
-     * get the context for connection
+     * Get the context for connection.
      *
      * @return the environment details for the context
      */

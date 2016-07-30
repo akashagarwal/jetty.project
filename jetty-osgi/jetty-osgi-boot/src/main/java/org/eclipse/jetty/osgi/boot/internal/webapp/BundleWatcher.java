@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.osgi.boot.internal.webapp;
 
@@ -57,43 +52,43 @@ public class BundleWatcher implements BundleTrackerCustomizer
     private ServiceTracker _serviceTracker;
     private BundleTracker _bundleTracker;
     private boolean _waitForDefaultServer = true;
-    private boolean _defaultServerReady = false;
-    private Bundle _bundle = null;
+    private boolean _defaultServerReady;
+    private Bundle _bundle;
     
  
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public BundleWatcher() throws Exception
     {
-        _bundle = FrameworkUtil.getBundle(this.getClass());
+        _bundle = FrameworkUtil.getBundle(getClass());
         //Track all BundleProviders (Jetty DeploymentManager Providers that can deploy bundles)
         _serviceTracker = new ServiceTracker(_bundle.getBundleContext(), FrameworkUtil.createFilter(FILTER),null);
         _serviceTracker.open();
     }
     
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public boolean isWaitForDefaultServer()
     {
         return _waitForDefaultServer;
     }
 
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void setWaitForDefaultServer(boolean waitForDefaultServer)
     {
         _waitForDefaultServer = waitForDefaultServer;
     }
 
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void setBundleTracker (BundleTracker bundleTracker)
     {
         _bundleTracker = bundleTracker;
     }
 
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void open () throws Exception
     {
         if (_waitForDefaultServer && !_defaultServerReady)
@@ -121,16 +116,17 @@ public class BundleWatcher implements BundleTrackerCustomizer
                 }
             };
             defaultServerTracker.open();
-        }
-        else
-            openBundleTracker();
+        } else {
+			openBundleTracker();
+		}
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public Map<ServiceReference, BundleProvider> getDeployers(String managedServerName)
     {
-        if (managedServerName == null)
-            managedServerName = OSGiServerConstants.MANAGED_JETTY_SERVER_DEFAULT_NAME;
+        if (managedServerName == null) {
+			managedServerName = OSGiServerConstants.MANAGED_JETTY_SERVER_DEFAULT_NAME;
+		}
         
         Map<ServiceReference, BundleProvider> candidates = new HashMap<ServiceReference, BundleProvider>();
         
@@ -143,8 +139,9 @@ public class BundleWatcher implements BundleTrackerCustomizer
                 if (managedServerName.equalsIgnoreCase(name))
                 {
                     BundleProvider candidate = (BundleProvider)_serviceTracker.getService(ref);
-                    if (candidate != null)
-                        candidates.put(ref, candidate);
+                    if (candidate != null) {
+						candidates.put(ref, candidate);
+					}
                 }
             }
         }
@@ -181,11 +178,6 @@ public class BundleWatcher implements BundleTrackerCustomizer
         else if (bundle.getState() == Bundle.STOPPING)
         {
             unregister(bundle);
-        }
-        else
-        {
-            // we should not be called in that state as
-            // we are registered only for ACTIVE and STOPPING
         }
         return null;
     }
@@ -250,8 +242,9 @@ public class BundleWatcher implements BundleTrackerCustomizer
      */
     private boolean register(Bundle bundle)
     {
-        if (bundle == null)
-            return false;
+        if (bundle == null) {
+			return false;
+		}
 
         //It might be a bundle that is deployable by Jetty.
         //Use any named Server instance provided, defaulting to the default Server instance if none supplied
@@ -278,10 +271,7 @@ public class BundleWatcher implements BundleTrackerCustomizer
         return deployed;
     }
 
-    /* ------------------------------------------------------------ */
-    /**
-     * @param bundle
-     */
+    /** ------------------------------------------------------------. */
     private void unregister(Bundle bundle)
     { 
         boolean undeployed = false;

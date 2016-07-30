@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 
@@ -43,7 +38,7 @@ import org.junit.After;
 import org.junit.Before;
 
 public class HttpServerTestFixture
-{    // Useful constants
+{    /** Useful constants. */
     protected static final long PAUSE=10L;
     protected static final int LOOPS= PropertyFlag.isEnabled("test.stress")?250:50;
 
@@ -120,12 +115,14 @@ public class HttpServerTestFixture
         {
             baseRequest.setHandled(true);
 
-            if (request.getContentType()!=null)
-                response.setContentType(request.getContentType());
-            if (request.getParameter("charset")!=null)
-                response.setCharacterEncoding(request.getParameter("charset"));
-            else if (request.getCharacterEncoding()!=null)
-                response.setCharacterEncoding(request.getCharacterEncoding());
+            if (request.getContentType()!=null) {
+				response.setContentType(request.getContentType());
+			}
+            if (request.getParameter("charset")!=null) {
+				response.setCharacterEncoding(request.getParameter("charset"));
+			} else if (request.getCharacterEncoding()!=null) {
+				response.setCharacterEncoding(request.getCharacterEncoding());
+			}
 
             PrintWriter writer=response.getWriter();
 
@@ -146,8 +143,9 @@ public class HttpServerTestFixture
 
             if (count==0)
             {
-                if (_musthavecontent)
-                    throw new IllegalStateException("no input recieved");
+                if (_musthavecontent) {
+					throw new IllegalStateException("no input recieved");
+				}
 
                 writer.println("No content");
             }
@@ -156,8 +154,9 @@ public class HttpServerTestFixture
             reader.close();
             writer.close();
 
-            if (reader.read()>=0)
-                throw new IllegalStateException("Not closed");
+            if (reader.read()>=0) {
+				throw new IllegalStateException("Not closed");
+			}
         }
     }
 
@@ -167,10 +166,11 @@ public class HttpServerTestFixture
         public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
         {
             baseRequest.setHandled(true);
-            if (request.getMethod().equals("OPTIONS"))
-                response.setStatus(200);
-            else
-                response.setStatus(500);
+            if ("OPTIONS".equals(request.getMethod())) {
+				response.setStatus(200);
+			} else {
+				response.setStatus(500);
+			}
 
             response.setHeader("Allow", "GET");
         }
@@ -206,8 +206,9 @@ public class HttpServerTestFixture
             String chars=request.getParameter("chars");
 
             String data = "\u0a870123456789A\u0a87CDEFGHIJKLMNOPQRSTUVWXYZ\u0250bcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            while (data.length()<block)
-                data+=data;
+            while (data.length()<block) {
+				data+=data;
+			}
 
             String chunk = (input+data).substring(0,block);
             response.setContentType("text/plain");
@@ -228,8 +229,9 @@ public class HttpServerTestFixture
                 for (int i=0;i<writes;i++)
                 {
                     out.write(c);
-                    if (out.checkError())
-                        break;
+                    if (out.checkError()) {
+						break;
+					}
                 }
             }
             else
@@ -239,8 +241,9 @@ public class HttpServerTestFixture
                 for (int i=0;i<writes;i++)
                 {
                     out.write(chunk);
-                    if (out.checkError())
-                        break;
+                    if (out.checkError()) {
+						break;
+					}
                 }
             }
 
@@ -248,7 +251,7 @@ public class HttpServerTestFixture
     }
 
 
-    public final static HostnameVerifier __hostnameverifier = new HostnameVerifier()
+    public static final HostnameVerifier __hostnameverifier = new HostnameVerifier()
     {
         public boolean verify(String hostname, SSLSession session)
         {

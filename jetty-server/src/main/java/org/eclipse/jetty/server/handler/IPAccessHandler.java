@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server.handler;
 
@@ -104,14 +99,14 @@ import org.eclipse.jetty.util.log.Logger;
 public class IPAccessHandler extends HandlerWrapper
 {
     private static final Logger LOG = Log.getLogger(IPAccessHandler.class);
-    // true means nodefault match
+    /** True means nodefault match. */
     PathMap<IPAddressMap<Boolean>> _white = new PathMap<IPAddressMap<Boolean>>(true);
     PathMap<IPAddressMap<Boolean>> _black = new PathMap<IPAddressMap<Boolean>>(true);
-    boolean _whiteListByPath = false;
+    boolean _whiteListByPath;
 
     /* ------------------------------------------------------------ */
     /**
-     * Creates new handler object
+     * Creates new handler object.
      */
     public IPAccessHandler()
     {
@@ -120,7 +115,7 @@ public class IPAccessHandler extends HandlerWrapper
 
     /* ------------------------------------------------------------ */
     /**
-     * Creates new handler object and initializes white- and black-list
+     * Creates new handler object and initializes white- and black-list.
      *
      * @param white array of whitelist entries
      * @param black array of blacklist entries
@@ -129,15 +124,17 @@ public class IPAccessHandler extends HandlerWrapper
     {
         super();
 
-        if (white != null && white.length > 0)
-            setWhite(white);
-        if (black != null && black.length > 0)
-            setBlack(black);
+        if (white != null && white.length > 0) {
+			setWhite(white);
+		}
+        if (black != null && black.length > 0) {
+			setBlack(black);
+		}
     }
 
     /* ------------------------------------------------------------ */
     /**
-     * Add a whitelist entry to an existing handler configuration
+     * Add a whitelist entry to an existing handler configuration.
      *
      * @param entry new whitelist entry
      */
@@ -148,7 +145,7 @@ public class IPAccessHandler extends HandlerWrapper
 
     /* ------------------------------------------------------------ */
     /**
-     * Add a blacklist entry to an existing handler configuration
+     * Add a blacklist entry to an existing handler configuration.
      *
      * @param entry new blacklist entry
      */
@@ -159,7 +156,7 @@ public class IPAccessHandler extends HandlerWrapper
 
     /* ------------------------------------------------------------ */
     /**
-     * Re-initialize the whitelist of existing handler object
+     * Re-initialize the whitelist of existing handler object.
      *
      * @param entries array of whitelist entries
      */
@@ -170,7 +167,7 @@ public class IPAccessHandler extends HandlerWrapper
 
     /* ------------------------------------------------------------ */
     /**
-     * Re-initialize the blacklist of existing handler object
+     * Re-initialize the blacklist of existing handler object.
      *
      * @param entries array of blacklist entries
      */
@@ -181,7 +178,7 @@ public class IPAccessHandler extends HandlerWrapper
 
     /* ------------------------------------------------------------ */
     /**
-     * Re-initialize the mode of path matching
+     * Re-initialize the mode of path matching.
      *
      * @param whiteListByPath matching mode
      */
@@ -241,16 +238,18 @@ public class IPAccessHandler extends HandlerWrapper
             else
             {
                 idx = entry.indexOf('/');
-                deprecated = (idx >= 0);
+                deprecated = idx >= 0;
             }
 
             String addr = idx > 0 ? entry.substring(0,idx) : entry;
             String path = idx > 0 ? entry.substring(idx) : "/*";
 
-            if (addr.endsWith("."))
-                deprecated = true;
-            if (path!=null && (path.startsWith("|") || path.startsWith("/*.")))
-                path=path.substring(1);
+            if (addr.endsWith(".")) {
+				deprecated = true;
+			}
+            if (path!=null && (path.startsWith("|") || path.startsWith("/*."))) {
+				path=path.substring(1);
+			}
 
             IPAddressMap<Boolean> addrMap = patternMap.get(path);
             if (addrMap == null)
@@ -258,19 +257,21 @@ public class IPAccessHandler extends HandlerWrapper
                 addrMap = new IPAddressMap<Boolean>();
                 patternMap.put(path,addrMap);
             }
-            if (addr != null && !"".equals(addr))
-                // MUST NOT BE null
+            if (addr != null && !"".equals(addr)) {
+				// MUST NOT BE null
                 addrMap.put(addr, true);
+			}
 
-            if (deprecated)
-                LOG.debug(toString() +" - deprecated specification syntax: "+entry);
+            if (deprecated) {
+				LOG.debug(toString() +" - deprecated specification syntax: "+entry);
+			}
         }
     }
 
     /* ------------------------------------------------------------ */
     /**
      * Helper method to process a list of new entries and replace
-     * the content of the specified address pattern map
+     * the content of the specified address pattern map.
      *
      * @param entries new entries
      * @param patternMap target address pattern map
@@ -308,7 +309,7 @@ public class IPAccessHandler extends HandlerWrapper
             {
                 matchedByPath=true;
                 IPAddressMap<Boolean> addrMap = entry.getValue();
-                if ((addrMap!=null && (addrMap.size()==0 || addrMap.match(addr)!=null)))
+                if (addrMap!=null && (addrMap.size()==0 || addrMap.match(addr)!=null))
                 {
                     match=true;
                     break;
@@ -317,14 +318,12 @@ public class IPAccessHandler extends HandlerWrapper
             
             if (_whiteListByPath)
             {
-                if (matchedByPath && !match)
-                    return false;
-            }
-            else
-            {
-                if (!match)
-                    return false;
-            }
+                if (matchedByPath && !match) {
+					return false;
+				}
+            } else if (!match) {
+				return false;
+			}
         }
 
         if (_black.size() > 0)
@@ -332,8 +331,9 @@ public class IPAccessHandler extends HandlerWrapper
             for (Map.Entry<String,IPAddressMap<Boolean>> entry : _black.getMatches(path))
             {
                 IPAddressMap<Boolean> addrMap = entry.getValue();
-                if (addrMap!=null && (addrMap.size()==0 || addrMap.match(addr)!=null))
-                    return false;
+                if (addrMap!=null && (addrMap.size()==0 || addrMap.match(addr)!=null)) {
+					return false;
+				}
             }
             
         }
@@ -343,17 +343,17 @@ public class IPAccessHandler extends HandlerWrapper
 
     /* ------------------------------------------------------------ */
     /**
-     * Dump the handler configuration
+     * Dump the handler configuration.
      */
     @Override
     public String dump()
     {
         StringBuilder buf = new StringBuilder();
 
-        buf.append(toString());
+        buf.append(this);
         buf.append(" WHITELIST:\n");
         dump(buf, _white);
-        buf.append(toString());
+        buf.append(this);
         buf.append(" BLACKLIST:\n");
         dump(buf, _black);
 
@@ -362,7 +362,7 @@ public class IPAccessHandler extends HandlerWrapper
 
     /* ------------------------------------------------------------ */
     /**
-     * Dump a pattern map into a StringBuilder buffer
+     * Dump a pattern map into a StringBuilder buffer.
      *
      * @param buf buffer
      * @param patternMap pattern map to dump

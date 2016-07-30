@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.start;
 
@@ -30,7 +25,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 /**
- * Class to handle CLASSPATH construction
+ * Class to handle CLASSPATH construction.
  */
 public class Classpath implements Iterable<File>
 {
@@ -81,7 +76,7 @@ public class Classpath implements Iterable<File>
     public boolean addComponent(File path)
     {
         StartLog.debug("Adding classpath component: %s",path);
-        if ((path == null) || (!path.exists()))
+        if (path == null || !path.exists())
         {
             // not a valid component
             return false;
@@ -106,13 +101,7 @@ public class Classpath implements Iterable<File>
 
     public boolean addComponent(String component)
     {
-        if ((component == null) || (component.length() <= 0))
-        {
-            // nothing to add
-            return false;
-        }
-
-        return addComponent(new File(component));
+        return component != null && component.length() > 0 && addComponent(new File(component));
     }
 
     public int count()
@@ -166,7 +155,7 @@ public class Classpath implements Iterable<File>
 
     public boolean isEmpty()
     {
-        return (elements == null) || (elements.isEmpty());
+        return elements == null || elements.isEmpty();
     }
 
     @Override

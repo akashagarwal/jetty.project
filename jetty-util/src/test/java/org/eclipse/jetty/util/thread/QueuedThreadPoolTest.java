@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util.thread;
 
@@ -64,10 +59,12 @@ public class QueuedThreadPoolTest
 
         public void stop() throws InterruptedException
         {
-            if (_run.await(10,TimeUnit.SECONDS))
-                _stopping.countDown();
-            if (!_stopped.await(10,TimeUnit.SECONDS))
-                throw new IllegalStateException();
+            if (_run.await(10,TimeUnit.SECONDS)) {
+				_stopping.countDown();
+			}
+            if (!_stopped.await(10,TimeUnit.SECONDS)) {
+				throw new IllegalStateException();
+			}
         }
     };
 
@@ -129,8 +126,9 @@ public class QueuedThreadPoolTest
         waitForIdle(tp,1);
         waitForThreads(tp,5);
 
-        for (int i=1;i<jobs.length;i++)
-            jobs[i].stop();
+        for (int i=1;i<jobs.length;i++) {
+			jobs[i].stop();
+		}
 
         waitForIdle(tp,5);
         waitForThreads(tp,5);
@@ -144,12 +142,14 @@ public class QueuedThreadPoolTest
 
         waitForIdle(tp,0);
         waitForThreads(tp,10);
-        for (int i=0;i<9;i++)
-            jobs[i].stop();
+        for (int i=0;i<9;i++) {
+			jobs[i].stop();
+		}
         waitForThreads(tp,9);
 
-        for (int i=9;i<jobs.length;i++)
-            jobs[i].stop();
+        for (int i=9;i<jobs.length;i++) {
+			jobs[i].stop();
+		}
         waitForIdle(tp,5);
         tp.stop();
     }
@@ -188,8 +188,9 @@ public class QueuedThreadPoolTest
         sleep.set(200);
         tp.execute(job);
         tp.execute(job);
-        for (int i=0;i<20;i++)
-            tp.execute(job);
+        for (int i=0;i<20;i++) {
+			tp.execute(job);
+		}
 
         waitForThreads(tp,10);
         waitForIdle(tp,0);
@@ -232,7 +233,7 @@ public class QueuedThreadPoolTest
     {
         long now=System.currentTimeMillis();
         long start=now;
-        while (tp.getIdleThreads()!=idle && (now-start)<10000)
+        while (tp.getIdleThreads()!=idle && now-start<10000)
         {
             try
             {
@@ -249,7 +250,7 @@ public class QueuedThreadPoolTest
     {
         long now=System.currentTimeMillis();
         long start=now;
-        while (tp.getThreads()!=threads && (now-start)<10000)
+        while (tp.getThreads()!=threads && now-start<10000)
         {
             try
             {

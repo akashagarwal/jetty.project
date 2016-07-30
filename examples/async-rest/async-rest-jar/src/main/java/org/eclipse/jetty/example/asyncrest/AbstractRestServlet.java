@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.example.asyncrest;
 
@@ -43,8 +38,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class AbstractRestServlet extends HttpServlet
 {
-    protected final static String __DEFAULT_APPID = "Webtide81-adf4-4f0a-ad58-d91e41bbe85";
-    protected final static String STYLE = 
+    protected static final String __DEFAULT_APPID = "Webtide81-adf4-4f0a-ad58-d91e41bbe85";
+    protected static final String STYLE = 
         "<style type='text/css'>"+
         "  img.thumb:hover {height:50px}"+
         "  img.thumb {vertical-align:text-top}"+
@@ -53,35 +48,37 @@ public class AbstractRestServlet extends HttpServlet
         "  iframe {border: 0px}"+
         "</style>";
 
-    protected final static String ITEMS_PARAM = "items";
-    protected final static String APPID_PARAM = "appid";
+    protected static final String ITEMS_PARAM = "items";
+    protected static final String APPID_PARAM = "appid";
 
     protected String _appid;
 
     @Override
     public void init(ServletConfig servletConfig) throws ServletException
     {
-        if (servletConfig.getInitParameter(APPID_PARAM) == null)
-            _appid = __DEFAULT_APPID;
-        else
-            _appid = servletConfig.getInitParameter(APPID_PARAM);
+        if (servletConfig.getInitParameter(APPID_PARAM) != null) {
+			_appid = servletConfig.getInitParameter(APPID_PARAM);
+		} else {
+			_appid = __DEFAULT_APPID;
+		}
     }
 
 
     public static String sanitize(String s)
     {
-        if (s==null)
-            return null;
-        return s.replace("<","?").replace("&","?").replace("\n","?");
+        if (s!=null) {
+			return s.replace("<","?").replace("&","?").replace("\n","?");
+		}
+        return null;
     }
     
     protected String restURL(String item) 
     {
         try
         {
-            return ("http://open.api.ebay.com/shopping?MaxEntries=3&appid=" + _appid + 
+            return "http://open.api.ebay.com/shopping?MaxEntries=3&appid=" + _appid + 
                     "&version=573&siteid=0&callname=FindItems&responseencoding=JSON&QueryKeywords=" + 
-                    URLEncoder.encode(item,"UTF-8"));
+                    URLEncoder.encode(item,"UTF-8");
         }
         catch(Exception e)
         {
@@ -94,14 +91,13 @@ public class AbstractRestServlet extends HttpServlet
         StringBuilder thumbs = new StringBuilder();
         for (Map<String, String> m : results)
         {
-            if (!m.containsKey("GalleryURL"))
-                continue;
+            if (!m.containsKey("GalleryURL")) {
+				continue;
+			}
                 
-            thumbs.append("<a href=\""+m.get("ViewItemURLForNaturalSearch")+"\">");
-            thumbs.append("<img class='thumb' border='1px' height='25px'"+
-                        " src='"+m.get("GalleryURL")+"'"+
-                        " title='"+m.get("Title")+"'"+
-                        "/>");
+            thumbs.append("<a href=\"").append(m.get("ViewItemURLForNaturalSearch")).append("\">");
+            thumbs.append("<img class='thumb' border='1px' height='25px'").append(" src='").append(m.get("GalleryURL")).append("'").append(" title='").append(m.get("Title")).append("'")
+					.append("/>");
             thumbs.append("</a>&nbsp;");
         }
         return thumbs.toString();
@@ -110,14 +106,15 @@ public class AbstractRestServlet extends HttpServlet
     protected String ms(long nano)
     {
         BigDecimal dec = new BigDecimal(nano);
-        return dec.divide(new BigDecimal(1000000L)).setScale(1,RoundingMode.UP).toString();
+        return dec.divide(BigDecimal.valueOf(1000000L)).setScale(1,RoundingMode.UP).toString();
     }
     
     protected int width(long nano)
     {
         int w=(int)((nano+999999L)/5000000L);
-        if (w==0)
-            w=2;
+        if (w==0) {
+			w=2;
+		}
         return w;
     }
     

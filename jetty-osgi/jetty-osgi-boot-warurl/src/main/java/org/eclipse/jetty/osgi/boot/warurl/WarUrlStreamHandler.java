@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.osgi.boot.warurl;
 
@@ -50,20 +45,16 @@ public class WarUrlStreamHandler extends AbstractURLStreamHandlerService
 
         // let's do some basic tests: see if this is a folder or not.
         // if it is a folder. we will try to support it.
-        if (actual.getProtocol().equals("file"))
+        if ("file".equals(actual.getProtocol()))
         {
             File file = new File(URIUtil.encodePath(actual.getPath()));
-            if (file.exists())
-            {
-                if (file.isDirectory())
-                {
-                    // TODO (not mandatory for rfc66 though)
-                }
-            }
+            if (file.exists() && file.isDirectory()) {
+			    // TODO (not mandatory for rfc66 though)
+			}
         }
 
         // if (actual.toString().startsWith("file:/") && ! actual.to)
-        URLConnection ori = (URLConnection) actual.openConnection();
+        URLConnection ori = actual.openConnection();
         ori.setDefaultUseCaches(Resource.getDefaultUseCaches());
         JarURLConnection jarOri = null;
         try
@@ -74,7 +65,7 @@ public class WarUrlStreamHandler extends AbstractURLStreamHandlerService
             }
             else
             {
-                jarOri = (JarURLConnection) new URL("jar:" + actual.toString() + "!/").openConnection();
+                jarOri = (JarURLConnection) new URL("jar:" + actual + "!/").openConnection();
                 jarOri.setDefaultUseCaches(Resource.getDefaultUseCaches());
             }
             Manifest mf = WarBundleManifestGenerator.createBundleManifest(jarOri.getManifest(), url, jarOri.getJarFile());
@@ -90,13 +81,15 @@ public class WarUrlStreamHandler extends AbstractURLStreamHandlerService
         }
         finally
         {
-            if (jarOri != null) try
-            {
-                jarOri.getJarFile().close();
-            }
-            catch (Throwable t)
-            {
-            }
+            if (jarOri != null) {
+				try
+				{
+				    jarOri.getJarFile().close();
+				}
+				catch (Throwable t)
+				{
+				}
+			}
         }
 
     }

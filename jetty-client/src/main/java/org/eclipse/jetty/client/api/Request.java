@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.client.api;
 
@@ -445,11 +440,11 @@ public interface Request
     public interface QueuedListener extends RequestListener
     {
         /**
-         * Callback method invoked when the request is queued, waiting to be sent
+         * Callback method invoked when the request is queued, waiting to be sent.
          *
          * @param request the request being queued
          */
-        public void onQueued(Request request);
+        void onQueued(Request request);
     }
 
     /**
@@ -463,7 +458,7 @@ public interface Request
          *
          * @param request the request that begins being processed
          */
-        public void onBegin(Request request);
+        void onBegin(Request request);
     }
 
     /**
@@ -477,7 +472,7 @@ public interface Request
          * to the request may have no effect.
          * @param request the request that is about to be committed
          */
-        public void onHeaders(Request request);
+        void onHeaders(Request request);
     }
 
     /**
@@ -491,7 +486,7 @@ public interface Request
          * request may have no effect.
          * @param request the request that has been committed
          */
-        public void onCommit(Request request);
+        void onCommit(Request request);
     }
 
     /**
@@ -505,7 +500,7 @@ public interface Request
          * @param request the request that has been committed
          * @param content the content
          */
-        public void onContent(Request request, ByteBuffer content);
+        void onContent(Request request, ByteBuffer content);
     }
 
     /**
@@ -518,7 +513,7 @@ public interface Request
          *
          * @param request the request sent
          */
-        public void onSuccess(Request request);
+        void onSuccess(Request request);
     }
 
     /**
@@ -527,11 +522,11 @@ public interface Request
     public interface FailureListener extends RequestListener
     {
         /**
-         * Callback method invoked when the request has failed to be sent
+         * Callback method invoked when the request has failed to be sent.
          * @param request the request that failed
          * @param failure the failure
          */
-        public void onFailure(Request request, Throwable failure);
+        void onFailure(Request request, Throwable failure);
     }
 
     /**
@@ -540,7 +535,7 @@ public interface Request
     public interface Listener extends QueuedListener, BeginListener, HeadersListener, CommitListener, ContentListener, SuccessListener, FailureListener
     {
         /**
-         * An empty implementation of {@link Listener}
+         * An empty implementation of {@link Listener}.
          */
         public static class Adapter implements Listener
         {

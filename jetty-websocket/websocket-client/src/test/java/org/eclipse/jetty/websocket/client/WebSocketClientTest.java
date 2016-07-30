@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.client;
 
@@ -122,8 +117,9 @@ public class WebSocketClientTest
 
             RemoteEndpoint remote = cliSock.getSession().getRemote();
             remote.sendStringByFuture("Hello World!");
-            if (remote.getBatchMode() == BatchMode.ON)
-                remote.flush();
+            if (remote.getBatchMode() == BatchMode.ON) {
+				remote.flush();
+			}
             srvSock.echoMessage(1,30,TimeUnit.SECONDS);
             // wait for response from server
             cliSock.waitForMessage(30,TimeUnit.SECONDS);
@@ -274,7 +270,7 @@ public class WebSocketClientTest
 
             Assert.assertTrue(wsocket.openLatch.await(1,TimeUnit.SECONDS));
 
-            int length = bufferSize + (bufferSize / 2); // 1.5 times buffer size
+            int length = bufferSize + bufferSize / 2; // 1.5 times buffer size
             ssocket.write(0x80 | 0x01); // FIN + TEXT
             ssocket.write(0x7E); // No MASK and 2 bytes length
             ssocket.write(length >> 8); // first length byte

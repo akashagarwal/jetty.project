@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.common.events.annotated;
 
@@ -26,7 +21,7 @@ import org.eclipse.jetty.websocket.api.InvalidWebSocketException;
 import org.eclipse.jetty.websocket.common.events.ParamList;
 
 /**
- * Basic scanner for Annotated Methods
+ * Basic scanner for Annotated Methods.
  * @param <T> The type of metadata
  */
 public abstract class AbstractMethodAnnotationScanner<T>
@@ -174,12 +169,12 @@ public abstract class AbstractMethodAnnotationScanner<T>
     {
         Class<?> clazz = pojo;
 
-        while ((clazz != null) && Object.class.isAssignableFrom(clazz))
+        while (clazz != null && Object.class.isAssignableFrom(clazz))
         {
             for (Method method : clazz.getDeclaredMethods())
             {
                 Annotation annotations[] = method.getAnnotations();
-                if ((annotations == null) || (annotations.length <= 0))
+                if (annotations == null || annotations.length <= 0)
                 {
                     continue; // skip
                 }

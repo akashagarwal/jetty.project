@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http2.parser;
 
@@ -42,8 +37,9 @@ public class ContinuationBodyParser extends BodyParser
     @Override
     protected void emptyBody(ByteBuffer buffer)
     {
-        if (hasFlag(Flags.END_HEADERS))
-            onHeaders();
+        if (hasFlag(Flags.END_HEADERS)) {
+			onHeaders();
+		}
     }
 
     @Override
@@ -56,11 +52,13 @@ public class ContinuationBodyParser extends BodyParser
                 case PREPARE:
                 {
                     // SPEC: wrong streamId is treated as connection error.
-                    if (getStreamId() == 0)
-                        return connectionFailure(buffer, ErrorCode.PROTOCOL_ERROR.code, "invalid_continuation_frame");
+                    if (getStreamId() == 0) {
+						return connectionFailure(buffer, ErrorCode.PROTOCOL_ERROR.code, "invalid_continuation_frame");
+					}
 
-                    if (getStreamId() != headerBlockFragments.getStreamId())
-                        return connectionFailure(buffer, ErrorCode.PROTOCOL_ERROR.code, "invalid_continuation_stream");
+                    if (getStreamId() != headerBlockFragments.getStreamId()) {
+						return connectionFailure(buffer, ErrorCode.PROTOCOL_ERROR.code, "invalid_continuation_stream");
+					}
 
                     length = getBodyLength();
                     state = State.FRAGMENT;
@@ -80,8 +78,9 @@ public class ContinuationBodyParser extends BodyParser
                         boolean last = hasFlag(Flags.END_HEADERS);
                         headerBlockFragments.storeFragment(buffer, length, last);
                         reset();
-                        if (last)
-                            onHeaders();
+                        if (last) {
+							onHeaders();
+						}
                         return true;
                     }
                 }

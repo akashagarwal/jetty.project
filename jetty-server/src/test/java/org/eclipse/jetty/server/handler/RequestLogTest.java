@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server.handler;
 
@@ -241,8 +236,9 @@ public class RequestLogTest
         public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
         {
             String q = request.getQueryString();
-            if (q==null)
-                return;
+            if (q==null) {
+				return;
+			}
             
             baseRequest.setHandled(true);
             for (String action : q.split("\\&"))
@@ -266,7 +262,7 @@ public class RequestLogTest
                         int w=0;
                         while (w<data)
                         {
-                            if ((data-w)>17)
+                            if (data-w>17)
                             {
                                 w+=17;
                                 out.print("0123456789ABCDEF\n");
@@ -284,7 +280,7 @@ public class RequestLogTest
                     {
                         try
                         {
-                            throw (Throwable)(Class.forName(value).newInstance());
+                            throw (Throwable)Class.forName(value).newInstance();
                         }
                         catch(ServletException | IOException | Error | RuntimeException e)
                         {
@@ -304,7 +300,9 @@ public class RequestLogTest
                     case "read":
                     {
                         InputStream in = request.getInputStream();
-                        while (in.read()>=0);
+                        while (in.read()>=0) {
+							;
+						}
                         break;
                     }
                 }

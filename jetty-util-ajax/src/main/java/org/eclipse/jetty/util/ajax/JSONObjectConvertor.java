@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util.ajax;
 
@@ -34,7 +29,7 @@ import org.eclipse.jetty.util.ajax.JSON.Output;
 public class JSONObjectConvertor implements JSON.Convertor
 {
     private boolean _fromJSON;
-    private Set _excluded=null;
+    private Set _excluded;
 
     public JSONObjectConvertor()
     {
@@ -54,14 +49,16 @@ public class JSONObjectConvertor implements JSON.Convertor
     public JSONObjectConvertor(boolean fromJSON,String[] excluded)
     {
         _fromJSON=fromJSON;
-        if (excluded!=null)
-            _excluded=new HashSet(Arrays.asList(excluded));
+        if (excluded!=null) {
+			_excluded=new HashSet(Arrays.asList(excluded));
+		}
     }
 
     public Object fromJSON(Map map)
     {
-        if (_fromJSON)
-            throw new UnsupportedOperationException();
+        if (_fromJSON) {
+			throw new UnsupportedOperationException();
+		}
         return map;
     }
 
@@ -71,8 +68,9 @@ public class JSONObjectConvertor implements JSON.Convertor
         {
             Class c=obj.getClass();
 
-            if (_fromJSON)
-                out.addClass(obj.getClass());
+            if (_fromJSON) {
+				out.addClass(obj.getClass());
+			}
 
             Method[] methods = obj.getClass().getMethods();
 
@@ -85,15 +83,17 @@ public class JSONObjectConvertor implements JSON.Convertor
                         m.getDeclaringClass()!=Object.class)
                 {
                     String name=m.getName();
-                    if (name.startsWith("is"))
-                        name=name.substring(2,3).toLowerCase(Locale.ENGLISH)+name.substring(3);
-                    else if (name.startsWith("get"))
-                        name=name.substring(3,4).toLowerCase(Locale.ENGLISH)+name.substring(4);
-                    else
-                        continue;
+                    if (name.startsWith("is")) {
+						name=name.substring(2,3).toLowerCase(Locale.ENGLISH)+name.substring(3);
+					} else if (name.startsWith("get")) {
+						name=name.substring(3,4).toLowerCase(Locale.ENGLISH)+name.substring(4);
+					} else {
+						continue;
+					}
 
-                    if (includeField(name,obj,m))
-                        out.add(name, m.invoke(obj,(Object[])null));
+                    if (includeField(name,obj,m)) {
+						out.add(name, m.invoke(obj,(Object[])null));
+					}
                 }
             }
         } 

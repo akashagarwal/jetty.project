@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util;
 
@@ -50,15 +45,17 @@ public class BlockingCallback implements Callback.NonBlocking
     @Override
     public void succeeded()
     {
-        if (_state.compareAndSet(null,SUCCEEDED))
-            _latch.countDown();
+        if (_state.compareAndSet(null,SUCCEEDED)) {
+			_latch.countDown();
+		}
     }
 
     @Override
     public void failed(Throwable cause)
     {
-        if (_state.compareAndSet(null,cause))
-            _latch.countDown();
+        if (_state.compareAndSet(null,cause)) {
+			_latch.countDown();
+		}
     }
 
     /**
@@ -74,12 +71,15 @@ public class BlockingCallback implements Callback.NonBlocking
         {
             _latch.await();
             Throwable state=_state.get();
-            if (state==SUCCEEDED)
-                return;
-            if (state instanceof IOException)
-                throw (IOException) state;
-            if (state instanceof CancellationException)
-                throw (CancellationException) state;
+            if (state==SUCCEEDED) {
+				return;
+			}
+            if (state instanceof IOException) {
+				throw (IOException) state;
+			}
+            if (state instanceof CancellationException) {
+				throw (CancellationException) state;
+			}
             throw new IOException(state);
         }
         catch (final InterruptedException e)

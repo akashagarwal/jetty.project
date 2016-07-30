@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server.ssl;
 
@@ -73,8 +68,9 @@ public class SniSslConnectionFactoryTest
     {
         String keystorePath = "src/test/resources/snikeystore";
         File keystoreFile = new File(keystorePath);
-        if (!keystoreFile.exists())
-            throw new FileNotFoundException(keystoreFile.getAbsolutePath());
+        if (!keystoreFile.exists()) {
+			throw new FileNotFoundException(keystoreFile.getAbsolutePath());
+		}
 
         _server = new Server();
 
@@ -114,8 +110,9 @@ public class SniSslConnectionFactoryTest
     @After
     public void after() throws Exception
     {
-        if (_server != null)
-            _server.stop();
+        if (_server != null) {
+			_server.stop();
+		}
     }
 
     @Test
@@ -205,10 +202,7 @@ public class SniSslConnectionFactoryTest
             sslSocket.startHandshake();
 
             // The first request binds the socket to an alias.
-            String request = "" +
-                    "GET /ctx/path HTTP/1.1\r\n" +
-                    "Host: m.san.com\r\n" +
-                    "\r\n";
+            String request = "GET /ctx/path HTTP/1.1\r\n" + "Host: m.san.com\r\n" + "\r\n";
             OutputStream output = sslSocket.getOutputStream();
             output.write(request.getBytes(StandardCharsets.UTF_8));
             output.flush();
@@ -218,10 +212,7 @@ public class SniSslConnectionFactoryTest
             Assert.assertTrue(response.startsWith("HTTP/1.1 200 "));
 
             // Same socket, send a request for a different domain but same alias.
-            request = "" +
-                    "GET /ctx/path HTTP/1.1\r\n" +
-                    "Host: www.san.com\r\n" +
-                    "\r\n";
+            request = "GET /ctx/path HTTP/1.1\r\n" + "Host: www.san.com\r\n" + "\r\n";
             output.write(request.getBytes(StandardCharsets.UTF_8));
             output.flush();
 
@@ -229,10 +220,7 @@ public class SniSslConnectionFactoryTest
             Assert.assertTrue(response.startsWith("HTTP/1.1 200 "));
 
             // Same socket, send a request for a different domain but different alias.
-            request = "" +
-                    "GET /ctx/path HTTP/1.1\r\n" +
-                    "Host: www.example.com\r\n" +
-                    "\r\n";
+            request = "GET /ctx/path HTTP/1.1\r\n" + "Host: www.example.com\r\n" + "\r\n";
             output.write(request.getBytes(StandardCharsets.UTF_8));
             output.flush();
 
@@ -260,10 +248,7 @@ public class SniSslConnectionFactoryTest
             sslSocket.setSSLParameters(params);
             sslSocket.startHandshake();
 
-            String request = "" +
-                    "GET /ctx/path HTTP/1.1\r\n" +
-                    "Host: www.domain.com\r\n" +
-                    "\r\n";
+            String request = "GET /ctx/path HTTP/1.1\r\n" + "Host: www.domain.com\r\n" + "\r\n";
             OutputStream output = sslSocket.getOutputStream();
             output.write(request.getBytes(StandardCharsets.UTF_8));
             output.flush();
@@ -273,10 +258,7 @@ public class SniSslConnectionFactoryTest
             Assert.assertTrue(response.startsWith("HTTP/1.1 200 "));
 
             // Now, on the same socket, send a request for a different valid domain.
-            request = "" +
-                    "GET /ctx/path HTTP/1.1\r\n" +
-                    "Host: assets.domain.com\r\n" +
-                    "\r\n";
+            request = "GET /ctx/path HTTP/1.1\r\n" + "Host: assets.domain.com\r\n" + "\r\n";
             output.write(request.getBytes(StandardCharsets.UTF_8));
             output.flush();
 
@@ -284,10 +266,7 @@ public class SniSslConnectionFactoryTest
             Assert.assertTrue(response.startsWith("HTTP/1.1 200 "));
 
             // Now make a request for an invalid domain for this connection.
-            request = "" +
-                    "GET /ctx/path HTTP/1.1\r\n" +
-                    "Host: www.example.com\r\n" +
-                    "\r\n";
+            request = "GET /ctx/path HTTP/1.1\r\n" + "Host: www.example.com\r\n" + "\r\n";
             output.write(request.getBytes(StandardCharsets.UTF_8));
             output.flush();
 
@@ -311,8 +290,9 @@ public class SniSslConnectionFactoryTest
             Assert.assertTrue(read >= 0);
             buffer.append((byte)read);
             crlfs = (read == '\r' || read == '\n') ? crlfs + 1 : 0;
-            if (crlfs == 4)
-                break;
+            if (crlfs == 4) {
+				break;
+			}
         }
         return buffer.toString();
     }
@@ -346,7 +326,7 @@ public class SniSslConnectionFactoryTest
 
             if (cn != null)
             {
-                X509Certificate cert = ((X509Certificate)sslSocket.getSession().getPeerCertificates()[0]);
+                X509Certificate cert = (X509Certificate)sslSocket.getSession().getPeerCertificates()[0];
                 Assert.assertThat(cert.getSubjectX500Principal().getName("CANONICAL"), Matchers.startsWith("cn=" + cn));
             }
 

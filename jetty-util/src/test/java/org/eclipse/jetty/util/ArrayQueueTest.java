@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util;
 
@@ -89,8 +84,9 @@ public class ArrayQueueTest
             queue.set(queue.size()-3,queue.get(queue.size()-3)+"!");
         }
 
-        for (int i=0;i<99;i++)
-            assertEquals(i+"!",queue.get(i));
+        for (int i=0;i<99;i++) {
+			assertEquals(i+"!",queue.get(i));
+		}
     }
 
     @Test
@@ -106,20 +102,25 @@ public class ArrayQueueTest
         queue.add("c");
         assertEquals(8,queue.getCapacity());
 
-        for (int i=0;i<4;i++)
-            queue.add(""+('d'+i));
+        for (int i=0;i<4;i++) {
+			queue.add(""+('d'+i));
+		}
         assertEquals(8,queue.getCapacity());
-        for (int i=0;i<4;i++)
-            queue.poll();
+        for (int i=0;i<4;i++) {
+			queue.poll();
+		}
         assertEquals(8,queue.getCapacity());
-        for (int i=0;i<4;i++)
-            queue.add(""+('d'+i));
+        for (int i=0;i<4;i++) {
+			queue.add(""+('d'+i));
+		}
         assertEquals(8,queue.getCapacity());
-        for (int i=0;i<4;i++)
-            queue.poll();
+        for (int i=0;i<4;i++) {
+			queue.poll();
+		}
         assertEquals(8,queue.getCapacity());
-        for (int i=0;i<4;i++)
-            queue.add(""+('d'+i));
+        for (int i=0;i<4;i++) {
+			queue.add(""+('d'+i));
+		}
         assertEquals(8,queue.getCapacity());
 
         queue.add("z");
@@ -127,13 +128,15 @@ public class ArrayQueueTest
 
         queue.clear();
         assertEquals(13,queue.getCapacity());
-        for (int i=0;i<12;i++)
-            queue.add(""+('a'+i));
+        for (int i=0;i<12;i++) {
+			queue.add(""+('a'+i));
+		}
         assertEquals(13,queue.getCapacity());
         queue.clear();
         assertEquals(13,queue.getCapacity());
-        for (int i=0;i<12;i++)
-            queue.add(""+('a'+i));
+        for (int i=0;i<12;i++) {
+			queue.add(""+('a'+i));
+		}
         assertEquals(13,queue.getCapacity());
     }
 

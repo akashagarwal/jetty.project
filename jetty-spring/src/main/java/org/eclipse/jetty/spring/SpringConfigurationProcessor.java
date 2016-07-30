@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 
 package org.eclipse.jetty.spring;
@@ -77,10 +72,7 @@ public class SpringConfigurationProcessor implements ConfigurationProcessor
 
             Resource resource = url != null
                     ? new UrlResource(url)
-                    : new ByteArrayResource(("" +
-                    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-                    "<!DOCTYPE beans PUBLIC \"-//SPRING//DTD BEAN//EN\" \"http://www.springframework.org/dtd/spring-beans.dtd\">" +
-                    config).getBytes(StandardCharsets.UTF_8));
+                    : new ByteArrayResource(("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "<!DOCTYPE beans PUBLIC \"-//SPRING//DTD BEAN//EN\" \"http://www.springframework.org/dtd/spring-beans.dtd\">" + config).getBytes(StandardCharsets.UTF_8));
 
             _beanFactory = new DefaultListableBeanFactory()
             {
@@ -128,14 +120,15 @@ public class SpringConfigurationProcessor implements ConfigurationProcessor
         {
             LOG.debug("{} - {}", bean, Arrays.asList(_beanFactory.getAliases(bean)));
             String[] aliases = _beanFactory.getAliases(bean);
-            if ("Main".equals(bean) || aliases != null && Arrays.asList(aliases).contains("Main"))
+            if ("Main".equals(bean) || (aliases != null && Arrays.asList(aliases).contains("Main")))
             {
                 _main = bean;
                 break;
             }
         }
-        if (_main == null)
-            _main = _beanFactory.getBeanDefinitionNames()[0];
+        if (_main == null) {
+			_main = _beanFactory.getBeanDefinitionNames()[0];
+		}
 
         // Register id beans as singletons
         Map<String, Object> idMap = _configuration.getIdMap();
@@ -157,7 +150,8 @@ public class SpringConfigurationProcessor implements ConfigurationProcessor
         }
 
         // Extract id's for next time.
-        for (String id : _beanFactory.getSingletonNames())
-            idMap.put(id, _beanFactory.getBean(id));
+        for (String id : _beanFactory.getSingletonNames()) {
+			idMap.put(id, _beanFactory.getBean(id));
+		}
     }
 }

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.api;
 
@@ -107,7 +102,7 @@ public interface Session extends Closeable
      * 
      * @return the local side address
      */
-    public InetSocketAddress getLocalAddress();
+    InetSocketAddress getLocalAddress();
 
     /**
      * Access the (now read-only) {@link WebSocketPolicy} in use for this connection.
@@ -136,17 +131,17 @@ public interface Session extends Closeable
      * 
      * @return the remote side address
      */
-    public InetSocketAddress getRemoteAddress();
+    InetSocketAddress getRemoteAddress();
 
     /**
-     * Get the UpgradeRequest used to create this session
+     * Get the UpgradeRequest used to create this session.
      * 
      * @return the UpgradeRequest used to create this session
      */
     UpgradeRequest getUpgradeRequest();
 
     /**
-     * Get the UpgradeResponse used to create this session
+     * Get the UpgradeResponse used to create this session.
      * 
      * @return the UpgradeResponse used to create this session
      */
@@ -157,7 +152,7 @@ public interface Session extends Closeable
      * 
      * @return whether the session is open
      */
-    abstract boolean isOpen();
+    boolean isOpen();
 
     /**
      * Return true if and only if the underlying socket is using a secure transport.

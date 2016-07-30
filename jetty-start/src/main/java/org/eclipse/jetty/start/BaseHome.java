@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.start;
 
@@ -110,9 +105,9 @@ public class BaseHome
 
     public static final String JETTY_BASE = "jetty.base";
     public static final String JETTY_HOME = "jetty.home";
-    private final static EnumSet<FileVisitOption> SEARCH_VISIT_OPTIONS = EnumSet.of(FileVisitOption.FOLLOW_LINKS);
+    private static final EnumSet<FileVisitOption> SEARCH_VISIT_OPTIONS = EnumSet.of(FileVisitOption.FOLLOW_LINKS);
 
-    private final static int MAX_SEARCH_DEPTH = Integer.getInteger("org.eclipse.jetty.start.searchDepth",10);
+    private static final int MAX_SEARCH_DEPTH = Integer.getInteger("org.eclipse.jetty.start.searchDepth",10);
 
     private final ConfigSources sources;
     private final Path homeDir;
@@ -179,11 +174,11 @@ public class BaseHome
 
     public String getBase()
     {
-        if (baseDir == null)
+        if (baseDir != null)
         {
-            return null;
+            return baseDir.toString();
         }
-        return baseDir.toString();
+        return null;
     }
 
     public Path getBasePath()
@@ -238,13 +233,9 @@ public class BaseHome
     {
         Path apath = FS.toPath(path);
 
-        if (apath.isAbsolute())
-        {
-            if (FS.exists(apath))
-            {
-                return apath;
-            }
-        }
+        if (apath.isAbsolute() && FS.exists(apath)) {
+		    return apath;
+		}
 
         for (ConfigSource source : sources)
         {
@@ -264,7 +255,7 @@ public class BaseHome
     }
 
     /**
-     * Search specified Path with pattern and return hits
+     * Search specified Path with pattern and return hits.
      * 
      * @param dir
      *            the path to a directory to start search from
@@ -465,7 +456,7 @@ public class BaseHome
      */
     public String toShortForm(final String path)
     {
-        if ((path == null) || (path.charAt(0) == '<'))
+        if (path == null || path.charAt(0) == '<')
         {
             return path;
         }

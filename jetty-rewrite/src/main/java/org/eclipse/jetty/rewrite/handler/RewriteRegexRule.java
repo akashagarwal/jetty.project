@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.rewrite.handler;
 
@@ -41,13 +36,13 @@ public class RewriteRegexRule extends RegexRule  implements Rule.ApplyURI
     private String _query;
     private boolean _queryGroup;
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public RewriteRegexRule()
     {
         this(null,null);
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public RewriteRegexRule(@Name("regex") String regex, @Name("replacement") String replacement)
     {
         super(regex);
@@ -81,7 +76,7 @@ public class RewriteRegexRule extends RegexRule  implements Rule.ApplyURI
 
 
     /* ------------------------------------------------------------ */
-    /* (non-Javadoc)
+    /** (non-Javadoc)
      * @see org.eclipse.jetty.server.handler.rules.RegexRule#apply(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, java.util.regex.Matcher)
      */
     @Override
@@ -92,26 +87,29 @@ public class RewriteRegexRule extends RegexRule  implements Rule.ApplyURI
         for (int g=1;g<=matcher.groupCount();g++)
         {
             String group=matcher.group(g);
-            if (group==null)
-                group="";
-            else
-                group = Matcher.quoteReplacement(group);
+            if (group!=null) {
+				group = Matcher.quoteReplacement(group);
+			} else {
+				group="";
+			}
             target=target.replaceAll("\\$"+g,group);
-            if (query!=null)
-                query=query.replaceAll("\\$"+g,group);
+            if (query!=null) {
+				query=query.replaceAll("\\$"+g,group);
+			}
         }
 
         if (query!=null)
         {
-            if (_queryGroup)
-                query=query.replace("$Q",request.getQueryString()==null?"":request.getQueryString());
+            if (_queryGroup) {
+				query=query.replace("$Q",request.getQueryString()==null?"":request.getQueryString());
+			}
             request.setAttribute("org.eclipse.jetty.rewrite.handler.RewriteRegexRule.Q",query);
         }
         
         return target;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void applyURI(Request request, String oldURI, String newURI) throws IOException
     {
@@ -123,8 +121,9 @@ public class RewriteRegexRule extends RegexRule  implements Rule.ApplyURI
         {
             String query=(String)request.getAttribute("org.eclipse.jetty.rewrite.handler.RewriteRegexRule.Q");
             
-            if (!_queryGroup && request.getQueryString()!=null)
-                query=request.getQueryString()+"&"+query;
+            if (!_queryGroup && request.getQueryString()!=null) {
+				query=request.getQueryString()+"&"+query;
+			}
             request.setURIPathQuery(newURI);
             request.setQueryString(query);
         }

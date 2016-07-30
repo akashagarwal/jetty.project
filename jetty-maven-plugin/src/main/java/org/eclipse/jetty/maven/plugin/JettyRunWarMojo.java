@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.maven.plugin;
 
@@ -56,9 +51,6 @@ public class JettyRunWarMojo extends AbstractJettyMojo
     private File war;
 
     
-    /**
-     * @see org.apache.maven.plugin.Mojo#execute()
-     */
     public void execute() throws MojoExecutionException, MojoFailureException
     {
         super.execute();  
@@ -84,9 +76,6 @@ public class JettyRunWarMojo extends AbstractJettyMojo
 
 
     
-    /**
-     * @see AbstractJettyMojo#checkPomConfiguration()
-     */
     public void checkPomConfiguration() throws MojoExecutionException
     {
        return;        
@@ -95,9 +84,6 @@ public class JettyRunWarMojo extends AbstractJettyMojo
 
 
     
-    /**
-     * @see AbstractJettyMojo#configureScanner()
-     */
     public void configureScanner() throws MojoExecutionException
     {
         scanner.watch(project.getFile().toPath());
@@ -133,9 +119,6 @@ public class JettyRunWarMojo extends AbstractJettyMojo
 
     
     
-    /** 
-     * @see org.eclipse.jetty.maven.plugin.AbstractJettyMojo#restartWebApp(boolean)
-     */
     public void restartWebApp(boolean reconfigureScanner) throws Exception 
     {
         getLog().info("Restarting webapp ...");

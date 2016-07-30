@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server.session;
 
@@ -55,24 +50,26 @@ import org.eclipse.jetty.util.thread.Scheduler;
  */
 public class HashSessionManager extends AbstractSessionManager
 {
-    final static Logger LOG = SessionHandler.LOG;
+    static final Logger LOG = SessionHandler.LOG;
 
     protected final ConcurrentMap<String,HashedSession> _sessions=new ConcurrentHashMap<String,HashedSession>();
     private Scheduler _timer;
     private Scheduler.Task _task;
     long _scavengePeriodMs=30000;
-    long _savePeriodMs=0; //don't do period saves by default
-    long _idleSavePeriodMs = 0; // don't idle save sessions by default.
+    /** Don't do period saves by default. */
+    long _savePeriodMs;
+    /** Don't idle save sessions by default. */
+    long _idleSavePeriodMs;
     private Scheduler.Task _saveTask;
     File _storeDir;
-    private boolean _lazyLoad=false;
-    private volatile boolean _sessionsLoaded=false;
-    private boolean _deleteUnrestorableSessions=false;
+    private boolean _lazyLoad;
+    private volatile boolean _sessionsLoaded;
+    private boolean _deleteUnrestorableSessions;
 
 
     /**
      * Scavenger
-     *
+     *.
      */
     protected class Scavenger implements Runnable
     {
@@ -94,7 +91,7 @@ public class HashSessionManager extends AbstractSessionManager
 
     /**
      * Saver
-     *
+     *.
      */
     protected class Saver implements Runnable
     {
@@ -111,23 +108,21 @@ public class HashSessionManager extends AbstractSessionManager
             }
             finally
             {
-                if (_timer != null && _timer.isRunning())
-                    _saveTask = _timer.schedule(this, _savePeriodMs, TimeUnit.MILLISECONDS);
+                if (_timer != null && _timer.isRunning()) {
+					_saveTask = _timer.schedule(this, _savePeriodMs, TimeUnit.MILLISECONDS);
+				}
             }
         }        
     }
 
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public HashSessionManager()
     {
         super();
     }
 
-    /* ------------------------------------------------------------ */
-    /**
-     * @see AbstractSessionManager#doStart()
-     */
+    /** ------------------------------------------------------------. */
     @Override
     public void doStart() throws Exception
     {
@@ -137,8 +132,9 @@ public class HashSessionManager extends AbstractSessionManager
         {
             //try one passed into the context
             ServletContext context = ContextHandler.getCurrentContext();
-            if (context!=null)
-                _timer = (Scheduler)context.getAttribute("org.eclipse.jetty.server.session.timer");   
+            if (context!=null) {
+				_timer = (Scheduler)context.getAttribute("org.eclipse.jetty.server.session.timer");
+			}   
         }    
       
         if (_timer == null)
@@ -146,9 +142,9 @@ public class HashSessionManager extends AbstractSessionManager
             //make a scheduler if none useable
             _timer=new ScheduledExecutorScheduler(toString()+"Timer",true);
             addBean(_timer,true);
-        }
-        else
-            addBean(_timer,false);
+        } else {
+			addBean(_timer,false);
+		}
         
         super.doStart();
 
@@ -156,38 +152,40 @@ public class HashSessionManager extends AbstractSessionManager
 
         if (_storeDir!=null)
         {
-            if (!_storeDir.exists())
-                _storeDir.mkdirs();
+            if (!_storeDir.exists()) {
+				_storeDir.mkdirs();
+			}
 
-            if (!_lazyLoad)
-                restoreSessions();
+            if (!_lazyLoad) {
+				restoreSessions();
+			}
         }
 
         setSavePeriod(getSavePeriod());
     }
 
-    /* ------------------------------------------------------------ */
-    /**
-     * @see AbstractSessionManager#doStop()
-     */
+    /** ------------------------------------------------------------. */
     @Override
     public void doStop() throws Exception
     {
         // stop the scavengers
         synchronized(this)
         {
-            if (_saveTask!=null)
-                _saveTask.cancel();
+            if (_saveTask!=null) {
+				_saveTask.cancel();
+			}
 
             _saveTask=null;
-            if (_task!=null)
-                _task.cancel();
+            if (_task!=null) {
+				_task.cancel();
+			}
             
             _task=null;
             
             //if we're managing our own timer, remove it
-            if (isManaged(_timer))
-               removeBean(_timer);
+            if (isManaged(_timer)) {
+				removeBean(_timer);
+			}
 
             _timer=null;
         }
@@ -209,16 +207,14 @@ public class HashSessionManager extends AbstractSessionManager
     }
 
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public int getSessions()
     {
         int sessions=super.getSessions();
-        if (LOG.isDebugEnabled())
-        {
-            if (_sessions.size()!=sessions)
-                LOG.warn("sessions: "+_sessions.size()+"!="+sessions);
-        }
+        if (LOG.isDebugEnabled() && _sessions.size()!=sessions) {
+			LOG.warn("sessions: "+_sessions.size()+"!="+sessions);
+		}
         return sessions;
     }
 
@@ -228,8 +224,9 @@ public class HashSessionManager extends AbstractSessionManager
      */
     public int getIdleSavePeriod()
     {
-      if (_idleSavePeriodMs <= 0)
-        return 0;
+      if (_idleSavePeriodMs <= 0) {
+		return 0;
+	}
 
       return (int)(_idleSavePeriodMs / 1000);
     }
@@ -248,13 +245,14 @@ public class HashSessionManager extends AbstractSessionManager
       _idleSavePeriodMs = seconds * 1000L;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void setMaxInactiveInterval(int seconds)
     {
         super.setMaxInactiveInterval(seconds);
-        if (_dftMaxIdleSecs>0&&_scavengePeriodMs>_dftMaxIdleSecs*1000L)
-            setScavengePeriod((_dftMaxIdleSecs+9)/10);
+        if (_dftMaxIdleSecs>0&&_scavengePeriodMs>_dftMaxIdleSecs*1000L) {
+			setScavengePeriod((_dftMaxIdleSecs+9)/10);
+		}
     }
 
     /* ------------------------------------------------------------ */
@@ -263,17 +261,19 @@ public class HashSessionManager extends AbstractSessionManager
      */
     public void setSavePeriod (int seconds)
     {
-        long period = (seconds * 1000L);
-        if (period < 0)
-            period=0;
+        long period = seconds * 1000L;
+        if (period < 0) {
+			period=0;
+		}
         _savePeriodMs=period;
 
         if (_timer!=null)
         {
             synchronized (this)
             {
-                if (_saveTask!=null)
-                    _saveTask.cancel();
+                if (_saveTask!=null) {
+					_saveTask.cancel();
+				}
                 _saveTask = null;
                 if (_savePeriodMs > 0 && _storeDir!=null) //only save if we have a directory configured
                 {
@@ -289,8 +289,9 @@ public class HashSessionManager extends AbstractSessionManager
      */
     public int getSavePeriod ()
     {
-        if (_savePeriodMs<=0)
-            return 0;
+        if (_savePeriodMs<=0) {
+			return 0;
+		}
 
         return (int)(_savePeriodMs/1000);
     }
@@ -301,15 +302,18 @@ public class HashSessionManager extends AbstractSessionManager
      */
     public void setScavengePeriod(int seconds)
     { 
-        if (seconds==0)
-            seconds=60;
+        if (seconds==0) {
+			seconds=60;
+		}
 
         long old_period=_scavengePeriodMs;
         long period=seconds*1000L;
-        if (period>60000)
-            period=60000;
-        if (period<1000)
-            period=1000;
+        if (period>60000) {
+			period=60000;
+		}
+        if (period<1000) {
+			period=1000;
+		}
 
         _scavengePeriodMs=period;
     
@@ -336,15 +340,17 @@ public class HashSessionManager extends AbstractSessionManager
     protected void scavenge()
     {
         //don't attempt to scavenge if we are shutting down
-        if (isStopping() || isStopped())
-            return;
+        if (isStopping() || isStopped()) {
+			return;
+		}
 
         Thread thread=Thread.currentThread();
         ClassLoader old_loader=thread.getContextClassLoader();
         try
         {      
-            if (_loader!=null)
-                thread.setContextClassLoader(_loader);
+            if (_loader!=null) {
+				thread.setContextClassLoader(_loader);
+			}
 
             // For each session
             long now=System.currentTimeMillis();
@@ -385,15 +391,16 @@ public class HashSessionManager extends AbstractSessionManager
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     protected void addSession(AbstractSession session)
     {
-        if (isRunning())
-            _sessions.put(session.getClusterId(),(HashedSession)session);
+        if (isRunning()) {
+			_sessions.put(session.getClusterId(),(HashedSession)session);
+		}
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public AbstractSession getSession(String idInCluster)
     {
@@ -410,23 +417,27 @@ public class HashSessionManager extends AbstractSessionManager
         }
 
         Map<String,HashedSession> sessions=_sessions;
-        if (sessions==null)
-            return null;
+        if (sessions==null) {
+			return null;
+		}
 
         HashedSession session = sessions.get(idInCluster);
 
-        if (session == null && _lazyLoad)
-            session=restoreSession(idInCluster);
-        if (session == null)
-            return null;
+        if (session == null && _lazyLoad) {
+			session=restoreSession(idInCluster);
+		}
+        if (session == null) {
+			return null;
+		}
 
-        if (_idleSavePeriodMs!=0)
-            session.deIdle();
+        if (_idleSavePeriodMs!=0) {
+			session.deIdle();
+		}
 
         return session;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     protected void shutdownSessions() throws Exception
     {   
@@ -447,8 +458,9 @@ public class HashSessionManager extends AbstractSessionManager
             }
             else
             {
-                for (HashedSession session : sessions)
-                    session.invalidate();
+                for (HashedSession session : sessions) {
+					session.invalidate();
+				}
             }
 
             // check that no new sessions were created while we were iterating
@@ -458,22 +470,21 @@ public class HashSessionManager extends AbstractSessionManager
     
     
     
-    /* ------------------------------------------------------------ */
-    /**
-     * @see org.eclipse.jetty.server.SessionManager#renewSessionId(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
-     */
+    /** ------------------------------------------------------------. */
     @Override
     public void renewSessionId(String oldClusterId, String oldNodeId, String newClusterId, String newNodeId)
     {
         try
         {
             Map<String,HashedSession> sessions=_sessions;
-            if (sessions == null)
-                return;
+            if (sessions == null) {
+				return;
+			}
 
             HashedSession session = sessions.remove(oldClusterId);
-            if (session == null)
-                return;
+            if (session == null) {
+				return;
+			}
 
             session.remove(); //delete any previously saved session
             session.setClusterId(newClusterId); //update ids
@@ -489,27 +500,27 @@ public class HashSessionManager extends AbstractSessionManager
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     protected AbstractSession newSession(HttpServletRequest request)
     {
         return new HashedSession(this, request);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected AbstractSession newSession(long created, long accessed, String clusterId)
     {
         return new HashedSession(this, created,accessed, clusterId);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     protected boolean removeSession(String clusterId)
     {
         return _sessions.remove(clusterId)!=null;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void setStoreDirectory (File dir) throws IOException
     { 
         // CanonicalFile is used to capture the base store directory in a way that will
@@ -517,37 +528,37 @@ public class HashSessionManager extends AbstractSessionManager
         _storeDir=dir.getCanonicalFile();
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public File getStoreDirectory ()
     {
         return _storeDir;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void setLazyLoad(boolean lazyLoad)
     {
         _lazyLoad = lazyLoad;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public boolean isLazyLoad()
     {
         return _lazyLoad;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public boolean isDeleteUnrestorableSessions()
     {
         return _deleteUnrestorableSessions;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void setDeleteUnrestorableSessions(boolean deleteUnrestorableSessions)
     {
         _deleteUnrestorableSessions = deleteUnrestorableSessions;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void restoreSessions () throws Exception
     {
         _sessionsLoaded = true;
@@ -570,7 +581,7 @@ public class HashSessionManager extends AbstractSessionManager
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected synchronized HashedSession restoreSession(String idInCuster)
     {        
         File file = new File(_storeDir,idInCuster);
@@ -621,7 +632,7 @@ public class HashSessionManager extends AbstractSessionManager
         return null;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void saveSessions(boolean reactivate) throws Exception
     {
         if (_storeDir==null || !_storeDir.exists())
@@ -635,12 +646,13 @@ public class HashSessionManager extends AbstractSessionManager
             return;
         }
 
-        for (HashedSession session : _sessions.values())
-            session.save(reactivate);
+        for (HashedSession session : _sessions.values()) {
+			session.save(reactivate);
+		}
     }
     
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public HashedSession restoreSession (InputStream is, HashedSession session) throws Exception
     {
         DataInputStream di = new DataInputStream(is);
@@ -652,8 +664,9 @@ public class HashSessionManager extends AbstractSessionManager
         long accessed = di.readLong();
         int requests = di.readInt();
 
-        if (session == null)
-            session = (HashedSession)newSession(created, accessed, clusterId);
+        if (session == null) {
+			session = (HashedSession)newSession(created, accessed, clusterId);
+		}
         
         session.setRequests(requests);
 

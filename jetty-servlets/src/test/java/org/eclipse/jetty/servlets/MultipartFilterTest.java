@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.servlets;
 
@@ -205,7 +200,7 @@ public class MultipartFilterTest
 
         response = HttpTester.parseResponse(tester.getResponses(request.generate()));
         assertEquals(HttpServletResponse.SC_OK,response.getStatus());
-        assertTrue(response.getContent().indexOf("brown cow")>=0);
+        assertTrue(response.getContent().contains("brown cow"));
     }
 
     @Test
@@ -235,7 +230,7 @@ public class MultipartFilterTest
 
         response = HttpTester.parseResponse(tester.getResponses(request.generate()));
         assertEquals(HttpServletResponse.SC_OK,response.getStatus());
-        assertTrue(response.getContent().indexOf("brown cow")>=0);
+        assertTrue(response.getContent().contains("brown cow"));
     }
     
     @Test
@@ -336,8 +331,8 @@ public class MultipartFilterTest
     }
 
     
-    /*
-     * Test multipart with parts encoded in base64 (RFC1521 section 5)
+    /**
+     * Test multipart with parts encoded in base64 (RFC1521 section 5).
      */
     @Test
     public void testPostWithContentTransferEncodingBase64() throws Exception {
@@ -366,11 +361,11 @@ public class MultipartFilterTest
 
         response = HttpTester.parseResponse(tester.getResponses(request.generate()));
         assertEquals(HttpServletResponse.SC_OK,response.getStatus());
-        assertTrue(response.getContent().indexOf("brown cow")>=0);
+        assertTrue(response.getContent().contains("brown cow"));
     }
 
-    /*
-     * Test multipart with parts encoded in quoted-printable (RFC1521 section 5)
+    /**
+     * Test multipart with parts encoded in quoted-printable (RFC1521 section 5).
      */
     @Test
     public void testPostWithContentTransferEncodingQuotedPrintable() throws Exception
@@ -403,7 +398,7 @@ public class MultipartFilterTest
 
         response = HttpTester.parseResponse(tester.getResponses(request.generate()));
         assertEquals(HttpServletResponse.SC_OK,response.getStatus());
-        assertTrue(response.getContent().indexOf("brown cow")>=0);
+        assertTrue(response.getContent().contains("brown cow"));
     }
     
     
@@ -627,7 +622,7 @@ public class MultipartFilterTest
         {
             response = HttpTester.parseResponse(tester.getResponses(request.generate()));
             assertEquals(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response.getStatus());
-            assertTrue(response.getContent().indexOf("Missing content")>=0);
+            assertTrue(response.getContent().contains("Missing content"));
         }
     }
 
@@ -652,7 +647,7 @@ public class MultipartFilterTest
         {
             response = HttpTester.parseResponse(tester.getResponses(request.generate()));
             assertEquals(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response.getStatus());
-            assertTrue(response.getContent().indexOf("Missing initial")>=0);
+            assertTrue(response.getContent().contains("Missing initial"));
         }
     }
     
@@ -678,7 +673,7 @@ public class MultipartFilterTest
         {
             response = HttpTester.parseResponse(tester.getResponses(request.generate()));
             assertEquals(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, response.getStatus());
-            assertTrue(response.getContent().indexOf("Missing initial")>=0);
+            assertTrue(response.getContent().contains("Missing initial"));
         }
     }
 
@@ -773,7 +768,7 @@ public class MultipartFilterTest
 
         response = HttpTester.parseResponse(tester.getResponses(request.generate()));
         assertEquals(HttpServletResponse.SC_OK,response.getStatus());
-        assertTrue(response.getContent().indexOf("brown cow")>=0);
+        assertTrue(response.getContent().contains("brown cow"));
     }
     
     
@@ -862,7 +857,7 @@ public class MultipartFilterTest
 
         response = HttpTester.parseResponse(tester.getResponses(request.generate()));
         assertEquals(HttpServletResponse.SC_OK,response.getStatus());
-        assertTrue(response.getContent().indexOf("brown cow")>=0);
+        assertTrue(response.getContent().contains("brown cow"));
     }
 
     public static class TestServletCharSet extends HttpServlet
@@ -873,7 +868,7 @@ public class MultipartFilterTest
             //test that the multipart content bytes were converted correctly from their charset to unicode
             String filename = req.getParameter("ttt");
             assertEquals("ttt.txt",filename);  
-            String contentType = (String)req.getParameter("ttt"+MultiPartFilter.CONTENT_TYPE_SUFFIX);
+            String contentType = req.getParameter("ttt"+MultiPartFilter.CONTENT_TYPE_SUFFIX);
             assertEquals("application/octet-stream; charset=UTF-8",contentType);  
             String charset=MimeTypes.getCharsetFromContentType(contentType);
             assertEquals("utf-8",charset);  
@@ -975,7 +970,7 @@ public class MultipartFilterTest
 
         response = HttpTester.parseResponse(tester.getResponses(request.generate()));
         assertEquals(HttpServletResponse.SC_OK,response.getStatus()); 
-        assertTrue(response.getContent().indexOf("000")>=0);
+        assertTrue(response.getContent().contains("000"));
     }
     
     
@@ -984,10 +979,7 @@ public class MultipartFilterTest
     {
         private static final long serialVersionUID = 201012011130L;
 
-        /* ------------------------------------------------------------ */
-        /**
-         * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-         */
+        /** ------------------------------------------------------------. */
         @Override
         protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
         {

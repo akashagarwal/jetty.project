@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.proxy;
 
@@ -100,8 +95,9 @@ public class BalancerServlet extends ProxyServlet
         {
             String memberProxyToParam = BALANCER_MEMBER_PREFIX + balancerName + ".proxyTo";
             String proxyTo = getServletConfig().getInitParameter(memberProxyToParam);
-            if (proxyTo == null || proxyTo.trim().length() == 0)
-                throw new UnavailableException(memberProxyToParam + " parameter is empty.");
+            if (proxyTo == null || proxyTo.trim().length() == 0) {
+				throw new UnavailableException(memberProxyToParam + " parameter is empty.");
+			}
             members.add(new BalancerMember(balancerName, proxyTo));
         }
         _balancerMembers.addAll(members);
@@ -117,12 +113,14 @@ public class BalancerServlet extends ProxyServlet
         Set<String> names = new HashSet<>();
         for (String initParameterName : Collections.list(getServletConfig().getInitParameterNames()))
         {
-            if (!initParameterName.startsWith(BALANCER_MEMBER_PREFIX))
-                continue;
+            if (!initParameterName.startsWith(BALANCER_MEMBER_PREFIX)) {
+				continue;
+			}
 
             int endOfNameIndex = initParameterName.lastIndexOf(".");
-            if (endOfNameIndex <= BALANCER_MEMBER_PREFIX.length())
-                throw new UnavailableException(initParameterName + " parameter does not provide a balancer member name");
+            if (endOfNameIndex <= BALANCER_MEMBER_PREFIX.length()) {
+				throw new UnavailableException(initParameterName + " parameter does not provide a balancer member name");
+			}
 
             names.add(initParameterName.substring(BALANCER_MEMBER_PREFIX.length(), endOfNameIndex));
         }
@@ -133,12 +131,14 @@ public class BalancerServlet extends ProxyServlet
     protected String rewriteTarget(HttpServletRequest request)
     {
         BalancerMember balancerMember = selectBalancerMember(request);
-        if (_log.isDebugEnabled())
-            _log.debug("Selected {}", balancerMember);
+        if (_log.isDebugEnabled()) {
+			_log.debug("Selected {}", balancerMember);
+		}
         String path = request.getRequestURI();
         String query = request.getQueryString();
-        if (query != null)
-            path += "?" + query;
+        if (query != null) {
+			path += "?" + query;
+		}
         return URI.create(balancerMember.getProxyTo() + "/" + path).normalize().toString();
     }
 
@@ -150,8 +150,9 @@ public class BalancerServlet extends ProxyServlet
             if (name != null)
             {
                 BalancerMember balancerMember = findBalancerMemberByName(name);
-                if (balancerMember != null)
-                    return balancerMember;
+                if (balancerMember != null) {
+					return balancerMember;
+				}
             }
         }
         int index = (int)(counter.getAndIncrement() % _balancerMembers.size());
@@ -162,8 +163,9 @@ public class BalancerServlet extends ProxyServlet
     {
         for (BalancerMember balancerMember : _balancerMembers)
         {
-            if (balancerMember.getName().equals(name))
-                return balancerMember;
+            if (balancerMember.getName().equals(name)) {
+				return balancerMember;
+			}
         }
         return null;
     }
@@ -171,8 +173,9 @@ public class BalancerServlet extends ProxyServlet
     private String getBalancerMemberNameFromSessionId(HttpServletRequest request)
     {
         String name = getBalancerMemberNameFromSessionCookie(request);
-        if (name == null)
-            name = getBalancerMemberNameFromURL(request);
+        if (name == null) {
+			name = getBalancerMemberNameFromURL(request);
+		}
         return name;
     }
 
@@ -183,8 +186,9 @@ public class BalancerServlet extends ProxyServlet
         {
             for (Cookie cookie : cookies)
             {
-                if (JSESSIONID.equalsIgnoreCase(cookie.getName()))
-                    return extractBalancerMemberNameFromSessionId(cookie.getValue());
+                if (JSESSIONID.equalsIgnoreCase(cookie.getName())) {
+					return extractBalancerMemberNameFromSessionId(cookie.getValue());
+				}
             }
         }
         return null;
@@ -197,8 +201,9 @@ public class BalancerServlet extends ProxyServlet
         if (idx > 0)
         {
             String requestURISuffix = requestURI.substring(idx + 1);
-            if (requestURISuffix.startsWith(JSESSIONID_URL_PREFIX))
-                return extractBalancerMemberNameFromSessionId(requestURISuffix.substring(JSESSIONID_URL_PREFIX.length()));
+            if (requestURISuffix.startsWith(JSESSIONID_URL_PREFIX)) {
+				return extractBalancerMemberNameFromSessionId(requestURISuffix.substring(JSESSIONID_URL_PREFIX.length()));
+			}
         }
         return null;
     }
@@ -224,14 +229,17 @@ public class BalancerServlet extends ProxyServlet
             {
                 StringBuilder newURI = URIUtil.newURIBuilder(request.getScheme(), request.getServerName(), request.getServerPort());
                 String component = locationURI.getRawPath();
-                if (component != null)
-                    newURI.append(component);
+                if (component != null) {
+					newURI.append(component);
+				}
                 component = locationURI.getRawQuery();
-                if (component != null)
-                    newURI.append('?').append(component);
+                if (component != null) {
+					newURI.append('?').append(component);
+				}
                 component = locationURI.getRawFragment();
-                if (component != null)
-                    newURI.append('#').append(component);
+                if (component != null) {
+					newURI.append('#').append(component);
+				}
                 return URI.create(newURI.toString()).normalize().toString();
             }
         }
@@ -302,12 +310,15 @@ public class BalancerServlet extends ProxyServlet
         @Override
         public boolean equals(Object obj)
         {
-            if (this == obj)
-                return true;
-            if (obj == null)
-                return false;
-            if (getClass() != obj.getClass())
-                return false;
+            if (this == obj) {
+				return true;
+			}
+            if (obj == null) {
+				return false;
+			}
+            if (getClass() != obj.getClass()) {
+				return false;
+			}
             BalancerMember that = (BalancerMember)obj;
             return _name.equals(that._name);
         }

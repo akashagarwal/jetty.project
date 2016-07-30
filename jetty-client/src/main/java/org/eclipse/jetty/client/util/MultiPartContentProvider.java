@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.client.util;
 
@@ -154,16 +149,18 @@ public class MultiPartContentProvider extends AbstractTypedContentProvider imple
     private void addPart(Part part)
     {
         parts.add(part);
-        if (LOG.isDebugEnabled())
-            LOG.debug("Added {}", part);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Added {}", part);
+		}
     }
 
     @Override
     public void setListener(Listener listener)
     {
         this.listener = listener;
-        if (closed.get())
-            this.length = calculateLength();
+        if (closed.get()) {
+			this.length = calculateLength();
+		}
     }
 
     private long calculateLength()
@@ -188,8 +185,9 @@ public class MultiPartContentProvider extends AbstractTypedContentProvider imple
                     break;
                 }
             }
-            if (result > 0)
-                result += lastBoundary.remaining();
+            if (result > 0) {
+				result += lastBoundary.remaining();
+			}
             return result;
         }
     }
@@ -239,18 +237,20 @@ public class MultiPartContentProvider extends AbstractTypedContentProvider imple
             {
                 // Compute the Content-Disposition.
                 String contentDisposition = "Content-Disposition: form-data; name=\"" + name + "\"";
-                if (fileName != null)
-                    contentDisposition += "; filename=\"" + fileName + "\"";
+                if (fileName != null) {
+					contentDisposition += "; filename=\"" + fileName + "\"";
+				}
                 contentDisposition += "\r\n";
 
                 // Compute the Content-Type.
                 String contentType = fields == null ? null : fields.get(HttpHeader.CONTENT_TYPE);
                 if (contentType == null)
                 {
-                    if (content instanceof Typed)
-                        contentType = ((Typed)content).getContentType();
-                    else
-                        contentType = this.contentType;
+                    if (content instanceof Typed) {
+						contentType = ((Typed)content).getContentType();
+					} else {
+						contentType = this.contentType;
+					}
                 }
                 contentType = "Content-Type: " + contentType + "\r\n";
 
@@ -267,13 +267,15 @@ public class MultiPartContentProvider extends AbstractTypedContentProvider imple
                 buffer.write(contentType.getBytes(StandardCharsets.UTF_8));
                 for (HttpField field : fields)
                 {
-                    if (HttpHeader.CONTENT_TYPE.equals(field.getHeader()))
-                        continue;
+                    if (HttpHeader.CONTENT_TYPE.equals(field.getHeader())) {
+						continue;
+					}
                     buffer.write(field.getName().getBytes(StandardCharsets.US_ASCII));
                     buffer.write(COLON_SPACE_BYTES);
                     String value = field.getValue();
-                    if (value != null)
-                        buffer.write(value.getBytes(StandardCharsets.UTF_8));
+                    if (value != null) {
+						buffer.write(value.getBytes(StandardCharsets.UTF_8));
+					}
                     buffer.write(CR_LF_BYTES);
                 }
                 buffer.write(CR_LF_BYTES);
@@ -334,21 +336,24 @@ public class MultiPartContentProvider extends AbstractTypedContentProvider imple
                     {
                         Part part = parts.get(index);
                         ContentProvider content = part.content;
-                        if (content instanceof AsyncContentProvider)
-                            ((AsyncContentProvider)content).setListener(listener);
+                        if (content instanceof AsyncContentProvider) {
+							((AsyncContentProvider)content).setListener(listener);
+						}
                         iterator = content.iterator();
                         state = State.CONTENT;
                         return part.headers.slice();
                     }
                     case CONTENT:
                     {
-                        if (iterator.hasNext())
-                            return iterator.next();
+                        if (iterator.hasNext()) {
+							return iterator.next();
+						}
                         ++index;
-                        if (index == parts.size())
-                            state = State.LAST_BOUNDARY;
-                        else
-                            state = State.MIDDLE_BOUNDARY;
+                        if (index == parts.size()) {
+							state = State.LAST_BOUNDARY;
+						} else {
+							state = State.MIDDLE_BOUNDARY;
+						}
                         break;
                     }
                     case MIDDLE_BOUNDARY:
@@ -372,30 +377,34 @@ public class MultiPartContentProvider extends AbstractTypedContentProvider imple
         @Override
         public Object getLock()
         {
-            if (iterator instanceof Synchronizable)
-                return ((Synchronizable)iterator).getLock();
+            if (iterator instanceof Synchronizable) {
+				return ((Synchronizable)iterator).getLock();
+			}
             return this;
         }
 
         @Override
         public void succeeded()
         {
-            if (iterator instanceof Callback)
-                ((Callback)iterator).succeeded();
+            if (iterator instanceof Callback) {
+				((Callback)iterator).succeeded();
+			}
         }
 
         @Override
         public void failed(Throwable x)
         {
-            if (iterator instanceof Callback)
-                ((Callback)iterator).failed(x);
+            if (iterator instanceof Callback) {
+				((Callback)iterator).failed(x);
+			}
         }
 
         @Override
         public void close() throws IOException
         {
-            if (iterator instanceof Closeable)
-                ((Closeable)iterator).close();
+            if (iterator instanceof Closeable) {
+				((Closeable)iterator).close();
+			}
         }
     }
 

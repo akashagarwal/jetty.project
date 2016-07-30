@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.runner;
 
@@ -87,11 +82,11 @@ public class Runner
     protected RequestLogHandler _logHandler;
     protected String _logFile;
     protected ArrayList<String> _configFiles;
-    protected boolean _enableStats=false;
+    protected boolean _enableStats;
     protected String _statsPropFile;
 
     /**
-     * Classpath
+     * Classpath.
      */
     public class Classpath
     {
@@ -99,23 +94,26 @@ public class Runner
 
         public void addJars (Resource lib) throws IOException
         {
-            if (lib == null || !lib.exists())
-                throw new IllegalStateException ("No such lib: "+lib);
+            if (lib == null || !lib.exists()) {
+				throw new IllegalStateException ("No such lib: "+lib);
+			}
 
             String[] list = lib.list();
-            if (list==null)
-                return;
+            if (list==null) {
+				return;
+			}
 
             for (String path : list)
             {
-                if (".".equals(path) || "..".equals(path))
-                    continue;
+                if (".".equals(path) || "..".equals(path)) {
+					continue;
+				}
 
                 try(Resource item = lib.addPath(path))
                 {
-                    if (item.isDirectory())
-                        addJars(item);
-                    else
+                    if (item.isDirectory()) {
+						addJars(item);
+					} else
                     {
                         String lowerCasePath = path.toLowerCase(Locale.ENGLISH);
                         if (lowerCasePath.endsWith(".jar") ||
@@ -132,8 +130,9 @@ public class Runner
 
         public void addPath (Resource path)
         {
-            if (path == null || !path.exists())
-                throw new IllegalStateException ("No such path: "+path);
+            if (path == null || !path.exists()) {
+				throw new IllegalStateException ("No such path: "+path);
+			}
             _classpath.add(path.getURL());
         }
 
@@ -149,14 +148,15 @@ public class Runner
     }
 
     /**
-     * Generate helpful usage message and exit
+     * Generate helpful usage message and exit.
      *
      * @param error the error header
      */
     public void usage(String error)
     {
-        if (error!=null)
-            System.err.println("ERROR: "+error);
+        if (error!=null) {
+			System.err.println("ERROR: "+error);
+		}
         System.err.println("Usage: java [-Djetty.home=dir] -jar jetty-runner.jar [--help|--version] [ server opts] [[ context opts] context ...] ");
         System.err.println("Server opts:");
         System.err.println(" --version                           - display version and exit");
@@ -178,7 +178,7 @@ public class Runner
 
 
     /**
-     * Generate version message and exit
+     * Generate version message and exit.
      */
     public void version ()
     {
@@ -187,7 +187,7 @@ public class Runner
     }
 
     /**
-     * Configure a jetty instance and deploy the webapps presented as args
+     * Configure a jetty instance and deploy the webapps presented as args.
      *
      * @param args the command line arguments
      * @throws Exception if unable to configure
@@ -201,8 +201,9 @@ public class Runner
             {
                 try(Resource lib = Resource.newResource(args[++i]))
                 {
-                    if (!lib.exists() || !lib.isDirectory())
-                        usage("No such lib directory "+lib);
+                    if (!lib.exists() || !lib.isDirectory()) {
+						usage("No such lib directory "+lib);
+					}
                     _classpath.addJars(lib);
                 }
             }
@@ -210,8 +211,9 @@ public class Runner
             {
                 try(Resource jar = Resource.newResource(args[++i]))
                 {
-                    if (!jar.exists() || jar.isDirectory())
-                        usage("No such jar "+jar);
+                    if (!jar.exists() || jar.isDirectory()) {
+						usage("No such jar "+jar);
+					}
                     _classpath.addPath(jar);
                 }
             }
@@ -219,13 +221,15 @@ public class Runner
             {
                 try(Resource classes = Resource.newResource(args[++i]))
                 {
-                    if (!classes.exists() || !classes.isDirectory())
-                        usage("No such classes directory "+classes);
+                    if (!classes.exists() || !classes.isDirectory()) {
+						usage("No such classes directory "+classes);
+					}
                     _classpath.addPath(classes);
                 }
             }
-            else if (args[i].startsWith("--"))
-                i++;
+            else if (args[i].startsWith("--")) {
+				i++;
+			}
         }
 
         initClassLoader();
@@ -273,8 +277,9 @@ public class Runner
                     contextPathSet = true;
                     break;
                 case "--config":
-                    if (_configFiles == null)
-                        _configFiles = new ArrayList<>();
+                    if (_configFiles == null) {
+						_configFiles = new ArrayList<>();
+					}
                     _configFiles.add(args[++i]);
                     break;
                 case "--lib":
@@ -292,7 +297,7 @@ public class Runner
                 case "--stats":
                     _enableStats = true;
                     _statsPropFile = args[++i];
-                    _statsPropFile = ("unsecure".equalsIgnoreCase(_statsPropFile) ? null : _statsPropFile);
+                    _statsPropFile = "unsecure".equalsIgnoreCase(_statsPropFile) ? null : _statsPropFile;
                     break;
                 default:
 // process contexts
@@ -318,7 +323,7 @@ public class Runner
                         }
 
                         //check that everything got configured, and if not, make the handlers
-                        HandlerCollection handlers = (HandlerCollection) _server.getChildHandlerByClass(HandlerCollection.class);
+                        HandlerCollection handlers = _server.getChildHandlerByClass(HandlerCollection.class);
                         if (handlers == null) 
                         {
                             handlers = new HandlerCollection();
@@ -326,7 +331,7 @@ public class Runner
                         }
 
                         //check if contexts already configured
-                        _contexts = (ContextHandlerCollection) handlers.getChildHandlerByClass(ContextHandlerCollection.class);
+                        _contexts = handlers.getChildHandlerByClass(ContextHandlerCollection.class);
                         if (_contexts == null) 
                         {
                             _contexts = new ContextHandlerCollection();
@@ -334,41 +339,37 @@ public class Runner
                         }
 
 
-                        if (_enableStats) 
-                        {
-                            //if no stats handler already configured
-                            if (handlers.getChildHandlerByClass(StatisticsHandler.class) == null) {
-                                StatisticsHandler statsHandler = new StatisticsHandler();
+                        if (_enableStats && handlers.getChildHandlerByClass(StatisticsHandler.class) == null) {
+						    StatisticsHandler statsHandler = new StatisticsHandler();
 
 
-                                Handler oldHandler = _server.getHandler();
-                                statsHandler.setHandler(oldHandler);
-                                _server.setHandler(statsHandler);
+						    Handler oldHandler = _server.getHandler();
+						    statsHandler.setHandler(oldHandler);
+						    _server.setHandler(statsHandler);
 
 
-                                ServletContextHandler statsContext = new ServletContextHandler(_contexts, "/stats");
-                                statsContext.addServlet(new ServletHolder(new StatisticsServlet()), "/");
-                                statsContext.setSessionHandler(new SessionHandler());
-                                if (_statsPropFile != null) 
-                                {
-                                    HashLoginService loginService = new HashLoginService("StatsRealm", _statsPropFile);
-                                    Constraint constraint = new Constraint();
-                                    constraint.setName("Admin Only");
-                                    constraint.setRoles(new String[]{"admin"});
-                                    constraint.setAuthenticate(true);
+						    ServletContextHandler statsContext = new ServletContextHandler(_contexts, "/stats");
+						    statsContext.addServlet(new ServletHolder(new StatisticsServlet()), "/");
+						    statsContext.setSessionHandler(new SessionHandler());
+						    if (_statsPropFile != null) 
+						    {
+						        HashLoginService loginService = new HashLoginService("StatsRealm", _statsPropFile);
+						        Constraint constraint = new Constraint();
+						        constraint.setName("Admin Only");
+						        constraint.setRoles(new String[]{"admin"});
+						        constraint.setAuthenticate(true);
 
-                                    ConstraintMapping cm = new ConstraintMapping();
-                                    cm.setConstraint(constraint);
-                                    cm.setPathSpec("/*");
+						        ConstraintMapping cm = new ConstraintMapping();
+						        cm.setConstraint(constraint);
+						        cm.setPathSpec("/*");
 
-                                    ConstraintSecurityHandler securityHandler = new ConstraintSecurityHandler();
-                                    securityHandler.setLoginService(loginService);
-                                    securityHandler.setConstraintMappings(Collections.singletonList(cm));
-                                    securityHandler.setAuthenticator(new BasicAuthenticator());
-                                    statsContext.setSecurityHandler(securityHandler);
-                                }
-                            }
-                        }
+						        ConstraintSecurityHandler securityHandler = new ConstraintSecurityHandler();
+						        securityHandler.setLoginService(loginService);
+						        securityHandler.setConstraintMappings(Collections.singletonList(cm));
+						        securityHandler.setAuthenticator(new BasicAuthenticator());
+						        statsContext.setSecurityHandler(securityHandler);
+						    }
+						}
 
                         //ensure a DefaultHandler is present
                         if (handlers.getChildHandlerByClass(DefaultHandler.class) == null) 
@@ -377,7 +378,7 @@ public class Runner
                         }
 
                         //ensure a log handler is present
-                        _logHandler = (RequestLogHandler) handlers.getChildHandlerByClass(RequestLogHandler.class);
+                        _logHandler = handlers.getChildHandlerByClass(RequestLogHandler.class);
                         if (_logHandler == null) 
                         {
                             _logHandler = new RequestLogHandler();
@@ -391,22 +392,20 @@ public class Runner
                         {
                             ServerConnector connector = new ServerConnector(_server);
                             connector.setPort(port);
-                            if (host != null)
-                                connector.setHost(host);
+                            if (host != null) {
+								connector.setHost(host);
+							}
                             _server.addConnector(connector);
-                            if (_enableStats)
-                                connector.addBean(new ConnectorStatistics());
-                        } 
-                        else 
-                        {
-                            if (_enableStats) 
-                            {
-                                for (Connector connector : connectors) 
-                                {
-                                    ((AbstractConnector) connector).addBean(new ConnectorStatistics());
-                                }
-                            }
-                        }
+                            if (_enableStats) {
+								connector.addBean(new ConnectorStatistics());
+							}
+                        } else if (_enableStats) 
+						{
+						    for (Connector connector : connectors) 
+						    {
+						        ((AbstractConnector) connector).addBean(new ConnectorStatistics());
+						    }
+						}
 
                         runnerServerInitialized = true;
                     }
@@ -414,11 +413,13 @@ public class Runner
                     // Create a context
                     try (Resource ctx = Resource.newResource(args[i])) 
                     {
-                        if (!ctx.exists())
-                            usage("Context '" + ctx + "' does not exist");
+                        if (!ctx.exists()) {
+							usage("Context '" + ctx + "' does not exist");
+						}
 
-                        if (contextPathSet && !(contextPath.startsWith("/")))
-                            contextPath = "/" + contextPath;
+                        if (contextPathSet && !contextPath.startsWith("/")) {
+							contextPath = "/" + contextPath;
+						}
 
                         // Configure the context
                         if (!ctx.isDirectory() && ctx.toString().toLowerCase(Locale.ENGLISH).endsWith(".xml"))
@@ -427,8 +428,9 @@ public class Runner
                             XmlConfiguration xmlConfiguration = new XmlConfiguration(ctx.getURL());
                             xmlConfiguration.getIdMap().put("Server", _server);
                             ContextHandler handler = (ContextHandler) xmlConfiguration.configure();
-                            if (contextPathSet)
-                                handler.setContextPath(contextPath);
+                            if (contextPathSet) {
+								handler.setContextPath(contextPath);
+							}
                             _contexts.addHandler(handler);
                             handler.setAttribute("org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern", __containerIncludeJarPattern);
                         }
@@ -448,8 +450,9 @@ public class Runner
             }
         }
 
-        if (_server==null)
-            usage("No Contexts defined");
+        if (_server==null) {
+			usage("No Contexts defined");
+		}
         _server.setStopAtShutdown(true);
 
         switch ((stopPort > 0 ? 1 : 0) + (stopKey != null ? 2 : 0))
@@ -480,8 +483,9 @@ public class Runner
 
     protected void prependHandler (Handler handler, HandlerCollection handlers)
     {
-        if (handler == null || handlers == null)
-            return;
+        if (handler == null || handlers == null) {
+			return;
+		}
 
        Handler[] existing = handlers.getChildHandlers();
        Handler[] children = new Handler[existing.length + 1];
@@ -497,7 +501,7 @@ public class Runner
     }
 
     /**
-     * Establish a classloader with custom paths (if any)
+     * Establish a classloader with custom paths (if any).
      */
     protected void initClassLoader()
     {
@@ -507,10 +511,11 @@ public class Runner
         {
             ClassLoader context=Thread.currentThread().getContextClassLoader();
 
-            if (context==null)
-                _classLoader=new URLClassLoader(paths);
-            else
-                _classLoader=new URLClassLoader(paths, context);
+            if (context!=null) {
+				_classLoader=new URLClassLoader(paths, context);
+			} else {
+				_classLoader=new URLClassLoader(paths);
+			}
 
             Thread.currentThread().setContextClassLoader(_classLoader);
         }
@@ -522,11 +527,11 @@ public class Runner
 
         try
         {
-            if (args.length>0&&args[0].equalsIgnoreCase("--help"))
+            if (args.length>0&&"--help".equalsIgnoreCase(args[0]))
             {
                 runner.usage(null);
             }
-            else if (args.length>0&&args[0].equalsIgnoreCase("--version"))
+            else if (args.length>0&&"--version".equalsIgnoreCase(args[0]))
             {
                 runner.version();
             }

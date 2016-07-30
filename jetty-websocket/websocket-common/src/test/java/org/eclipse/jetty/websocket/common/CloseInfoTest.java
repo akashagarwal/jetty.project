@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.common;
 
@@ -39,7 +34,7 @@ import org.junit.Test;
 public class CloseInfoTest
 {
     /**
-     * A test where no close is provided
+     * A test where no close is provided.
      */
     @Test
     public void testAnonymousClose()
@@ -56,7 +51,7 @@ public class CloseInfoTest
     }
     
     /**
-     * A test where NO_CODE (1005) is provided
+     * A test where NO_CODE (1005) is provided.
      */
     @Test
     public void testNoCode()
@@ -73,7 +68,7 @@ public class CloseInfoTest
     }
     
     /**
-     * A test where NO_CLOSE (1006) is provided
+     * A test where NO_CLOSE (1006) is provided.
      */
     @Test
     public void testNoClose()
@@ -90,7 +85,7 @@ public class CloseInfoTest
     }
 
     /**
-     * A test of FAILED_TLS_HANDSHAKE (1007)
+     * A test of FAILED_TLS_HANDSHAKE (1007).
      */
     @Test
     public void testFailedTlsHandshake()
@@ -113,7 +108,7 @@ public class CloseInfoTest
     }
 
     /**
-     * A test of NORMAL (1000)
+     * A test of NORMAL (1000).
      */
     @Test
     public void testNormal()

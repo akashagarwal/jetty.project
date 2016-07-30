@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 /*
  * Created on 9/01/2004
@@ -130,8 +125,9 @@ public class HttpConnectionTest
         }
         catch(Exception e)
         {
-            if(response != null)
-                System.err.println(response);
+            if(response != null) {
+				System.err.println(response);
+			}
             throw e;
         }
     }
@@ -301,10 +297,11 @@ public class HttpConnectionTest
             String line=in.readLine();
             while (line!=null && line.length()>0)
             {
-                if (line.startsWith("Date:"))
-                    postDate=true;
-                else
-                    postHeaders.add(line);
+                if (line.startsWith("Date:")) {
+					postDate=true;
+				} else {
+					postHeaders.add(line);
+				}
                 line=in.readLine();
             }
         }
@@ -317,10 +314,11 @@ public class HttpConnectionTest
             String line=in.readLine();
             while (line!=null && line.length()>0)
             {
-                if (line.startsWith("Date:"))
-                    headDate=true;
-                else
-                    headHeaders.add(line);
+                if (line.startsWith("Date:")) {
+					headDate=true;
+				} else {
+					headHeaders.add(line);
+				}
                 line=in.readLine();
             }
         }
@@ -350,10 +348,11 @@ public class HttpConnectionTest
             String line=in.readLine();
             while (line!=null && line.length()>0)
             {
-                if (line.startsWith("Date:"))
-                    postDate=true;
-                else
-                    postHeaders.add(line);
+                if (line.startsWith("Date:")) {
+					postDate=true;
+				} else {
+					postHeaders.add(line);
+				}
                 line=in.readLine();
             }
         }
@@ -366,10 +365,11 @@ public class HttpConnectionTest
             String line=in.readLine();
             while (line!=null && line.length()>0)
             {
-                if (line.startsWith("Date:"))
-                    headDate=true;
-                else
-                    headHeaders.add(line);
+                if (line.startsWith("Date:")) {
+					headDate=true;
+				} else {
+					headHeaders.add(line);
+				}
                 line=in.readLine();
             }
         }
@@ -550,8 +550,9 @@ public class HttpConnectionTest
         }
         catch(Exception e)
         {
-            if(response != null)
-                System.err.println(response);
+            if(response != null) {
+				System.err.println(response);
+			}
             throw e;
         }
     }
@@ -608,8 +609,9 @@ public class HttpConnectionTest
 
         long start=System.currentTimeMillis();
         String response = connector.getResponses(requests, 2000, TimeUnit.MILLISECONDS);
-        if ((System.currentTimeMillis()-start)>=2000)
-            Assert.fail();
+        if (System.currentTimeMillis()-start>=2000) {
+			Assert.fail();
+		}
 
         offset = checkContains(response,offset,"HTTP/1.1 200");
         offset = checkContains(response,offset,"pathInfo=/R1");
@@ -737,8 +739,9 @@ public class HttpConnectionTest
         }
         catch (Exception e)
         {
-            if(response != null)
-                System.err.println(response);
+            if(response != null) {
+				System.err.println(response);
+			}
             throw e;
         }
     }
@@ -755,8 +758,9 @@ public class HttpConnectionTest
         {
             int offset = 0;
             String cookie = "thisisastringthatshouldreachover1kbytes";
-            for (int i=0;i<100;i++)
-                cookie+="xxxxxxxxxxxx";
+            for (int i=0;i<100;i++) {
+				cookie+="xxxxxxxxxxxx";
+			}
             response = connector.getResponses("GET / HTTP/1.1\r\n"+
                 "Host: localhost\r\n" +
                 "Cookie: "+cookie+"\r\n"+
@@ -766,8 +770,9 @@ public class HttpConnectionTest
         }
         catch(Exception e)
         {
-            if(response != null)
-                System.err.println(response);
+            if(response != null) {
+				System.err.println(response);
+			}
             throw e;
         }
     }
@@ -799,8 +804,9 @@ public class HttpConnectionTest
     public void testOversizedResponse() throws Exception
     {
         String str = "thisisastringthatshouldreachover1kbytes-";
-        for (int i=0;i<500;i++)
-            str+="xxxxxxxxxxxx";
+        for (int i=0;i<500;i++) {
+			str+="xxxxxxxxxxxx";
+		}
         final String longstr = str;
         final CountDownLatch checkError = new CountDownLatch(1);
         String response = null;
@@ -816,8 +822,9 @@ public class HttpConnectionTest
                 PrintWriter writer = response.getWriter();
                 writer.write("<html><h1>FOO</h1></html>");
                 writer.flush();
-                if (writer.checkError())
-                    checkError.countDown();
+                if (writer.checkError()) {
+					checkError.countDown();
+				}
                 response.flushBuffer();
             }
         });
@@ -837,8 +844,9 @@ public class HttpConnectionTest
         }
         catch(Exception e)
         {
-            if(response != null)
-                System.err.println(response);
+            if(response != null) {
+				System.err.println(response);
+			}
             throw e;
         }
     }
@@ -891,8 +899,9 @@ public class HttpConnectionTest
         }
         catch (Exception e)
         {
-            if(response != null)
-                System.err.println(response);
+            if(response != null) {
+				System.err.println(response);
+			}
             throw e;
         }
     }
@@ -912,8 +921,9 @@ public class HttpConnectionTest
         }
         catch (Exception e)
         {
-            if(response != null)
-                System.err.println(response);
+            if(response != null) {
+				System.err.println(response);
+			}
             throw e;
         }
     }

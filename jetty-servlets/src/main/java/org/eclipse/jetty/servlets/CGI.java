@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.servlets;
 
@@ -93,15 +88,16 @@ public class CGI extends HttpServlet
         _relative = Boolean.parseBoolean(getInitParameter("cgibinResourceBaseIsRelative"));
 
         String tmp = getInitParameter("cgibinResourceBase");
-        if (tmp != null)
-            _cgiBinProvided = true;
-        else
+        if (tmp != null) {
+			_cgiBinProvided = true;
+		} else
         {
             tmp = getInitParameter("resourceBase");
-            if (tmp != null)
-                _cgiBinProvided = true;
-            else
-                tmp = getServletContext().getRealPath("/");
+            if (tmp != null) {
+				_cgiBinProvided = true;
+			} else {
+				tmp = getServletContext().getRealPath("/");
+			}
         }
 
         if (_relative && _cgiBinProvided)
@@ -145,16 +141,18 @@ public class CGI extends HttpServlet
         }
 
         _path = getInitParameter("Path");
-        if (_path != null)
-            _env.set("PATH", _path);
+        if (_path != null) {
+			_env.set("PATH", _path);
+		}
 
         _ignoreExitState = "true".equalsIgnoreCase(getInitParameter("ignoreExitState"));
         Enumeration<String> e = getInitParameterNames();
         while (e.hasMoreElements())
         {
             String n = e.nextElement();
-            if (n != null && n.startsWith("ENV_"))
-                _env.set(n.substring(4), getInitParameter(n));
+            if (n != null && n.startsWith("ENV_")) {
+				_env.set(n.substring(4), getInitParameter(n));
+			}
         }
         if (!_env.envMap.containsKey("SystemRoot"))
         {
@@ -219,7 +217,7 @@ public class CGI extends HttpServlet
     }
 
     /**
-     * executes the CGI process
+     * Executes the CGI process
      *
      * @param command  the command to execute, this command is prefixed by
      *                 the context parameter "commandPrefix".
@@ -262,8 +260,9 @@ public class CGI extends HttpServlet
         env.set("AUTH_TYPE", req.getAuthType());
 
         int contentLen = req.getContentLength();
-        if (contentLen < 0)
-            contentLen = 0;
+        if (contentLen < 0) {
+			contentLen = 0;
+		}
         if (bodyFormEncoded != null)
         {
             env.set("CONTENT_LENGTH", Integer.toString(bodyFormEncoded.length()));
@@ -280,8 +279,9 @@ public class CGI extends HttpServlet
         }
 
         String pathTranslated = req.getPathTranslated();
-        if ((pathTranslated == null) || (pathTranslated.length() == 0))
-            pathTranslated = pathInfo;
+        if (pathTranslated == null || pathTranslated.length() == 0) {
+			pathTranslated = pathInfo;
+		}
         env.set("PATH_TRANSLATED", pathTranslated);
         env.set("QUERY_STRING", req.getQueryString());
         env.set("REMOTE_ADDR", req.getRemoteAddr());
@@ -321,14 +321,15 @@ public class CGI extends HttpServlet
         while (enm.hasMoreElements())
         {
             String name = enm.nextElement();
-            if (name.equalsIgnoreCase("Proxy"))
-                continue;
+            if ("Proxy".equalsIgnoreCase(name)) {
+				continue;
+			}
             String value = req.getHeader(name);
             env.set("HTTP_" + name.toUpperCase(Locale.ENGLISH).replace('-', '_'), value);
         }
 
         // these extra ones were from printenv on www.dev.nomura.co.uk
-        env.set("HTTPS", (req.isSecure() ? "ON" : "OFF"));
+        env.set("HTTPS", req.isSecure() ? "ON" : "OFF");
         // "DOCUMENT_ROOT" => root + "/docs",
         // "SERVER_URL" => "NYI - http://us0245",
         // "TZ" => System.getProperty("user.timezone"),
@@ -340,11 +341,13 @@ public class CGI extends HttpServlet
         String execCmd = absolutePath;
 
         // escape the execCommand
-        if (execCmd.length() > 0 && execCmd.charAt(0) != '"' && execCmd.contains(" "))
-            execCmd = "\"" + execCmd + "\"";
+        if (execCmd.length() > 0 && execCmd.charAt(0) != '"' && execCmd.contains(" ")) {
+			execCmd = "\"" + execCmd + "\"";
+		}
 
-        if (_cmdPrefix != null)
-            execCmd = _cmdPrefix + " " + execCmd;
+        if (_cmdPrefix != null) {
+			execCmd = _cmdPrefix + " " + execCmd;
+		}
 
         LOG.debug("Environment: " + env.getExportString());
         LOG.debug("Command: " + execCmd);
@@ -352,10 +355,11 @@ public class CGI extends HttpServlet
         final Process p = Runtime.getRuntime().exec(execCmd, env.getEnvArray(), _docRoot);
 
         // hook processes input to browser's output (async)
-        if (bodyFormEncoded != null)
-            writeProcessInput(p, bodyFormEncoded);
-        else if (contentLen > 0)
-            writeProcessInput(p, req.getInputStream(), contentLen);
+        if (bodyFormEncoded != null) {
+			writeProcessInput(p, bodyFormEncoded);
+		} else if (contentLen > 0) {
+			writeProcessInput(p, req.getInputStream(), contentLen);
+		}
 
         // hook processes output to browser's input (sync)
         // if browser closes stream, we should detect it and kill process...
@@ -424,8 +428,9 @@ public class CGI extends HttpServlet
                 if (0 != exitValue)
                 {
                     LOG.warn("Non-zero exit status (" + exitValue + ") from CGI program: " + absolutePath);
-                    if (!res.isCommitted())
-                        res.sendError(500, "Failed to exec CGI");
+                    if (!res.isCommitted()) {
+						res.sendError(500, "Failed to exec CGI");
+					}
                 }
             }
         }
@@ -482,7 +487,9 @@ public class CGI extends HttpServlet
 
     private static void writeProcessInput(final Process p, final InputStream input, final int len)
     {
-        if (len <= 0) return;
+        if (len <= 0) {
+			return;
+		}
 
         new Thread(new Runnable()
         {
@@ -523,7 +530,7 @@ public class CGI extends HttpServlet
     }
 
     /**
-     * private utility class that manages the Environment passed to exec.
+     * Private utility class that manages the Environment passed to exec.
      */
     private static class EnvList
     {
@@ -540,7 +547,7 @@ public class CGI extends HttpServlet
         }
 
         /**
-         * Set a name/value pair, null values will be treated as an empty String
+         * Set a name/value pair, null values will be treated as an empty String.
          *
          * @param name the name
          * @param value the value

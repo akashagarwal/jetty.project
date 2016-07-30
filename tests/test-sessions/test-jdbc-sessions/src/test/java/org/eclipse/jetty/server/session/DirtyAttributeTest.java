@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server.session;
 
@@ -129,22 +124,16 @@ public class DirtyAttributeTest
     
     public static class TestValue implements HttpSessionActivationListener, HttpSessionBindingListener, Serializable
     {
-        int passivates = 0;
-        int activates = 0;
-        int binds = 0;
-        int unbinds = 0;
+        int passivates;
+        int activates;
+        int binds;
+        int unbinds;
         
-        /** 
-         * @see javax.servlet.http.HttpSessionActivationListener#sessionWillPassivate(javax.servlet.http.HttpSessionEvent)
-         */
         public void sessionWillPassivate(HttpSessionEvent se)
         {
             ++passivates;
         }
 
-        /** 
-         * @see javax.servlet.http.HttpSessionActivationListener#sessionDidActivate(javax.servlet.http.HttpSessionEvent)
-         */
         public void sessionDidActivate(HttpSessionEvent se)
         {
            ++activates;
@@ -171,17 +160,11 @@ public class DirtyAttributeTest
         }
         
 
-        /** 
-         * @see javax.servlet.http.HttpSessionBindingListener#valueBound(javax.servlet.http.HttpSessionBindingEvent)
-         */
         public void valueBound(HttpSessionBindingEvent event)
         {
             ++binds;
         }
 
-        /** 
-         * @see javax.servlet.http.HttpSessionBindingListener#valueUnbound(javax.servlet.http.HttpSessionBindingEvent)
-         */
         public void valueUnbound(HttpSessionBindingEvent event)
         {
             ++unbinds;
@@ -204,8 +187,9 @@ public class DirtyAttributeTest
             if ("setA".equals(action))
             {
                 HttpSession session = request.getSession(false);
-                if (session == null)
-                    throw new ServletException("Session is null for action=change");
+                if (session == null) {
+					throw new ServletException("Session is null for action=change");
+				}
 
                 session.setAttribute(THE_NAME, A_VALUE);
                 return;
@@ -214,8 +198,9 @@ public class DirtyAttributeTest
             if ("setB".equals(action))
             {
                 HttpSession session = request.getSession(false);
-                if (session == null)
-                    throw new ServletException("Session does not exist");
+                if (session == null) {
+					throw new ServletException("Session does not exist");
+				}
                 session.setAttribute(THE_NAME, B_VALUE);
                 return;
             }

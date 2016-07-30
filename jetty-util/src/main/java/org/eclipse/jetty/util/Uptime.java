@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util;
 
@@ -22,7 +17,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
- * Provide for a Uptime class that is compatible with Android, GAE, and the new Java 8 compact profiles
+ * Provide for a Uptime class that is compatible with Android, GAE, and the new Java 8 compact profiles.
  */
 public class Uptime
 {
@@ -30,7 +25,7 @@ public class Uptime
 
     public static interface Impl
     {
-        public long getUptime();
+        long getUptime();
     }
 
     public static class DefaultImpl implements Impl

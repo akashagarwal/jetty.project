@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http2.generator;
 
@@ -43,8 +38,9 @@ public class DataGenerator
 
     public void generateData(ByteBufferPool.Lease lease, int streamId, ByteBuffer data, boolean last, int maxLength)
     {
-        if (streamId < 0)
-            throw new IllegalArgumentException("Invalid stream id: " + streamId);
+        if (streamId < 0) {
+			throw new IllegalArgumentException("Invalid stream id: " + streamId);
+		}
 
         int dataLength = data.remaining();
         int maxFrameSize = headerGenerator.getMaxFrameSize();
@@ -59,8 +55,9 @@ public class DataGenerator
 
         int length = Math.min(maxLength, dataLength);
         int frames = length / maxFrameSize;
-        if (frames * maxFrameSize != length)
-            ++frames;
+        if (frames * maxFrameSize != length) {
+			++frames;
+		}
 
         int begin = data.position();
         int end = data.limit();
@@ -80,8 +77,9 @@ public class DataGenerator
         int length = data.remaining();
 
         int flags = Flags.NONE;
-        if (last)
-            flags |= Flags.END_STREAM;
+        if (last) {
+			flags |= Flags.END_STREAM;
+		}
 
         ByteBuffer header = headerGenerator.generate(lease, FrameType.DATA, Frame.HEADER_LENGTH + length, length, flags, streamId);
 

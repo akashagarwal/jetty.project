@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.common.frames;
 
@@ -23,7 +18,7 @@ import org.eclipse.jetty.websocket.common.OpCode;
 import org.eclipse.jetty.websocket.common.WebSocketFrame;
 
 /**
- * A Data Frame
+ * A Data Frame.
  */
 public class DataFrame extends WebSocketFrame
 {
@@ -79,7 +74,7 @@ public class DataFrame extends WebSocketFrame
     }
 
     /**
-     * Set the data frame to continuation mode
+     * Set the data frame to continuation mode.
      */
     public void setIsContinuation()
     {

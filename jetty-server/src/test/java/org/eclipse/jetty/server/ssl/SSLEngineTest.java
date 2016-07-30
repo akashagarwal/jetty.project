@@ -1,25 +1,18 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 // JettyTest.java --
-//
 // Junit test that shows the Jetty SSL bug.
-//
 
 package org.eclipse.jetty.server.ssl;
 
@@ -62,12 +55,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
- */
 public class SSLEngineTest
 {
-    // Useful constants
+    /** Useful constants. */
     private static final String HELLO_WORLD="Hello world. The quick brown fox jumped over the lazy dog. How now brown cow. The rain in spain falls mainly on the plain.\n";
     private static final String JETTY_VERSION= Server.getVersion();
     private static final String PROTOCOL_VERSION="2.0";
@@ -299,8 +289,9 @@ public class SSLEngineTest
         int len = 0;
         InputStream is = conn.getInputStream();
         int bytes=0;
-        while ((len = is.read(b)) > -1)
-            bytes+=len;
+        while ((len = is.read(b)) > -1) {
+			bytes+=len;
+		}
         is.close();
 
         assertEquals(BODY_SIZE,handler.bytes);
@@ -334,7 +325,7 @@ public class SSLEngineTest
         }
         catch(SocketTimeoutException e)
         {
-            System.err.println("Test timedout: "+e.toString());
+            System.err.println("Test timedout: "+e);
             e.printStackTrace(); // added to see if we can get more info from failures on CI
         }
         finally
@@ -361,23 +352,23 @@ public class SSLEngineTest
                 ServletOutputStream out=response.getOutputStream();
                 byte[] buf = new byte[Integer.valueOf(request.getParameter("dump"))];
                 // System.err.println("DUMP "+buf.length);
-                for (int i=0;i<buf.length;i++)
-                    buf[i]=(byte)('0'+(i%10));
+                for (int i=0;i<buf.length;i++) {
+					buf[i]=(byte)('0'+i%10);
+				}
                 out.write(buf);
-                out.close();
             }
             else
             {
                 PrintWriter out=response.getWriter();
                 out.print(HELLO_WORLD);
-                out.close();
             }
+			out.close();
         }
     }
 
     private static class StreamHandler extends AbstractHandler
     {
-        private int bytes=0;
+        private int bytes;
 
         public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
         {

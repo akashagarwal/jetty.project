@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http.spi;
 
@@ -125,8 +120,9 @@ public class HttpSpiContextHandler extends ContextHandler
             int rc = ((Authenticator.Failure)result).getResponseCode();
             for (Map.Entry<String,List<String>> header : httpExchange.getResponseHeaders().entrySet())
             {
-                for (String value : header.getValue())
-                    resp.addHeader(header.getKey(),value);
+                for (String value : header.getValue()) {
+					resp.addHeader(header.getKey(),value);
+				}
             }
             resp.sendError(rc);
         }
@@ -135,8 +131,9 @@ public class HttpSpiContextHandler extends ContextHandler
             int rc = ((Authenticator.Retry)result).getResponseCode();
             for (Map.Entry<String,List<String>> header : httpExchange.getResponseHeaders().entrySet())
             {
-                for (String value : header.getValue())
-                    resp.addHeader(header.getKey(),value);
+                for (String value : header.getValue()) {
+					resp.addHeader(header.getKey(),value);
+				}
             }
             resp.setStatus(rc);
             resp.flushBuffer();

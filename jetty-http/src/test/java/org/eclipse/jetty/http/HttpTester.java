@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http;
 
@@ -105,9 +100,9 @@ public class HttpTester
         return r;
     }
 
-    public abstract static class Input
+    public static abstract class Input
     {
-        boolean _eof=false;
+        boolean _eof;
         HttpParser _parser;
         ByteBuffer _buffer = BufferUtil.allocate(8192);
         
@@ -151,10 +146,11 @@ public class HttpTester
             {
                 BufferUtil.compact(_buffer);
                 int len=in.read(_buffer.array(),_buffer.arrayOffset()+_buffer.limit(),BufferUtil.space(_buffer));
-                if (len<0)
-                    _eof=true;
-                else
-                    _buffer.limit(_buffer.limit()+len);
+                if (len<0) {
+					_eof=true;
+				} else {
+					_buffer.limit(_buffer.limit()+len);
+				}
                 return len;
             }
         };
@@ -170,8 +166,9 @@ public class HttpTester
                 BufferUtil.compact(_buffer);
                 int pos=BufferUtil.flipToFill(_buffer);
                 int len=in.read(_buffer);
-                if (len<0)
-                    _eof=true;
+                if (len<0) {
+					_eof=true;
+				}
                 BufferUtil.flipToFlush(_buffer,pos);
                 return len;
             }
@@ -186,32 +183,34 @@ public class HttpTester
         {
             r=new Response();
             parser =new HttpParser(r);
-        }
-        else
-            r=(Response)parser.getHandler();
+        } else {
+			r=(Response)parser.getHandler();
+		}
         
         ByteBuffer buffer = in.getBuffer();
         
         int len=0;
         while(len>=0)
         {
-            if (BufferUtil.hasContent(buffer))
-                if (parser.parseNext(buffer))
-                    break;
-            if (in.fillBuffer()<=0)
-                break;
+            if (BufferUtil.hasContent(buffer) && parser.parseNext(buffer)) {
+				break;
+			}
+            if (in.fillBuffer()<=0) {
+				break;
+			}
         }
         
-        if (r.isComplete())
-            return r;
+        if (r.isComplete()) {
+			return r;
+		}
         in.setHttpParser(parser);
         return null;
     }
 
 
-    public abstract static class Message extends HttpFields implements HttpParser.HttpHandler
+    public static abstract class Message extends HttpFields implements HttpParser.HttpHandler
     {
-        boolean _complete=false;
+        boolean _complete;
         ByteArrayOutputStream _content;
         HttpVersion _version=HttpVersion.HTTP_1_0;
 
@@ -276,15 +275,17 @@ public class HttpTester
 
         public byte[] getContentBytes()
         {
-            if (_content==null)
-                return null;
-            return _content.toByteArray();
+            if (_content!=null) {
+				return _content.toByteArray();
+			}
+            return null;
         }
 
         public String getContent()
         {
-            if (_content==null)
-                return null;
+            if (_content==null) {
+				return null;
+			}
             byte[] bytes=_content.toByteArray();
 
             String content_type=get(HttpHeader.CONTENT_TYPE);
@@ -403,7 +404,7 @@ public class HttpTester
             }
 
         }
-        abstract public MetaData getInfo();
+        public abstract MetaData getInfo();
 
         @Override
         public int getHeaderCacheSize()
@@ -422,7 +423,7 @@ public class HttpTester
         public boolean startRequest(String method, String uri, HttpVersion version)
         {
             _method=method;
-            _uri=uri.toString();
+            _uri=uri;
             _version=version;
             return false;
         }

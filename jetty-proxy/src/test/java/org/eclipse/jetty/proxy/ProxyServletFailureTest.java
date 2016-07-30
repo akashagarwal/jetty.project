@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.proxy;
 
@@ -166,9 +161,7 @@ public class ProxyServletFailureTest
         try (Socket socket = new Socket("localhost", proxyConnector.getLocalPort()))
         {
             String serverHostPort = "localhost:" + serverConnector.getLocalPort();
-            String request = "" +
-                    "GET http://" + serverHostPort + " HTTP/1.1\r\n" +
-                    "Host: " + serverHostPort + "\r\n";
+            String request = "GET http://" + serverHostPort + " HTTP/1.1\r\n" + "Host: " + serverHostPort + "\r\n";
             // Don't sent the \r\n that would signal the end of the headers.
             OutputStream output = socket.getOutputStream();
             output.write(request.getBytes("UTF-8"));
@@ -194,11 +187,7 @@ public class ProxyServletFailureTest
         try (Socket socket = new Socket("localhost", proxyConnector.getLocalPort()))
         {
             String serverHostPort = "localhost:" + serverConnector.getLocalPort();
-            String request = "" +
-                    "GET http://" + serverHostPort + " HTTP/1.1\r\n" +
-                    "Host: " + serverHostPort + "\r\n" +
-                    "Content-Length: 1\r\n" +
-                    "\r\n";
+            String request = "GET http://" + serverHostPort + " HTTP/1.1\r\n" + "Host: " + serverHostPort + "\r\n" + "Content-Length: 1\r\n" + "\r\n";
             OutputStream output = socket.getOutputStream();
             output.write(request.getBytes("UTF-8"));
             output.flush();
@@ -229,12 +218,7 @@ public class ProxyServletFailureTest
         try (Socket socket = new Socket("localhost", proxyConnector.getLocalPort()))
         {
             String serverHostPort = "localhost:" + serverConnector.getLocalPort();
-            String request = "" +
-                    "GET http://" + serverHostPort + " HTTP/1.1\r\n" +
-                    "Host: " + serverHostPort + "\r\n" +
-                    "Content-Length: 2\r\n" +
-                    "\r\n" +
-                    "Z";
+            String request = "GET http://" + serverHostPort + " HTTP/1.1\r\n" + "Host: " + serverHostPort + "\r\n" + "Content-Length: 2\r\n" + "\r\n" + "Z";
             OutputStream output = socket.getOutputStream();
             output.write(request.getBytes("UTF-8"));
             output.flush();
@@ -353,8 +337,9 @@ public class ProxyServletFailureTest
             @Override
             protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException
             {
-                if (request.getHeader("Via") != null)
-                    response.addHeader(PROXIED_HEADER, "true");
+                if (request.getHeader("Via") != null) {
+					response.addHeader(PROXIED_HEADER, "true");
+				}
                 try
                 {
                     TimeUnit.MILLISECONDS.sleep(2 * timeout);

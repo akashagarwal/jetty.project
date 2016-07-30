@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.client;
 
@@ -57,16 +52,19 @@ public abstract class HttpChannel
             {
                 abort = false;
                 result = exchange.associate(this);
-                if (result)
-                    _exchange = exchange;
+                if (result) {
+					_exchange = exchange;
+				}
             }
         }
 
-        if (abort)
-            exchange.getRequest().abort(new UnsupportedOperationException("Pipelined requests not supported"));
+        if (abort) {
+			exchange.getRequest().abort(new UnsupportedOperationException("Pipelined requests not supported"));
+		}
 
-        if (LOG.isDebugEnabled())
-            LOG.debug("{} associated {} to {}", exchange, result, this);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("{} associated {} to {}", exchange, result, this);
+		}
 
         return result;
     }
@@ -85,8 +83,9 @@ public abstract class HttpChannel
             }
         }
 
-        if (LOG.isDebugEnabled())
-            LOG.debug("{} disassociated {} from {}", exchange, result, this);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("{} disassociated {} from {}", exchange, result, this);
+		}
         return result;
     }
 
@@ -114,12 +113,14 @@ public abstract class HttpChannel
     public boolean abort(HttpExchange exchange, Throwable requestFailure, Throwable responseFailure)
     {
         boolean requestAborted = false;
-        if (requestFailure != null)
-            requestAborted = getHttpSender().abort(exchange, requestFailure);
+        if (requestFailure != null) {
+			requestAborted = getHttpSender().abort(exchange, requestFailure);
+		}
 
         boolean responseAborted = false;
-        if (responseFailure != null)
-            responseAborted = abortResponse(exchange, responseFailure);
+        if (responseFailure != null) {
+			responseAborted = abortResponse(exchange, responseFailure);
+		}
 
         return requestAborted || responseAborted;
     }

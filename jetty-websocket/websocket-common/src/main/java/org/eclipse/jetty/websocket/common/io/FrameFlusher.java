@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.common.io;
 
@@ -55,7 +50,7 @@ public class FrameFlusher
         public Flusher(int maxGather)
         {
             entries = new ArrayList<>(maxGather);
-            buffers = new ArrayList<>((maxGather * 2) + 1);
+            buffers = new ArrayList<>(maxGather * 2 + 1);
         }
 
         private Action batch()
@@ -162,7 +157,7 @@ public class FrameFlusher
             BatchMode currentBatchMode = BatchMode.AUTO;
             synchronized (lock)
             {
-                while ((entries.size() <= maxGather) && !queue.isEmpty())
+                while (entries.size() <= maxGather && !queue.isEmpty())
                 {
                     FrameEntry entry = queue.poll();
                     currentBatchMode = BatchMode.max(currentBatchMode,entry.batchMode);
@@ -177,7 +172,7 @@ public class FrameFlusher
                     int approxFrameLength = Generator.MAX_HEADER_LENGTH + payloadLength;
 
                     // If it is a "big" frame, avoid copying into the aggregate buffer.
-                    if (approxFrameLength > (bufferSize >> 2))
+                    if (approxFrameLength > bufferSize >> 2)
                     {
                         currentBatchMode = BatchMode.OFF;
                     }
@@ -219,7 +214,7 @@ public class FrameFlusher
 
         private void releaseAggregate()
         {
-            if ((aggregate != null) && BufferUtil.isEmpty(aggregate))
+            if (aggregate != null && BufferUtil.isEmpty(aggregate))
             {
                 bufferPool.release(aggregate);
                 aggregate = null;
@@ -393,8 +388,9 @@ public class FrameFlusher
         }
         catch (Throwable x)
         {
-            if (LOG.isDebugEnabled())
-                LOG.debug("Exception while notifying failure of callback " + callback,x);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Exception while notifying failure of callback " + callback,x);
+			}
         }
     }
 
@@ -409,8 +405,9 @@ public class FrameFlusher
         }
         catch (Throwable x)
         {
-            if (LOG.isDebugEnabled())
-                LOG.debug("Exception while notifying success of callback " + callback,x);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Exception while notifying success of callback " + callback,x);
+			}
         }
     }
 

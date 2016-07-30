@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.io;
 
@@ -84,8 +79,8 @@ public class SelectChannelEndPointTest
         }
     };
 
-    // Must be volatile or the test may fail spuriously
-    protected volatile int _blockAt = 0;
+    /** Must be volatile or the test may fail spuriously. */
+    protected volatile int _blockAt;
     private volatile int _writeCount = 1;
 
     @Before
@@ -194,11 +189,13 @@ public class SelectChannelEndPointTest
 
                     // Fill the input buffer with everything available
                     BufferUtil.compact(_in);
-                    if (BufferUtil.isFull(_in))
-                        throw new IllegalStateException("FULL " + BufferUtil.toDetailString(_in));
+                    if (BufferUtil.isFull(_in)) {
+						throw new IllegalStateException("FULL " + BufferUtil.toDetailString(_in));
+					}
                     int filled = _endp.fill(_in);
-                    if (filled > 0)
-                        progress = true;
+                    if (filled > 0) {
+						progress = true;
+					}
 
                     // If the tests wants to block, then block
                     while (_blockAt > 0 && _endp.isOpen() && _in.remaining() < _blockAt)
@@ -211,8 +208,9 @@ public class SelectChannelEndPointTest
                     }
 
                     // Copy to the out buffer
-                    if (BufferUtil.hasContent(_in) && BufferUtil.append(_out, _in) > 0)
-                        progress = true;
+                    if (BufferUtil.hasContent(_in) && BufferUtil.append(_out, _in) > 0) {
+						progress = true;
+					}
 
                     // Blocking writes
                     if (BufferUtil.hasContent(_out))
@@ -229,12 +227,14 @@ public class SelectChannelEndPointTest
                     }
 
                     // are we done?
-                    if (_endp.isInputShutdown())
-                        _endp.shutdownOutput();
+                    if (_endp.isInputShutdown()) {
+						_endp.shutdownOutput();
+					}
                 }
 
-                if (_endp.isOpen())
-                    fillInterested();
+                if (_endp.isOpen()) {
+					fillInterested();
+				}
             }
             catch (ExecutionException e)
             {
@@ -316,10 +316,11 @@ public class SelectChannelEndPointTest
 
         for (int i = 0; i < 10; ++i)
         {
-            if (server.isOpen())
-                Thread.sleep(10);
-            else
-                break;
+            if (server.isOpen()) {
+				Thread.sleep(10);
+			} else {
+				break;
+			}
         }
         assertFalse(server.isOpen());
     }
@@ -463,10 +464,11 @@ public class SelectChannelEndPointTest
         // But endpoint may still be open for a little bit.
         for (int i = 0; i < 10; ++i)
         {
-            if (_lastEndPoint.isOpen())
-                Thread.sleep(2 * idleTimeout / 10);
-            else
-                break;
+            if (_lastEndPoint.isOpen()) {
+				Thread.sleep(2 * idleTimeout / 10);
+			} else {
+				break;
+			}
         }
         assertFalse(_lastEndPoint.isOpen());
     }
@@ -523,9 +525,10 @@ public class SelectChannelEndPointTest
         assertEquals(-1,b);
 
         // But endpoint is still open.
-        if(_lastEndPoint.isOpen())
-            // Wait for another idle callback
+        if(_lastEndPoint.isOpen()) {
+			// Wait for another idle callback
             Thread.sleep(idleTimeout * 2);
+		}
 
         // endpoint is closed.
         assertFalse(_lastEndPoint.isOpen());
@@ -626,8 +629,9 @@ public class SelectChannelEndPointTest
         while (!latch.await(5, TimeUnit.SECONDS))
         {
             //System.err.println(latch.getCount());
-            if (latch.getCount() == last)
-                Assert.fail();
+            if (latch.getCount() == last) {
+				Assert.fail();
+			}
             last = latch.getCount();
         }
 
@@ -657,8 +661,9 @@ public class SelectChannelEndPointTest
         {
             for (int i = 0; i < _writeCount; i++)
             {
-                if (i % 1000 == 0)
-                    TimeUnit.MILLISECONDS.sleep(200);
+                if (i % 1000 == 0) {
+					TimeUnit.MILLISECONDS.sleep(200);
+				}
 
                 // Verify echo server to client
                 for (int j = 0; j < data.length(); j++)
@@ -670,8 +675,9 @@ public class SelectChannelEndPointTest
                     assertEquals("test-" + i + "/" + j,c,(char)b);
                 }
 
-                if (i == 0)
-                    _lastEndPoint.setIdleTimeout(60000);
+                if (i == 0) {
+					_lastEndPoint.setIdleTimeout(60000);
+				}
             }
         }
         catch (SocketTimeoutException e)
@@ -686,16 +692,17 @@ public class SelectChannelEndPointTest
 
         for (int i = 0; i < 10; ++i)
         {
-            if (server.isOpen())
-                Thread.sleep(10);
-            else
-                break;
+            if (server.isOpen()) {
+				Thread.sleep(10);
+			} else {
+				break;
+			}
         }
         assertFalse(server.isOpen());
     }
     
 
-    // TODO make this test reliable
+    /** TODO make this test reliable. */
     @Test
     @Ignore
     public void testRejectedExecution() throws Exception

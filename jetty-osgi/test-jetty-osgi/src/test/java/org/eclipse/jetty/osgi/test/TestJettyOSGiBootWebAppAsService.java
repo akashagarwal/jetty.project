@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.osgi.test;
 
@@ -64,7 +59,7 @@ public class TestJettyOSGiBootWebAppAsService
     private static final String LOG_LEVEL = "WARN";
 
     @Inject
-    BundleContext bundleContext = null;
+    BundleContext bundleContext;
 
     @Configuration
     public static Option[] configure()
@@ -109,9 +104,7 @@ public class TestJettyOSGiBootWebAppAsService
 
     public static List<Option> jspDependencies()
     {
-        List<Option> res = new ArrayList<Option>();
-
-        res.addAll(TestJettyOSGiBootCore.jspDependencies());
+        List<Option> res = new ArrayList<Option>(TestJettyOSGiBootCore.jspDependencies());
 
         // a bundle that registers a webapp as a service for the jetty osgi core
         // to pick up and deploy
@@ -126,8 +119,6 @@ public class TestJettyOSGiBootWebAppAsService
         TestOSGiUtil.assertAllBundlesActiveOrResolved(bundleContext);
     }
 
-    /**
-     */
     @Test
     public void testBundle() throws Exception
     {
@@ -141,7 +132,7 @@ public class TestJettyOSGiBootWebAppAsService
             assertEquals(HttpStatus.OK_200, response.getStatus());
 
             String content = new String(response.getContent());
-            assertTrue(content.indexOf("<h1>Test OSGi WebApp</h1>") != -1);
+            assertTrue(content.contains("<h1>Test OSGi WebApp</h1>"));
         }
         finally
         {

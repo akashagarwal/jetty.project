@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util.resource;
 
@@ -55,12 +50,12 @@ public class FileResource extends Resource
 {
     private static final Logger LOG = Log.getLogger(FileResource.class);
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     private final File _file;
     private final URI _uri;
     private final URI _alias;
     
-    /* -------------------------------------------------------- */
+    /** --------------------------------------------------------. */
     public FileResource(URL url)
             throws IOException, URISyntaxException
     {
@@ -77,8 +72,9 @@ public class FileResource extends Resource
         }
         catch (Exception e)
         {
-            if (!url.toString().startsWith("file:"))
-                throw new IllegalArgumentException("!file:");
+            if (!url.toString().startsWith("file:")) {
+				throw new IllegalArgumentException("!file:");
+			}
             
             LOG.ignore(e);
             try
@@ -86,10 +82,11 @@ public class FileResource extends Resource
                 // Assume that File.toURL produced unencoded chars. So try encoding them.
                 String file_url="file:"+URIUtil.encodePath(url.toString().substring(5));
                 URI uri = new URI(file_url);
-                if (uri.getAuthority()==null)
-                    file = new File(uri);
-                else
-                    file = new File("//"+uri.getAuthority()+URIUtil.decodePath(url.getFile()));
+                if (uri.getAuthority()!=null) {
+					file = new File("//"+uri.getAuthority()+URIUtil.decodePath(url.getFile()));
+				} else {
+					file = new File(uri);
+				}
             }
             catch (Exception e2)
             {
@@ -106,7 +103,7 @@ public class FileResource extends Resource
         _alias=checkFileAlias(_uri,_file);
     }
 
-    /* -------------------------------------------------------- */
+    /** --------------------------------------------------------. */
     public FileResource(URI uri)
     {
         File file=new File(uri);
@@ -118,10 +115,11 @@ public class FileResource extends Resource
             assertValidPath(file.toString());
 
             // Is it a URI alias?
-            if (!URIUtil.equalsIgnoreEncodings(_uri.toASCIIString(), file_uri.toString()))
-                _alias = _file.toURI();
-            else
-                _alias = checkFileAlias(_uri, _file);
+            if (!URIUtil.equalsIgnoreEncodings(_uri.toASCIIString(), file_uri.toString())) {
+				_alias = _file.toURI();
+			} else {
+				_alias = checkFileAlias(_uri, _file);
+			}
         }
         catch (URISyntaxException e)
         {
@@ -134,7 +132,7 @@ public class FileResource extends Resource
         }
     }
 
-    /* -------------------------------------------------------- */
+    /** --------------------------------------------------------. */
     public FileResource(File file)
     {
         assertValidPath(file.toString());
@@ -155,7 +153,7 @@ public class FileResource extends Resource
         _alias=checkFileAlias(_uri,_file);
     }
 
-    /* -------------------------------------------------------- */
+    /** --------------------------------------------------------. */
     public FileResource(File base, String childPath)
     {
         String encoded = URIUtil.encodePath(childPath);
@@ -178,7 +176,7 @@ public class FileResource extends Resource
         }
         catch (final URISyntaxException e)
         {
-            throw new InvalidPathException(base.toString() + childPath, e.getMessage())
+            throw new InvalidPathException(base + childPath, e.getMessage())
             {
                 {
                     initCause(e);
@@ -190,20 +188,22 @@ public class FileResource extends Resource
         _alias=checkFileAlias(_uri,_file);
     }
 
-    /* -------------------------------------------------------- */
+    /** --------------------------------------------------------. */
     private static URI normalizeURI(File file, URI uri) throws URISyntaxException {
         String u =uri.toASCIIString();
         if (file.isDirectory())
         {
-            if(!u.endsWith("/"))
-                u+="/";
+            if(!u.endsWith("/")) {
+				u+="/";
+			}
         }
-        else if (file.exists() && u.endsWith("/"))
-            u=u.substring(0,u.length()-1);
+        else if (file.exists() && u.endsWith("/")) {
+			u=u.substring(0,u.length()-1);
+		}
         return new URI(u);
     }
 
-    /* -------------------------------------------------------- */
+    /** --------------------------------------------------------. */
     private static URI checkFileAlias(final URI uri, final File file)
     {
         try
@@ -219,8 +219,9 @@ public class FileResource extends Resource
 
             if (!abs.equals(can))
             {
-                if (LOG.isDebugEnabled())
-                    LOG.debug("ALIAS abs={} can={}",abs,can);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("ALIAS abs={} can={}",abs,can);
+				}
 
                 URI alias=new File(can).toURI();
                 // Have to encode the path as File.toURI does not!
@@ -245,7 +246,7 @@ public class FileResource extends Resource
         return null;
     }
     
-    /* -------------------------------------------------------- */
+    /** --------------------------------------------------------. */
     @Override
     public Resource addPath(String path)
             throws IOException, MalformedURLException
@@ -253,11 +254,13 @@ public class FileResource extends Resource
         assertValidPath(path);
         path = org.eclipse.jetty.util.URIUtil.canonicalPath(path);
 
-        if (path==null)
-            throw new MalformedURLException();
+        if (path==null) {
+			throw new MalformedURLException();
+		}
         
-        if ("/".equals(path))
-            return this;
+        if ("/".equals(path)) {
+			return this;
+		}
 
         return new FileResource(_file, path);
     }
@@ -271,7 +274,7 @@ public class FileResource extends Resource
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public URI getAlias()
     {
@@ -290,7 +293,7 @@ public class FileResource extends Resource
         
     /* -------------------------------------------------------- */
     /**
-     * Returns the last modified time
+     * Returns the last modified time.
      */
     @Override
     public long lastModified()
@@ -305,12 +308,12 @@ public class FileResource extends Resource
     @Override
     public boolean isDirectory()
     {
-        return _file.exists() && _file.isDirectory() || _uri.toASCIIString().endsWith("/");
+        return (_file.exists() && _file.isDirectory()) || _uri.toASCIIString().endsWith("/");
     }
 
     /* --------------------------------------------------------- */
     /**
-     * Return the length of the resource
+     * Return the length of the resource.
      */
     @Override
     public long length()
@@ -321,7 +324,7 @@ public class FileResource extends Resource
 
     /* --------------------------------------------------------- */
     /**
-     * Returns the name of the resource
+     * Returns the name of the resource.
      */
     @Override
     public String getName()
@@ -342,7 +345,7 @@ public class FileResource extends Resource
         
     /* --------------------------------------------------------- */
     /**
-     * Returns an input stream to the resource
+     * Returns an input stream to the resource.
      */
     @Override
     public InputStream getInputStream() throws IOException
@@ -350,7 +353,7 @@ public class FileResource extends Resource
         return new FileInputStream(_file);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public ReadableByteChannel getReadableByteChannel() throws IOException
     {
@@ -359,7 +362,7 @@ public class FileResource extends Resource
         
     /* --------------------------------------------------------- */
     /**
-     * Deletes the given resource
+     * Deletes the given resource.
      */
     @Override
     public boolean delete()
@@ -370,33 +373,32 @@ public class FileResource extends Resource
 
     /* --------------------------------------------------------- */
     /**
-     * Rename the given resource
+     * Rename the given resource.
      */
     @Override
     public boolean renameTo( Resource dest)
             throws SecurityException
     {
-        if( dest instanceof FileResource)
-            return _file.renameTo( ((FileResource)dest)._file);
-        else
-            return false;
+        return dest instanceof FileResource && _file.renameTo( ((FileResource)dest)._file);
     }
 
     /* --------------------------------------------------------- */
     /**
-     * Returns a list of resources contained in the given resource
+     * Returns a list of resources contained in the given resource.
      */
     @Override
     public String[] list()
     {
         String[] list =_file.list();
-        if (list==null)
-            return null;
+        if (list==null) {
+			return null;
+		}
         for (int i=list.length;i-->0;)
         {
             if (new File(_file,list[i]).isDirectory() &&
-                    !list[i].endsWith("/"))
-                list[i]+="/";
+                    !list[i].endsWith("/")) {
+				list[i]+="/";
+			}
         }
         return list;
     }
@@ -409,11 +411,13 @@ public class FileResource extends Resource
     @Override
     public boolean equals( Object o)
     {
-        if (this == o)
-            return true;
+        if (this == o) {
+			return true;
+		}
 
-        if (null == o || ! (o instanceof FileResource))
-            return false;
+        if (null == o || ! (o instanceof FileResource)) {
+			return false;
+		}
 
         FileResource f=(FileResource)o;
         return f._file == _file || (null != _file && _file.equals(f._file));
@@ -429,7 +433,7 @@ public class FileResource extends Resource
         return null == _file ? super.hashCode() : _file.hashCode();
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void copyTo(File destination)
             throws IOException
@@ -440,8 +444,9 @@ public class FileResource extends Resource
         }
         else
         {
-            if (destination.exists())
-                throw new IllegalArgumentException(destination+" exists");
+            if (destination.exists()) {
+				throw new IllegalArgumentException(destination+" exists");
+			}
             IO.copy(getFile(),destination);
         }
     }

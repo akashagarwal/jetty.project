@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 
@@ -239,8 +234,9 @@ public class ConnectorStatisticsTest
     {
         int idx = id - 1;
 
-        if (idx < 0)
-            throw new IllegalArgumentException("Connection ID <= 0");
+        if (idx < 0) {
+			throw new IllegalArgumentException("Connection ID <= 0");
+		}
 
         _socket[idx]  = _socket[idx] == null ? new Socket("localhost", _connector.getLocalPort()) : _socket[idx];
         _out[idx] = _out[idx] == null ? new PrintWriter(_socket[idx].getOutputStream(), true) : _out[idx];
@@ -258,8 +254,9 @@ public class ConnectorStatisticsTest
         String line=_in[idx].readLine();
         while(line!=null)
         {
-            if ("Server response".equals(line))
-                break;
+            if ("Server response".equals(line)) {
+				break;
+			}
             line=_in[idx].readLine();
         }
     }

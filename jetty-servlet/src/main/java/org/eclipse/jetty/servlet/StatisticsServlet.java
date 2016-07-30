@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.servlet;
 
@@ -44,22 +39,20 @@ import org.eclipse.jetty.util.log.Logger;
 /**
  * StatisticsServlet
  *
- *
+ *.
  */
 public class StatisticsServlet extends HttpServlet
 {
     private static final Logger LOG = Log.getLogger(StatisticsServlet.class);
 
-    boolean _restrictToLocalhost = true; // defaults to true
+    /** Defaults to true. */
+    boolean _restrictToLocalhost = true;
     private StatisticsHandler _statsHandler;
     private MemoryMXBean _memoryBean;
     private Connector[] _connectors;
 
     
     
-    /** 
-     * @see javax.servlet.GenericServlet#init()
-     */
     public void init() throws ServletException
     {
         ServletContext context = getServletContext();
@@ -89,9 +82,6 @@ public class StatisticsServlet extends HttpServlet
 
     
     
-    /** 
-     * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-     */
     public void doPost(HttpServletRequest sreq, HttpServletResponse sres) throws ServletException, IOException
     {
         doGet(sreq, sres);
@@ -99,9 +89,6 @@ public class StatisticsServlet extends HttpServlet
 
     
     
-    /** 
-     * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-     */
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
     {
         if (_statsHandler == null)
@@ -110,20 +97,17 @@ public class StatisticsServlet extends HttpServlet
             resp.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
             return;
         }
-        if (_restrictToLocalhost)
-        {
-            if (!isLoopbackAddress(req.getRemoteAddr()))
-            {
-                resp.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
-                return;
-            }
-        }
+        if (_restrictToLocalhost && !isLoopbackAddress(req.getRemoteAddr())) {
+		    resp.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+		    return;
+		}
 
         String wantXml = req.getParameter("xml");
-        if (wantXml == null)
-          wantXml = req.getParameter("XML");
+        if (wantXml == null) {
+			wantXml = req.getParameter("XML");
+		}
 
-        if (wantXml != null && "true".equalsIgnoreCase(wantXml))
+        if ("true".equalsIgnoreCase(wantXml))
         {
             sendXmlResponse(resp);
         }
@@ -195,17 +179,19 @@ public class StatisticsServlet extends HttpServlet
             sb.append("    <connector>\n");
             sb.append("      <name>").append(connector.getClass().getName()).append("@").append(connector.hashCode()).append("</name>\n");
             sb.append("      <protocols>\n");
-            for (String protocol:connector.getProtocols())
-                sb.append("      <protocol>").append(protocol).append("</protocol>\n");
+            for (String protocol:connector.getProtocols()) {
+				sb.append("      <protocol>").append(protocol).append("</protocol>\n");
+			}
             sb.append("      </protocols>\n");
 
             ConnectorStatistics connectorStats = null;
 
-            if (connector instanceof AbstractConnector)
-                connectorStats = ((AbstractConnector)connector).getBean(ConnectorStatistics.class);
-            if (connectorStats == null)
-                sb.append("      <statsOn>false</statsOn>\n");
-            else
+            if (connector instanceof AbstractConnector) {
+				connectorStats = ((AbstractConnector)connector).getBean(ConnectorStatistics.class);
+			}
+            if (connectorStats == null) {
+				sb.append("      <statsOn>false</statsOn>\n");
+			} else
             {
                 sb.append("      <statsOn>true</statsOn>\n");
                 sb.append("      <connections>").append(connectorStats.getConnections()).append("</connections>\n");
@@ -236,10 +222,6 @@ public class StatisticsServlet extends HttpServlet
 
     
     
-    /**
-     * @param response
-     * @throws IOException
-     */
     private void sendTextResponse(HttpServletResponse response) throws IOException
     {
         StringBuilder sb = new StringBuilder();
@@ -250,14 +232,16 @@ public class StatisticsServlet extends HttpServlet
         {
             sb.append("<h3>").append(connector.getClass().getName()).append("@").append(connector.hashCode()).append("</h3>");
             sb.append("Protocols:");
-            for (String protocol:connector.getProtocols())
-                sb.append(protocol).append("&nbsp;");
+            for (String protocol:connector.getProtocols()) {
+				sb.append(protocol).append("&nbsp;");
+			}
             sb.append("    <br />\n");
 
             ConnectorStatistics connectorStats = null;
 
-            if (connector instanceof AbstractConnector)
-                connectorStats = ((AbstractConnector)connector).getBean(ConnectorStatistics.class);
+            if (connector instanceof AbstractConnector) {
+				connectorStats = ((AbstractConnector)connector).getBean(ConnectorStatistics.class);
+			}
 
             if (connectorStats != null)
             {

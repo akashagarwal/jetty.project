@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.servlet;
 
@@ -306,15 +301,17 @@ public class ServletContextHandlerTest
             @Override
             public void contextInitialized(ServletContextEvent sce)
             {
-                if (sce.getServletContext() != null)
-                    contextInit.set(true);
+                if (sce.getServletContext() != null) {
+					contextInit.set(true);
+				}
             }
 
             @Override
             public void contextDestroyed(ServletContextEvent sce)
             {  
-                if (sce.getServletContext() != null)
-                    contextDestroy.set(true);
+                if (sce.getServletContext() != null) {
+					contextDestroy.set(true);
+				}
             }
             
         });
@@ -423,7 +420,7 @@ public class ServletContextHandlerTest
     private int assertResponseContains(String expected, String response)
     {
         int idx = response.indexOf(expected);
-        if (idx == (-1))
+        if (idx == -1)
         {
             // Not found
             StringBuffer err = new StringBuffer();

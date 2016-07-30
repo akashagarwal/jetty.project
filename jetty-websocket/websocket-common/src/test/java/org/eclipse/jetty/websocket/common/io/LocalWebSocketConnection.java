@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.common.io;
 
@@ -81,24 +76,27 @@ public class LocalWebSocketConnection implements LogicalConnection, IncomingFram
     @Override
     public void close(int statusCode, String reason)
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("close({}, {})",statusCode,reason);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("close({}, {})",statusCode,reason);
+		}
         CloseInfo close = new CloseInfo(statusCode,reason);
         ioState.onCloseLocal(close);
     }
 
     public void connect()
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("connect()");
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("connect()");
+		}
         ioState.onConnected();
     }
 
     @Override
     public void disconnect()
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("disconnect()");
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("disconnect()");
+		}
     }
 
     @Override
@@ -181,12 +179,13 @@ public class LocalWebSocketConnection implements LogicalConnection, IncomingFram
     @Override
     public void onConnectionStateChange(ConnectionState state)
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("Connection State Change: {}",state);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Connection State Change: {}",state);
+		}
         switch (state)
         {
             case CLOSED:
-                this.disconnect();
+                disconnect();
                 break;
             case CLOSING:
                 if (ioState.wasRemoteCloseInitiated())
@@ -203,8 +202,9 @@ public class LocalWebSocketConnection implements LogicalConnection, IncomingFram
 
     public void open()
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("open()");
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("open()");
+		}
         ioState.onOpened();
     }
 

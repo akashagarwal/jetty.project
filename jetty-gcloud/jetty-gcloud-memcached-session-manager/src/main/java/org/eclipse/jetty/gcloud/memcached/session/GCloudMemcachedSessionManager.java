@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.gcloud.memcached.session;
 
@@ -42,16 +37,16 @@ import net.rubyeye.xmemcached.transcoders.SerializingTranscoder;
  * GCloudMemcachedSessionManager
  *
  * Use memcached in front of GCloudDataStore
- *
+ *.
  */
 public class GCloudMemcachedSessionManager extends GCloudSessionManager
 {
-    private  final static Logger LOG = Log.getLogger("org.eclipse.jetty.server.session");
+    private static final Logger LOG = Log.getLogger("org.eclipse.jetty.server.session");
     
     protected String _host;
     protected String _port;
     protected MemcachedClient _client;
-    protected int _expirySec = 0;
+    protected int _expirySec;
     private boolean _heartbeats = true;
 
     
@@ -71,8 +66,9 @@ public class GCloudMemcachedSessionManager extends GCloudSessionManager
         protected Object deserialize(byte[] in)
         {
 
-            if (in == null)
-                return null;
+            if (in == null) {
+				return null;
+			}
 
             Object rv = null;
             try (ByteArrayInputStream bis = new ByteArrayInputStream(in);ObjectInputStream is = new ClassLoadingObjectInputStream(bis);)
@@ -119,9 +115,6 @@ public class GCloudMemcachedSessionManager extends GCloudSessionManager
      */
     public class SerializableSessionData implements Serializable
     {
-        /**
-         * 
-         */
         private static final long serialVersionUID = -7779120106058533486L;
         String clusterId;
         String contextPath;
@@ -187,7 +180,7 @@ public class GCloudMemcachedSessionManager extends GCloudSessionManager
             expiry = ois.readLong(); 
             maxInactive = ois.readLong();
             Object o = ois.readObject();
-            attributes = ((Map<String,Object>)o);
+            attributes = (Map<String,Object>)o;
         }
     }
 
@@ -225,8 +218,9 @@ public class GCloudMemcachedSessionManager extends GCloudSessionManager
     @Override
     public void doStart() throws Exception
     {
-        if (StringUtil.isBlank(_host) || StringUtil.isBlank(_port))
-            throw new IllegalStateException("Memcached host and/or port not configured");
+        if (StringUtil.isBlank(_host) || StringUtil.isBlank(_port)) {
+			throw new IllegalStateException("Memcached host and/or port not configured");
+		}
 
         LOG.info("Memcached host {} port {}", _host, _port);
         
@@ -251,10 +245,13 @@ public class GCloudMemcachedSessionManager extends GCloudSessionManager
     protected Session load(Key key) throws Exception
     {
         //first try the memcache cache
-        if (LOG.isDebugEnabled()) LOG.debug("Loading key {} from memcached ", key.name());
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Loading key {} from memcached ", key.name());
+		}
         Session session =  loadFromMemcached(key.name());
-        if (session != null)
-            return session;
+        if (session != null) {
+			return session;
+		}
 
         //then try gcloudatastore
         return super.load(key);
@@ -269,8 +266,9 @@ public class GCloudMemcachedSessionManager extends GCloudSessionManager
     {
         SerializableSessionData sd = _client.get(key);
 
-        if (sd == null)
-            return null;
+        if (sd == null) {
+			return null;
+		}
 
         Session session = new MemcacheSession (sd.clusterId, sd.createTime, sd.accessed, sd.maxInactive);
         session.setLastNode(sd.lastNode);
@@ -309,8 +307,9 @@ public class GCloudMemcachedSessionManager extends GCloudSessionManager
         }
         
         super.delete(session);
-        if (memcacheException != null)
-            throw new RuntimeException(memcacheException);
+        if (memcacheException != null) {
+			throw new RuntimeException(memcacheException);
+		}
     }
 
     
@@ -321,7 +320,7 @@ public class GCloudMemcachedSessionManager extends GCloudSessionManager
     }
 
     /**
-     * Store the session into memcached
+     * Store the session into memcached.
      * @param session the Session to be serialized
      * @throws Exception
      */

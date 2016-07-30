@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.client;
 
@@ -82,16 +77,18 @@ public class GZIPContentDecoder implements ContentDecoder
                         ++size;
                         if (size == 2)
                         {
-                            if (value != 0x8B1F)
-                                throw new ZipException("Invalid gzip bytes");
+                            if (value != 0x8B1F) {
+								throw new ZipException("Invalid gzip bytes");
+							}
                             state = State.CM;
                         }
                         break;
                     }
                     case CM:
                     {
-                        if ((currByte & 0xFF) != 0x08)
-                            throw new ZipException("Invalid gzip compression method");
+                        if ((currByte & 0xFF) != 0x08) {
+							throw new ZipException("Invalid gzip compression method");
+						}
                         state = State.FLG;
                         break;
                     }
@@ -107,8 +104,9 @@ public class GZIPContentDecoder implements ContentDecoder
                     {
                         // Skip the 4 MTIME bytes
                         ++size;
-                        if (size == 4)
-                            state = State.XFL;
+                        if (size == 4) {
+							state = State.XFL;
+						}
                         break;
                     }
                     case XFL:
@@ -132,26 +130,27 @@ public class GZIPContentDecoder implements ContentDecoder
                             size = 0;
                             value = 0;
                         }
-                        else if ((flags & 0x08) == 0x08)
-                            state = State.NAME;
-                        else if ((flags & 0x10) == 0x10)
-                            state = State.COMMENT;
-                        else if ((flags & 0x2) == 0x2)
+                        else if ((flags & 0x08) == 0x08) {
+							state = State.NAME;
+						} else if ((flags & 0x10) == 0x10) {
+							state = State.COMMENT;
+						} else if ((flags & 0x2) == 0x2)
                         {
                             state = State.HCRC;
                             size = 0;
                             value = 0;
-                        }
-                        else
-                            state = State.DATA;
+                        } else {
+							state = State.DATA;
+						}
                         break;
                     }
                     case EXTRA_LENGTH:
                     {
                         value += (currByte & 0xFF) << 8 * size;
                         ++size;
-                        if (size == 2)
-                            state = State.EXTRA;
+                        if (size == 2) {
+							state = State.EXTRA;
+						}
                         break;
                     }
                     case EXTRA:
@@ -240,22 +239,18 @@ public class GZIPContentDecoder implements ContentDecoder
                                 {
                                     throw new ZipException("Invalid inflater state");
                                 }
-                            }
-                            else
-                            {
-                                if (output == null)
-                                {
-                                    // Save the inflated bytes and loop to see if we have finished
-                                    output = Arrays.copyOf(bytes, decoded);
-                                }
-                                else
-                                {
-                                    // Accumulate inflated bytes and loop to see if we have finished
-                                    byte[] newOutput = Arrays.copyOf(output, output.length + decoded);
-                                    System.arraycopy(bytes, 0, newOutput, output.length, decoded);
-                                    output = newOutput;
-                                }
-                            }
+                            } else if (output == null)
+							{
+							    // Save the inflated bytes and loop to see if we have finished
+							    output = Arrays.copyOf(bytes, decoded);
+							}
+							else
+							{
+							    // Accumulate inflated bytes and loop to see if we have finished
+							    byte[] newOutput = Arrays.copyOf(output, output.length + decoded);
+							    System.arraycopy(bytes, 0, newOutput, output.length, decoded);
+							    output = newOutput;
+							}
                         }
                         break;
                     }
@@ -278,8 +273,9 @@ public class GZIPContentDecoder implements ContentDecoder
                         ++size;
                         if (size == 4)
                         {
-                            if (value != inflater.getBytesWritten())
-                                throw new ZipException("Invalid input size");
+                            if (value != inflater.getBytesWritten()) {
+								throw new ZipException("Invalid input size");
+							}
 
                             ByteBuffer result = output == null ? BufferUtil.EMPTY_BUFFER : ByteBuffer.wrap(output);
                             reset();

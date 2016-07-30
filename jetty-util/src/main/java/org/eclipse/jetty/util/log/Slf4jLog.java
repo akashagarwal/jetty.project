@@ -1,27 +1,22 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util.log;
 
 
 
 /**
- * Slf4jLog Logger
+ * Slf4jLog Logger.
  */
 public class Slf4jLog extends AbstractLogger
 {
@@ -91,8 +86,9 @@ public class Slf4jLog extends AbstractLogger
     
     public void debug(String msg, long arg)
     {
-        if (isDebugEnabled())
-            _logger.debug(msg, new Object[]{new Long(arg)});
+        if (isDebugEnabled()) {
+			_logger.debug(msg, new Object[]{Long.valueOf(arg)});
+		}
     }
 
     public void debug(Throwable thrown)

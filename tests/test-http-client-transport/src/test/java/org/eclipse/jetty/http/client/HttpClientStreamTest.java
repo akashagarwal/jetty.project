@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http.client;
 
@@ -86,8 +81,9 @@ public class HttpClientStreamTest extends AbstractTest
         try (OutputStream output = Files.newOutputStream(upload, StandardOpenOption.CREATE))
         {
             byte[] kb = new byte[1024];
-            for (int i = 0; i < 10 * 1024; ++i)
-                output.write(kb);
+            for (int i = 0; i < 10 * 1024; ++i) {
+				output.write(kb);
+			}
         }
 
         start(new AbstractHandler()
@@ -105,8 +101,9 @@ public class HttpClientStreamTest extends AbstractTest
                 while (true)
                 {
                     int read = in.read(buffer);
-                    if (read < 0)
-                        break;
+                    if (read < 0) {
+						break;
+					}
                 }
             }
         });
@@ -158,8 +155,9 @@ public class HttpClientStreamTest extends AbstractTest
         int length = 0;
         while (input.read() == value)
         {
-            if (length % 100 == 0)
-                Thread.sleep(1);
+            if (length % 100 == 0) {
+				Thread.sleep(1);
+			}
             ++length;
         }
 
@@ -249,8 +247,9 @@ public class HttpClientStreamTest extends AbstractTest
             length = 0;
             while (input.read() == value)
             {
-                if (length % 100 == 0)
-                    Thread.sleep(1);
+                if (length % 100 == 0) {
+					Thread.sleep(1);
+				}
                 ++length;
             }
             Assert.fail();
@@ -583,8 +582,9 @@ public class HttpClientStreamTest extends AbstractTest
         InputStream input = listener.getInputStream();
         Assert.assertNotNull(input);
 
-        for (byte datum1 : data1)
-            Assert.assertEquals(datum1, input.read());
+        for (byte datum1 : data1) {
+			Assert.assertEquals(datum1, input.read());
+		}
 
         input.close();
 
@@ -619,8 +619,9 @@ public class HttpClientStreamTest extends AbstractTest
         InputStream input = listener.getInputStream();
         Assert.assertNotNull(input);
 
-        for (byte datum : data)
-            Assert.assertEquals(datum, input.read());
+        for (byte datum : data) {
+			Assert.assertEquals(datum, input.read());
+		}
 
         // Read EOF
         Assert.assertEquals(-1, input.read());
@@ -664,8 +665,9 @@ public class HttpClientStreamTest extends AbstractTest
             {
                 byte[] buffer = new byte[200];
                 int read;
-                while ((read = input.read(buffer)) >= 0)
-                    content.offer(ByteBuffer.wrap(buffer, 0, read));
+                while ((read = input.read(buffer)) >= 0) {
+					content.offer(ByteBuffer.wrap(buffer, 0, read));
+				}
             }
         }
         Assert.assertTrue(latch.await(5, TimeUnit.SECONDS));
@@ -748,8 +750,9 @@ public class HttpClientStreamTest extends AbstractTest
                     {
                         if (result.isSucceeded() &&
                                 result.getResponse().getStatus() == 200 &&
-                                Arrays.equals(data, getContent()))
-                            latch.countDown();
+                                Arrays.equals(data, getContent())) {
+							latch.countDown();
+						}
                     }
                 });
 
@@ -779,10 +782,12 @@ public class HttpClientStreamTest extends AbstractTest
             {
                 return new Iterator<ByteBuffer>()
                 {
-                    // Data for the deferred content iterator:
-                    // [0] => deferred
-                    // [1] => deferred
-                    // [2] => data
+                    /**
+                     * Data for the deferred content iterator:
+                     * [0] => deferred
+                     * [1] => deferred
+                     * [2] => data
+                     */
                     private final byte[][] iteratorData = new byte[3][];
                     private final AtomicInteger index = new AtomicInteger();
 
@@ -830,8 +835,9 @@ public class HttpClientStreamTest extends AbstractTest
                     {
                         if (result.isSucceeded() &&
                                 result.getResponse().getStatus() == 200 &&
-                                Arrays.equals(data, getContent()))
-                            latch.countDown();
+                                Arrays.equals(data, getContent())) {
+							latch.countDown();
+						}
                     }
                 });
 
@@ -864,8 +870,9 @@ public class HttpClientStreamTest extends AbstractTest
                     {
                         if (result.isSucceeded() &&
                                 result.getResponse().getStatus() == 200 &&
-                                Arrays.equals(data, getContent()))
-                            latch.countDown();
+                                Arrays.equals(data, getContent())) {
+							latch.countDown();
+						}
                     }
                 });
 
@@ -921,8 +928,9 @@ public class HttpClientStreamTest extends AbstractTest
             while (true)
             {
                 int read = input.read(buffer);
-                if (read < 0)
-                    break;
+                if (read < 0) {
+					break;
+				}
                 output.write(buffer, 0, read);
             }
         }

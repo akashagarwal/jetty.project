@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.jaas;
 
@@ -41,17 +36,18 @@ public class StrictRoleCheckPolicy implements RoleCheckPolicy
         //them. If so, then only check if the user has that role.
         if (runAsRole != null)
         {
-            return (roleName.equals(runAsRole.getName()));
+            return roleName.equals(runAsRole.getName());
         }
         else
         {
-            if (roles == null)
-                return false;
+            if (roles == null) {
+				return false;
+			}
             Enumeration<? extends Principal> rolesEnum = roles.members();
             boolean found = false;
             while (rolesEnum.hasMoreElements() && !found)
             {
-                Principal p = (Principal)rolesEnum.nextElement();
+                Principal p = rolesEnum.nextElement();
                 found = roleName.equals(p.getName());
             }
             return found;

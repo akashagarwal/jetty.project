@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 
@@ -81,7 +76,7 @@ public class HttpChannel implements Runnable, HttpOutput.Interceptor
     private MetaData.Response _committedMetaData;
     private RequestLog _requestLog;
 
-    /** Bytes written after interception (eg after compression) */
+    /** Bytes written after interception (eg after compression). */
     private long _written;
 
     public HttpChannel(Connector connector, HttpConfiguration configuration, EndPoint endPoint, HttpTransport transport)
@@ -98,8 +93,9 @@ public class HttpChannel implements Runnable, HttpOutput.Interceptor
         _executor = connector == null ? null : connector.getServer().getThreadPool();
         _requestLog = connector == null ? null : connector.getServer().getRequestLog();
 
-        if (LOG.isDebugEnabled())
-            LOG.debug("new {} -> {},{},{}",this,_endPoint,_endPoint.getConnection(),_state);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("new {} -> {},{},{}",this,_endPoint,_endPoint.getConnection(),_state);
+		}
     }
 
     protected HttpInput newHttpInput(HttpChannelState state)
@@ -152,12 +148,13 @@ public class HttpChannel implements Runnable, HttpOutput.Interceptor
 
     public void addRequestLog(RequestLog requestLog)
     {
-        if (_requestLog==null)
-            _requestLog = requestLog;
-        else if (_requestLog instanceof RequestLogCollection)
-            ((RequestLogCollection) _requestLog).add(requestLog);
-        else
-            _requestLog = new RequestLogCollection(_requestLog, requestLog);
+        if (_requestLog==null) {
+			_requestLog = requestLog;
+		} else if (_requestLog instanceof RequestLogCollection) {
+			((RequestLogCollection) _requestLog).add(requestLog);
+		} else {
+			_requestLog = new RequestLogCollection(_requestLog, requestLog);
+		}
     }
 
     public MetaData.Response getCommittedMetaData()
@@ -271,8 +268,9 @@ public class HttpChannel implements Runnable, HttpOutput.Interceptor
      */
     public boolean handle()
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("{} handle {} ", this,_request.getHttpURI());
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("{} handle {} ", this,_request.getHttpURI());
+		}
 
         HttpChannelState.Action action = _state.handling();
 
@@ -284,8 +282,9 @@ public class HttpChannel implements Runnable, HttpOutput.Interceptor
         {
             try
             {
-                if (LOG.isDebugEnabled())
-                    LOG.debug("{} action {}",this,action);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("{} action {}",this,action);
+				}
 
                 switch(action)
                 {
@@ -295,8 +294,9 @@ public class HttpChannel implements Runnable, HttpOutput.Interceptor
 
                     case DISPATCH:
                     {
-                        if (!_request.hasMetaData())
-                            throw new IllegalStateException("state=" + _state);
+                        if (!_request.hasMetaData()) {
+							throw new IllegalStateException("state=" + _state);
+						}
                         _request.setHandled(false);
                         _response.getHttpOutput().reopen();
 
@@ -310,13 +310,15 @@ public class HttpChannel implements Runnable, HttpOutput.Interceptor
                                 for (HttpConfiguration.Customizer customizer : customizers)
                                 {
                                     customizer.customize(getConnector(), _configuration, _request);
-                                    if (_request.isHandled())
-                                        break;
+                                    if (_request.isHandled()) {
+										break;
+									}
                                 }
                             }
 
-                            if (!_request.isHandled())
-                                getServer().handle(this);
+                            if (!_request.isHandled()) {
+								getServer().handle(this);
+							}
                         }
                         finally
                         {
@@ -348,10 +350,11 @@ public class HttpChannel implements Runnable, HttpOutput.Interceptor
 
                         // Check for error dispatch loops
                         Integer loop_detect = (Integer)_request.getAttribute("org.eclipse.jetty.server.ERROR_DISPATCH");
-                        if (loop_detect==null)
-                            loop_detect=1;
-                        else
-                            loop_detect=loop_detect+1;
+                        if (loop_detect!=null) {
+							loop_detect=loop_detect+1;
+						} else {
+							loop_detect=1;
+						}
                         _request.setAttribute("org.eclipse.jetty.server.ERROR_DISPATCH",loop_detect);
                         if (loop_detect > getHttpConfiguration().getMaxErrorDispatches())
                         {
@@ -393,8 +396,9 @@ public class HttpChannel implements Runnable, HttpOutput.Interceptor
                         if (eh instanceof ErrorHandler.ErrorPageMapper)
                         {
                             String error_page = ((ErrorHandler.ErrorPageMapper)eh).getErrorPage((HttpServletRequest)_state.getAsyncContextEvent().getSuppliedRequest());
-                            if (error_page != null)
-                                _state.getAsyncContextEvent().setDispatchPath(error_page);
+                            if (error_page != null) {
+								_state.getAsyncContextEvent().setDispatchPath(error_page);
+							}
                         }
 
 
@@ -413,20 +417,22 @@ public class HttpChannel implements Runnable, HttpOutput.Interceptor
                     case READ_CALLBACK:
                     {
                         ContextHandler handler=_state.getContextHandler();
-                        if (handler!=null)
-                            handler.handle(_request,_request.getHttpInput());
-                        else
-                            _request.getHttpInput().run();
+                        if (handler!=null) {
+							handler.handle(_request,_request.getHttpInput());
+						} else {
+							_request.getHttpInput().run();
+						}
                         break;
                     }
 
                     case WRITE_CALLBACK:
                     {
                         ContextHandler handler=_state.getContextHandler();
-                        if (handler!=null)
-                            handler.handle(_request,_response.getHttpOutput());
-                        else
-                            _response.getHttpOutput().run();
+                        if (handler!=null) {
+							handler.handle(_request,_response.getHttpOutput());
+						} else {
+							_response.getHttpOutput().run();
+						}
                         break;
                     }
 
@@ -441,10 +447,11 @@ public class HttpChannel implements Runnable, HttpOutput.Interceptor
                         // TODO do onComplete here for continuations to work
 //                        _state.onComplete();
 
-                        if (!_response.isCommitted() && !_request.isHandled())
-                            _response.sendError(404);
-                        else
-                            _response.closeOutput();
+                        if (!_response.isCommitted() && !_request.isHandled()) {
+							_response.sendError(404);
+						} else {
+							_response.closeOutput();
+						}
                         _request.setHandled(true);
 
                         // TODO do onComplete here to detect errors in final flush
@@ -463,8 +470,9 @@ public class HttpChannel implements Runnable, HttpOutput.Interceptor
             }
             catch (EofException|QuietServletException|BadMessageException e)
             {
-                if (LOG.isDebugEnabled())
-                    LOG.debug(e);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug(e);
+				}
                 handleException(e);
             }
             catch (Throwable e)
@@ -475,10 +483,11 @@ public class HttpChannel implements Runnable, HttpOutput.Interceptor
                 }
                 else
                 {
-                    if (_connector.isStarted())
-                        LOG.warn(String.valueOf(_request.getHttpURI()), e);
-                    else
-                        LOG.debug(String.valueOf(_request.getHttpURI()), e);
+                    if (_connector.isStarted()) {
+						LOG.warn(String.valueOf(_request.getHttpURI()), e);
+					} else {
+						LOG.debug(String.valueOf(_request.getHttpURI()), e);
+					}
                     handleException(e);
                 }
             }
@@ -486,8 +495,9 @@ public class HttpChannel implements Runnable, HttpOutput.Interceptor
             action = _state.unhandle();
         }
 
-        if (LOG.isDebugEnabled())
-            LOG.debug("{} handle exit, result {}", this, action);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("{} handle exit, result {}", this, action);
+		}
 
         boolean suspended=action==Action.WAIT;
         return !suspended;
@@ -534,8 +544,9 @@ public class HttpChannel implements Runnable, HttpOutput.Interceptor
                 if (isCommitted())
                 {
                     abort(x);
-                    if (LOG.isDebugEnabled())
-                        LOG.debug("Could not send response error 500, already committed", x);
+                    if (LOG.isDebugEnabled()) {
+						LOG.debug("Could not send response error 500, already committed", x);
+					}
                 }
                 else
                 {
@@ -548,20 +559,22 @@ public class HttpChannel implements Runnable, HttpOutput.Interceptor
                     }
                     else if (x instanceof UnavailableException)
                     {
-                        if (((UnavailableException)x).isPermanent())
-                            _response.sendError(HttpStatus.NOT_FOUND_404);
-                        else
-                            _response.sendError(HttpStatus.SERVICE_UNAVAILABLE_503);
-                    }
-                    else
-                        _response.sendError(HttpStatus.INTERNAL_SERVER_ERROR_500);
+                        if (((UnavailableException)x).isPermanent()) {
+							_response.sendError(HttpStatus.NOT_FOUND_404);
+						} else {
+							_response.sendError(HttpStatus.SERVICE_UNAVAILABLE_503);
+						}
+                    } else {
+						_response.sendError(HttpStatus.INTERNAL_SERVER_ERROR_500);
+					}
                 }
             }
             catch (Throwable e)
             {
                 abort(e);
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Could not commit response error 500", e);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("Could not commit response error 500", e);
+				}
             }
         }
     }
@@ -593,39 +606,45 @@ public class HttpChannel implements Runnable, HttpOutput.Interceptor
         _requests.incrementAndGet();
         _request.setTimeStamp(System.currentTimeMillis());
         HttpFields fields = _response.getHttpFields();
-        if (_configuration.getSendDateHeader() && !fields.contains(HttpHeader.DATE))
-            fields.put(_connector.getServer().getDateField());
+        if (_configuration.getSendDateHeader() && !fields.contains(HttpHeader.DATE)) {
+			fields.put(_connector.getServer().getDateField());
+		}
 
         _request.setMetaData(request);
 
-        if (LOG.isDebugEnabled())
-            LOG.debug("REQUEST for {} on {}{}{} {} {}{}{}",request.getURIString(),this,System.lineSeparator(),
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("REQUEST for {} on {}{}{} {} {}{}{}",request.getURIString(),this,System.lineSeparator(),
                 request.getMethod(),request.getURIString(),request.getVersion(),System.lineSeparator(),
                 request.getFields());
+		}
     }
 
     public boolean onContent(HttpInput.Content content)
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("{} content {}", this, content);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("{} content {}", this, content);
+		}
 
         return _request.getHttpInput().addContent(content);
     }
 
     public boolean onRequestComplete()
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("{} onRequestComplete", this);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("{} onRequestComplete", this);
+		}
         return _request.getHttpInput().eof();
     }
 
     public void onCompleted()
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("COMPLETE for {} written={}",getRequest().getRequestURI(),getBytesWritten());
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("COMPLETE for {} written={}",getRequest().getRequestURI(),getBytesWritten());
+		}
         
-        if (_requestLog!=null )
-            _requestLog.log(_request, _response);
+        if (_requestLog!=null ) {
+			_requestLog.log(_request, _response);
+		}
 
         _transport.onCompleted();
     }
@@ -637,8 +656,9 @@ public class HttpChannel implements Runnable, HttpOutput.Interceptor
 
     public void onBadMessage(int status, String reason)
     {
-        if (status < 400 || status > 599)
-            status = HttpStatus.BAD_REQUEST_400;
+        if (status < 400 || status > 599) {
+			status = HttpStatus.BAD_REQUEST_400;
+		}
 
         Action action;
         try
@@ -661,8 +681,9 @@ public class HttpChannel implements Runnable, HttpOutput.Interceptor
                 HttpFields fields=new HttpFields();
 
                 ErrorHandler handler=getServer().getBean(ErrorHandler.class);
-                if (handler!=null)
-                    content=handler.badMessageError(status,reason,fields);
+                if (handler!=null) {
+					content=handler.badMessageError(status,reason,fields);
+				}
 
                 sendResponse(new MetaData.Response(HttpVersion.HTTP_1_1,status,reason,fields,BufferUtil.length(content)),content ,true);
             }
@@ -674,10 +695,12 @@ public class HttpChannel implements Runnable, HttpOutput.Interceptor
         finally
         {
             // TODO: review whether it's the right state to check.
-            if (_state.unhandle()==Action.COMPLETE)
-                _state.onComplete();
-            else
-                throw new IllegalStateException(); // TODO: don't throw from finally blocks !
+            if (_state.unhandle()==Action.COMPLETE) {
+				_state.onComplete();
+			}
+			else {
+				throw new IllegalStateException(); // TODO: don't throw from finally blocks !
+			}
             onCompleted();
         }
     }
@@ -686,19 +709,21 @@ public class HttpChannel implements Runnable, HttpOutput.Interceptor
     {
         boolean committing = _committed.compareAndSet(false, true);
 
-        if (LOG.isDebugEnabled())
-            LOG.debug("sendResponse info={} content={} complete={} committing={} callback={}",
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("sendResponse info={} content={} complete={} committing={} callback={}",
                 info,
                 BufferUtil.toDetailString(content),
                 complete,
                 committing,
                 callback);
+		}
         
         if (committing)
         {
             // We need an info to commit
-            if (info==null)
-                info = _response.newResponseMetaData();
+            if (info==null) {
+				info = _response.newResponseMetaData();
+			}
             commit(info);
 
             // wrap callback to process 100 responses
@@ -708,14 +733,14 @@ public class HttpChannel implements Runnable, HttpOutput.Interceptor
             // committing write
             _transport.send(info, _request.isHead(), content, complete, committed);
         }
-        else if (info==null)
+        else if (info!=null)
         {
-            // This is a normal write
-            _transport.send(null,_request.isHead(), content, complete, callback);
+            callback.failed(new IllegalStateException("committed"));
         }
         else
         {
-            callback.failed(new IllegalStateException("committed"));
+            // This is a normal write
+            _transport.send(null,_request.isHead(), content, complete, callback);
         }
         return committing;
     }
@@ -730,8 +755,9 @@ public class HttpChannel implements Runnable, HttpOutput.Interceptor
         }
         catch (Throwable failure)
         {
-            if (LOG.isDebugEnabled())
-                LOG.debug(failure);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug(failure);
+			}
             abort(failure);
             throw failure;
         }
@@ -740,10 +766,11 @@ public class HttpChannel implements Runnable, HttpOutput.Interceptor
     protected void commit (MetaData.Response info)
     {
         _committedMetaData=info;
-        if (LOG.isDebugEnabled())
-            LOG.debug("COMMIT for {} on {}{}{} {} {}{}{}",getRequest().getRequestURI(),this,System.lineSeparator(),
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("COMMIT for {} on {}{}{} {} {}{}{}",getRequest().getRequestURI(),this,System.lineSeparator(),
                 info.getStatus(),info.getReason(),info.getVersion(),System.lineSeparator(),
                 info.getFields());
+		}
     }
 
     public boolean isCommitted()
@@ -811,8 +838,9 @@ public class HttpChannel implements Runnable, HttpOutput.Interceptor
         @Override
         public void failed(final Throwable x)
         {
-            if (LOG.isDebugEnabled())
-                LOG.debug("Commit failed", x);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Commit failed", x);
+			}
 
             if (x instanceof BadMessageException)
             {
@@ -851,10 +879,11 @@ public class HttpChannel implements Runnable, HttpOutput.Interceptor
         @Override
         public void succeeded()
         {
-            if (_committed.compareAndSet(true, false))
-                super.succeeded();
-            else
-                super.failed(new IllegalStateException());
+            if (_committed.compareAndSet(true, false)) {
+				super.succeeded();
+			} else {
+				super.failed(new IllegalStateException());
+			}
         }
 
     }

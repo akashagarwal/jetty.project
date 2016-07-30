@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http2.parser;
 
@@ -53,11 +48,13 @@ public class PriorityBodyParser extends BodyParser
                 case PREPARE:
                 {
                     // SPEC: wrong streamId is treated as connection error.
-                    if (getStreamId() == 0)
-                        return connectionFailure(buffer, ErrorCode.PROTOCOL_ERROR.code, "invalid_priority_frame");
+                    if (getStreamId() == 0) {
+						return connectionFailure(buffer, ErrorCode.PROTOCOL_ERROR.code, "invalid_priority_frame");
+					}
                     int length = getBodyLength();
-                    if (length != 5)
-                        return connectionFailure(buffer, ErrorCode.FRAME_SIZE_ERROR.code, "invalid_priority_frame");
+                    if (length != 5) {
+						return connectionFailure(buffer, ErrorCode.FRAME_SIZE_ERROR.code, "invalid_priority_frame");
+					}
                     state = State.EXCLUSIVE;
                     break;
                 }
@@ -89,7 +86,7 @@ public class PriorityBodyParser extends BodyParser
                 {
                     int currByte = buffer.get() & 0xFF;
                     --cursor;
-                    parentStreamId += currByte << (8 * cursor);
+                    parentStreamId += currByte << 8 * cursor;
                     if (cursor == 0)
                     {
                         parentStreamId &= 0x7F_FF_FF_FF;
@@ -100,8 +97,9 @@ public class PriorityBodyParser extends BodyParser
                 case WEIGHT:
                 {
                     // SPEC: stream cannot depend on itself.
-                    if (getStreamId() == parentStreamId)
-                        return connectionFailure(buffer, ErrorCode.PROTOCOL_ERROR.code, "invalid_priority_frame");
+                    if (getStreamId() == parentStreamId) {
+						return connectionFailure(buffer, ErrorCode.PROTOCOL_ERROR.code, "invalid_priority_frame");
+					}
 
                     int weight = (buffer.get() & 0xFF) + 1;
                     return onPriority(parentStreamId, weight, exclusive);

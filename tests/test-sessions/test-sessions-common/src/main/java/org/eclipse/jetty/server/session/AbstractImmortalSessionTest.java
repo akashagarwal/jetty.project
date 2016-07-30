@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server.session;
 
@@ -37,7 +32,7 @@ import org.junit.Test;
 
 
 /**
- * AbstractImmortalSessionTest
+ * AbstractImmortalSessionTest.
  */
 public abstract class AbstractImmortalSessionTest
 {
@@ -111,8 +106,9 @@ public abstract class AbstractImmortalSessionTest
             else if ("get".equals(action))
             {
                 HttpSession session = request.getSession(false);
-                if (session!=null)
-                    result = (String)session.getAttribute("value");
+                if (session!=null) {
+					result = (String)session.getAttribute("value");
+				}
             }
             PrintWriter writer = response.getWriter();
             writer.println(result);

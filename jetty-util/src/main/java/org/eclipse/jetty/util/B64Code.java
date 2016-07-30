@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util;
 
@@ -47,10 +42,12 @@ public class B64Code
     static
     {
         __rfc1421nibbles=new byte[256];
-        for (int i=0;i<256;i++)
-            __rfc1421nibbles[i]=-1;
-        for (byte b=0;b<64;b++)
-            __rfc1421nibbles[(byte)__rfc1421alphabet[b]]=b;
+        for (int i=0;i<256;i++) {
+			__rfc1421nibbles[i]=-1;
+		}
+        for (byte b=0;b<64;b++) {
+			__rfc1421nibbles[(byte)__rfc1421alphabet[b]]=b;
+		}
         __rfc1421nibbles[(byte)__pad]=0;
     }
     
@@ -66,10 +63,12 @@ public class B64Code
     static
     {
         __rfc4648urlNibbles=new byte[256];
-        for (int i=0;i<256;i++)
-            __rfc4648urlNibbles[i]=-1;
-        for (byte b=0;b<64;b++)
-            __rfc4648urlNibbles[(byte)__rfc4648urlAlphabet[b]]=b;
+        for (int i=0;i<256;i++) {
+			__rfc4648urlNibbles[i]=-1;
+		}
+        for (byte b=0;b<64;b++) {
+			__rfc4648urlNibbles[(byte)__rfc4648urlAlphabet[b]]=b;
+		}
         __rfc4648urlNibbles[(byte)__pad]=0;
     }
 
@@ -99,10 +98,11 @@ public class B64Code
     public static String encode(String s,String charEncoding)
     {
         byte[] bytes;
-        if (charEncoding==null)
-            bytes=s.getBytes(StandardCharsets.ISO_8859_1);
-        else
-            bytes=s.getBytes(Charset.forName(charEncoding));
+        if (charEncoding!=null) {
+			bytes=s.getBytes(Charset.forName(charEncoding));
+		} else {
+			bytes=s.getBytes(StandardCharsets.ISO_8859_1);
+		}
         return new String(encode(bytes));
     }
 
@@ -128,8 +128,9 @@ public class B64Code
      */
     public static char[] encode(byte[] b)
     {
-        if (b==null)
-            return null;
+        if (b==null) {
+			return null;
+		}
 
         int bLen=b.length;
         int cLen=((bLen+2)/3)*4;
@@ -144,8 +145,8 @@ public class B64Code
             b1=b[bi++];
             b2=b[bi++];
             c[ci++]=__rfc1421alphabet[(b0>>>2)&0x3f];
-            c[ci++]=__rfc1421alphabet[(b0<<4)&0x3f|(b1>>>4)&0x0f];
-            c[ci++]=__rfc1421alphabet[(b1<<2)&0x3f|(b2>>>6)&0x03];
+            c[ci++]=__rfc1421alphabet[((b0<<4)&0x3f)|((b1>>>4)&0x0f)];
+            c[ci++]=__rfc1421alphabet[((b1<<2)&0x3f)|((b2>>>6)&0x03)];
             c[ci++]=__rfc1421alphabet[b2&0x3f];
         }
 
@@ -157,7 +158,7 @@ public class B64Code
                     b0=b[bi++];
                     b1=b[bi++];
                     c[ci++]=__rfc1421alphabet[(b0>>>2)&0x3f];
-                    c[ci++]=__rfc1421alphabet[(b0<<4)&0x3f|(b1>>>4)&0x0f];
+                    c[ci++]=__rfc1421alphabet[((b0<<4)&0x3f)|((b1>>>4)&0x0f)];
                     c[ci++]=__rfc1421alphabet[(b1<<2)&0x3f];
                     c[ci++]=__pad;
                     break;
@@ -188,10 +189,12 @@ public class B64Code
      */
     public static char[] encode(byte[] b, boolean rfc2045)
     {
-        if (b==null)
-            return null;
-        if (!rfc2045)
-            return encode(b);
+        if (b==null) {
+			return null;
+		}
+        if (!rfc2045) {
+			return encode(b);
+		}
 
         int bLen=b.length;
         int cLen=((bLen+2)/3)*4;
@@ -208,8 +211,8 @@ public class B64Code
             b1=b[bi++];
             b2=b[bi++];
             c[ci++]=__rfc1421alphabet[(b0>>>2)&0x3f];
-            c[ci++]=__rfc1421alphabet[(b0<<4)&0x3f|(b1>>>4)&0x0f];
-            c[ci++]=__rfc1421alphabet[(b1<<2)&0x3f|(b2>>>6)&0x03];
+            c[ci++]=__rfc1421alphabet[((b0<<4)&0x3f)|((b1>>>4)&0x0f)];
+            c[ci++]=__rfc1421alphabet[((b1<<2)&0x3f)|((b2>>>6)&0x03)];
             c[ci++]=__rfc1421alphabet[b2&0x3f];
             l+=4;
             if (l%76==0)
@@ -227,7 +230,7 @@ public class B64Code
                     b0=b[bi++];
                     b1=b[bi++];
                     c[ci++]=__rfc1421alphabet[(b0>>>2)&0x3f];
-                    c[ci++]=__rfc1421alphabet[(b0<<4)&0x3f|(b1>>>4)&0x0f];
+                    c[ci++]=__rfc1421alphabet[((b0<<4)&0x3f)|((b1>>>4)&0x0f)];
                     c[ci++]=__rfc1421alphabet[(b1<<2)&0x3f];
                     c[ci++]=__pad;
                     break;
@@ -264,9 +267,10 @@ public class B64Code
     public static String decode(String encoded,String charEncoding)
     {
         byte[] decoded=decode(encoded);
-        if (charEncoding==null)
-            return new String(decoded);
-        return new String(decoded,Charset.forName(charEncoding));
+        if (charEncoding!=null) {
+			return new String(decoded,Charset.forName(charEncoding));
+		}
+        return new String(decoded);
     }
 
     /**
@@ -282,9 +286,10 @@ public class B64Code
     public static String decode(String encoded, Charset charEncoding)
     {
         byte[] decoded=decode(encoded);
-        if (charEncoding==null)
-            return new String(decoded);
-        return new String(decoded, charEncoding);
+        if (charEncoding!=null) {
+			return new String(decoded, charEncoding);
+		}
+        return new String(decoded);
     }
 
     /**
@@ -301,19 +306,23 @@ public class B64Code
      */
     public static byte[] decode(char[] b)
     {
-        if (b==null)
-            return null;
+        if (b==null) {
+			return null;
+		}
 
         int bLen=b.length;
-        if (bLen%4!=0)
-            throw new IllegalArgumentException("Input block size is not 4");
+        if (bLen%4!=0) {
+			throw new IllegalArgumentException("Input block size is not 4");
+		}
 
         int li=bLen-1;
-        while (li>=0 && b[li]==(byte)__pad)
-            li--;
+        while (li>=0 && b[li]==(byte)__pad) {
+			li--;
+		}
 
-        if (li<0)
-            return new byte[0];
+        if (li<0) {
+			return new byte[0];
+		}
 
         // Create result array of exact required size.
         int rLen=((li+1)*3)/4;
@@ -330,12 +339,13 @@ public class B64Code
                 b1=__rfc1421nibbles[b[bi++]];
                 b2=__rfc1421nibbles[b[bi++]];
                 b3=__rfc1421nibbles[b[bi++]];
-                if (b0<0 || b1<0 || b2<0 || b3<0)
-                    throw new IllegalArgumentException("Not B64 encoded");
+                if (b0<0 || b1<0 || b2<0 || b3<0) {
+					throw new IllegalArgumentException("Not B64 encoded");
+				}
 
-                r[ri++]=(byte)(b0<<2|b1>>>4);
-                r[ri++]=(byte)(b1<<4|b2>>>2);
-                r[ri++]=(byte)(b2<<6|b3);
+                r[ri++]=(byte)((b0<<2)|(b1>>>4));
+                r[ri++]=(byte)((b1<<4)|(b2>>>2));
+                r[ri++]=(byte)((b2<<6)|b3);
             }
 
             if (rLen!=ri)
@@ -346,18 +356,20 @@ public class B64Code
                         b0=__rfc1421nibbles[b[bi++]];
                         b1=__rfc1421nibbles[b[bi++]];
                         b2=__rfc1421nibbles[b[bi++]];
-                        if (b0<0 || b1<0 || b2<0)
-                            throw new IllegalArgumentException("Not B64 encoded");
-                        r[ri++]=(byte)(b0<<2|b1>>>4);
-                        r[ri++]=(byte)(b1<<4|b2>>>2);
+                        if (b0<0 || b1<0 || b2<0) {
+							throw new IllegalArgumentException("Not B64 encoded");
+						}
+                        r[ri++]=(byte)((b0<<2)|(b1>>>4));
+                        r[ri++]=(byte)((b1<<4)|(b2>>>2));
                         break;
 
                     case 1:
                         b0=__rfc1421nibbles[b[bi++]];
                         b1=__rfc1421nibbles[b[bi++]];
-                        if (b0<0 || b1<0)
-                            throw new IllegalArgumentException("Not B64 encoded");
-                        r[ri++]=(byte)(b0<<2|b1>>>4);
+                        if (b0<0 || b1<0) {
+							throw new IllegalArgumentException("Not B64 encoded");
+						}
+                        r[ri++]=(byte)((b0<<2)|(b1>>>4));
                         break;
 
                     default:
@@ -384,8 +396,9 @@ public class B64Code
      */
     public static byte[] decode(String encoded)
     {
-        if (encoded==null)
-            return null;
+        if (encoded==null) {
+			return null;
+		}
 
         ByteArrayOutputStream bout = new ByteArrayOutputStream(4*encoded.length()/3);        
         decode(encoded, bout);
@@ -401,13 +414,15 @@ public class B64Code
      * @throws IllegalArgumentException if the input is not a valid
      *         B64 encoding.
      */
-    static public void decode (String encoded, ByteArrayOutputStream bout)
+    public static void decode (String encoded, ByteArrayOutputStream bout)
     {
-        if (encoded==null)
-            return;
+        if (encoded==null) {
+			return;
+		}
         
-        if (bout == null)
-            throw new IllegalArgumentException("No outputstream for decoded bytes");
+        if (bout == null) {
+			throw new IllegalArgumentException("No outputstream for decoded bytes");
+		}
         
         int ci=0;
         byte nibbles[] = new byte[4];
@@ -417,15 +432,18 @@ public class B64Code
         {
             char c=encoded.charAt(ci++);
 
-            if (c==__pad)
-                break;
+            if (c==__pad) {
+				break;
+			}
 
-            if (Character.isWhitespace(c))
-                continue;
+            if (Character.isWhitespace(c)) {
+				continue;
+			}
 
             byte nibble=__rfc1421nibbles[c];
-            if (nibble<0)
-                throw new IllegalArgumentException("Not B64 encoded");
+            if (nibble<0) {
+				throw new IllegalArgumentException("Not B64 encoded");
+			}
 
             nibbles[s++]=__rfc1421nibbles[c];
 
@@ -434,13 +452,13 @@ public class B64Code
                 case 1:
                     break;
                 case 2:
-                    bout.write(nibbles[0]<<2|nibbles[1]>>>4);
+                    bout.write((nibbles[0]<<2)|(nibbles[1]>>>4));
                     break;
                 case 3:
-                    bout.write(nibbles[1]<<4|nibbles[2]>>>2);
+                    bout.write((nibbles[1]<<4)|(nibbles[2]>>>2));
                     break;
                 case 4:
-                    bout.write(nibbles[2]<<6|nibbles[3]);
+                    bout.write((nibbles[2]<<6)|nibbles[3]);
                     s=0;
                     break;
             }
@@ -450,11 +468,12 @@ public class B64Code
         return;
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public static byte[] decodeRFC4648URL(String encoded)
     {
-        if (encoded==null)
-            return null;
+        if (encoded==null) {
+			return null;
+		}
 
         ByteArrayOutputStream bout = new ByteArrayOutputStream(4*encoded.length()/3);        
         decodeRFC4648URL(encoded, bout);
@@ -470,13 +489,15 @@ public class B64Code
      * @throws IllegalArgumentException if the input is not a valid
      *         B64 encoding.
      */
-    static public void decodeRFC4648URL (String encoded, ByteArrayOutputStream bout)
+    public static void decodeRFC4648URL (String encoded, ByteArrayOutputStream bout)
     {
-        if (encoded==null)
-            return;
+        if (encoded==null) {
+			return;
+		}
         
-        if (bout == null)
-            throw new IllegalArgumentException("No outputstream for decoded bytes");
+        if (bout == null) {
+			throw new IllegalArgumentException("No outputstream for decoded bytes");
+		}
         
         int ci=0;
         byte nibbles[] = new byte[4];
@@ -486,15 +507,18 @@ public class B64Code
         {
             char c=encoded.charAt(ci++);
 
-            if (c==__pad)
-                break;
+            if (c==__pad) {
+				break;
+			}
 
-            if (Character.isWhitespace(c))
-                continue;
+            if (Character.isWhitespace(c)) {
+				continue;
+			}
 
             byte nibble=__rfc4648urlNibbles[c];
-            if (nibble<0)
-                throw new IllegalArgumentException("Not B64 encoded");
+            if (nibble<0) {
+				throw new IllegalArgumentException("Not B64 encoded");
+			}
 
             nibbles[s++]=__rfc4648urlNibbles[c];
 
@@ -503,13 +527,13 @@ public class B64Code
                 case 1:
                     break;
                 case 2:
-                    bout.write(nibbles[0]<<2|nibbles[1]>>>4);
+                    bout.write((nibbles[0]<<2)|(nibbles[1]>>>4));
                     break;
                 case 3:
-                    bout.write(nibbles[1]<<4|nibbles[2]>>>2);
+                    bout.write((nibbles[1]<<4)|(nibbles[2]>>>2));
                     break;
                 case 4:
-                    bout.write(nibbles[2]<<6|nibbles[3]);
+                    bout.write((nibbles[2]<<6)|nibbles[3]);
                     s=0;
                     break;
             }

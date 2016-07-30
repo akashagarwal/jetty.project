@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.osgi.boot.internal.webapp;
 
@@ -54,26 +49,27 @@ public class ServiceWatcher implements ServiceTrackerCustomizer
     
     public static final String FILTER = "(objectclass=" + ServiceProvider.class.getName() + ")";
 
-    //track all instances of deployers of webapps as bundles       
+    /** Track all instances of deployers of webapps as bundles.       */
     ServiceTracker _serviceTracker;
     
      
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public ServiceWatcher() throws Exception
     {
         //track all instances of deployers of webapps
-        Bundle myBundle = FrameworkUtil.getBundle(this.getClass());
+        Bundle myBundle = FrameworkUtil.getBundle(getClass());
         _serviceTracker = new ServiceTracker(myBundle.getBundleContext(), FrameworkUtil.createFilter(FILTER),null);
         _serviceTracker.open();
     }
 
 
    
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public Map<ServiceReference, ServiceProvider> getDeployers(String managedServerName)
     {
-        if (managedServerName == null)
-            managedServerName = OSGiServerConstants.MANAGED_JETTY_SERVER_DEFAULT_NAME;
+        if (managedServerName == null) {
+			managedServerName = OSGiServerConstants.MANAGED_JETTY_SERVER_DEFAULT_NAME;
+		}
         
         Map<ServiceReference, ServiceProvider> candidates = new HashMap<ServiceReference, ServiceProvider>();
         
@@ -86,8 +82,9 @@ public class ServiceWatcher implements ServiceTrackerCustomizer
                 if (managedServerName.equalsIgnoreCase(name))
                 {
                     ServiceProvider candidate = (ServiceProvider)_serviceTracker.getService(ref);
-                    if (candidate != null)
-                        candidates.put(ref, candidate);
+                    if (candidate != null) {
+						candidates.put(ref, candidate);
+					}
                 }
             }
         }
@@ -159,7 +156,9 @@ public class ServiceWatcher implements ServiceTrackerCustomizer
         }
         String watermark = (String)reference.getProperty(OSGiWebappConstants.WATERMARK);
         if (watermark != null && !"".equals(watermark))
-            return context.getService(reference); //one of our deployers just registered the context as an OSGi service, so we can ignore it
+		 {
+			return context.getService(reference); //one of our deployers just registered the context as an OSGi service, so we can ignore it
+		}
         
         //Get a jetty deployer targetted to the named server instance, or the default one if not named
         String serverName = (String)reference.getProperty(OSGiServerConstants.MANAGED_JETTY_SERVER_NAME);    
@@ -174,8 +173,9 @@ public class ServiceWatcher implements ServiceTrackerCustomizer
                 try
                 {
                     added = e.getValue().serviceAdded(reference, contextHandler);
-                    if (added && LOG.isDebugEnabled())
-                        LOG.debug("Provider "+e.getValue()+" deployed "+contextHandler);
+                    if (added && LOG.isDebugEnabled()) {
+						LOG.debug("Provider "+e.getValue()+" deployed "+contextHandler);
+					}
                 }
                 catch (Exception x)
                 {

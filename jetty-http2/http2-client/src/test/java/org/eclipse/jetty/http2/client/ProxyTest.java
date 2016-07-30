@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http2.client;
 
@@ -92,8 +87,9 @@ public class ProxyTest
         configuration.setSendDateHeader(false);
         configuration.setSendServerVersion(false);
         String value = initParams.get("outputBufferSize");
-        if (value != null)
-            configuration.setOutputBufferSize(Integer.valueOf(value));
+        if (value != null) {
+			configuration.setOutputBufferSize(Integer.valueOf(value));
+		}
         proxyConnector = new ServerConnector(proxy, new HTTP2ServerConnectionFactory(configuration));
         proxy.addConnector(proxyConnector);
 
@@ -180,8 +176,9 @@ public class ProxyTest
                 {
                     TimeUnit.MILLISECONDS.sleep(1);
                     callback.succeeded();
-                    if (frame.isEndStream())
-                        clientLatch.countDown();
+                    if (frame.isEndStream()) {
+						clientLatch.countDown();
+					}
                 }
                 catch (InterruptedException x)
                 {

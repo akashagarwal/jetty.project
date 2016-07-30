@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util.ajax;
 
@@ -106,7 +101,7 @@ public class JSONPojoConvertor implements JSON.Convertor
         this(pojoClass, (Set<String>)null, fromJSON);
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected void init()
     {
         Method[] methods = _pojoClass.getMethods();
@@ -122,22 +117,25 @@ public class JSONPojoConvertor implements JSON.Convertor
                         
                         if(m.getReturnType()!=null)
                         {
-                            if (name.startsWith("is") && name.length()>2)
-                                name=name.substring(2,3).toLowerCase(Locale.ENGLISH)+name.substring(3);
-                            else if (name.startsWith("get") && name.length()>3)
-                                name=name.substring(3,4).toLowerCase(Locale.ENGLISH)+name.substring(4);
-                            else 
-                                break;
-                            if(includeField(name, m))
-                                addGetter(name, m);
+                            if (name.startsWith("is") && name.length()>2) {
+								name=name.substring(2,3).toLowerCase(Locale.ENGLISH)+name.substring(3);
+							} else if (name.startsWith("get") && name.length()>3) {
+								name=name.substring(3,4).toLowerCase(Locale.ENGLISH)+name.substring(4);
+							} else {
+								break;
+							}
+                            if(includeField(name, m)) {
+								addGetter(name, m);
+							}
                         }
                         break;
                     case 1:
                         if (name.startsWith("set") && name.length()>3)
                         {
                             name=name.substring(3,4).toLowerCase(Locale.ENGLISH)+name.substring(4);
-                            if(includeField(name, m))
-                                addSetter(name, m);
+                            if(includeField(name, m)) {
+								addSetter(name, m);
+							}
                         }
                         break;                
                 }
@@ -145,37 +143,37 @@ public class JSONPojoConvertor implements JSON.Convertor
         }
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected void addGetter(String name, Method method)
     {
         _getters.put(name, method);
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected void addSetter(String name, Method method)
     {
         _setters.put(name, new Setter(name, method));
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected Setter getSetter(String name)
     {
         return _setters.get(name);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected boolean includeField(String name, Method m)
     {
         return _excluded==null || !_excluded.contains(name);
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected int getExcludedCount()
     {
         return _excluded==null ? 0 : _excluded.size();
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public Object fromJSON(Map object)
     {        
         Object obj = null;
@@ -193,7 +191,7 @@ public class JSONPojoConvertor implements JSON.Convertor
         return obj;
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public int setProps(Object obj, Map<?,?> props)
     {
         int count = 0;
@@ -212,7 +210,7 @@ public class JSONPojoConvertor implements JSON.Convertor
                 {
                     // TODO throw exception?
                     LOG.warn(_pojoClass.getName()+"#"+setter.getPropertyName()+" not set from "+
-                            (entry.getValue().getClass().getName())+"="+entry.getValue().toString());
+                            entry.getValue().getClass().getName()+"="+entry.getValue());
                     log(e);
                 }
             }
@@ -220,11 +218,12 @@ public class JSONPojoConvertor implements JSON.Convertor
         return count;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void toJSON(Object obj, Output out)
     {
-        if(_fromJSON)
-            out.addClass(_pojoClass);
+        if(_fromJSON) {
+			out.addClass(_pojoClass);
+		}
         for(Map.Entry<String,Method> entry : _getters.entrySet())
         {            
             try
@@ -241,13 +240,13 @@ public class JSONPojoConvertor implements JSON.Convertor
         }        
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected void log(Throwable t)
     {
         LOG.ignore(t);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public static class Setter
     {
         protected String _propertyName;
@@ -302,10 +301,11 @@ public class JSONPojoConvertor implements JSON.Convertor
         public void invoke(Object obj, Object value) throws IllegalArgumentException, 
         IllegalAccessException, InvocationTargetException
         {
-            if(value==null)
-                _setter.invoke(obj, NULL_ARG);
-            else
-                invokeObject(obj, value);
+            if(value!=null) {
+				invokeObject(obj, value);
+			} else {
+				_setter.invoke(obj, NULL_ARG);
+			}
         }
         
         protected void invokeObject(Object obj, Object value) throws IllegalArgumentException, 
@@ -314,10 +314,11 @@ public class JSONPojoConvertor implements JSON.Convertor
             
             if (_type.isEnum())
             {
-                if (value instanceof Enum)
-                    _setter.invoke(obj, new Object[]{value});
-                else
-                    _setter.invoke(obj, new Object[]{Enum.valueOf((Class<? extends Enum>)_type,value.toString())});
+                if (value instanceof Enum) {
+					_setter.invoke(obj, new Object[]{value});
+				} else {
+					_setter.invoke(obj, new Object[]{Enum.valueOf((Class<? extends Enum>)_type,value.toString())});
+				}
             }
             else if(_numberType!=null && value instanceof Number)
             {
@@ -352,8 +353,9 @@ public class JSONPojoConvertor implements JSON.Convertor
                     Object array = Array.newInstance(_componentType, old.length);
                     try
                     {
-                        for(int i=0; i<old.length; i++)
-                            Array.set(array, i, _numberType.getActualValue((Number)old[i]));
+                        for(int i=0; i<old.length; i++) {
+							Array.set(array, i, _numberType.getActualValue((Number)old[i]));
+						}
                     }
                     catch(Exception e)
                     {                        
@@ -364,22 +366,22 @@ public class JSONPojoConvertor implements JSON.Convertor
                     }
                     _setter.invoke(obj, new Object[]{array});
                 }
-            }
-            else
-                _setter.invoke(obj, new Object[]{value});
+            } else {
+				_setter.invoke(obj, new Object[]{value});
+			}
         }
     }
     
     public interface NumberType
     {        
-        public Object getActualValue(Number number);     
+        Object getActualValue(Number number);     
     }
     
     public static final NumberType SHORT = new NumberType()
     {
         public Object getActualValue(Number number)
         {            
-            return new Short(number.shortValue());
+            return Short.valueOf(number.shortValue());
         } 
     };
 
@@ -387,7 +389,7 @@ public class JSONPojoConvertor implements JSON.Convertor
     {
         public Object getActualValue(Number number)
         {            
-            return new Integer(number.intValue());
+            return Integer.valueOf(number.intValue());
         }
     };
     
@@ -395,7 +397,7 @@ public class JSONPojoConvertor implements JSON.Convertor
     {
         public Object getActualValue(Number number)
         {            
-            return new Float(number.floatValue());
+            return Float.valueOf(number.floatValue());
         }      
     };
 
@@ -403,7 +405,7 @@ public class JSONPojoConvertor implements JSON.Convertor
     {
         public Object getActualValue(Number number)
         {            
-            return number instanceof Long ? number : new Long(number.longValue());
+            return number instanceof Long ? number : Long.valueOf(number.longValue());
         }     
     };
 
@@ -411,7 +413,7 @@ public class JSONPojoConvertor implements JSON.Convertor
     {
         public Object getActualValue(Number number)
         {            
-            return number instanceof Double ? number : new Double(number.doubleValue());
+            return number instanceof Double ? number : Double.valueOf(number.doubleValue());
         }       
     };
 

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.io;
 
@@ -38,31 +33,31 @@ public interface Connection extends Closeable
      *
      * @param listener the listener to add
      */
-    public void addListener(Listener listener);
+    void addListener(Listener listener);
 
     /**
      * <p>Removes a listener of connection events.</p>
      *
      * @param listener the listener to remove
      */
-    public void removeListener(Listener listener);
+    void removeListener(Listener listener);
 
     /**
      * <p>Callback method invoked when this connection is opened.</p>
      * <p>Creators of the connection implementation are responsible for calling this method.</p>
      */
-    public void onOpen();
+    void onOpen();
 
     /**
      * <p>Callback method invoked when this connection is closed.</p>
      * <p>Creators of the connection implementation are responsible for calling this method.</p>
      */
-    public void onClose();
+    void onClose();
 
     /**
      * @return the {@link EndPoint} associated with this {@link Connection}
      */
-    public EndPoint getEndPoint();
+    EndPoint getEndPoint();
 
     /**
      * <p>Performs a logical close of this connection.</p>
@@ -70,8 +65,7 @@ public interface Connection extends Closeable
      * {@link EndPoint} but, for example, SSL connections should write the SSL close message
      * before closing the associated {@link EndPoint}.</p>
      */
-    @Override
-    public void close();
+    @Override void close();
 
     /**
      * <p>Callback method invoked upon an idle timeout event.</p>
@@ -84,13 +78,13 @@ public interface Connection extends Closeable
      * @return true to let the EndPoint handle the idle timeout,
      *         false to tell the EndPoint to halt the handling of the idle timeout.
      */
-    public boolean onIdleExpired();
+    boolean onIdleExpired();
 
-    public int getMessagesIn();
-    public int getMessagesOut();
-    public long getBytesIn();
-    public long getBytesOut();
-    public long getCreatedTimeStamp();
+    int getMessagesIn();
+    int getMessagesOut();
+    long getBytesIn();
+    long getBytesOut();
+    long getCreatedTimeStamp();
 
     public interface UpgradeFrom extends Connection
     {
@@ -128,9 +122,9 @@ public interface Connection extends Closeable
      */
     public interface Listener
     {
-        public void onOpened(Connection connection);
+        void onOpened(Connection connection);
 
-        public void onClosed(Connection connection);
+        void onClosed(Connection connection);
 
         public static class Adapter implements Listener
         {

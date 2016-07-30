@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 
@@ -39,7 +34,7 @@ public class ResourceContentFactory implements Factory
     private final MimeTypes _mimeTypes;
     private final boolean _gzip;
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public ResourceContentFactory(ResourceFactory factory, MimeTypes mimeTypes, boolean gzip)
     {
         _factory=factory;
@@ -47,27 +42,28 @@ public class ResourceContentFactory implements Factory
         _gzip=gzip;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public HttpContent getContent(String pathInContext,int maxBufferSize)
         throws IOException
     {
         // try loading the content from our factory.
         Resource resource=_factory.getResource(pathInContext);
-        HttpContent loaded = load(pathInContext,resource,maxBufferSize);
-        return loaded;
+        return load(pathInContext,resource,maxBufferSize);
     }
     
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     private HttpContent load(String pathInContext, Resource resource, int maxBufferSize)
         throws IOException
     {   
-        if (resource==null || !resource.exists())
-            return null;
+        if (resource==null || !resource.exists()) {
+			return null;
+		}
         
-        if (resource.isDirectory())
-            return new ResourceHttpContent(resource,_mimeTypes.getMimeByExtension(resource.toString()),maxBufferSize);
+        if (resource.isDirectory()) {
+			return new ResourceHttpContent(resource,_mimeTypes.getMimeByExtension(resource.toString()),maxBufferSize);
+		}
         
         // Look for a gzip resource or content
         String mt = _mimeTypes.getMimeByExtension(pathInContext);
@@ -76,16 +72,17 @@ public class ResourceContentFactory implements Factory
             // Is there a gzip resource? 
             String pathInContextGz=pathInContext+".gz";
             Resource resourceGz=_factory.getResource(pathInContextGz);
-            if (resourceGz.exists() && resourceGz.lastModified()>=resource.lastModified() && resourceGz.length()<resource.length())
-                return new ResourceHttpContent(resource,mt,maxBufferSize,
+            if (resourceGz.exists() && resourceGz.lastModified()>=resource.lastModified() && resourceGz.length()<resource.length()) {
+				return new ResourceHttpContent(resource,mt,maxBufferSize,
                        new ResourceHttpContent(resourceGz,_mimeTypes.getMimeByExtension(pathInContextGz),maxBufferSize));
+			}
         }
         
         return new ResourceHttpContent(resource,mt,maxBufferSize);
     }
     
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public String toString()
     {

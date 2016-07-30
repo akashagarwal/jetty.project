@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.common.test;
 
@@ -92,9 +87,9 @@ public class BlockheadClient implements OutgoingFrames, ConnectionStateListener,
 {
     private class FrameReadingThread extends Thread implements Runnable, IncomingFrames
     {
-        public long totalBytes = 0;
-        public long totalReadOps = 0;
-        public long totalParseOps = 0;
+        public long totalBytes;
+        public long totalReadOps;
+        public long totalParseOps;
 
         public EventQueue<WebSocketFrame> frames = new EventQueue<>();
         public EventQueue<Throwable> errors = new EventQueue<>();
@@ -107,7 +102,7 @@ public class BlockheadClient implements OutgoingFrames, ConnectionStateListener,
             byte buf[] = new byte[BUFFER_SIZE];
             try
             {
-                if ((remainingBuffer != null) && (remainingBuffer.remaining() > 0))
+                if (remainingBuffer != null && remainingBuffer.remaining() > 0)
                 {
                     LOG.debug("Reading bytes received during response header parse: {}",BufferUtil.toDetailString(remainingBuffer));
                     totalBytes += remainingBuffer.remaining();
@@ -151,8 +146,8 @@ public class BlockheadClient implements OutgoingFrames, ConnectionStateListener,
         {
             StringBuilder str = new StringBuilder();
             str.append("FrameReadingThread[");
-            str.append(",frames=" + frames.size());
-            str.append(",errors=" + errors.size());
+            str.append(",frames=").append(frames.size());
+            str.append(",errors=").append(errors.size());
             str.append(String.format(",totalBytes=%,d",totalBytes));
             str.append(String.format(",totalReadOps=%,d",totalReadOps));
             str.append(String.format(",totalParseOps=%,d",totalParseOps));
@@ -195,14 +190,15 @@ public class BlockheadClient implements OutgoingFrames, ConnectionStateListener,
     private Socket socket;
     private OutputStream out;
     private InputStream in;
-    private int version = 13; // default to RFC-6455
+    /** Default to RFC-6455. */
+    private int version = 13;
     private String protocols;
     private List<String> extensions = new ArrayList<>();
     private List<String> headers = new ArrayList<>();
     private byte[] clientmask = new byte[] { (byte)0xFF, (byte)0xFF, (byte)0xFF, (byte)0xFF };
     private int timeout = 1000;
     private OutgoingFrames outgoing = this;
-    private boolean eof = false;
+    private boolean eof;
     private ExtensionStack extensionStack;
     private IOState ioState;
     private CountDownLatch disconnectedLatch = new CountDownLatch(1);
@@ -219,7 +215,7 @@ public class BlockheadClient implements OutgoingFrames, ConnectionStateListener,
     {
         Assert.assertThat("Websocket URI scheme",destWebsocketURI.getScheme(),anyOf(is("ws"),is("wss")));
         this.destWebsocketURI = destWebsocketURI;
-        if (destWebsocketURI.getScheme().equals("wss"))
+        if ("wss".equals(destWebsocketURI.getScheme()))
         {
             throw new RuntimeException("Sorry, BlockheadClient does not support SSL");
         }
@@ -238,7 +234,7 @@ public class BlockheadClient implements OutgoingFrames, ConnectionStateListener,
         this.ioState.addListener(this);
     }
 
-    /* (non-Javadoc)
+    /** (non-Javadoc)
      * @see org.eclipse.jetty.websocket.common.test.IBlockheadClient#addExtensions(java.lang.String)
      */
     @Override
@@ -247,7 +243,7 @@ public class BlockheadClient implements OutgoingFrames, ConnectionStateListener,
         this.extensions.add(xtension);
     }
 
-    /* (non-Javadoc)
+    /** (non-Javadoc)
      * @see org.eclipse.jetty.websocket.common.test.IBlockheadClient#addHeader(java.lang.String)
      */
     @Override
@@ -256,7 +252,7 @@ public class BlockheadClient implements OutgoingFrames, ConnectionStateListener,
         this.headers.add(header);
     }
 
-    /* (non-Javadoc)
+    /** (non-Javadoc)
      * @see org.eclipse.jetty.websocket.common.test.IBlockheadClient#awaitDisconnect(long, java.util.concurrent.TimeUnit)
      */
     @Override
@@ -275,7 +271,7 @@ public class BlockheadClient implements OutgoingFrames, ConnectionStateListener,
         extensions.clear();
     }
 
-    /* (non-Javadoc)
+    /** (non-Javadoc)
      * @see org.eclipse.jetty.websocket.common.test.IBlockheadClient#close()
      */
     @Override
@@ -285,7 +281,7 @@ public class BlockheadClient implements OutgoingFrames, ConnectionStateListener,
         close(-1,null);
     }
 
-    /* (non-Javadoc)
+    /** (non-Javadoc)
      * @see org.eclipse.jetty.websocket.common.test.IBlockheadClient#close(int, java.lang.String)
      */
     @Override
@@ -304,7 +300,7 @@ public class BlockheadClient implements OutgoingFrames, ConnectionStateListener,
         }
     }
 
-    /* (non-Javadoc)
+    /** (non-Javadoc)
      * @see org.eclipse.jetty.websocket.common.test.IBlockheadClient#connect()
      */
     @Override
@@ -346,7 +342,7 @@ public class BlockheadClient implements OutgoingFrames, ConnectionStateListener,
         }
     }
 
-    /* (non-Javadoc)
+    /** (non-Javadoc)
      * @see org.eclipse.jetty.websocket.common.test.IBlockheadClient#expectServerDisconnect()
      */
     @Override
@@ -360,7 +356,7 @@ public class BlockheadClient implements OutgoingFrames, ConnectionStateListener,
         try
         {
             int len = in.read();
-            if (len == (-1))
+            if (len == -1)
             {
                 // we are disconnected
                 eof = true;
@@ -380,7 +376,7 @@ public class BlockheadClient implements OutgoingFrames, ConnectionStateListener,
         }
     }
 
-    /* (non-Javadoc)
+    /** (non-Javadoc)
      * @see org.eclipse.jetty.websocket.common.test.IBlockheadClient#expectUpgradeResponse()
      */
     @Override
@@ -497,7 +493,7 @@ public class BlockheadClient implements OutgoingFrames, ConnectionStateListener,
         return ioState;
     }
 
-    /* (non-Javadoc)
+    /** (non-Javadoc)
      * @see org.eclipse.jetty.websocket.common.test.IBlockheadClient#getProtocols()
      */
     @Override
@@ -557,7 +553,7 @@ public class BlockheadClient implements OutgoingFrames, ConnectionStateListener,
 
     public boolean isConnected()
     {
-        return (socket != null) && (socket.isConnected());
+        return socket != null && socket.isConnected();
     }
 
     @Override
@@ -632,7 +628,7 @@ public class BlockheadClient implements OutgoingFrames, ConnectionStateListener,
         return frameReader.frames;
     }
 
-    /* (non-Javadoc)
+    /** (non-Javadoc)
      * @see org.eclipse.jetty.websocket.common.test.IBlockheadClient#readResponseHeader()
      */
     @Override
@@ -671,7 +667,7 @@ public class BlockheadClient implements OutgoingFrames, ConnectionStateListener,
         return response;
     }
 
-    /* (non-Javadoc)
+    /** (non-Javadoc)
      * @see org.eclipse.jetty.websocket.common.test.IBlockheadClient#sendStandardRequest()
      */
     @Override
@@ -719,7 +715,7 @@ public class BlockheadClient implements OutgoingFrames, ConnectionStateListener,
         this.executor = executor;
     }
 
-    /* (non-Javadoc)
+    /** (non-Javadoc)
      * @see org.eclipse.jetty.websocket.common.test.IBlockheadClient#setProtocols(java.lang.String)
      */
     @Override
@@ -728,7 +724,7 @@ public class BlockheadClient implements OutgoingFrames, ConnectionStateListener,
         this.protocols = protocols;
     }
 
-    /* (non-Javadoc)
+    /** (non-Javadoc)
      * @see org.eclipse.jetty.websocket.common.test.IBlockheadClient#setTimeout(int, java.util.concurrent.TimeUnit)
      */
     @Override
@@ -776,7 +772,7 @@ public class BlockheadClient implements OutgoingFrames, ConnectionStateListener,
         LOG.info("Waking up from sleep");
     }
 
-    /* (non-Javadoc)
+    /** (non-Javadoc)
      * @see org.eclipse.jetty.websocket.common.test.IBlockheadClient#write(org.eclipse.jetty.websocket.common.WebSocketFrame)
      */
     @Override
@@ -799,7 +795,7 @@ public class BlockheadClient implements OutgoingFrames, ConnectionStateListener,
         extensionStack.outgoingFrame(frame,null,BatchMode.OFF);
     }
 
-    /* (non-Javadoc)
+    /** (non-Javadoc)
      * @see org.eclipse.jetty.websocket.common.test.IBlockheadClient#writeRaw(java.nio.ByteBuffer)
      */
     @Override
@@ -809,7 +805,7 @@ public class BlockheadClient implements OutgoingFrames, ConnectionStateListener,
         BufferUtil.writeTo(buf,out);
     }
 
-    /* (non-Javadoc)
+    /** (non-Javadoc)
      * @see org.eclipse.jetty.websocket.common.test.IBlockheadClient#writeRaw(java.nio.ByteBuffer, int)
      */
     @Override
@@ -821,7 +817,7 @@ public class BlockheadClient implements OutgoingFrames, ConnectionStateListener,
         out.write(arr);
     }
 
-    /* (non-Javadoc)
+    /** (non-Javadoc)
      * @see org.eclipse.jetty.websocket.common.test.IBlockheadClient#writeRaw(java.lang.String)
      */
     @Override
@@ -831,7 +827,7 @@ public class BlockheadClient implements OutgoingFrames, ConnectionStateListener,
         out.write(str.getBytes(StandardCharsets.ISO_8859_1));
     }
 
-    /* (non-Javadoc)
+    /** (non-Javadoc)
      * @see org.eclipse.jetty.websocket.common.test.IBlockheadClient#writeRawSlowly(java.nio.ByteBuffer, int)
      */
     @Override

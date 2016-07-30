@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.servlet;
 
@@ -76,15 +71,16 @@ public class Invoker extends HttpServlet
     private boolean _nonContextServlets;
     private boolean _verbose;
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void init()
     {
         ServletContext config=getServletContext();
         _contextHandler=((ContextHandler.Context)config).getContextHandler();
 
         Handler handler=_contextHandler.getHandler();
-        while (handler!=null && !(handler instanceof ServletHandler) && (handler instanceof HandlerWrapper))
-            handler=((HandlerWrapper)handler).getHandler();
+        while (handler!=null && !(handler instanceof ServletHandler) && handler instanceof HandlerWrapper) {
+			handler=((HandlerWrapper)handler).getHandler();
+		}
         _servletHandler = (ServletHandler)handler;
         Enumeration<String> e = getInitParameterNames();
         while(e.hasMoreElements())
@@ -102,27 +98,30 @@ public class Invoker extends HttpServlet
             }
             else
             {
-                if (_parameters==null)
-                    _parameters=new HashMap<String, String>();
+                if (_parameters==null) {
+					_parameters=new HashMap<String, String>();
+				}
                 _parameters.put(param,value);
             }
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected void service(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException
     {
         // Get the requested path and info
         boolean included=false;
         String servlet_path=(String)request.getAttribute(Dispatcher.INCLUDE_SERVLET_PATH);
-        if (servlet_path==null)
-            servlet_path=request.getServletPath();
-        else
-            included=true;
+        if (servlet_path!=null) {
+			included=true;
+		} else {
+			servlet_path=request.getServletPath();
+		}
         String path_info = (String)request.getAttribute(Dispatcher.INCLUDE_PATH_INFO);
-        if (path_info==null)
-            path_info=request.getPathInfo();
+        if (path_info==null) {
+			path_info=request.getPathInfo();
+		}
 
         // Get the servlet class
         String servlet = path_info;
@@ -145,8 +144,9 @@ public class Invoker extends HttpServlet
         {
             // Found a named servlet (from a user's web.xml file) so
             // now we add a mapping for it
-            if (LOG.isDebugEnabled())
-                LOG.debug("Adding servlet mapping for named servlet:"+servlet+":"+URIUtil.addPaths(servlet_path,servlet)+"/*");
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Adding servlet mapping for named servlet:"+servlet+":"+URIUtil.addPaths(servlet_path,servlet)+"/*");
+			}
             ServletMapping mapping = new ServletMapping();
             mapping.setServletName(servlet);
             mapping.setPathSpec(URIUtil.addPaths(servlet_path,servlet)+"/*");
@@ -155,8 +155,9 @@ public class Invoker extends HttpServlet
         else
         {
             // look for a class mapping
-            if (servlet.endsWith(".class"))
-                servlet=servlet.substring(0,servlet.length()-6);
+            if (servlet.endsWith(".class")) {
+				servlet=servlet.substring(0,servlet.length()-6);
+			}
             if (servlet==null || servlet.length()==0)
             {
                 response.sendError(404);
@@ -175,17 +176,19 @@ public class Invoker extends HttpServlet
                 if (entry!=null && !entry.equals(_invokerEntry))
                 {
                     // Use the holder
-                    holder=(ServletHolder)entry.getValue();
+                    holder=entry.getValue();
                 }
                 else
                 {
                     // Make a holder
-                    if (LOG.isDebugEnabled())
-                        LOG.debug("Making new servlet="+servlet+" with path="+path+"/*");
+                    if (LOG.isDebugEnabled()) {
+						LOG.debug("Making new servlet="+servlet+" with path="+path+"/*");
+					}
                     holder=_servletHandler.addServletWithMapping(servlet, path+"/*");
 
-                    if (_parameters!=null)
-                        holder.setInitParameters(_parameters);
+                    if (_parameters!=null) {
+						holder.setInitParameters(_parameters);
+					}
 
                     try {holder.start();}
                     catch (Exception e)
@@ -218,8 +221,9 @@ public class Invoker extends HttpServlet
                         }
                     }
 
-                    if (_verbose && LOG.isDebugEnabled())
-                        LOG.debug("Dynamic load '"+servlet+"' at "+path);
+                    if (_verbose && LOG.isDebugEnabled()) {
+						LOG.debug("Dynamic load '"+servlet+"' at "+path);
+					}
                 }
             }
         }
@@ -240,14 +244,14 @@ public class Invoker extends HttpServlet
 
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     class InvokedRequest extends HttpServletRequestWrapper
     {
         String _servletPath;
         String _pathInfo;
         boolean _included;
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         InvokedRequest(HttpServletRequest request,
                 boolean included,
                 String name,
@@ -258,37 +262,43 @@ public class Invoker extends HttpServlet
             _included=included;
             _servletPath=URIUtil.addPaths(servletPath,name);
             _pathInfo=pathInfo.substring(name.length()+1);
-            if (_pathInfo.length()==0)
-                _pathInfo=null;
+            if (_pathInfo.length()==0) {
+				_pathInfo=null;
+			}
         }
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         public String getServletPath()
         {
-            if (_included)
-                return super.getServletPath();
+            if (_included) {
+				return super.getServletPath();
+			}
             return _servletPath;
         }
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         public String getPathInfo()
         {
-            if (_included)
-                return super.getPathInfo();
+            if (_included) {
+				return super.getPathInfo();
+			}
             return _pathInfo;
         }
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         public Object getAttribute(String name)
         {
             if (_included)
             {
-                if (name.equals(Dispatcher.INCLUDE_REQUEST_URI))
-                    return URIUtil.addPaths(URIUtil.addPaths(getContextPath(),_servletPath),_pathInfo);
-                if (name.equals(Dispatcher.INCLUDE_PATH_INFO))
-                    return _pathInfo;
-                if (name.equals(Dispatcher.INCLUDE_SERVLET_PATH))
-                    return _servletPath;
+                if (Dispatcher.INCLUDE_REQUEST_URI.equals(name)) {
+					return URIUtil.addPaths(URIUtil.addPaths(getContextPath(),_servletPath),_pathInfo);
+				}
+                if (Dispatcher.INCLUDE_PATH_INFO.equals(name)) {
+					return _pathInfo;
+				}
+                if (Dispatcher.INCLUDE_SERVLET_PATH.equals(name)) {
+					return _servletPath;
+				}
             }
             return super.getAttribute(name);
         }
@@ -297,8 +307,9 @@ public class Invoker extends HttpServlet
 
     private ServletHolder getHolder(ServletHolder[] holders, String servlet)
     {
-        if (holders == null)
-            return null;
+        if (holders == null) {
+			return null;
+		}
 
         ServletHolder holder = null;
         for (int i=0; holder==null && i<holders.length; i++)

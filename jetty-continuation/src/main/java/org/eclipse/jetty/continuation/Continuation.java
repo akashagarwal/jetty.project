@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.continuation;
 
@@ -142,7 +137,7 @@ import javax.servlet.ServletResponseWrapper;
  */
 public interface Continuation
 {
-    public final static String ATTRIBUTE = "org.eclipse.jetty.continuation";
+    String ATTRIBUTE = "org.eclipse.jetty.continuation";
 
     /* ------------------------------------------------------------ */
     /**
@@ -376,7 +371,7 @@ public interface Continuation
      * @param name the attribute name
      * @param attribute the attribute value
      */
-    public void setAttribute(String name, Object attribute);
+    void setAttribute(String name, Object attribute);
     
     /* ------------------------------------------------------------ */
     /** Get a request attribute.
@@ -386,7 +381,7 @@ public interface Continuation
      * @param name the attribute name
      * @return the attribute value
      */
-    public Object getAttribute(String name);
+    Object getAttribute(String name);
     
     /* ------------------------------------------------------------ */
     /** Remove a request attribute.
@@ -395,7 +390,7 @@ public interface Continuation
      * This is a thread safe call and may be called by any thread.
      * @param name the attribute name
      */
-    public void removeAttribute(String name);
+    void removeAttribute(String name);
     
     /* ------------------------------------------------------------ */
     /**
@@ -414,5 +409,5 @@ public interface Continuation
      * @throws ContinuationThrowable thrown if the request is suspended. The instance of the 
      * exception may be reused on subsequent calls, so the stack frame may not be accurate.
      */
-    public void undispatch() throws ContinuationThrowable;
+    void undispatch() throws ContinuationThrowable;
 }

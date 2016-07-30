@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util.log;
 
@@ -94,14 +89,14 @@ import org.eclipse.jetty.util.annotation.ManagedObject;
 public class StdErrLog extends AbstractLogger
 {
     private static final String EOL = System.getProperty("line.separator");
-    // Do not change output format lightly, people rely on this output format now.
+    /** Do not change output format lightly, people rely on this output format now. */
     private static int __tagpad = Integer.parseInt(Log.__props.getProperty("org.eclipse.jetty.util.log.StdErrLog.TAG_PAD","0"));
     private static DateCache _dateCache;
 
-    private final static boolean __source = Boolean.parseBoolean(Log.__props.getProperty("org.eclipse.jetty.util.log.SOURCE",
+    private static final boolean __source = Boolean.parseBoolean(Log.__props.getProperty("org.eclipse.jetty.util.log.SOURCE",
             Log.__props.getProperty("org.eclipse.jetty.util.log.stderr.SOURCE","false")));
-    private final static boolean __long = Boolean.parseBoolean(Log.__props.getProperty("org.eclipse.jetty.util.log.stderr.LONG","false"));
-    private final static boolean __escape = Boolean.parseBoolean(Log.__props.getProperty("org.eclipse.jetty.util.log.stderr.ESCAPE","true"));
+    private static final boolean __long = Boolean.parseBoolean(Log.__props.getProperty("org.eclipse.jetty.util.log.stderr.LONG","false"));
+    private static final boolean __escape = Boolean.parseBoolean(Log.__props.getProperty("org.eclipse.jetty.util.log.stderr.ESCAPE","true"));
     
     static
     {
@@ -134,17 +129,17 @@ public class StdErrLog extends AbstractLogger
     
 
     private int _level = LEVEL_INFO;
-    // Level that this Logger was configured as (remembered in special case of .setDebugEnabled())
+    /** Level that this Logger was configured as (remembered in special case of .setDebugEnabled()) */
     private int _configuredLevel;
-    private PrintStream _stderr = null;
+    private PrintStream _stderr;
     private boolean _source = __source;
-    // Print the long form names, otherwise use abbreviated
+    /** Print the long form names, otherwise use abbreviated. */
     private boolean _printLongNames = __long;
-    // The full log name, as provided by the system.
+    /** The full log name, as provided by the system. */
     private final String _name;
-    // The abbreviated log name (used by default, unless _long is specified)
+    /** The abbreviated log name (used by default, unless _long is specified). */
     private final String _abbrevname;
-    private boolean _hideStacks = false;
+    private boolean _hideStacks;
 
     
     public static int getLoggingLevel(Properties props,String name)
@@ -153,8 +148,9 @@ public class StdErrLog extends AbstractLogger
         if (level==LEVEL_DEFAULT)
         {
             level = lookupLoggingLevel(props,"log");
-            if (level==LEVEL_DEFAULT)
-                level=LEVEL_INFO;
+            if (level==LEVEL_DEFAULT) {
+				level=LEVEL_INFO;
+			}
         }
         return level;
     }
@@ -192,7 +188,7 @@ public class StdErrLog extends AbstractLogger
     }
 
     /**
-     * Construct a named StdErrLog using the {@link Log} defined properties
+     * Construct a named StdErrLog using the {@link Log} defined properties.
      * 
      * @param name
      *            the name of the logger
@@ -212,8 +208,9 @@ public class StdErrLog extends AbstractLogger
      */
     public StdErrLog(String name, Properties props)
     {
-        if (props!=null && props!=Log.__props)
-            Log.__props.putAll(props);
+        if (props!=null && props!=Log.__props) {
+			Log.__props.putAll(props);
+		}
         _name = name == null?"":name;
         _abbrevname = condensePackageString(this._name);
         _level = getLoggingLevel(Log.__props,this._name);
@@ -342,7 +339,7 @@ public class StdErrLog extends AbstractLogger
     @ManagedAttribute("is debug enabled for root logger Log.LOG")
     public boolean isDebugEnabled()
     {
-        return (_level <= LEVEL_DEBUG);
+        return _level <= LEVEL_DEBUG;
     }
 
     /**
@@ -358,8 +355,9 @@ public class StdErrLog extends AbstractLogger
 
             for (Logger log : Log.getLoggers().values())
             {                
-                if (log.getName().startsWith(getName()) && log instanceof StdErrLog)
-                    ((StdErrLog)log).setLevel(LEVEL_DEBUG);
+                if (log.getName().startsWith(getName()) && log instanceof StdErrLog) {
+					((StdErrLog)log).setLevel(LEVEL_DEBUG);
+				}
             }
         }
         else
@@ -368,8 +366,9 @@ public class StdErrLog extends AbstractLogger
 
             for (Logger log : Log.getLoggers().values())
             {
-                if (log.getName().startsWith(getName()) && log instanceof StdErrLog)
-                    ((StdErrLog)log).setLevel(((StdErrLog)log)._configuredLevel);
+                if (log.getName().startsWith(getName()) && log instanceof StdErrLog) {
+					((StdErrLog)log).setLevel(((StdErrLog)log)._configuredLevel);
+				}
             }
         }
     }
@@ -447,7 +446,7 @@ public class StdErrLog extends AbstractLogger
         format(buffer,level,msg);
         if (isHideStacks())
         {
-            format(buffer,": "+String.valueOf(thrown));
+            format(buffer,": "+thrown);
         }
         else
         {
@@ -550,7 +549,7 @@ public class StdErrLog extends AbstractLogger
             else
             {
                 escape(builder,msg.substring(start,bracesIndex));
-                builder.append(String.valueOf(arg));
+                builder.append(arg);
                 start = bracesIndex + braces.length();
             }
         }
@@ -584,9 +583,9 @@ public class StdErrLog extends AbstractLogger
                     builder.append(c);
                 }
             }
-        }
-        else
-            builder.append(string);
+        } else {
+			builder.append(string);
+		}
     }
 
     protected void format(StringBuilder buffer, Throwable thrown)
@@ -639,8 +638,9 @@ public class StdErrLog extends AbstractLogger
         logger._stderr = this._stderr;
 
         // Force the child to have any programmatic configuration
-        if (_level!=_configuredLevel)
-            logger._level=_level;
+        if (_level!=_configuredLevel) {
+			logger._level=_level;
+		}
 
         return logger;
     }

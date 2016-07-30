@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.start;
 
@@ -36,12 +31,12 @@ import java.util.Set;
 
 public class PathFinder extends SimpleFileVisitor<Path>
 {
-    // internal tracking of prior notified paths (to avoid repeated notification of same ignored path)
+    /** Internal tracking of prior notified paths (to avoid repeated notification of same ignored path). */
     private static Set<Path> NOTIFIED_PATHS = new HashSet<>();
 
-    private boolean includeDirsInResults = false;
+    private boolean includeDirsInResults;
     private Map<String, Path> hits = new HashMap<>();
-    private Path basePath = null;
+    private Path basePath;
     private PathMatcher dirMatcher = PathMatchers.getNonHidden();
     private PathMatcher fileMatcher = PathMatchers.getNonHidden();
 

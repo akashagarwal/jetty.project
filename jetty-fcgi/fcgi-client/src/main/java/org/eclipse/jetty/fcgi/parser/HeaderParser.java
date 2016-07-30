@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.fcgi.parser;
 
@@ -52,7 +47,7 @@ public class HeaderParser
     private int padding;
 
     /**
-     * Parses the bytes in the given {@code buffer} as FastCGI header bytes
+     * Parses the bytes in the given {@code buffer} as FastCGI header bytes.
      *
      * @param buffer the bytes to parse
      * @return whether there were enough bytes for a FastCGI header
@@ -93,8 +88,9 @@ public class HeaderParser
                 {
                     int halfShort = buffer.get() & 0xFF;
                     request = (request << 8) + halfShort;
-                    if (++cursor == 2)
-                        state = State.LENGTH;
+                    if (++cursor == 2) {
+						state = State.LENGTH;
+					}
                     break;
                 }
                 case LENGTH:
@@ -115,8 +111,9 @@ public class HeaderParser
                 {
                     int halfShort = buffer.get() & 0xFF;
                     length = (length << 8) + halfShort;
-                    if (++cursor == 2)
-                        state = State.PADDING;
+                    if (++cursor == 2) {
+						state = State.PADDING;
+					}
                     break;
                 }
                 case PADDING:
@@ -128,8 +125,9 @@ public class HeaderParser
                 case RESERVED:
                 {
                     buffer.get();
-                    if (LOG.isDebugEnabled())
-                        LOG.debug("Parsed request {} header {} length={}", getRequest(), getFrameType(), getContentLength());
+                    if (LOG.isDebugEnabled()) {
+						LOG.debug("Parsed request {} header {} length={}", getRequest(), getFrameType(), getContentLength());
+					}
                     return true;
                 }
                 default:

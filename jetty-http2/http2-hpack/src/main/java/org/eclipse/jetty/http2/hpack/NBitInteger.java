@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http2.hpack;
 
@@ -28,21 +23,25 @@ public class NBitInteger
         {
             int nbits = 0xFF;
             i=i-nbits;
-            if (i<0)
-                return 1;
-            if (i==0)
-                return 2;
+            if (i<0) {
+				return 1;
+			}
+            if (i==0) {
+				return 2;
+			}
             int lz=Integer.numberOfLeadingZeros(i);
             int log=32-lz;
             return 1+(log+6)/7;
         }
         
-        int nbits = 0xFF >>> (8 - n);
+        int nbits = 0xFF >>> 8 - n;
         i=i-nbits;
-        if (i<0)
-            return 0;
-        if (i==0)
-            return 1;
+        if (i<0) {
+			return 0;
+		}
+        if (i==0) {
+			return 1;
+		}
         int lz=Integer.numberOfLeadingZeros(i);
         int log=32-lz;
         return (log+6)/7;
@@ -79,7 +78,7 @@ public class NBitInteger
         else
         {
             int p=buf.position()-1;
-            int bits = 0xFF >>> (8 - n);
+            int bits = 0xFF >>> 8 - n;
 
             if (i < bits)
             {
@@ -130,7 +129,7 @@ public class NBitInteger
             return i;
         }
         
-        int nbits = 0xFF >>> (8 - n);
+        int nbits = 0xFF >>> 8 - n;
 
         int i=buffer.get(buffer.position()-1)&nbits;
         

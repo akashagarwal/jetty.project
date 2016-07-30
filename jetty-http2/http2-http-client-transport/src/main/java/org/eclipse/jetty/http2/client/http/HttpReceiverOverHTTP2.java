@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http2.client.http;
 
@@ -61,8 +56,9 @@ public class HttpReceiverOverHTTP2 extends HttpReceiver implements Stream.Listen
     public void onHeaders(Stream stream, HeadersFrame frame)
     {
         HttpExchange exchange = getHttpExchange();
-        if (exchange == null)
-            return;
+        if (exchange == null) {
+			return;
+		}
 
         HttpResponse response = exchange.getResponse();
         MetaData.Response metaData = (MetaData.Response)frame.getMetaData();
@@ -73,15 +69,14 @@ public class HttpReceiverOverHTTP2 extends HttpReceiver implements Stream.Listen
             HttpFields headers = metaData.getFields();
             for (HttpField header : headers)
             {
-                if (!responseHeader(exchange, header))
-                    return;
+                if (!responseHeader(exchange, header)) {
+					return;
+				}
             }
 
-            if (responseHeaders(exchange))
-            {
-                if (frame.isEndStream())
-                    responseSuccess(exchange);
-            }
+            if (responseHeaders(exchange) && frame.isEndStream()) {
+				responseSuccess(exchange);
+			}
         }
     }
 
@@ -123,8 +118,9 @@ public class HttpReceiverOverHTTP2 extends HttpReceiver implements Stream.Listen
     public void onReset(Stream stream, ResetFrame frame)
     {
         HttpExchange exchange = getHttpExchange();
-        if (exchange == null)
-            return;
+        if (exchange == null) {
+			return;
+		}
 
         ErrorCode error = ErrorCode.from(frame.getError());
         String reason = error == null ? "reset" : error.name().toLowerCase(Locale.ENGLISH);
@@ -158,8 +154,9 @@ public class HttpReceiverOverHTTP2 extends HttpReceiver implements Stream.Listen
             {
                 dataInfo = queue.poll();
             }
-            if (dataInfo == null)
-                return Action.IDLE;
+            if (dataInfo == null) {
+				return Action.IDLE;
+			}
 
             this.dataInfo = dataInfo;
             responseContent(dataInfo.exchange, dataInfo.buffer, this);
@@ -172,8 +169,9 @@ public class HttpReceiverOverHTTP2 extends HttpReceiver implements Stream.Listen
             ByteBufferPool byteBufferPool = getHttpDestination().getHttpClient().getByteBufferPool();
             byteBufferPool.release(dataInfo.buffer);
             dataInfo.callback.succeeded();
-            if (dataInfo.last)
-                responseSuccess(dataInfo.exchange);
+            if (dataInfo.last) {
+				responseSuccess(dataInfo.exchange);
+			}
             super.succeeded();
         }
 

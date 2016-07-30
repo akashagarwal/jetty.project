@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 
 package org.eclipse.jetty.http2.hpack;
@@ -34,9 +29,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 
-/* ------------------------------------------------------------ */
-/**
- */
+/** ------------------------------------------------------------. */
 public class HpackEncoderTest
 {
     @Test
@@ -62,8 +55,9 @@ public class HpackEncoderTest
         };
         
         // Add 4 entries
-        for (int i=0;i<=3;i++)  
-            fields.add(field[i]);
+        for (int i=0;i<=3;i++) {
+			fields.add(field[i]);
+		}
         
         // encode them
         ByteBuffer buffer = BufferUtil.allocate(4096);
@@ -86,8 +80,9 @@ public class HpackEncoderTest
         Assert.assertEquals(4,encoder.getHpackContext().size());
         
         // Add 4 more fields
-        for (int i=4;i<=7;i++)  
-            fields.add(field[i]);
+        for (int i=4;i<=7;i++) {
+			fields.add(field[i]);
+		}
         
         // encode
         BufferUtil.clearToFill(buffer);
@@ -102,8 +97,9 @@ public class HpackEncoderTest
         
         
         // remove some fields
-        for (int i=0;i<=7;i+=2)  
-            fields.remove(field[i].getName());
+        for (int i=0;i<=7;i+=2) {
+			fields.remove(field[i].getName());
+		}
 
         // encode
         BufferUtil.clearToFill(buffer);

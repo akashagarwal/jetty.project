@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.webapp;
 
@@ -75,20 +70,26 @@ public class MetaInfConfiguration extends AbstractConfiguration
     {        
         boolean useContainerCache = DEFAULT_USE_CONTAINER_METAINF_CACHE;
         Boolean attr = (Boolean)context.getServer().getAttribute(USE_CONTAINER_METAINF_CACHE);
-        if (attr != null)
-            useContainerCache = attr.booleanValue();
+        if (attr != null) {
+			useContainerCache = attr.booleanValue();
+		}
         
-        if (LOG.isDebugEnabled()) LOG.debug("{} = {}", USE_CONTAINER_METAINF_CACHE, useContainerCache);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("{} = {}", USE_CONTAINER_METAINF_CACHE, useContainerCache);
+		}
         
         //pre-emptively create empty lists for tlds, fragments and resources as context attributes
         //this signals that this class has been called. This differentiates the case where this class
         //has been called but finds no META-INF data from the case where this class was never called
-        if (context.getAttribute(METAINF_TLDS) == null)
-            context.setAttribute(METAINF_TLDS, new HashSet<URL>());
-        if (context.getAttribute(METAINF_RESOURCES) == null)
-            context.setAttribute(METAINF_RESOURCES, new HashSet<Resource>());
-        if (context.getAttribute(METAINF_FRAGMENTS) == null)
-            context.setAttribute(METAINF_FRAGMENTS, new HashMap<Resource, Resource>());
+        if (context.getAttribute(METAINF_TLDS) == null) {
+			context.setAttribute(METAINF_TLDS, new HashSet<URL>());
+		}
+        if (context.getAttribute(METAINF_RESOURCES) == null) {
+			context.setAttribute(METAINF_RESOURCES, new HashSet<Resource>());
+		}
+        if (context.getAttribute(METAINF_FRAGMENTS) == null) {
+			context.setAttribute(METAINF_FRAGMENTS, new HashMap<Resource, Resource>());
+		}
        
         scanJars(context, context.getMetaData().getContainerResources(), useContainerCache);
         scanJars(context, context.getMetaData().getWebInfJars(), false);
@@ -162,16 +163,22 @@ public class MetaInfConfiguration extends AbstractConfiguration
             resourcesDir = cache.get(target);  
             if (resourcesDir == EmptyResource.INSTANCE)
             {
-                if (LOG.isDebugEnabled()) LOG.debug(target+" cached as containing no META-INF/resources");
+                if (LOG.isDebugEnabled()) {
+					LOG.debug(target+" cached as containing no META-INF/resources");
+				}
                 return;    
             }
             else
-                if (LOG.isDebugEnabled()) LOG.debug(target+" META-INF/resources found in cache ");
+                if (LOG.isDebugEnabled()) {
+					LOG.debug(target+" META-INF/resources found in cache ");
+				}
         }
         else
         {
             //not using caches or not in the cache so check for the resources dir
-            if (LOG.isDebugEnabled()) LOG.debug(target+" META-INF/resources checked");
+            if (LOG.isDebugEnabled()) {
+				LOG.debug(target+" META-INF/resources checked");
+			}
             if (target.isDirectory())
             {
                 //TODO think  how to handle an unpacked jar file (eg for osgi)
@@ -193,10 +200,12 @@ public class MetaInfConfiguration extends AbstractConfiguration
             if (cache != null)
             {               
                 Resource old  = cache.putIfAbsent(target, resourcesDir);
-                if (old != null)
-                    resourcesDir = old;
-                else
-                    if (LOG.isDebugEnabled()) LOG.debug(target+" META-INF/resources cache updated");
+                if (old != null) {
+					resourcesDir = old;
+				} else
+                    if (LOG.isDebugEnabled()) {
+						LOG.debug(target+" META-INF/resources cache updated");
+					}
             }
 
             if (resourcesDir == EmptyResource.INSTANCE)
@@ -212,7 +221,9 @@ public class MetaInfConfiguration extends AbstractConfiguration
             dirs = new HashSet<Resource>();
             context.setAttribute(METAINF_RESOURCES, dirs);
         }
-        if (LOG.isDebugEnabled()) LOG.debug(resourcesDir+" added to context");
+        if (LOG.isDebugEnabled()) {
+			LOG.debug(resourcesDir+" added to context");
+		}
 
         dirs.add(resourcesDir);
     }
@@ -234,16 +245,22 @@ public class MetaInfConfiguration extends AbstractConfiguration
             webFrag = cache.get(jar);  
             if (webFrag == EmptyResource.INSTANCE)
             {
-                if (LOG.isDebugEnabled()) LOG.debug(jar+" cached as containing no META-INF/web-fragment.xml");
+                if (LOG.isDebugEnabled()) {
+					LOG.debug(jar+" cached as containing no META-INF/web-fragment.xml");
+				}
                 return;     
             }
             else
-                if (LOG.isDebugEnabled()) LOG.debug(jar+" META-INF/web-fragment.xml found in cache ");
+                if (LOG.isDebugEnabled()) {
+					LOG.debug(jar+" META-INF/web-fragment.xml found in cache ");
+				}
         }
         else
         {
             //not using caches or not in the cache so check for the web-fragment.xml
-            if (LOG.isDebugEnabled()) LOG.debug(jar+" META-INF/web-fragment.xml checked");
+            if (LOG.isDebugEnabled()) {
+				LOG.debug(jar+" META-INF/web-fragment.xml checked");
+			}
             if (jar.isDirectory())
             {
                 //TODO   ????
@@ -264,14 +281,17 @@ public class MetaInfConfiguration extends AbstractConfiguration
             {
                 //web-fragment.xml doesn't exist: put token in cache to signal we've seen the jar               
                 Resource old = cache.putIfAbsent(jar, webFrag);
-                if (old != null)
-                    webFrag = old;
-                else
-                    if (LOG.isDebugEnabled()) LOG.debug(jar+" META-INF/web-fragment.xml cache updated");
+                if (old != null) {
+					webFrag = old;
+				} else
+                    if (LOG.isDebugEnabled()) {
+						LOG.debug(jar+" META-INF/web-fragment.xml cache updated");
+					}
             }
             
-            if (webFrag == EmptyResource.INSTANCE)
-                return;
+            if (webFrag == EmptyResource.INSTANCE) {
+				return;
+			}
         }
 
         Map<Resource, Resource> fragments = (Map<Resource,Resource>)context.getAttribute(METAINF_FRAGMENTS);
@@ -281,7 +301,9 @@ public class MetaInfConfiguration extends AbstractConfiguration
             context.setAttribute(METAINF_FRAGMENTS, fragments);
         }
         fragments.put(jar, webFrag);   
-        if (LOG.isDebugEnabled()) LOG.debug(webFrag+" added to context");
+        if (LOG.isDebugEnabled()) {
+			LOG.debug(webFrag+" added to context");
+		}
     }
     
     
@@ -303,13 +325,17 @@ public class MetaInfConfiguration extends AbstractConfiguration
             Collection<URL> tmp = cache.get(jar);
             if (tmp.isEmpty())
             {
-                if (LOG.isDebugEnabled()) LOG.debug(jar+" cached as containing no tlds");
+                if (LOG.isDebugEnabled()) {
+					LOG.debug(jar+" cached as containing no tlds");
+				}
                 return;
             }
             else
             {
                 tlds = tmp;
-                if (LOG.isDebugEnabled()) LOG.debug(jar+" tlds found in cache ");
+                if (LOG.isDebugEnabled()) {
+					LOG.debug(jar+" tlds found in cache ");
+				}
             }
         }
         else
@@ -328,14 +354,18 @@ public class MetaInfConfiguration extends AbstractConfiguration
 
             if (cache != null)
             {  
-                if (LOG.isDebugEnabled()) LOG.debug(jar+" tld cache updated");
-                Collection<URL> old = (Collection<URL>)cache.putIfAbsent(jar, tlds);
-                if (old != null)
-                    tlds = old;
+                if (LOG.isDebugEnabled()) {
+					LOG.debug(jar+" tld cache updated");
+				}
+                Collection<URL> old = cache.putIfAbsent(jar, tlds);
+                if (old != null) {
+					tlds = old;
+				}
             }
             
-            if (tlds.isEmpty())
-                return;
+            if (tlds.isEmpty()) {
+				return;
+			}
         }
 
         Collection<URL> metaInfTlds = (Collection<URL>)context.getAttribute(METAINF_TLDS);
@@ -345,7 +375,9 @@ public class MetaInfConfiguration extends AbstractConfiguration
             context.setAttribute(METAINF_TLDS, metaInfTlds);
         }
         metaInfTlds.addAll(tlds);  
-        if (LOG.isDebugEnabled()) LOG.debug("tlds added to context");
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("tlds added to context");
+		}
     }
     
    
@@ -368,8 +400,9 @@ public class MetaInfConfiguration extends AbstractConfiguration
      */
     public Collection<URL>  getTlds (File dir) throws IOException
     {
-        if (dir == null || !dir.isDirectory())
-            return Collections.emptySet();
+        if (dir == null || !dir.isDirectory()) {
+			return Collections.emptySet();
+		}
         
         HashSet<URL> tlds = new HashSet<URL>();
         
@@ -378,13 +411,14 @@ public class MetaInfConfiguration extends AbstractConfiguration
         {
             for (File f:files)
             {
-                if (f.isDirectory())
-                    tlds.addAll(getTlds(f));
-                else
+                if (f.isDirectory()) {
+					tlds.addAll(getTlds(f));
+				} else
                 {
                     String name = f.getCanonicalPath();
-                    if (name.contains("META-INF") && name.endsWith(".tld"))
-                        tlds.add(f.toURI().toURL());
+                    if (name.contains("META-INF") && name.endsWith(".tld")) {
+						tlds.add(f.toURI().toURL());
+					}
                 }
             }
         }
@@ -417,8 +451,9 @@ public class MetaInfConfiguration extends AbstractConfiguration
                 tlds.add(new URL(jarUri + name));
             }
         }
-        if (!Resource.getDefaultUseCaches())
-            jarFile.close();
+        if (!Resource.getDefaultUseCaches()) {
+			jarFile.close();
+		}
         return tlds;
     }
 

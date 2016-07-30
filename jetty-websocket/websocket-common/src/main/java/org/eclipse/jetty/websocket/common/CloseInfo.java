@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.common;
 
@@ -51,13 +46,13 @@ public class CloseInfo
     {
         this.statusCode = StatusCode.NO_CODE;
 
-        if ((payload == null) || (payload.remaining() == 0))
+        if (payload == null || payload.remaining() == 0)
         {
             return; // nothing to do
         }
 
         ByteBuffer data = payload.slice();
-        if ((data.remaining() == 1) && (validate))
+        if (data.remaining() == 1 && validate)
         {
             throw new ProtocolException("Invalid 1 byte payload");
         }
@@ -67,16 +62,12 @@ public class CloseInfo
             // Status Code
             statusCode = 0; // start with 0
             statusCode |= (data.get() & 0xFF) << 8;
-            statusCode |= (data.get() & 0xFF);
+            statusCode |= data.get() & 0xFF;
 
-            if (validate)
-            {
-                if ((statusCode < StatusCode.NORMAL) || (statusCode == StatusCode.UNDEFINED) || (statusCode == StatusCode.NO_CLOSE)
-                        || (statusCode == StatusCode.NO_CODE) || ((statusCode > 1011) && (statusCode <= 2999)) || (statusCode >= 5000))
-                {
-                    throw new ProtocolException("Invalid close code: " + statusCode);
-                }
-            }
+            if (validate && (statusCode < StatusCode.NORMAL || statusCode == StatusCode.UNDEFINED || statusCode == StatusCode.NO_CLOSE
+			        || statusCode == StatusCode.NO_CODE || (statusCode > 1011 && statusCode <= 2999) || statusCode >= 5000)) {
+			    throw new ProtocolException("Invalid close code: " + statusCode);
+			}
 
             if (data.remaining() > 0)
             {
@@ -144,14 +135,14 @@ public class CloseInfo
 
     private ByteBuffer asByteBuffer()
     {
-        if ((statusCode == StatusCode.NO_CLOSE) || (statusCode == StatusCode.NO_CODE) || (statusCode == (-1)))
+        if (statusCode == StatusCode.NO_CLOSE || statusCode == StatusCode.NO_CODE || statusCode == -1)
         {
             // codes that are not allowed to be used in endpoint.
             return null;
         }
 
         int len = 2; // status code
-        boolean hasReason = (this.reasonBytes != null) && (this.reasonBytes.length > 0);
+        boolean hasReason = this.reasonBytes != null && this.reasonBytes.length > 0;
         if (hasReason)
         {
             len += this.reasonBytes.length;
@@ -175,7 +166,7 @@ public class CloseInfo
     {
         CloseFrame frame = new CloseFrame();
         frame.setFin(true);
-        if ((statusCode >= 1000) && (statusCode != StatusCode.NO_CLOSE) && (statusCode != StatusCode.NO_CODE))
+        if (statusCode >= 1000 && statusCode != StatusCode.NO_CLOSE && statusCode != StatusCode.NO_CODE)
         {
             if (statusCode == StatusCode.FAILED_TLS_HANDSHAKE)
             {
@@ -188,11 +179,11 @@ public class CloseInfo
 
     public String getReason()
     {
-        if (this.reasonBytes == null)
+        if (this.reasonBytes != null)
         {
-            return null;
+            return new String(this.reasonBytes,StandardCharsets.UTF_8);
         }
-        return new String(this.reasonBytes,StandardCharsets.UTF_8);
+        return null;
     }
 
     public int getStatusCode()
@@ -202,12 +193,12 @@ public class CloseInfo
 
     public boolean isHarsh()
     {
-        return !((statusCode == StatusCode.NORMAL) || (statusCode == StatusCode.NO_CODE));
+        return statusCode != StatusCode.NORMAL && statusCode != StatusCode.NO_CODE;
     }
 
     public boolean isAbnormal()
     {
-        return (statusCode != StatusCode.NORMAL);
+        return statusCode != StatusCode.NORMAL;
     }
 
     @Override

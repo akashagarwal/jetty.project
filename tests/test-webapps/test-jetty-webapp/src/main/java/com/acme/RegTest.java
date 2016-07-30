@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package com.acme;
 import java.io.IOException;
@@ -40,21 +35,21 @@ import org.eclipse.jetty.util.StringUtil;
 public class RegTest extends HttpServlet
 {
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void init(ServletConfig config) throws ServletException
     {
         super.init(config);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
         doGet(request, response);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException
     { 
@@ -80,7 +75,7 @@ public class RegTest extends HttpServlet
             pout.write("<td>" + notag(request.getMethod())+"</td>");
             pout.write("</tr><tr>\n");
             pout.write("<th align=\"right\">getContentLength:&nbsp;</th>");
-            pout.write("<td>"+Integer.toString(request.getContentLength())+"</td>");
+            pout.write("<td>"+request.getContentLength()+"</td>");
             pout.write("</tr><tr>\n");
             pout.write("<th align=\"right\">getContentType:&nbsp;</th>");
             pout.write("<td>"+notag(request.getContentType())+"</td>");
@@ -117,7 +112,7 @@ public class RegTest extends HttpServlet
             pout.write("<td>"+notag(request.getServerName())+"</td>");
             pout.write("</tr><tr>\n");
             pout.write("<th align=\"right\">getServerPort:&nbsp;</th>");
-            pout.write("<td>"+Integer.toString(request.getServerPort())+"</td>");
+            pout.write("<td>"+request.getServerPort()+"</td>");
             pout.write("</tr><tr>\n");
             pout.write("<th align=\"right\">getLocalName:&nbsp;</th>");
             pout.write("<td>"+request.getLocalName()+"</td>");
@@ -126,7 +121,7 @@ public class RegTest extends HttpServlet
             pout.write("<td>"+request.getLocalAddr()+"</td>");
             pout.write("</tr><tr>\n");
             pout.write("<th align=\"right\">getLocalPort:&nbsp;</th>");
-            pout.write("<td>"+Integer.toString(request.getLocalPort())+"</td>");
+            pout.write("<td>"+request.getLocalPort()+"</td>");
             pout.write("</tr><tr>\n");
             pout.write("<th align=\"right\">getRemoteUser:&nbsp;</th>");
             pout.write("<td>"+request.getRemoteUser()+"</td>");
@@ -168,14 +163,14 @@ public class RegTest extends HttpServlet
     }
 
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public String getServletInfo()
     {
         return "Rego Servlet";
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public synchronized void destroy()
     {
@@ -184,11 +179,11 @@ public class RegTest extends HttpServlet
     
     private String notag(String s)
     {
-        if (s==null)
-            return "null";
+        if (s==null) {
+			return "null";
+		}
         s=StringUtil.replace(s,"&","&amp;");
         s=StringUtil.replace(s,"<","&lt;");
-        s=StringUtil.replace(s,">","&gt;");
-        return s;
+        return StringUtil.replace(s,">","&gt;");
     }
 }

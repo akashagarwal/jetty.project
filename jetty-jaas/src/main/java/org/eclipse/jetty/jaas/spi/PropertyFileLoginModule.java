@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.jaas.spi;
 
@@ -35,7 +30,7 @@ import org.eclipse.jetty.util.log.Logger;
 import org.eclipse.jetty.util.security.Credential;
 
 /**
- * PropertyFileLoginModule
+ * PropertyFileLoginModule.
  */
 public class PropertyFileLoginModule extends AbstractLoginModule
 {
@@ -45,7 +40,7 @@ public class PropertyFileLoginModule extends AbstractLoginModule
 
     private static ConcurrentHashMap<String, PropertyUserStore> _propertyUserStores = new ConcurrentHashMap<String, PropertyUserStore>();
 
-    private int _refreshInterval = 0;
+    private int _refreshInterval;
     private String _filename = DEFAULT_FILENAME;
 
     /**
@@ -95,27 +90,29 @@ public class PropertyFileLoginModule extends AbstractLoginModule
     private void parseConfig(Map<String, ?> options)
     {
         String tmp = (String)options.get("file");
-        _filename = (tmp == null? DEFAULT_FILENAME : tmp);
+        _filename = tmp == null? DEFAULT_FILENAME : tmp;
         tmp = (String)options.get("refreshInterval");
-        _refreshInterval = (tmp == null?_refreshInterval:Integer.parseInt(tmp));
+        _refreshInterval = tmp == null?_refreshInterval:Integer.parseInt(tmp);
     }
 
     /**
      * 
      *
-     * @param userName the user name
+     * @param userName the user name.
      * @throws Exception if unable to get the user information
      */
     public UserInfo getUserInfo(String userName) throws Exception
     {
         PropertyUserStore propertyUserStore = _propertyUserStores.get(_filename);
-        if (propertyUserStore == null)
-            throw new IllegalStateException("PropertyUserStore should never be null here!");
+        if (propertyUserStore == null) {
+			throw new IllegalStateException("PropertyUserStore should never be null here!");
+		}
         
         LOG.debug("Checking PropertyUserStore "+_filename+" for "+userName);
         UserIdentity userIdentity = propertyUserStore.getUserIdentity(userName);
-        if (userIdentity==null)
-            return null;
+        if (userIdentity==null) {
+			return null;
+		}
 
         //TODO in future versions change the impl of PropertyUserStore so its not
         //storing Subjects etc, just UserInfo

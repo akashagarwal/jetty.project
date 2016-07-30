@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.start.util;
 
@@ -134,21 +129,17 @@ public class CorrectMavenCentralRefs
             if (sectionMatcher.matches())
             {
                 sectionId = sectionMatcher.group(1).trim().toUpperCase(Locale.ENGLISH);
-            }
-            else
-            {
-                if ("FILES".equals(sectionId))
-                {
-                    if (filesStart < 0)
-                    {
-                        filesStart = i;
-                    }
-                    filesEnd = i;
-                }
-            }
+            } else if ("FILES".equals(sectionId))
+			{
+			    if (filesStart < 0)
+			    {
+			        filesStart = i;
+			    }
+			    filesEnd = i;
+			}
         }
 
-        if (filesStart == (-1))
+        if (filesStart == -1)
         {
             // no [files] section
             return false;
@@ -183,7 +174,7 @@ public class CorrectMavenCentralRefs
 
                 String classifier = filename.replaceFirst(artifactId + '-' + version,"");
                 classifier = classifier.replaceFirst('.' + type + '$',"");
-                if (Utils.isNotBlank(classifier) && (classifier.charAt(0) == '-'))
+                if (Utils.isNotBlank(classifier) && classifier.charAt(0) == '-')
                 {
                     classifier = classifier.substring(1);
                 }
@@ -208,7 +199,7 @@ public class CorrectMavenCentralRefs
             }
         }
 
-        return (updated > 0);
+        return updated > 0;
     }
 
     private boolean processModFile(Path path) throws IOException

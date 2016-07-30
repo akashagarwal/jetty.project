@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.servlets;
 
@@ -53,21 +48,23 @@ public class PushSessionCacheFilter implements Filter
     @Override
     public void init(FilterConfig config) throws ServletException
     {
-        if (config.getInitParameter("associateDelay") != null)
-            _associateDelay = Long.valueOf(config.getInitParameter("associateDelay"));
+        if (config.getInitParameter("associateDelay") != null) {
+			_associateDelay = Long.valueOf(config.getInitParameter("associateDelay"));
+		}
 
         // Add a listener that is used to collect information about associated resource,
         // etags and modified dates
         config.getServletContext().addListener(new ServletRequestListener()
         {
-            // Collect information when request is destroyed.
+            /** Collect information when request is destroyed. */
             @Override
             public void requestDestroyed(ServletRequestEvent sre)
             {
                 Request request = Request.getBaseRequest(sre.getServletRequest());
                 Target target = (Target)request.getAttribute(TARGET_ATTR);
-                if (target == null)
-                    return;
+                if (target == null) {
+					return;
+				}
 
                 // Update conditional data
                 Response response = request.getResponse();
@@ -77,8 +74,9 @@ public class PushSessionCacheFilter implements Filter
                 // Don't associate pushes
                 if (request.isPush())
                 {
-                    if (LOG.isDebugEnabled())
-                        LOG.debug("Pushed {} for {}", request.getResponse().getStatus(), request.getRequestURI());
+                    if (LOG.isDebugEnabled()) {
+						LOG.debug("Pushed {} for {}", request.getResponse().getStatus(), request.getRequestURI());
+					}
                     return;
                 }
                 else if (LOG.isDebugEnabled())
@@ -101,14 +99,9 @@ public class PushSessionCacheFilter implements Filter
                             HttpSession session = request.getSession();
                             ConcurrentHashMap<String, Long> timestamps = (ConcurrentHashMap<String, Long>)session.getAttribute(TIMESTAMP_ATTR);
                             Long last = timestamps.get(referer_target._path);
-                            if (last != null && (System.currentTimeMillis() - last) < _associateDelay)
-                            {
-                                if (referer_target._associated.putIfAbsent(target._path, target) == null)
-                                {
-                                    if (LOG.isDebugEnabled())
-                                        LOG.debug("ASSOCIATE {}->{}", referer_target._path, target._path);
-                                }
-                            }
+                            if (last != null && System.currentTimeMillis() - last < _associateDelay && referer_target._associated.putIfAbsent(target._path, target) == null && LOG.isDebugEnabled()) {
+								LOG.debug("ASSOCIATE {}->{}", referer_target._path, target._path);
+							}
                         }
                     }
                 }
@@ -128,8 +121,9 @@ public class PushSessionCacheFilter implements Filter
         Request baseRequest = Request.getBaseRequest(request);
         String uri = baseRequest.getRequestURI();
 
-        if (LOG.isDebugEnabled())
-            LOG.debug("{} {} push={}", baseRequest.getMethod(), uri, baseRequest.isPush());
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("{} {} push={}", baseRequest.getMethod(), uri, baseRequest.isPush());
+		}
 
         HttpSession session = baseRequest.getSession(true);
 
@@ -168,8 +162,9 @@ public class PushSessionCacheFilter implements Filter
                     queue.offer(child);
 
                     String path = child._path;
-                    if (LOG.isDebugEnabled())
-                        LOG.debug("PUSH {} <- {}", path, uri);
+                    if (LOG.isDebugEnabled()) {
+						LOG.debug("PUSH {} <- {}", path, uri);
+					}
 
                     builder.path(path).etag(child._etag).lastModified(child._lastModified).push();
                 }

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.annotations;
 
@@ -38,7 +33,7 @@ import org.eclipse.jetty.webapp.Origin;
 import org.eclipse.jetty.webapp.WebAppContext;
 
 /**
- * WebFilterAnnotation
+ * WebFilterAnnotation.
  */
 public class WebFilterAnnotation extends DiscoveredAnnotation
 {
@@ -54,9 +49,6 @@ public class WebFilterAnnotation extends DiscoveredAnnotation
         super(context, className, resource);
     }
 
-    /**
-     * @see DiscoveredAnnotation#apply()
-     */
     public void apply()
     {
         // TODO verify against rules for annotation v descriptor
@@ -85,10 +77,11 @@ public class WebFilterAnnotation extends DiscoveredAnnotation
             return;
         }
 
-        String name = (filterAnnotation.filterName().equals("")?clazz.getName():filterAnnotation.filterName());
+        String name = "".equals(filterAnnotation.filterName())?clazz.getName():filterAnnotation.filterName();
         String[] urlPatterns = filterAnnotation.value();
-        if (urlPatterns.length == 0)
-            urlPatterns = filterAnnotation.urlPatterns();
+        if (urlPatterns.length == 0) {
+			urlPatterns = filterAnnotation.urlPatterns();
+		}
 
         FilterHolder holder = _context.getServletHandler().getFilter(name);
         if (holder == null)

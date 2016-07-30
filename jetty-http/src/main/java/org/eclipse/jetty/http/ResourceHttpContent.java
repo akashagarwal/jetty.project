@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http;
 
@@ -42,19 +37,19 @@ public class ResourceHttpContent implements HttpContent
     HttpContent _gzip;
     String _etag;
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public ResourceHttpContent(final Resource resource, final String contentType)
     {
         this(resource,contentType,-1,null);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public ResourceHttpContent(final Resource resource, final String contentType, int maxBuffer)
     {
         this(resource,contentType,maxBuffer,null);
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public ResourceHttpContent(final Resource resource, final String contentType, int maxBuffer, HttpContent gzip)
     {
         _resource=resource;
@@ -63,49 +58,49 @@ public class ResourceHttpContent implements HttpContent
         _gzip=gzip;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public String getContentTypeValue()
     {
         return _contentType;
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public HttpField getContentType()
     {
         return _contentType==null?null:new HttpField(HttpHeader.CONTENT_TYPE,_contentType);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public HttpField getContentEncoding()
     {
         return null;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public String getContentEncodingValue()
     {
         return null;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public String getCharacterEncoding()
     {
         return _contentType==null?null:MimeTypes.getCharsetFromContentType(_contentType);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public Type getMimeType()
     {
         return _contentType==null?null:MimeTypes.CACHE.get(MimeTypes.getContentTypeWithoutCharset(_contentType));
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public HttpField getLastModified()
     {
@@ -113,7 +108,7 @@ public class ResourceHttpContent implements HttpContent
         return lm>=0?new HttpField(HttpHeader.LAST_MODIFIED,DateGenerator.formatDate(lm)):null;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public String getLastModifiedValue()
     {
@@ -121,12 +116,13 @@ public class ResourceHttpContent implements HttpContent
         return lm>=0?DateGenerator.formatDate(lm):null;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public ByteBuffer getDirectBuffer()
     {
-        if (_resource.length()<=0 || _maxBuffer>0 && _maxBuffer<_resource.length())
-            return null;
+        if (_resource.length()<=0 || (_maxBuffer>0 && _maxBuffer<_resource.length())) {
+			return null;
+		}
         try
         {
             return BufferUtil.toBuffer(_resource,true);
@@ -137,26 +133,27 @@ public class ResourceHttpContent implements HttpContent
         }
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public HttpField getETag()
     {
         return new HttpField(HttpHeader.ETAG,getETagValue());
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public String getETagValue()
     {
         return _resource.getWeakETag();
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public ByteBuffer getIndirectBuffer()
     {
-        if (_resource.length()<=0 || _maxBuffer>0 && _maxBuffer<_resource.length())
-            return null;
+        if (_resource.length()<=0 || (_maxBuffer>0 && _maxBuffer<_resource.length())) {
+			return null;
+		}
         try
         {
             return BufferUtil.toBuffer(_resource,false);
@@ -167,7 +164,7 @@ public class ResourceHttpContent implements HttpContent
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public HttpField getContentLength()
     {
@@ -175,49 +172,49 @@ public class ResourceHttpContent implements HttpContent
         return l==-1?null:new HttpField.LongValueHttpField(HttpHeader.CONTENT_LENGTH,_resource.length());
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public long getContentLengthValue()
     {
         return _resource.length();
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public InputStream getInputStream() throws IOException
     {
         return _resource.getInputStream();
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public ReadableByteChannel getReadableByteChannel() throws IOException
     {
         return _resource.getReadableByteChannel();
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public Resource getResource()
     {
         return _resource;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void release()
     {
         _resource.close();
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public String toString()
     {
-        return String.format("%s@%x{r=%s,gz=%b}",this.getClass().getSimpleName(),hashCode(),_resource,_gzip!=null);
+        return String.format("%s@%x{r=%s,gz=%b}",getClass().getSimpleName(),hashCode(),_resource,_gzip!=null);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public HttpContent getGzipContent()
     {

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.client;
 
@@ -112,8 +107,9 @@ public class HttpExchange
             }
         }
 
-        if (abort)
-            request.abort(new IllegalStateException(toString()));
+        if (abort) {
+			request.abort(new IllegalStateException(toString()));
+		}
 
         return result;
     }
@@ -123,13 +119,15 @@ public class HttpExchange
         boolean abort = false;
         synchronized (this)
         {
-            if (_channel != channel || requestState != State.TERMINATED || responseState != State.TERMINATED)
-                abort = true;
+            if (_channel != channel || requestState != State.TERMINATED || responseState != State.TERMINATED) {
+				abort = true;
+			}
             _channel = null;
         }
 
-        if (abort)
-            request.abort(new IllegalStateException(toString()));
+        if (abort) {
+			request.abort(new IllegalStateException(toString()));
+		}
     }
 
     private HttpChannel getHttpChannel()
@@ -183,14 +181,17 @@ public class HttpExchange
         Result result = null;
         synchronized (this)
         {
-            if (requestState == State.COMPLETED)
-                requestState = State.TERMINATED;
-            if (requestState == State.TERMINATED && responseState == State.TERMINATED)
-                result = new Result(getRequest(), requestFailure, getResponse(), responseFailure);
+            if (requestState == State.COMPLETED) {
+				requestState = State.TERMINATED;
+			}
+            if (requestState == State.TERMINATED && responseState == State.TERMINATED) {
+				result = new Result(getRequest(), requestFailure, getResponse(), responseFailure);
+			}
         }
 
-        if (LOG.isDebugEnabled())
-            LOG.debug("Terminated request for {}, result: {}", this, result);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Terminated request for {}, result: {}", this, result);
+		}
 
         return result;
     }
@@ -200,14 +201,17 @@ public class HttpExchange
         Result result = null;
         synchronized (this)
         {
-            if (responseState == State.COMPLETED)
-                responseState = State.TERMINATED;
-            if (requestState == State.TERMINATED && responseState == State.TERMINATED)
-                result = new Result(getRequest(), requestFailure, getResponse(), responseFailure);
+            if (responseState == State.COMPLETED) {
+				responseState = State.TERMINATED;
+			}
+            if (requestState == State.TERMINATED && responseState == State.TERMINATED) {
+				result = new Result(getRequest(), requestFailure, getResponse(), responseFailure);
+			}
         }
 
-        if (LOG.isDebugEnabled())
-            LOG.debug("Terminated response for {}, result: {}", this, result);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Terminated response for {}, result: {}", this, result);
+		}
 
         return result;
     }
@@ -224,19 +228,22 @@ public class HttpExchange
             abortResponse = completeResponse(failure);
         }
 
-        if (LOG.isDebugEnabled())
-            LOG.debug("Failed {}: req={}/rsp={} {}", this, abortRequest, abortResponse, failure);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Failed {}: req={}/rsp={} {}", this, abortRequest, abortResponse, failure);
+		}
 
-        if (!abortRequest && !abortResponse)
-            return false;
+        if (!abortRequest && !abortResponse) {
+			return false;
+		}
 
         // We failed this exchange, deal with it.
 
         // Case #1: exchange was in the destination queue.
         if (destination.remove(this))
         {
-            if (LOG.isDebugEnabled())
-                LOG.debug("Aborting while queued {}: {}", this, failure);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Aborting while queued {}: {}", this, failure);
+			}
             notifyFailureComplete(failure);
             return true;
         }
@@ -247,16 +254,18 @@ public class HttpExchange
             // Case #2: exchange was not yet associated.
             // Because this exchange is failed, when associate() is called
             // it will return false, and the caller will dispose the channel.
-            if (LOG.isDebugEnabled())
-                LOG.debug("Aborted before association {}: {}", this, failure);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Aborted before association {}: {}", this, failure);
+			}
             notifyFailureComplete(failure);
             return true;
         }
 
         // Case #3: exchange was already associated.
         boolean aborted = channel.abort(this, abortRequest ? failure : null, abortResponse ? failure : null);
-        if (LOG.isDebugEnabled())
-            LOG.debug("Aborted ({}) while active {}: {}", aborted, this, failure);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Aborted ({}) while active {}: {}", aborted, this, failure);
+		}
         return aborted;
     }
 
@@ -281,8 +290,9 @@ public class HttpExchange
     public void proceed(Throwable failure)
     {
         HttpChannel channel = getHttpChannel();
-        if (channel != null)
-            channel.proceed(this, failure);
+        if (channel != null) {
+			channel.proceed(this, failure);
+		}
     }
 
     @Override

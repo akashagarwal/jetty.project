@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.monitor;
 
@@ -30,12 +25,10 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 
-/* ------------------------------------------------------------ */
-/**
- */
+/** ------------------------------------------------------------. */
 public class ThreadMonitorTest
 {
-    public final static int DURATION=4000;
+    public static final int DURATION=4000;
     
     @Ignore
     @Test
@@ -52,10 +45,11 @@ public class ThreadMonitorTest
                 @Override
                 protected void logThreadInfo(boolean logAll)
                 {
-                    if (logAll)
-                        countLogs.incrementAndGet();
-                    else
-                        countSpin.incrementAndGet();
+                    if (logAll) {
+						countLogs.incrementAndGet();
+					} else {
+						countSpin.incrementAndGet();
+					}
                     super.logThreadInfo(logAll);
                 }
             };
@@ -102,33 +96,35 @@ public class ThreadMonitorTest
 
     private class Spinner implements Runnable
     {
-        private volatile boolean done = false;
+        private volatile boolean done;
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         public void setDone()
         {
             done = true;
         }
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         public void run()
         {
             spin();
         }
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         public void spin()
         {
             long result=-1;
             long end=System.currentTimeMillis()+DURATION+1000;
             while (!done && System.currentTimeMillis()<end)
             {
-                for (int i=0;i<1000000000;i++)
-                    result^=i;
+                for (int i=0;i<1000000000;i++) {
+					result^=i;
+				}
             }
             
-            if (result==42)
-                System.err.println("Bingo!");
+            if (result==42) {
+				System.err.println("Bingo!");
+			}
         }
     }
     
@@ -136,13 +132,13 @@ public class ThreadMonitorTest
     {
         private long _value;
         
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         public Sleeper(long value)
         {
             _value = value;
         }
         
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         public void run()
         {
             try
@@ -152,7 +148,7 @@ public class ThreadMonitorTest
             catch (InterruptedException e) {}
         }
         
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         public long fn(long value) throws InterruptedException
         {
             long result = value > 1 ? fn(value-1) : 1;

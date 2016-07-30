@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.osgi.boot;
 
@@ -55,7 +50,7 @@ public class ServiceContextProvider extends AbstractContextProvider implements S
     /**
      * ServiceApp
      *
-     *
+     *.
      */
     public class ServiceApp extends OSGiApp
     {
@@ -84,25 +79,30 @@ public class ServiceContextProvider extends AbstractContextProvider implements S
     
     
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public ServiceContextProvider(ServerInstanceWrapper wrapper)
     {
         super(wrapper);
     }
     
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public boolean serviceAdded (ServiceReference serviceRef, ContextHandler context)
     {
-        if (context == null || serviceRef == null)
-            return false;
+        if (context == null || serviceRef == null) {
+			return false;
+		}
         
         if (context instanceof org.eclipse.jetty.webapp.WebAppContext)
-            return false; //the ServiceWebAppProvider will deploy it
+		 {
+			return false; //the ServiceWebAppProvider will deploy it
+		}
         
         String watermark = (String)serviceRef.getProperty(OSGiWebappConstants.WATERMARK);
         if (watermark != null && !"".equals(watermark))
-            return false;  //this service represents a contexthandler that has already been registered as a service by another of our deployers
+		 {
+			return false;  //this service represents a contexthandler that has already been registered as a service by another of our deployers
+		}
         
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(getServerInstanceWrapper().getParentClassLoaderForWebapps());
@@ -110,18 +110,20 @@ public class ServiceContextProvider extends AbstractContextProvider implements S
         {
             //See if there is a context file to apply to this pre-made context
             String contextFile = (String)serviceRef.getProperty(OSGiWebappConstants.JETTY_CONTEXT_FILE_PATH);
-            if (contextFile == null)
-                contextFile = (String)serviceRef.getProperty(OSGiWebappConstants.SERVICE_PROP_CONTEXT_FILE_PATH); 
+            if (contextFile == null) {
+				contextFile = (String)serviceRef.getProperty(OSGiWebappConstants.SERVICE_PROP_CONTEXT_FILE_PATH);
+			} 
                   
             String[] keys = serviceRef.getPropertyKeys();
             Dictionary properties = new Hashtable<String, Object>();
             if (keys != null)
             {
-                for (String key:keys)
-                    properties.put(key, serviceRef.getProperty(key));
+                for (String key:keys) {
+					properties.put(key, serviceRef.getProperty(key));
+				}
             }
             Bundle bundle = serviceRef.getBundle();                
-            String originId = bundle.getSymbolicName() + "-" + bundle.getVersion().toString() + "-"+(contextFile!=null?contextFile:serviceRef.getProperty(Constants.SERVICE_ID));
+            String originId = bundle.getSymbolicName() + "-" + bundle.getVersion() + "-"+(contextFile!=null?contextFile:serviceRef.getProperty(Constants.SERVICE_ID));
             ServiceApp app = new ServiceApp(getDeploymentManager(), this, bundle, properties, contextFile, originId);         
             app.setHandler(context); //set the pre=made ContextHandler instance
             _serviceMap.put(serviceRef, app);
@@ -135,16 +137,19 @@ public class ServiceContextProvider extends AbstractContextProvider implements S
     }
     
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public boolean serviceRemoved (ServiceReference serviceRef, ContextHandler context)
     {
 
-        if (context == null || serviceRef == null)
-            return false;
+        if (context == null || serviceRef == null) {
+			return false;
+		}
         
         String watermark = (String)serviceRef.getProperty(OSGiWebappConstants.WATERMARK);
         if (watermark != null && !"".equals(watermark))
-            return false;  //this service represents a contexthandler that will be deregistered as a service by another of our deployers
+		 {
+			return false;  //this service represents a contexthandler that will be deregistered as a service by another of our deployers
+		}
         
         App app = _serviceMap.remove(serviceRef);
         if (app != null)
@@ -158,7 +163,7 @@ public class ServiceContextProvider extends AbstractContextProvider implements S
     
     
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     protected void doStart() throws Exception
     {
@@ -167,11 +172,11 @@ public class ServiceContextProvider extends AbstractContextProvider implements S
         properties.put(OSGiServerConstants.MANAGED_JETTY_SERVER_NAME, getServerInstanceWrapper().getManagedServerName());
         
         //register as an osgi service for deploying contexts, advertising the name of the jetty Server instance we are related to
-        _serviceRegForServices = FrameworkUtil.getBundle(this.getClass()).getBundleContext().registerService(ServiceProvider.class.getName(), this, properties);
+        _serviceRegForServices = FrameworkUtil.getBundle(getClass()).getBundleContext().registerService(ServiceProvider.class.getName(), this, properties);
         super.doStart();
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     protected void doStop() throws Exception
     {

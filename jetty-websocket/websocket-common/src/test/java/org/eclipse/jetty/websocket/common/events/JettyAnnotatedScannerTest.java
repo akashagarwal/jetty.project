@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.common.events;
 
@@ -57,7 +52,7 @@ public class JettyAnnotatedScannerTest
     }
 
     /**
-     * Test Case for bad declaration (duplicate OnWebSocketBinary declarations)
+     * Test Case for bad declaration (duplicate OnWebSocketBinary declarations).
      */
     @Test
     public void testAnnotatedBadDuplicateBinarySocket()
@@ -77,7 +72,7 @@ public class JettyAnnotatedScannerTest
     }
 
     /**
-     * Test Case for bad declaration (duplicate frame type methods)
+     * Test Case for bad declaration (duplicate frame type methods).
      */
     @Test
     public void testAnnotatedBadDuplicateFrameSocket()
@@ -97,7 +92,7 @@ public class JettyAnnotatedScannerTest
     }
 
     /**
-     * Test Case for bad declaration a method with a non-void return type
+     * Test Case for bad declaration a method with a non-void return type.
      */
     @Test
     public void testAnnotatedBadSignature_NonVoidReturn()
@@ -117,7 +112,7 @@ public class JettyAnnotatedScannerTest
     }
 
     /**
-     * Test Case for bad declaration a method with a public static method
+     * Test Case for bad declaration a method with a public static method.
      */
     @Test
     public void testAnnotatedBadSignature_Static()
@@ -137,7 +132,7 @@ public class JettyAnnotatedScannerTest
     }
 
     /**
-     * Test Case for socket for binary array messages
+     * Test Case for socket for binary array messages.
      */
     @Test
     public void testAnnotatedBinaryArraySocket()
@@ -161,7 +156,7 @@ public class JettyAnnotatedScannerTest
     }
 
     /**
-     * Test Case for socket for binary stream messages
+     * Test Case for socket for binary stream messages.
      */
     @Test
     public void testAnnotatedBinaryStreamSocket()
@@ -185,7 +180,7 @@ public class JettyAnnotatedScannerTest
     }
 
     /**
-     * Test Case for no exceptions and 4 methods (3 methods from parent)
+     * Test Case for no exceptions and 4 methods (3 methods from parent).
      */
     @Test
     public void testAnnotatedMyEchoBinarySocket()
@@ -206,7 +201,7 @@ public class JettyAnnotatedScannerTest
     }
 
     /**
-     * Test Case for no exceptions and 3 methods
+     * Test Case for no exceptions and 3 methods.
      */
     @Test
     public void testAnnotatedMyEchoSocket()
@@ -227,7 +222,7 @@ public class JettyAnnotatedScannerTest
     }
 
     /**
-     * Test Case for annotated for text messages w/connection param
+     * Test Case for annotated for text messages w/connection param.
      */
     @Test
     public void testAnnotatedMyStatelessEchoSocket()
@@ -251,7 +246,7 @@ public class JettyAnnotatedScannerTest
     }
 
     /**
-     * Test Case for no exceptions and no methods
+     * Test Case for no exceptions and no methods.
      */
     @Test
     public void testAnnotatedNoop()
@@ -272,7 +267,7 @@ public class JettyAnnotatedScannerTest
     }
 
     /**
-     * Test Case for no exceptions and 1 methods
+     * Test Case for no exceptions and 1 methods.
      */
     @Test
     public void testAnnotatedOnFrame()
@@ -293,7 +288,7 @@ public class JettyAnnotatedScannerTest
     }
 
     /**
-     * Test Case for socket for simple text messages
+     * Test Case for socket for simple text messages.
      */
     @Test
     public void testAnnotatedTextSocket()
@@ -317,7 +312,7 @@ public class JettyAnnotatedScannerTest
     }
 
     /**
-     * Test Case for socket for text stream messages
+     * Test Case for socket for text stream messages.
      */
     @Test
     public void testAnnotatedTextStreamSocket()

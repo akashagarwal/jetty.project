@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server.session;
 
@@ -66,8 +61,9 @@ public abstract class AbstractSessionInvalidateAndCreateTest
 
         public void sessionDestroyed(HttpSessionEvent e)
         {
-            if (destroys == null)
-                destroys = new ArrayList<>();
+            if (destroys == null) {
+				destroys = new ArrayList<>();
+			}
 
             destroys.add((String)e.getSession().getAttribute("identity"));
         }
@@ -153,7 +149,7 @@ public abstract class AbstractSessionInvalidateAndCreateTest
 
     public static class TestServlet extends HttpServlet
     {
-        private boolean unbound = false;
+        private boolean unbound;
         
         public class MySessionBindingListener implements HttpSessionBindingListener, Serializable
         {
@@ -202,9 +198,9 @@ public abstract class AbstractSessionInvalidateAndCreateTest
                     session = request.getSession(true);
                     session.setAttribute("identity", "session2");
                     session.setAttribute("listener", new MySessionBindingListener());
-                }
-                else
-                    fail("Session already missing");
+                } else {
+					fail("Session already missing");
+				}
             }
         }
     }

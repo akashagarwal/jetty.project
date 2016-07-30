@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.osgi.boot.utils;
 
@@ -46,7 +41,7 @@ public class OSGiClassLoader extends URLClassLoader
     private boolean _lookInOsgiFirst = true;
     private ClassLoader _parent;
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public OSGiClassLoader(ClassLoader parent, Bundle bundle)
     {
         super(new URL[]{}, parent);
@@ -61,7 +56,7 @@ public class OSGiClassLoader extends URLClassLoader
     /**
      * Get a resource from the classloader
      * 
-     * Copied from WebAppClassLoader
+     * Copied from WebAppClassLoader.
      */
     public URL getResource(String name)
     {
@@ -73,8 +68,9 @@ public class OSGiClassLoader extends URLClassLoader
         {
             tried_parent= true;
             
-            if (_parent!=null)
-                url= _parent.getResource(name);
+            if (_parent!=null) {
+				url= _parent.getResource(name);
+			}
         }
 
         if (url == null)
@@ -83,34 +79,33 @@ public class OSGiClassLoader extends URLClassLoader
 
             if (url == null && name.startsWith("/"))
             {
-                if (LOG.isDebugEnabled())
-                    LOG.debug("HACK leading / off " + name);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("HACK leading / off " + name);
+				}
 
                 url = _osgiBundleClassLoader.getResource(name.substring(1));
             }
         }
 
-        if (url == null && !tried_parent)
-        {
-            if (_parent!=null)
-                url= _parent.getResource(name);
-        }
+        if (url == null && !tried_parent && _parent!=null) {
+			url= _parent.getResource(name);
+		}
 
-        if (url != null)
-            if (LOG.isDebugEnabled())
-                LOG.debug("getResource("+name+")=" + url);
+        if (url != null && LOG.isDebugEnabled()) {
+			LOG.debug("getResource("+name+")=" + url);
+		}
 
         return url;
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public Class<?> loadClass(String name) throws ClassNotFoundException
     {
         return loadClass(name, false);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     protected synchronized Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException
     {
@@ -124,8 +119,9 @@ public class OSGiClassLoader extends URLClassLoader
             try
             {
                 c= _parent.loadClass(name);
-                if (LOG.isDebugEnabled())
-                    LOG.debug("loaded " + c);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("loaded " + c);
+				}
             }
             catch (ClassNotFoundException e)
             {
@@ -137,7 +133,7 @@ public class OSGiClassLoader extends URLClassLoader
         {
             try
             {
-                c= this.findClass(name);
+                c= findClass(name);
             }
             catch (ClassNotFoundException e)
             {
@@ -145,22 +141,26 @@ public class OSGiClassLoader extends URLClassLoader
             }
         }
 
-        if (c == null && _parent!=null && !tried_parent)
-            c = _parent.loadClass(name);
+        if (c == null && _parent!=null && !tried_parent) {
+			c = _parent.loadClass(name);
+		}
 
-        if (c == null)
-            throw ex;
+        if (c == null) {
+			throw ex;
+		}
 
-        if (resolve)
-            resolveClass(c);
+        if (resolve) {
+			resolveClass(c);
+		}
 
-        if (LOG.isDebugEnabled())
-            LOG.debug("loaded " + c+ " from "+c.getClassLoader());
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("loaded " + c+ " from "+c.getClassLoader());
+		}
         
         return c;
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public Enumeration<URL> getResources(String name) throws IOException
     {
@@ -177,7 +177,7 @@ public class OSGiClassLoader extends URLClassLoader
     }
     
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     protected Class<?> findClass(String name) throws ClassNotFoundException
     {
@@ -202,19 +202,16 @@ public class OSGiClassLoader extends URLClassLoader
     
     
 
-   /* ------------------------------------------------------------ */
-    /**
-     * @param e
-     * @param e2
-     * @return
-     */
+   /** ------------------------------------------------------------. */
     private List<URL> toList(Enumeration<URL> e, Enumeration<URL> e2)
     {
         List<URL> list = new ArrayList<URL>();
-        while (e != null && e.hasMoreElements())
-            list.add(e.nextElement());
-        while (e2 != null && e2.hasMoreElements())
-            list.add(e2.nextElement());
+        while (e != null && e.hasMoreElements()) {
+			list.add(e.nextElement());
+		}
+        while (e2 != null && e2.hasMoreElements()) {
+			list.add(e2.nextElement());
+		}
         return list;
     }
 }

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http2.server;
 
@@ -336,10 +331,11 @@ public class HTTP2ServerTest extends AbstractServerTest
                     @Override
                     public void write(Callback callback, ByteBuffer... buffers) throws IllegalStateException
                     {
-                        if (broken.get())
-                            callback.failed(new IOException("explicitly_thrown_by_test"));
-                        else
-                            super.write(callback, buffers);
+                        if (broken.get()) {
+							callback.failed(new IOException("explicitly_thrown_by_test"));
+						} else {
+							super.write(callback, buffers);
+						}
                     }
                 };
             }
@@ -355,8 +351,9 @@ public class HTTP2ServerTest extends AbstractServerTest
         try (Socket client = new Socket("localhost", connector2.getLocalPort()))
         {
             OutputStream output = client.getOutputStream();
-            for (ByteBuffer buffer : lease.getByteBuffers())
-                output.write(BufferUtil.toArray(buffer));
+            for (ByteBuffer buffer : lease.getByteBuffers()) {
+				output.write(BufferUtil.toArray(buffer));
+			}
 
             // The server will close the connection abruptly since it
             // cannot write and therefore cannot even send the GO_AWAY.
@@ -390,8 +387,9 @@ public class HTTP2ServerTest extends AbstractServerTest
             try (Socket client = new Socket("localhost", connector.getLocalPort()))
             {
                 OutputStream output = client.getOutputStream();
-                for (ByteBuffer buffer : lease.getByteBuffers())
-                    output.write(BufferUtil.toArray(buffer));
+                for (ByteBuffer buffer : lease.getByteBuffers()) {
+					output.write(BufferUtil.toArray(buffer));
+				}
                 output.flush();
 
                 Parser parser = new Parser(byteBufferPool, new Parser.Listener.Adapter(), 4096, 8192);
@@ -557,8 +555,9 @@ public class HTTP2ServerTest extends AbstractServerTest
         try (Socket client = new Socket("localhost", connector.getLocalPort()))
         {
             OutputStream output = client.getOutputStream();
-            for (ByteBuffer buffer : lease.getByteBuffers())
-                output.write(BufferUtil.toArray(buffer));
+            for (ByteBuffer buffer : lease.getByteBuffers()) {
+				output.write(BufferUtil.toArray(buffer));
+			}
             output.flush();
 
             Assert.assertTrue(serverLatch.await(5, TimeUnit.SECONDS));
@@ -569,8 +568,9 @@ public class HTTP2ServerTest extends AbstractServerTest
                 @Override
                 public void onHeaders(HeadersFrame frame)
                 {
-                    if (frame.isEndStream())
-                        clientLatch.countDown();
+                    if (frame.isEndStream()) {
+						clientLatch.countDown();
+					}
                 }
             }, 4096, 8192);
             boolean closed = parseResponse(client, parser);

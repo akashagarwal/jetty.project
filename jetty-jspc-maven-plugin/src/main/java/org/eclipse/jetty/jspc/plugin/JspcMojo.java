@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.jspc.plugin;
 
@@ -203,7 +198,7 @@ public class JspcMojo extends AbstractMojo
 
 
     /**
-     * Root directory for all html/jsp etc files
+     * Root directory for all html/jsp etc files.
      * 
      * @parameter default-value="${basedir}/src/main/webapp"
      * 
@@ -291,13 +286,15 @@ public class JspcMojo extends AbstractMojo
             getLog().info("generatedClasses=" + generatedClasses);
             getLog().info("webXmlFragment=" + webXmlFragment);
             getLog().info("webXml="+webXml);
-            getLog().info("insertionMarker="+ (insertionMarker == null || insertionMarker.equals("") ? END_OF_WEBAPP : insertionMarker));
+            getLog().info("insertionMarker="+ (insertionMarker == null || "".equals(insertionMarker) ? END_OF_WEBAPP : insertionMarker));
             getLog().info("keepSources=" + keepSources);
             getLog().info("mergeFragment=" + mergeFragment);  
-            if (sourceVersion != null)
-                getLog().info("sourceVersion="+sourceVersion);
-            if (targetVersion != null)
-                getLog().info("targetVersion="+targetVersion);
+            if (sourceVersion != null) {
+				getLog().info("sourceVersion="+sourceVersion);
+			}
+            if (targetVersion != null) {
+				getLog().info("targetVersion="+targetVersion);
+			}
         }
         try
         {
@@ -325,8 +322,7 @@ public class JspcMojo extends AbstractMojo
  
 
         //Make a classloader so provided jars will be on the classpath
-        List<URL> sysUrls = new ArrayList<URL>();      
-        sysUrls.addAll(providedJars);     
+        List<URL> sysUrls = new ArrayList<URL>(providedJars);      
         URLClassLoader sysClassLoader = new URLClassLoader((URL[])sysUrls.toArray(new URL[0]), currentClassLoader);
       
         //make a classloader with the webapp classpath
@@ -335,13 +331,16 @@ public class JspcMojo extends AbstractMojo
 
         for (int i = 0; i < webAppUrls.size(); i++)
         {
-            if (getLog().isDebugEnabled())
-                getLog().debug("webappclassloader contains: " + webAppUrls.get(i));                
+            if (getLog().isDebugEnabled()) {
+				getLog().debug("webappclassloader contains: " + webAppUrls.get(i));
+			}                
             webAppClassPath.append(new File(webAppUrls.get(i).toURI()).getCanonicalPath());
-            if (getLog().isDebugEnabled())
-                getLog().debug("added to classpath: " + ((URL) webAppUrls.get(i)).getFile());
-            if (i+1<webAppUrls.size())
-                webAppClassPath.append(System.getProperty("path.separator"));
+            if (getLog().isDebugEnabled()) {
+				getLog().debug("added to classpath: " + ((URL) webAppUrls.get(i)).getFile());
+			}
+            if (i+1<webAppUrls.size()) {
+				webAppClassPath.append(System.getProperty("path.separator"));
+			}
         }
         
         //Interpose a fake classloader as the webapp class loader. This is because the Apache JspC class
@@ -350,8 +349,9 @@ public class JspcMojo extends AbstractMojo
         URLClassLoader fakeWebAppClassLoader = new URLClassLoader(new URL[0], webAppClassLoader);
         Thread.currentThread().setContextClassLoader(fakeWebAppClassLoader);
   
-        if (jspc == null)
-            jspc = new JettyJspC();
+        if (jspc == null) {
+			jspc = new JettyJspC();
+		}
         
 
         jspc.setWebXmlFragment(webXmlFragment);
@@ -360,10 +360,12 @@ public class JspcMojo extends AbstractMojo
         jspc.setClassLoader(fakeWebAppClassLoader);
         jspc.setScanAllDirectories(scanAllDirectories);
         jspc.setCompile(true);
-        if (sourceVersion != null)
-            jspc.setCompilerSourceVM(sourceVersion);
-        if (targetVersion != null)
-            jspc.setCompilerTargetVM(targetVersion);
+        if (sourceVersion != null) {
+			jspc.setCompilerSourceVM(sourceVersion);
+		}
+        if (targetVersion != null) {
+			jspc.setCompilerTargetVM(targetVersion);
+		}
 
         // JspC#setExtensions() does not exist, so 
         // always set concrete list of files that will be processed.
@@ -371,7 +373,7 @@ public class JspcMojo extends AbstractMojo
        
         try
         {
-            if (jspFiles == null | jspFiles.equals(""))
+            if (jspFiles == null | "".equals(jspFiles))
             {
                 getLog().info("No files selected to precompile");
             }
@@ -430,10 +432,11 @@ public class JspcMojo extends AbstractMojo
         {
             for(File f: files)
             {
-                if(f.isDirectory())
-                    delete(f, filter);
-                else
-                    f.delete();
+                if(f.isDirectory()) {
+					delete(f, filter);
+				} else {
+					f.delete();
+				}
             }
         }
     }
@@ -458,7 +461,7 @@ public class JspcMojo extends AbstractMojo
            
             if (!webXml.exists())
             {
-                getLog().info(webXml.toString() + " does not exist, cannot merge with generated fragment");
+                getLog().info(webXml + " does not exist, cannot merge with generated fragment");
                 return;
             }
 
@@ -481,14 +484,14 @@ public class JspcMojo extends AbstractMojo
                     // marker
                     boolean atInsertPoint = false;
                     boolean atEOF = false;
-                    String marker = (insertionMarker == null
-                            || insertionMarker.equals("") ? END_OF_WEBAPP : insertionMarker);
+                    String marker = insertionMarker == null
+                            || "".equals(insertionMarker) ? END_OF_WEBAPP : insertionMarker;
                     while (!atInsertPoint && !atEOF)
                     {
                         String line = webXmlReader.readLine();
-                        if (line == null)
-                            atEOF = true;
-                        else if (line.indexOf(marker) >= 0)
+                        if (line == null) {
+							atEOF = true;
+						} else if (line.contains(marker))
                         {
                             atInsertPoint = true;
                         }
@@ -498,8 +501,9 @@ public class JspcMojo extends AbstractMojo
                         }
                     }
 
-                    if (atEOF && !atInsertPoint)
-                        throw new IllegalStateException("web.xml does not contain insertionMarker "+insertionMarker);
+                    if (atEOF && !atInsertPoint) {
+						throw new IllegalStateException("web.xml does not contain insertionMarker "+insertionMarker);
+					}
 
                     //put in a context init-param to flag that the contents have been precompiled
                     mergedWebXmlWriter.println("<context-param><param-name>"+PRECOMPILED_FLAG+"</param-name><param-value>true</param-value></context-param>");
@@ -512,8 +516,9 @@ public class JspcMojo extends AbstractMojo
                         IO.copy(fragmentWebXmlReader, mergedWebXmlWriter);
 
                         // if we inserted just before the </web-app>, put it back in
-                        if (marker.equals(END_OF_WEBAPP))
-                            mergedWebXmlWriter.println(END_OF_WEBAPP);
+                        if (END_OF_WEBAPP.equals(marker)) {
+							mergedWebXmlWriter.println(END_OF_WEBAPP);
+						}
 
                         // copy in the rest of the original web.xml file
                         IO.copy(webXmlReader, mergedWebXmlWriter);
@@ -528,8 +533,9 @@ public class JspcMojo extends AbstractMojo
         // For some reason JspC doesn't like it if the dir doesn't
         // already exist and refuses to create the web.xml fragment
         File generatedSourceDirectoryFile = new File(generatedClasses);
-        if (!generatedSourceDirectoryFile.exists())
-            generatedSourceDirectoryFile.mkdirs();
+        if (!generatedSourceDirectoryFile.exists()) {
+			generatedSourceDirectoryFile.mkdirs();
+		}
     }
 
     /**
@@ -549,20 +555,22 @@ public class JspcMojo extends AbstractMojo
         classesDir = classesDir + (classesDir.endsWith(File.pathSeparator) ? "" : File.separator);
         urls.add(Resource.toURL(new File(classesDir)));
 
-        if (getLog().isDebugEnabled())
-            getLog().debug("Adding to classpath classes dir: " + classesDir);
+        if (getLog().isDebugEnabled()) {
+			getLog().debug("Adding to classpath classes dir: " + classesDir);
+		}
 
         //add the dependencies of the webapp (which will form WEB-INF/lib)
         for (Iterator<Artifact> iter = project.getArtifacts().iterator(); iter.hasNext();)
         {
-            Artifact artifact = (Artifact)iter.next();
+            Artifact artifact = iter.next();
 
             // Include runtime and compile time libraries
             if (!Artifact.SCOPE_TEST.equals(artifact.getScope()) && !Artifact.SCOPE_PROVIDED.equals(artifact.getScope()))
             {
                 String filePath = artifact.getFile().getCanonicalPath();
-                if (getLog().isDebugEnabled())
-                    getLog().debug("Adding to classpath dependency file: " + filePath);
+                if (getLog().isDebugEnabled()) {
+					getLog().debug("Adding to classpath dependency file: " + filePath);
+				}
 
                 urls.add(Resource.toURL(artifact.getFile()));
             }
@@ -572,10 +580,6 @@ public class JspcMojo extends AbstractMojo
     
     
     
-    /**
-     * @return
-     * @throws MalformedURLException
-     */
     private Set<URL> getPluginJars () throws MalformedURLException
     {
         HashSet<URL> pluginJars = new HashSet<>();
@@ -594,15 +598,11 @@ public class JspcMojo extends AbstractMojo
     
     
     
-    /**
-     * @param pluginJars
-     * @return
-     * @throws MalformedURLException
-     */
     private Set<URL>  getProvidedScopeJars (Set<URL> pluginJars) throws MalformedURLException
     {
-        if (!useProvidedScope)
-            return Collections.emptySet();
+        if (!useProvidedScope) {
+			return Collections.emptySet();
+		}
         
         HashSet<URL> providedJars = new HashSet<>();
         
@@ -617,11 +617,7 @@ public class JspcMojo extends AbstractMojo
                 {
                     providedJars.add(jar);
                     if (getLog().isDebugEnabled()) { getLog().debug("Adding provided artifact: "+artifact);}
-                }  
-                else
-                {
-                    if (getLog().isDebugEnabled()) { getLog().debug("Skipping provided artifact: "+artifact);}
-                }
+                } else if (getLog().isDebugEnabled()) { getLog().debug("Skipping provided artifact: "+artifact);}
             }
         }
         return providedJars;
@@ -642,13 +638,9 @@ public class JspcMojo extends AbstractMojo
         File webXmlFile = new File (webXml).getCanonicalFile();
         if (webXmlFile.compareTo(defaultWebXml) != 0)
         {
-            file = new File (webXml);
-            return file;
+            return new File (webXml);
         }
         
-        //If the web app src directory has not been changed from the default, use whatever
-        //is set for the web.xml location
-        file = new File (webAppSrcDir, "web.xml");
-        return file;
+        return new File (webAppSrcDir, "web.xml");
     }
 }

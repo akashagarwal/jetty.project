@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util;
 
@@ -58,7 +53,7 @@ public class MultiMap<V> extends HashMap<String,List<V>>
     public List<V> getValues(String name)
     {
         List<V> vals = super.get(name);
-        if((vals == null) || vals.isEmpty()) {
+        if(vals == null || vals.isEmpty()) {
             return null;
         }
         return vals;
@@ -96,7 +91,7 @@ public class MultiMap<V> extends HashMap<String,List<V>>
     public String getString(String name)
     {
         List<V> vals =get(name);
-        if ((vals == null) || (vals.isEmpty()))
+        if (vals == null || vals.isEmpty())
         {
             return null;
         }
@@ -113,9 +108,10 @@ public class MultiMap<V> extends HashMap<String,List<V>>
         {
             if (e != null)
             {
-                if (values.length() > 0)
-                    values.append(',');
-                values.append(e.toString());
+                if (values.length() > 0) {
+					values.append(',');
+				}
+                values.append(e);
             }
         }   
         return values.toString();
@@ -138,7 +134,7 @@ public class MultiMap<V> extends HashMap<String,List<V>>
     }
 
     /**
-     * Shorthand version of putAll
+     * Shorthand version of putAll.
      * @param input the input map
      */
     public void putAllValues(Map<String, V> input)
@@ -169,8 +165,7 @@ public class MultiMap<V> extends HashMap<String,List<V>>
     @SafeVarargs
     public final List<V> putValues(String name, V... values) 
     {
-        List<V> list = new ArrayList<>();
-        list.addAll(Arrays.asList(values));
+        List<V> list = new ArrayList<V>(Arrays.asList(values));
         return super.put(name,list);
     }
     
@@ -237,7 +232,7 @@ public class MultiMap<V> extends HashMap<String,List<V>>
     {
         boolean merged = false;
 
-        if ((map == null) || (map.isEmpty()))
+        if (map == null || map.isEmpty())
         {
             // done
             return merged;
@@ -248,7 +243,7 @@ public class MultiMap<V> extends HashMap<String,List<V>>
             String name = entry.getKey();
             List<V> values = entry.getValue();
 
-            if (this.containsKey(name))
+            if (containsKey(name))
             {
                 merged = true;
             }
@@ -268,7 +263,7 @@ public class MultiMap<V> extends HashMap<String,List<V>>
     public boolean removeValue(String name,V value)
     {
         List<V> lo = get(name);
-        if((lo == null)||(lo.isEmpty())) {
+        if(lo == null||lo.isEmpty()) {
             return false;
         }
         boolean ret = lo.remove(value);
@@ -291,7 +286,7 @@ public class MultiMap<V> extends HashMap<String,List<V>>
     {
         for (List<V> vals : values())
         {
-            if ((vals.size() == 1) && vals.contains(value))
+            if (vals.size() == 1 && vals.contains(value))
             {
                 return true;
             }
@@ -346,8 +341,9 @@ public class MultiMap<V> extends HashMap<String,List<V>>
                 b.append('{');
                 for (String k:super.keySet())
                 {
-                    if(b.length()>1)
-                        b.append(',');
+                    if(b.length()>1) {
+						b.append(',');
+					}
                     b.append(k);
                     b.append('=');
                     b.append(Arrays.asList(super.get(k)));

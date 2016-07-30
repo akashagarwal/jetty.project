@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.client.api;
 
@@ -81,7 +76,7 @@ public interface Response
     boolean abort(Throwable cause);
 
     /**
-     * Common, empty, super-interface for response listeners
+     * Common, empty, super-interface for response listeners.
      */
     public interface ResponseListener extends EventListener
     {
@@ -100,7 +95,7 @@ public interface Response
          *
          * @param response the response containing the response line data
          */
-        public void onBegin(Response response);
+        void onBegin(Response response);
     }
 
     /**
@@ -116,7 +111,7 @@ public interface Response
          * @param field the header received
          * @return true to process the header, false to skip processing of the header
          */
-        public boolean onHeader(Response response, HttpField field);
+        boolean onHeader(Response response, HttpField field);
     }
 
     /**
@@ -129,7 +124,7 @@ public interface Response
          *
          * @param response the response containing the response line data and the headers
          */
-        public void onHeaders(Response response);
+        void onHeaders(Response response);
     }
 
     /**
@@ -145,7 +140,7 @@ public interface Response
          * @param response the response containing the response line data and the headers
          * @param content the content bytes received
          */
-        public void onContent(Response response, ByteBuffer content);
+        void onContent(Response response, ByteBuffer content);
     }
 
     public interface AsyncContentListener extends ResponseListener
@@ -157,7 +152,7 @@ public interface Response
          * @param content the content bytes received
          * @param callback the callback to call when the content is consumed.
          */
-        public void onContent(Response response, ByteBuffer content, Callback callback);
+        void onContent(Response response, ByteBuffer content, Callback callback);
     }
 
     /**
@@ -170,7 +165,7 @@ public interface Response
          *
          * @param response the response containing the response line data and the headers
          */
-        public void onSuccess(Response response);
+        void onSuccess(Response response);
     }
 
     /**
@@ -179,12 +174,12 @@ public interface Response
     public interface FailureListener extends ResponseListener
     {
         /**
-         * Callback method invoked when the response has failed in the process of being received
+         * Callback method invoked when the response has failed in the process of being received.
          *
          * @param response the response containing data up to the point the failure happened
          * @param failure the failure happened
          */
-        public void onFailure(Response response, Throwable failure);
+        void onFailure(Response response, Throwable failure);
     }
 
     /**
@@ -206,7 +201,7 @@ public interface Response
          *
          * @param result the result of the request / response exchange
          */
-        public void onComplete(Result result);
+        void onComplete(Result result);
     }
 
     /**
@@ -215,7 +210,7 @@ public interface Response
     public interface Listener extends BeginListener, HeaderListener, HeadersListener, ContentListener, AsyncContentListener, SuccessListener, FailureListener, CompleteListener
     {
         /**
-         * An empty implementation of {@link Listener}
+         * An empty implementation of {@link Listener}.
          */
         public static class Adapter implements Listener
         {

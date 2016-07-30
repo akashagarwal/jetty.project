@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package com.acme.test;
 
@@ -97,7 +92,7 @@ public class AnnotationTest extends HttpServlet
         postConstructResult = "<span class=\"pass\">PASS</span>";
        try 
        {
-           dsResult = (myDS==null?"<span class=\"fail\">FAIL</span>":"<span class=\"pass\">myDS="+myDS.toString()+"</span>");
+           dsResult = myDS==null?"<span class=\"fail\">FAIL</span>":"<span class=\"pass\">myDS="+myDS+"</span>";
        }
        catch (Exception e)
        {
@@ -105,7 +100,7 @@ public class AnnotationTest extends HttpServlet
        }
 
 
-       envResult = (maxAmount==null?"FAIL</span>":"<span class=\"pass\">maxAmount="+maxAmount.toString()+"</span>");
+       envResult = maxAmount==null?"FAIL</span>":"<span class=\"pass\">maxAmount="+maxAmount+"</span>";
        
        try
        {
@@ -117,7 +112,7 @@ public class AnnotationTest extends HttpServlet
            envLookupResult = "<span class=\"fail\">FAIL:</span> "+e;
        }
 
-      envResult2 = (minAmount==null?"<span class=\"fail\">FAIL</span>":"<span class=\"pass\">minAmount="+minAmount.toString()+"</span>");
+      envResult2 = minAmount==null?"<span class=\"fail\">FAIL</span>":"<span class=\"pass\">minAmount="+minAmount+"</span>";
       try
       {
           InitialContext ic = new InitialContext();
@@ -127,7 +122,7 @@ public class AnnotationTest extends HttpServlet
       {
           envLookupResult2 = "<span class=\"fail\">FAIL:</span> "+e;
       }
-      envResult3 = (minAmount==null?"<span class=\"fail\">FAIL</span>":"<span class=\"pass\">avgAmount="+avgAmount.toString()+"</span>");
+      envResult3 = minAmount==null?"<span class=\"fail\">FAIL</span>":"<span class=\"pass\">avgAmount="+avgAmount+"</span>";
       try
       {
           InitialContext ic = new InitialContext();
@@ -150,7 +145,7 @@ public class AnnotationTest extends HttpServlet
            dsLookupResult = "<span class=\"fail\">FAIL:</span> "+e;
        }
        
-       txResult = (myUserTransaction==null?"<span class=\"fail\">FAIL</span>":"<span class=\"pass\">myUserTransaction="+myUserTransaction+"</span>");
+       txResult = myUserTransaction==null?"<span class=\"fail\">FAIL</span>":"<span class=\"pass\">myUserTransaction="+myUserTransaction+"</span>";
        try
        {
            InitialContext ic = new InitialContext();
@@ -175,13 +170,13 @@ public class AnnotationTest extends HttpServlet
 
     
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
         doGet(request, response);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {      
         try
@@ -232,15 +227,16 @@ public class AnnotationTest extends HttpServlet
                      out.print(c.getName()+" ");
                  }
                 
-                 if (classNames.size() != __HandlesTypes.size())
-                     out.println("<br/><span class=\"fail\">FAIL</span>");
-                 else if (!classNames.containsAll(__HandlesTypes))
-                     out.println("<br/><span class=\"fail\">FAIL</span>");
-                 else
-                     out.println("<br/><span class=\"pass\">PASS</span>");
-             }
-             else
-                 out.print("<br/><span class=\"fail\">FAIL</span> (No such attribute com.acme.Foo)");
+                 if (classNames.size() != __HandlesTypes.size()) {
+					out.println("<br/><span class=\"fail\">FAIL</span>");
+				} else if (!classNames.containsAll(__HandlesTypes)) {
+					out.println("<br/><span class=\"fail\">FAIL</span>");
+				} else {
+					out.println("<br/><span class=\"pass\">PASS</span>");
+				}
+             } else {
+				out.print("<br/><span class=\"fail\">FAIL</span> (No such attribute com.acme.Foo)");
+			}
              out.println("</b></p>");
 
             out.println("<h2>Complete Servlet Registration</h2>");
@@ -304,22 +300,25 @@ public class AnnotationTest extends HttpServlet
             out.println("@Resource(name=\"minAmount\")");
             out.println("private Double minAmount;");
             out.println("</pre>");
-            if (maxAmount==null)
-                out.println("<p><b>Result: "+envResult+":  <span class=\"fail\">FAIL");
-            else
-                out.println("<p><b>Result: "+envResult+": "+(maxAmount.compareTo(new Double(55))==0?" <span class=\"pass\">PASS":" <span class=\"fail\">FAIL")+"</span></b>");     
+            if (maxAmount!=null) {
+				out.println("<p><b>Result: "+envResult+": "+(maxAmount.compareTo(Double.valueOf(55))==0?" <span class=\"pass\">PASS":" <span class=\"fail\">FAIL")+"</span></b>");
+			} else {
+				out.println("<p><b>Result: "+envResult+":  <span class=\"fail\">FAIL");
+			}     
             out.println("<br/><b>JNDI Lookup Result: "+envLookupResult+"</b>");
 
-            if (minAmount==null)
-                out.println("<p><b>Result: "+envResult2+":  <span class=\"fail\">FAIL");
-            else
-                out.println("<br/><b>Result: "+envResult2+": "+(minAmount.compareTo(new Double("0.99"))==0?" <span class=\"pass\">PASS":" <span class=\"fail\">FAIL")+"</span></b>");     
+            if (minAmount!=null) {
+				out.println("<br/><b>Result: "+envResult2+": "+(minAmount.compareTo(Double.valueOf("0.99"))==0?" <span class=\"pass\">PASS":" <span class=\"fail\">FAIL")+"</span></b>");
+			} else {
+				out.println("<p><b>Result: "+envResult2+":  <span class=\"fail\">FAIL");
+			}     
             out.println("<br/><b>JNDI Lookup Result: "+envLookupResult2+"</b>");
 
-            if (avgAmount==null)
-                out.println("<p><b>Result: "+envResult3+":  <span class=\"fail\">FAIL");
-            else
-                out.println("<br/><b>Result: "+envResult3+": "+(avgAmount.compareTo(new Double("1.25"))==0?" <span class=\"pass\">PASS":" <span class=\"fail\">FAIL")+"</span></b>");     
+            if (avgAmount!=null) {
+				out.println("<br/><b>Result: "+envResult3+": "+(avgAmount.compareTo(Double.valueOf("1.25"))==0?" <span class=\"pass\">PASS":" <span class=\"fail\">FAIL")+"</span></b>");
+			} else {
+				out.println("<p><b>Result: "+envResult3+":  <span class=\"fail\">FAIL");
+			}     
             out.println("<br/><b>JNDI Lookup Result: "+envLookupResult3+"</b></p>");     
             
             out.println("<h2>@Resource Injection for UserTransaction </h2>");

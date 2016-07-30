@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.osgi.boot.jasper;
 
@@ -81,7 +76,7 @@ public class ContainerTldBundleDiscoverer implements TldBundleDiscoverer
      */
     private static String DEFAULT_JSTL_BUNDLE_CLASS = "org.apache.taglibs.standard.tag.rt.core.WhenTag";
 
-    private Bundle jstlBundle = null;
+    private Bundle jstlBundle;
     
     /**
      * Check the System property "org.eclipse.jetty.osgi.tldbundles" for names of
@@ -96,8 +91,9 @@ public class ContainerTldBundleDiscoverer implements TldBundleDiscoverer
             return new URL[0];
         }
 
-        if (jstlBundle == null)
-            jstlBundle = findJstlBundle();
+        if (jstlBundle == null) {
+			jstlBundle = findJstlBundle();
+		}
 
         Bundle[] bundles = FrameworkUtil.getBundle(ContainerTldBundleDiscoverer.class).getBundleContext().getBundles();
         HashSet<URL> urls = new HashSet<URL>();
@@ -106,12 +102,13 @@ public class ContainerTldBundleDiscoverer implements TldBundleDiscoverer
         if (tmp != null)
         {
             StringTokenizer tokenizer = new StringTokenizer(tmp, ", \n\r\t", false);
-            while (tokenizer.hasMoreTokens())
-                sysNames.add(tokenizer.nextToken());
+            while (tokenizer.hasMoreTokens()) {
+				sysNames.add(tokenizer.nextToken());
+			}
         }
         tmp = (String) deploymentManager.getContextAttribute(OSGiWebInfConfiguration.CONTAINER_BUNDLE_PATTERN); //bundle name patterns
     
-        Pattern pattern = (tmp==null? null : Pattern.compile(tmp));
+        Pattern pattern = tmp==null? null : Pattern.compile(tmp);
         
         //check that the jstl bundle is not already included in the pattern, and include it if it is not because
         //subsequent classes such as OSGiWebInfConfiguration use this pattern to determine which jars are
@@ -123,7 +120,7 @@ public class ContainerTldBundleDiscoverer implements TldBundleDiscoverer
                 pattern = Pattern.compile(jstlBundle.getSymbolicName());
                 deploymentManager.setContextAttribute(OSGiWebInfConfiguration.CONTAINER_BUNDLE_PATTERN, jstlBundle.getSymbolicName());
             }
-            else if (!(pattern.matcher(jstlBundle.getSymbolicName()).matches()))
+            else if (!pattern.matcher(jstlBundle.getSymbolicName()).matches())
             {
                 String s = tmp+"|"+jstlBundle.getSymbolicName();
                 pattern = Pattern.compile(s);
@@ -134,10 +131,11 @@ public class ContainerTldBundleDiscoverer implements TldBundleDiscoverer
         
         for (Bundle bundle : bundles)
         {
-            if (sysNames.contains(bundle.getSymbolicName()))
-                convertBundleLocationToURL(locatorHelper, bundle, urls);           
-            else if (pattern != null && pattern.matcher(bundle.getSymbolicName()).matches())
-                convertBundleLocationToURL(locatorHelper, bundle, urls);
+            if (sysNames.contains(bundle.getSymbolicName())) {
+				convertBundleLocationToURL(locatorHelper, bundle, urls);
+			} else if (pattern != null && pattern.matcher(bundle.getSymbolicName()).matches()) {
+				convertBundleLocationToURL(locatorHelper, bundle, urls);
+			}
         }
 
         return urls.toArray(new URL[urls.size()]);
@@ -145,7 +143,7 @@ public class ContainerTldBundleDiscoverer implements TldBundleDiscoverer
     }
 
     /**
-     * Check that jsp is on the classpath
+     * Check that jsp is on the classpath.
      * @return
      */
     public boolean isJspAvailable()
@@ -210,9 +208,10 @@ public class ContainerTldBundleDiscoverer implements TldBundleDiscoverer
             LOG.info("jstl not on classpath", e);
         }
         
-        if (jstlClass != null)
-            //get the bundle containing jstl
+        if (jstlClass != null) {
+			//get the bundle containing jstl
             return FrameworkUtil.getBundle(jstlClass);
+		}
         
         return null;
     }
@@ -242,7 +241,7 @@ public class ContainerTldBundleDiscoverer implements TldBundleDiscoverer
                 {
                     urls.add(f.toURI().toURL());
                 }
-                else if (f.isDirectory() && f.getName().equals("lib"))
+                else if (f.isDirectory() && "lib".equals(f.getName()))
                 {
                     for (File f2 : jasperLocation.listFiles())
                     {
@@ -253,11 +252,7 @@ public class ContainerTldBundleDiscoverer implements TldBundleDiscoverer
                     }
                 }
             }
-            urls.add(jasperLocation.toURI().toURL());
         }
-        else
-        {
-            urls.add(jasperLocation.toURI().toURL());
-        }
+		urls.add(jasperLocation.toURI().toURL());
     }
 }

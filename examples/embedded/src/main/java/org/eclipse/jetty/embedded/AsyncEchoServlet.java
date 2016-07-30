@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.embedded;
 
@@ -90,20 +85,23 @@ public class AsyncEchoServlet extends HttpServlet
             // We should try to read, only if we are able to write!
             while (true)
             {
-                if (!output.isReady())
-                    // Don't even try to read anything until it is possible to write something,
+                if (!output.isReady()) {
+					// Don't even try to read anything until it is possible to write something,
                     // when onWritePossible will be called
                     break;
+				}
 
-                if (!input.isReady())
-                    // Nothing available to read, so wait for another call to onDataAvailable
+                if (!input.isReady()) {
+					// Nothing available to read, so wait for another call to onDataAvailable
                     break;
+				}
                 
                 int read = input.read(buffer);
                 if (read<0)
                 {
-                    if (complete.compareAndSet(false,true))
-                        asyncContext.complete();
+                    if (complete.compareAndSet(false,true)) {
+						asyncContext.complete();
+					}
                     break;
                 }
                 else if (read>0)

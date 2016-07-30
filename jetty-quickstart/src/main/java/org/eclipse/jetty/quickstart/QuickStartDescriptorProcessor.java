@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.quickstart;
 
@@ -48,7 +43,7 @@ public class QuickStartDescriptorProcessor extends IterativeDescriptorProcessor
     {
         try
         {
-            registerVisitor("context-param", this.getClass().getMethod("visitContextParam", __signature));
+            registerVisitor("context-param", getClass().getMethod("visitContextParam", __signature));
         }    
         catch (Exception e)
         {
@@ -56,17 +51,11 @@ public class QuickStartDescriptorProcessor extends IterativeDescriptorProcessor
         }
     }
 
-    /**
-     * @see org.eclipse.jetty.webapp.IterativeDescriptorProcessor#start(org.eclipse.jetty.webapp.WebAppContext, org.eclipse.jetty.webapp.Descriptor)
-     */
     @Override
     public void start(WebAppContext context, Descriptor descriptor)
     {
     }
 
-    /**
-     * @see org.eclipse.jetty.webapp.IterativeDescriptorProcessor#end(org.eclipse.jetty.webapp.WebAppContext, org.eclipse.jetty.webapp.Descriptor)
-     */
     @Override
     public void end(WebAppContext context, Descriptor descriptor)
     { 
@@ -90,8 +79,9 @@ public class QuickStartDescriptorProcessor extends IterativeDescriptorProcessor
                 context.removeAttribute(name);
                 
                 QuotedStringTokenizer tok = new QuotedStringTokenizer(value,",");
-                while(tok.hasMoreElements())
-                    values.add(tok.nextToken().trim());
+                while(tok.hasMoreElements()) {
+					values.add(tok.nextToken().trim());
+				}
                 
                 break;
                 
@@ -107,19 +97,22 @@ public class QuickStartDescriptorProcessor extends IterativeDescriptorProcessor
             {
                 List<Object> libs = new ArrayList<>();
                 Object o=context.getAttribute(ServletContext.ORDERED_LIBS);
-                if (o instanceof Collection<?>)
-                    libs.addAll((Collection<?>)o);
+                if (o instanceof Collection<?>) {
+					libs.addAll((Collection<?>)o);
+				}
                 libs.addAll(values);
-                if (libs.size()>0)
-                    context.setAttribute(ServletContext.ORDERED_LIBS,libs);
+                if (libs.size()>0) {
+					context.setAttribute(ServletContext.ORDERED_LIBS,libs);
+				}
                 
                 break;
             }
                 
             case AnnotationConfiguration.CONTAINER_INITIALIZERS:
             {
-                for (String i : values)
-                    visitContainerInitializer(context, new ContainerInitializer(Thread.currentThread().getContextClassLoader(), i));
+                for (String i : values) {
+					visitContainerInitializer(context, new ContainerInitializer(Thread.currentThread().getContextClassLoader(), i));
+				}
                 break;
             }
             
@@ -127,19 +120,22 @@ public class QuickStartDescriptorProcessor extends IterativeDescriptorProcessor
             {
                 List<Object> tlds = new ArrayList<>();
                 Object o=context.getAttribute(MetaInfConfiguration.METAINF_TLDS);
-                if (o instanceof Collection<?>)
-                    tlds.addAll((Collection<?>)o);
+                if (o instanceof Collection<?>) {
+					tlds.addAll((Collection<?>)o);
+				}
                 for (String i : values)
                 {
                     Resource r = Resource.newResource(normalizer.expand(i));
-                    if (r.exists())
-                        tlds.add(r.getURI().toURL());
-                    else
-                        throw new IllegalArgumentException("TLD not found: "+r);                    
+                    if (r.exists()) {
+						tlds.add(r.getURI().toURL());
+					} else {
+						throw new IllegalArgumentException("TLD not found: "+r);
+					}                    
                 }
                 
-                if (tlds.size()>0)
-                    context.setAttribute(MetaInfConfiguration.METAINF_TLDS,tlds);
+                if (tlds.size()>0) {
+					context.setAttribute(MetaInfConfiguration.METAINF_TLDS,tlds);
+				}
                 break;
             }
             
@@ -148,10 +144,11 @@ public class QuickStartDescriptorProcessor extends IterativeDescriptorProcessor
                 for (String i : values)
                 {
                     Resource r = Resource.newResource(normalizer.expand(i));
-                    if (r.exists())
-                        visitMetaInfResource(context,r); 
-                    else
-                        throw new IllegalArgumentException("Resource not found: "+r);                    
+                    if (r.exists()) {
+						visitMetaInfResource(context,r);
+					} else {
+						throw new IllegalArgumentException("Resource not found: "+r);
+					}                    
                 }
                 break;
             }
@@ -164,8 +161,9 @@ public class QuickStartDescriptorProcessor extends IterativeDescriptorProcessor
 
     public void visitContainerInitializer (WebAppContext context, ContainerInitializer containerInitializer)
     {
-        if (containerInitializer == null)
-            return;
+        if (containerInitializer == null) {
+			return;
+		}
         
         //add the ContainerInitializer to the list of container initializers
         List<ContainerInitializer> containerInitializers = (List<ContainerInitializer>)context.getAttribute(AnnotationConfiguration.CONTAINER_INITIALIZERS);
@@ -201,8 +199,9 @@ public class QuickStartDescriptorProcessor extends IterativeDescriptorProcessor
         Resource[] collection=new Resource[metaInfResources.size()+1];
         int i=0;
         collection[i++]=context.getBaseResource();
-        for (Resource resource : metaInfResources)
-            collection[i++]=resource;
+        for (Resource resource : metaInfResources) {
+			collection[i++]=resource;
+		}
         context.setBaseResource(new ResourceCollection(collection));
     }
 }

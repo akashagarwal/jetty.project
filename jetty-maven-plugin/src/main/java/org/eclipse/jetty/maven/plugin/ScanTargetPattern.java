@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.maven.plugin;
 
@@ -66,26 +61,28 @@ public class ScanTargetPattern
     
     public void setIncludes (List<String> includes)
     {
-        if (_pattern == null)
-            _pattern = new ScanPattern();
+        if (_pattern == null) {
+			_pattern = new ScanPattern();
+		}
         _pattern.setIncludes(includes);
     }
     
     public void setExcludes(List<String> excludes)
     {
-        if (_pattern == null)
-            _pattern = new ScanPattern();
+        if (_pattern == null) {
+			_pattern = new ScanPattern();
+		}
         _pattern.setExcludes(excludes);
     }
     
     public List<String> getIncludes()
     {
-        return (_pattern == null? Collections.emptyList() : _pattern.getIncludes());
+        return _pattern == null? Collections.emptyList() : _pattern.getIncludes();
     }
     
     public List<String> getExcludes()
     {
-        return (_pattern == null? Collections.emptyList() : _pattern.getExcludes());
+        return _pattern == null? Collections.emptyList() : _pattern.getExcludes();
     }
 
 }

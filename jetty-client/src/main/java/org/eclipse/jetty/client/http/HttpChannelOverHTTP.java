@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.client.http;
 
@@ -75,8 +70,9 @@ public class HttpChannelOverHTTP extends HttpChannel
     public void send()
     {
         HttpExchange exchange = getHttpExchange();
-        if (exchange != null)
-            sender.send(exchange);
+        if (exchange != null) {
+			sender.send(exchange);
+		}
     }
 
     @Override
@@ -99,10 +95,11 @@ public class HttpChannelOverHTTP extends HttpChannel
         HttpFields responseHeaders = response.getHeaders();
 
         String closeReason = null;
-        if (result.isFailed())
-            closeReason = "failure";
-        else if (receiver.isShutdown())
-            closeReason = "server close";
+        if (result.isFailed()) {
+			closeReason = "failure";
+		} else if (receiver.isShutdown()) {
+			closeReason = "server close";
+		}
 
         if (closeReason == null)
         {
@@ -112,21 +109,20 @@ public class HttpChannelOverHTTP extends HttpChannel
                 // an explicit keep alive or it's a CONNECT method.
                 boolean keepAlive = responseHeaders.contains(HttpHeader.CONNECTION, HttpHeaderValue.KEEP_ALIVE.asString());
                 boolean connect = HttpMethod.CONNECT.is(exchange.getRequest().getMethod());
-                if (!keepAlive && !connect)
-                    closeReason = "http/1.0";
-            }
-            else
-            {
-                // HTTP 1.1 or greater closes only if it has an explicit close.
-                if (responseHeaders.contains(HttpHeader.CONNECTION, HttpHeaderValue.CLOSE.asString()))
-                    closeReason = "http/1.1";
-            }
+                if (!keepAlive && !connect) {
+					closeReason = "http/1.0";
+				}
+            } else // HTTP 1.1 or greater closes only if it has an explicit close.
+			if (responseHeaders.contains(HttpHeader.CONNECTION, HttpHeaderValue.CLOSE.asString())) {
+				closeReason = "http/1.1";
+			}
         }
 
         if (closeReason != null)
         {
-            if (LOG.isDebugEnabled())
-                LOG.debug("Closing, reason: {} - {}", closeReason, connection);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Closing, reason: {} - {}", closeReason, connection);
+			}
             connection.close();
         }
         else

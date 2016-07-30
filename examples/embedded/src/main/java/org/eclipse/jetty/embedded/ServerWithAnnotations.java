@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.embedded;
 
@@ -29,11 +24,11 @@ import org.eclipse.jetty.webapp.Configuration;
 import org.eclipse.jetty.webapp.WebAppContext;
 
 /**
- * ServerWithAnnotations
+ * ServerWithAnnotations.
  */
 public class ServerWithAnnotations
 {
-    public static final void main( String args[] ) throws Exception
+    public static void main( String args[] ) throws Exception
     {
         // Create the server
         Server server = new Server(8080);
@@ -64,7 +59,7 @@ public class ServerWithAnnotations
         new Transaction(new com.acme.MockUserTransaction());
 
         // Define an env entry with webapp scope.
-        new EnvEntry(webapp, "maxAmount", new Double(100), true);
+        new EnvEntry(webapp, "maxAmount", Double.valueOf(100), true);
 
         // Register a mock DataSource scoped to the webapp
         new Resource(webapp, "jdbc/mydatasource", new com.acme.MockDataSource());

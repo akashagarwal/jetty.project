@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http;
 
@@ -23,16 +18,16 @@ import java.util.Objects;
 
 import org.eclipse.jetty.util.StringUtil;
 
-/** A HTTP Field
+/** A HTTP Field.
  */
 public class HttpField
 {
-    private final static String __zeroquality="q=0";
+    private static final String __zeroquality="q=0";
     private final HttpHeader _header;
     private final String _name;
     private final String _value;
-    // cached hashcode for case insensitive name
-    private int hash = 0;
+    /** Cached hashcode for case insensitive name. */
+    private int hash;
 
     public HttpField(HttpHeader header, String name, String value)
     {
@@ -83,8 +78,9 @@ public class HttpField
 
     public String[] getValues()
     {
-        if (_value == null)
-            return null;
+        if (_value == null) {
+			return null;
+		}
 
         ArrayList<String> list = new ArrayList<>();
         int state = 0;
@@ -170,7 +166,7 @@ public class HttpField
                             break;
 
                         default:
-                            throw new IllegalArgumentException("c="+(int)c);
+                            throw new IllegalArgumentException("c="+c);
 
                     }
                     break;
@@ -203,14 +199,18 @@ public class HttpField
      */
     public boolean contains(String search)
     {
-        if (search==null)
-            return _value==null;
-        if (search.length()==0)
-            return false;
-        if (_value==null)
-            return false;
-        if (search.equals(_value))
-            return true;
+        if (search==null) {
+			return _value==null;
+		}
+        if (search.length()==0) {
+			return false;
+		}
+        if (_value==null) {
+			return false;
+		}
+        if (search.equals(_value)) {
+			return true;
+		}
 
         search = StringUtil.asciiToLowerCase(search);
 
@@ -256,8 +256,9 @@ public class HttpField
                     {
                         case ',': // next field
                             // Have we matched the token?
-                            if (match==search.length())
-                                return true;
+                            if (match==search.length()) {
+								return true;
+							}
                             state=0;
                             break;
 
@@ -269,10 +270,11 @@ public class HttpField
                         default:
                             if (match>0)
                             {
-                                if (match<search.length())
-                                    match=Character.toLowerCase(c)==search.charAt(match)?(match+1):-1;
-                                else if (c!=' ' && c!= '\t')
-                                    match=-1;
+                                if (match<search.length()) {
+									match=Character.toLowerCase(c)==search.charAt(match)?(match+1):-1;
+								} else if (c!=' ' && c!= '\t') {
+									match=-1;
+								}
                             }
                             break;
 
@@ -293,10 +295,11 @@ public class HttpField
                         default:
                             if (match>=0)
                             {
-                                if (match<search.length())
-                                    match=Character.toLowerCase(c)==search.charAt(match)?(match+1):-1;
-                                else
-                                    match=-1;
+                                if (match<search.length()) {
+									match=Character.toLowerCase(c)==search.charAt(match)?(match+1):-1;
+								} else {
+									match=-1;
+								}
                             }
                     }
                     break;
@@ -304,10 +307,11 @@ public class HttpField
                 case 3: // In Quoted character in quoted token
                     if (match>=0)
                     {
-                        if (match<search.length())
-                            match=Character.toLowerCase(c)==search.charAt(match)?(match+1):-1;
-                        else
-                            match=-1;
+                        if (match<search.length()) {
+							match=Character.toLowerCase(c)==search.charAt(match)?(match+1):-1;
+						} else {
+							match=-1;
+						}
                     }
                     state=2;
                     break;
@@ -325,8 +329,9 @@ public class HttpField
 
                         case ',': // end token
                             // Have we matched the token?
-                            if (match==search.length())
-                                return true;
+                            if (match==search.length()) {
+								return true;
+							}
                             state=0;
                             break;
 
@@ -341,8 +346,9 @@ public class HttpField
                     {
                         case ',': // end token
                             // Have we matched the token and not q=0?
-                            if (param!=__zeroquality.length() && match==search.length())
-                                return true;
+                            if (param!=__zeroquality.length() && match==search.length()) {
+								return true;
+							}
                             param=0;
                             state=0;
                             break;
@@ -354,10 +360,11 @@ public class HttpField
                         default:
                             if (param>=0)
                             {
-                                if (param<__zeroquality.length())
-                                    param=Character.toLowerCase(c)==__zeroquality.charAt(param)?(param+1):-1;
-                                else if (c!='0'&&c!='.')
-                                    param=-1;
+                                if (param<__zeroquality.length()) {
+									param=Character.toLowerCase(c)==__zeroquality.charAt(param)?(param+1):-1;
+								} else if (c!='0'&&c!='.') {
+									param=-1;
+								}
                             }
 
                     }
@@ -381,15 +388,7 @@ public class HttpField
 
     public boolean isSameName(HttpField field)
     {
-        if (field==null)
-            return false;
-        if (field==this)
-            return true;
-        if (_header!=null && _header==field.getHeader())
-            return true;
-        if (_name.equalsIgnoreCase(field.getName()))
-            return true;
-        return false;
+        return field!=null && (field==this || (_header!=null && _header==field.getHeader()) || _name.equalsIgnoreCase(field.getName()));
     }
 
     private int nameHashCode()
@@ -403,8 +402,9 @@ public class HttpField
                 // simple case insensitive hash
                 char c = _name.charAt(i);
                 // assuming us-ascii (per last paragraph on http://tools.ietf.org/html/rfc7230#section-3.2.4)
-                if ((c >= 'a' && c <= 'z'))
-                    c -= 0x20;
+                if (c >= 'a' && c <= 'z') {
+					c -= 0x20;
+				}
                 h = 31 * h + c;
             }
             this.hash = h;
@@ -416,26 +416,23 @@ public class HttpField
     public int hashCode()
     {
         int vhc = Objects.hashCode(_value);
-        if (_header==null)
-            return vhc ^ nameHashCode();
-        return vhc ^ _header.hashCode();
+        if (_header!=null) {
+			return vhc ^ _header.hashCode();
+		}
+        return vhc ^ nameHashCode();
     }
 
     @Override
     public boolean equals(Object o)
     {
-        if (o==this)
-            return true;
-        if (!(o instanceof HttpField))
-            return false;
+        if (o==this) {
+			return true;
+		}
+        if (!(o instanceof HttpField)) {
+			return false;
+		}
         HttpField field=(HttpField)o;
-        if (_header!=field.getHeader())
-            return false;
-        if (!_name.equalsIgnoreCase(field.getName()))
-            return false;
-        if (_value==null && field.getValue()!=null)
-            return false;
-        return Objects.equals(_value,field.getValue());
+        return _header == field.getHeader() && _name.equalsIgnoreCase(field.getName()) && (_value != null || field.getValue() == null) && Objects.equals(_value,field.getValue());
     }
 
     public static class IntValueHttpField extends HttpField

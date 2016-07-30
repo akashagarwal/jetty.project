@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 
@@ -44,7 +39,7 @@ public class NCSARequestLog extends AbstractNCSARequestLog
     private boolean _append;
     private int _retainDays;
     private boolean _closeOut;
-    private String _filenameDateFormat = null;
+    private String _filenameDateFormat;
     private transient OutputStream _out;
     private transient OutputStream _fileOut;
     private transient Writer _writer;
@@ -90,8 +85,9 @@ public class NCSARequestLog extends AbstractNCSARequestLog
         if (filename != null)
         {
             filename = filename.trim();
-            if (filename.length() == 0)
-                filename = null;
+            if (filename.length() == 0) {
+				filename = null;
+			}
         }
         _filename = filename;
     }
@@ -118,16 +114,17 @@ public class NCSARequestLog extends AbstractNCSARequestLog
      */
     public String getDatedFilename()
     {
-        if (_fileOut instanceof RolloverFileOutputStream)
-            return ((RolloverFileOutputStream)_fileOut).getDatedFilename();
+        if (_fileOut instanceof RolloverFileOutputStream) {
+			return ((RolloverFileOutputStream)_fileOut).getDatedFilename();
+		}
         return null;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     protected boolean isEnabled()
     {
-        return (_fileOut != null);
+        return _fileOut != null;
     }
 
     /* ------------------------------------------------------------ */
@@ -200,14 +197,15 @@ public class NCSARequestLog extends AbstractNCSARequestLog
         return _filenameDateFormat;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void write(String requestEntry) throws IOException
     {
         synchronized(this)
         {
-            if (_writer==null)
-                return;
+            if (_writer==null) {
+				return;
+			}
             _writer.write(requestEntry);
             _writer.write(StringUtil.__LINE_SEPARATOR);
             _writer.flush();
@@ -228,9 +226,9 @@ public class NCSARequestLog extends AbstractNCSARequestLog
             _fileOut = new RolloverFileOutputStream(_filename,_append,_retainDays,TimeZone.getTimeZone(getLogTimeZone()),_filenameDateFormat,null);
             _closeOut = true;
             LOG.info("Opened " + getDatedFilename());
-        }
-        else
-            _fileOut = System.err;
+        } else {
+			_fileOut = System.err;
+		}
 
         _out = _fileOut;
 
@@ -255,15 +253,16 @@ public class NCSARequestLog extends AbstractNCSARequestLog
             super.doStop();
             try
             {
-                if (_writer != null)
-                    _writer.flush();
+                if (_writer != null) {
+					_writer.flush();
+				}
             }
             catch (IOException e)
             {
                 LOG.ignore(e);
             }
-            if (_out != null && _closeOut)
-                try
+            if (_out != null && _closeOut) {
+				try
                 {
                     _out.close();
                 }
@@ -271,6 +270,7 @@ public class NCSARequestLog extends AbstractNCSARequestLog
                 {
                     LOG.ignore(e);
                 }
+			}
 
             _out = null;
             _fileOut = null;

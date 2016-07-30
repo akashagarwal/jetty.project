@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server.session;
 
@@ -32,7 +27,7 @@ public abstract class AbstractSessionIdManager extends AbstractLifeCycle impleme
 {
     private static final Logger LOG = Log.getLogger(AbstractSessionIdManager.class);
 
-    private final static String __NEW_SESSION_ID="org.eclipse.jetty.server.newSessionId";
+    private static final String __NEW_SESSION_ID="org.eclipse.jetty.server.newSessionId";
 
     protected Random _random;
     protected boolean _weakRandom;
@@ -40,12 +35,12 @@ public abstract class AbstractSessionIdManager extends AbstractLifeCycle impleme
     protected String _workerAttr;
     protected long _reseed=100000L;
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public AbstractSessionIdManager()
     {
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public AbstractSessionIdManager(Random random)
     {
         _random=random;
@@ -77,20 +72,22 @@ public abstract class AbstractSessionIdManager extends AbstractLifeCycle impleme
      */
     public void setWorkerName(String workerName)
     {
-        if (isRunning())
-            throw new IllegalStateException(getState());
-        if (workerName.contains("."))
-            throw new IllegalArgumentException("Name cannot contain '.'");
+        if (isRunning()) {
+			throw new IllegalStateException(getState());
+		}
+        if (workerName.contains(".")) {
+			throw new IllegalArgumentException("Name cannot contain '.'");
+		}
         _workerName=workerName;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public Random getRandom()
     {
         return _random;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public synchronized void setRandom(Random random)
     {
         _random=random;
@@ -126,22 +123,25 @@ public abstract class AbstractSessionIdManager extends AbstractLifeCycle impleme
     {
         synchronized (this)
         {
-            if (request==null)
-                return newSessionId(created);
+            if (request==null) {
+				return newSessionId(created);
+			}
 
             // A requested session ID can only be used if it is in use already.
             String requested_id=request.getRequestedSessionId();
             if (requested_id!=null)
             {
                 String cluster_id=getClusterId(requested_id);
-                if (idInUse(cluster_id))
-                    return cluster_id;
+                if (idInUse(cluster_id)) {
+					return cluster_id;
+				}
             }
 
             // Else reuse any new session ID already defined for this request.
             String new_id=(String)request.getAttribute(__NEW_SESSION_ID);
-            if (new_id!=null&&idInUse(new_id))
-                return new_id;
+            if (new_id!=null&&idInUse(new_id)) {
+				return new_id;
+			}
 
             // pick a new unique ID!
             String id = newSessionId(request.hashCode());
@@ -151,7 +151,7 @@ public abstract class AbstractSessionIdManager extends AbstractLifeCycle impleme
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public String newSessionId(long seedTerm)
     {
         // pick a new unique ID!
@@ -159,16 +159,18 @@ public abstract class AbstractSessionIdManager extends AbstractLifeCycle impleme
         while (id==null||id.length()==0||idInUse(id))
         {
             long r0=_weakRandom
-                    ?(hashCode()^Runtime.getRuntime().freeMemory()^_random.nextInt()^((seedTerm)<<32))
+                    ?(hashCode()^Runtime.getRuntime().freeMemory()^_random.nextInt()^seedTerm<<32)
                     :_random.nextLong();
-            if (r0<0)
-                r0=-r0;
+            if (r0<0) {
+				r0=-r0;
+			}
                     
             // random chance to reseed
             if (_reseed>0 && (r0%_reseed)== 1L)
             {
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Reseeding {}",this);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("Reseeding {}",this);
+				}
                 if (_random instanceof SecureRandom)
                 {
                     SecureRandom secure = (SecureRandom)_random;
@@ -181,29 +183,31 @@ public abstract class AbstractSessionIdManager extends AbstractLifeCycle impleme
             }
             
             long r1=_weakRandom
-                ?(hashCode()^Runtime.getRuntime().freeMemory()^_random.nextInt()^((seedTerm)<<32))
+                ?(hashCode()^Runtime.getRuntime().freeMemory()^_random.nextInt()^seedTerm<<32)
                 :_random.nextLong();
-            if (r1<0)
-                r1=-r1;
+            if (r1<0) {
+				r1=-r1;
+			}
             
             id=Long.toString(r0,36)+Long.toString(r1,36);
 
             //add in the id of the node to ensure unique id across cluster
             //NOTE this is different to the node suffix which denotes which node the request was received on
-            if (_workerName!=null)
-                id=_workerName + id;
+            if (_workerName!=null) {
+				id=_workerName + id;
+			}
     
         }
         return id;
     }
 
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public abstract void renewSessionId(String oldClusterId, String oldNodeId, HttpServletRequest request);
 
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     protected void doStart() throws Exception
     {
@@ -211,7 +215,7 @@ public abstract class AbstractSessionIdManager extends AbstractLifeCycle impleme
        _workerAttr=(_workerName!=null && _workerName.startsWith("$"))?_workerName.substring(1):null;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     protected void doStop() throws Exception
     {
@@ -237,9 +241,9 @@ public abstract class AbstractSessionIdManager extends AbstractLifeCycle impleme
                 _random=new Random();
                 _weakRandom=true;
             }
-        }
-        else
-            _random.setSeed(_random.nextLong()^System.currentTimeMillis()^hashCode()^Runtime.getRuntime().freeMemory());
+        } else {
+			_random.setSeed(_random.nextLong()^System.currentTimeMillis()^hashCode()^Runtime.getRuntime().freeMemory());
+		}
     }
 
     /** Get the session ID with any worker ID.
@@ -253,12 +257,14 @@ public abstract class AbstractSessionIdManager extends AbstractLifeCycle impleme
     {
         if (_workerName!=null)
         {
-            if (_workerAttr==null)
-                return clusterId+'.'+_workerName;
+            if (_workerAttr==null) {
+				return clusterId+'.'+_workerName;
+			}
 
             String worker=(String)request.getAttribute(_workerAttr);
-            if (worker!=null)
-                return clusterId+'.'+worker;
+            if (worker!=null) {
+				return clusterId+'.'+worker;
+			}
         }
     
         return clusterId;

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.start;
 
@@ -67,7 +62,7 @@ public class CommandLineBuilder
      */
     public static String quote(String arg)
     {
-        boolean needsQuoting = (arg.indexOf(' ') >= 0) || (arg.indexOf('"') >= 0);
+        boolean needsQuoting = arg.indexOf(' ') >= 0 || arg.indexOf('"') >= 0;
         if (!needsQuoting)
         {
             return arg;
@@ -78,16 +73,16 @@ public class CommandLineBuilder
         boolean quoted = false;
         for (char c : arg.toCharArray())
         {
-            if (!quoted && !escaped && ((c == '"') || (c == ' ')))
+            if (!quoted && !escaped && (c == '"' || c == ' '))
             {
                 buf.append("\\");
             }
             // don't quote text in single quotes
-            if (!escaped && (c == '\''))
+            if (!escaped && c == '\'')
             {
                 quoted = !quoted;
             }
-            escaped = (c == '\\');
+            escaped = c == '\\';
             buf.append(c);
         }
         // buf.append('"');
@@ -142,7 +137,7 @@ public class CommandLineBuilder
      */
     public void addEqualsArg(String name, String value)
     {
-        if ((value != null) && (value.length() > 0))
+        if (value != null && value.length() > 0)
         {
             args.add(quote(name + "=" + value));
         }

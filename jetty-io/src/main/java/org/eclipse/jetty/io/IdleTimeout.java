@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.io;
 
@@ -48,8 +43,9 @@ public abstract class IdleTimeout
         public void run()
         {
             long idleLeft = checkIdleTimeout();
-            if (idleLeft >= 0)
-                scheduleIdleTimeout(idleLeft > 0 ? idleLeft : getIdleTimeout());
+            if (idleLeft >= 0) {
+				scheduleIdleTimeout(idleLeft > 0 ? idleLeft : getIdleTimeout());
+			}
         }
     };
 
@@ -90,16 +86,18 @@ public abstract class IdleTimeout
         if (old > 0)
         {
             // if the old was less than or equal to the new timeout, then nothing more to do
-            if (old <= idleTimeout)
-                return;
+            if (old <= idleTimeout) {
+				return;
+			}
 
             // old timeout is too long, so cancel it.
             deactivate();
         }
 
         // If we have a new timeout, then check and reschedule
-        if (isOpen())
-            activate();
+        if (isOpen()) {
+			activate();
+		}
     }
 
     /**
@@ -113,11 +111,13 @@ public abstract class IdleTimeout
     private void scheduleIdleTimeout(long delay)
     {
         Scheduler.Task newTimeout = null;
-        if (isOpen() && delay > 0 && _scheduler != null)
-            newTimeout = _scheduler.schedule(_idleTask, delay, TimeUnit.MILLISECONDS);
+        if (isOpen() && delay > 0 && _scheduler != null) {
+			newTimeout = _scheduler.schedule(_idleTask, delay, TimeUnit.MILLISECONDS);
+		}
         Scheduler.Task oldTimeout = _timeout.getAndSet(newTimeout);
-        if (oldTimeout != null)
-            oldTimeout.cancel();
+        if (oldTimeout != null) {
+			oldTimeout.cancel();
+		}
     }
 
     public void onOpen()
@@ -127,8 +127,9 @@ public abstract class IdleTimeout
 
     private void activate()
     {
-        if (_idleTimeout > 0)
-            _idleTask.run();
+        if (_idleTimeout > 0) {
+			_idleTask.run();
+		}
     }
 
     public void onClose()
@@ -139,8 +140,9 @@ public abstract class IdleTimeout
     private void deactivate()
     {
         Scheduler.Task oldTimeout = _timeout.getAndSet(null);
-        if (oldTimeout != null)
-            oldTimeout.cancel();
+        if (oldTimeout != null) {
+			oldTimeout.cancel();
+		}
     }
 
     protected long checkIdleTimeout()
@@ -152,25 +154,23 @@ public abstract class IdleTimeout
             long idleElapsed = System.currentTimeMillis() - idleTimestamp;
             long idleLeft = idleTimeout - idleElapsed;
 
-            if (LOG.isDebugEnabled())
-                LOG.debug("{} idle timeout check, elapsed: {} ms, remaining: {} ms", this, idleElapsed, idleLeft);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("{} idle timeout check, elapsed: {} ms, remaining: {} ms", this, idleElapsed, idleLeft);
+			}
 
-            if (idleTimestamp != 0 && idleTimeout > 0)
-            {
-                if (idleLeft <= 0)
-                {
-                    if (LOG.isDebugEnabled())
-                        LOG.debug("{} idle timeout expired", this);
-                    try
-                    {
-                        onIdleExpired(new TimeoutException("Idle timeout expired: " + idleElapsed + "/" + idleTimeout + " ms"));
-                    }
-                    finally
-                    {
-                        notIdle();
-                    }
-                }
-            }
+            if (idleTimestamp != 0 && idleTimeout > 0 && idleLeft <= 0) {
+			    if (LOG.isDebugEnabled()) {
+					LOG.debug("{} idle timeout expired", this);
+				}
+			    try
+			    {
+			        onIdleExpired(new TimeoutException("Idle timeout expired: " + idleElapsed + "/" + idleTimeout + " ms"));
+			    }
+			    finally
+			    {
+			        notIdle();
+			    }
+			}
 
             return idleLeft >= 0 ? idleLeft : 0;
         }

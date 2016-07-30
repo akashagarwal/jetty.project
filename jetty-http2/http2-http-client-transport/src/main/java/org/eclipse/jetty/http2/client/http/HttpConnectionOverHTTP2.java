@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http2.client.http;
 
@@ -79,8 +74,9 @@ public class HttpConnectionOverHTTP2 extends HttpConnection
     public boolean onIdleTimeout(long idleTimeout)
     {
         boolean close = super.onIdleTimeout(idleTimeout);
-        if (close)
-            close(new TimeoutException("idle_timeout"));
+        if (close) {
+			close(new TimeoutException("idle_timeout"));
+		}
         return false;
     }
 
@@ -113,8 +109,9 @@ public class HttpConnectionOverHTTP2 extends HttpConnection
         for (HttpChannel channel : channels)
         {
             HttpExchange exchange = channel.getHttpExchange();
-            if (exchange != null)
-                exchange.getRequest().abort(failure);
+            if (exchange != null) {
+				exchange.getRequest().abort(failure);
+			}
         }
         channels.clear();
     }

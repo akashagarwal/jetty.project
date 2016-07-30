@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.client.api;
 
@@ -253,8 +248,10 @@ public class Usage
                 {
                     int read = input.read(buffer);
                     if (read < 0)
-                        break;
+					 {
+						break;
                     // Do something with the bytes just read
+					}
                 }
             }
         }
@@ -325,20 +322,23 @@ public class Usage
                     @Override
                     public void onBegin(Response response)
                     {
-                        if (response.getStatus() == 404)
-                            sendContent.set(false);
+                        if (response.getStatus() == 404) {
+							sendContent.set(false);
+						}
                     }
                 });
 
         Thread.sleep(100);
 
-        if (sendContent.get())
-            async.offer(ByteBuffer.wrap(new byte[]{0}));
+        if (sendContent.get()) {
+			async.offer(ByteBuffer.wrap(new byte[]{0}));
+		}
 
         Thread.sleep(100);
 
-        if (sendContent.get())
-            async.offer(ByteBuffer.wrap(new byte[]{0}));
+        if (sendContent.get()) {
+			async.offer(ByteBuffer.wrap(new byte[]{0}));
+		}
 
         Thread.sleep(100);
 

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.jsr356.metadata;
 
@@ -39,19 +34,19 @@ import org.eclipse.jetty.websocket.api.InvalidWebSocketException;
 public abstract class CoderMetadataSet<T, M extends CoderMetadata<T>> implements Iterable<M>
 {
     /**
-     * Collection of metadatas
+     * Collection of metadatas.
      */
     private final List<M> metadatas;
     /**
-     * Collection of declared Coder classes
+     * Collection of declared Coder classes.
      */
     private final List<Class<? extends T>> coders;
     /**
-     * Mapping of supported Type to metadata list index
+     * Mapping of supported Type to metadata list index.
      */
     private final Map<Class<?>, Integer> typeMap;
     /**
-     * Mapping of Coder class to list of supported metadata
+     * Mapping of Coder class to list of supported metadata.
      */
     private final Map<Class<? extends T>, List<Integer>> implMap;
 
@@ -110,11 +105,11 @@ public abstract class CoderMetadataSet<T, M extends CoderMetadata<T>> implements
     public Class<? extends T> getCoder(Class<?> type)
     {
         M metadata = getMetadataByType(type);
-        if (metadata == null)
+        if (metadata != null)
         {
-            return null;
+            return metadata.getCoderClass();
         }
-        return metadata.getCoderClass();
+        return null;
     }
 
     public List<Class<? extends T>> getList()
@@ -152,11 +147,11 @@ public abstract class CoderMetadataSet<T, M extends CoderMetadata<T>> implements
         }
 
         // If idx is STILL null, we've got no match
-        if (idx == null)
+        if (idx != null)
         {
-            return null;
+            return metadatas.get(idx);
         }
-        return metadatas.get(idx);
+        return null;
     }
 
     private Integer getMetadataByAssignableType(Class<?> type)
@@ -182,7 +177,7 @@ public abstract class CoderMetadataSet<T, M extends CoderMetadata<T>> implements
     public String toString()
     {
         StringBuilder builder = new StringBuilder();
-        builder.append(this.getClass().getSimpleName());
+        builder.append(getClass().getSimpleName());
         builder.append("[metadatas=");
         builder.append(metadatas.size());
         builder.append(",coders=");
@@ -204,13 +199,7 @@ public abstract class CoderMetadataSet<T, M extends CoderMetadata<T>> implements
         synchronized (metadatas)
         {
             // Validate
-            boolean duplicate = false;
-
-            // Is this metadata already declared?
-            if (metadatas.contains(metadata))
-            {
-                duplicate = true;
-            }
+            boolean duplicate = metadatas.contains(metadata);
 
             // Is this type already declared?
             Class<?> type = metadata.getObjectType();

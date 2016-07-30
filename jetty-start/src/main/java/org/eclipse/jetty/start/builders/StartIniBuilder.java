@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.start.builders;
 
@@ -47,10 +42,10 @@ public class StartIniBuilder implements BaseBuilder.Config
     private final BaseHome baseHome;
     private final Path startIni;
 
-    /* List of modules already present in start.ini */
+    /** List of modules already present in start.ini */
     private Set<String> modulesPresent = new HashSet<>();
 
-    /* List of properties (keys only) already present in start.ini */
+    /** List of properties (keys only) already present in start.ini */
     private Set<String> propsPresent = new HashSet<>();
 
     public StartIniBuilder(BaseBuilder baseBuilder) throws IOException

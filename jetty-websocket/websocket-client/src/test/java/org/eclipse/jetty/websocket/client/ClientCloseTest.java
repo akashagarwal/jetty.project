@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.client;
 
@@ -78,7 +73,7 @@ public class ClientCloseTest
         private static final Logger LOG = Log.getLogger(ClientCloseTest.CloseTrackingSocket.class);
 
         public int closeCode = -1;
-        public String closeReason = null;
+        public String closeReason;
         public CountDownLatch closeLatch = new CountDownLatch(1);
         public AtomicInteger closeCount = new AtomicInteger(0);
         public CountDownLatch openLatch = new CountDownLatch(1);
@@ -100,13 +95,13 @@ public class ClientCloseTest
             Assert.assertThat("Client Close Event Occurred",closeLatch.await(maxTimeout,TimeUnit.MILLISECONDS),is(true));
             Assert.assertThat("Client Close Event Count",closeCount.get(),is(1));
             Assert.assertThat("Client Close Event Status Code",closeCode,statusCodeMatcher);
-            if (reasonMatcher == null)
+            if (reasonMatcher != null)
             {
-                Assert.assertThat("Client Close Event Reason",closeReason,nullValue());
+                Assert.assertThat("Client Close Event Reason",closeReason,reasonMatcher);
             }
             else
             {
-                Assert.assertThat("Client Close Event Reason",closeReason,reasonMatcher);
+                Assert.assertThat("Client Close Event Reason",closeReason,nullValue());
             }
         }
 
@@ -116,13 +111,13 @@ public class ClientCloseTest
             errorQueue.awaitEventCount(1,30,TimeUnit.SECONDS);
             Throwable actual = errorQueue.poll();
             Assert.assertThat("Client Error Event",actual,instanceOf(expectedThrownClass));
-            if (messageMatcher == null)
+            if (messageMatcher != null)
             {
-                Assert.assertThat("Client Error Event Message",actual.getMessage(),nullValue());
+                Assert.assertThat("Client Error Event Message",actual.getMessage(),messageMatcher);
             }
             else
             {
-                Assert.assertThat("Client Error Event Message",actual.getMessage(),messageMatcher);
+                Assert.assertThat("Client Error Event Message",actual.getMessage(),nullValue());
             }
         }
 
@@ -243,13 +238,13 @@ public class ClientCloseTest
         Assert.assertThat("Server received close frame",frame.getOpCode(),is(OpCode.CLOSE));
         CloseInfo closeInfo = new CloseInfo(frame);
         Assert.assertThat("Server received close code",closeInfo.getStatusCode(),is(expectedCloseCode));
-        if (closeReasonMatcher == null)
+        if (closeReasonMatcher != null)
         {
-            Assert.assertThat("Server received close reason",closeInfo.getReason(),nullValue());
+            Assert.assertThat("Server received close reason",closeInfo.getReason(),closeReasonMatcher);
         }
         else
         {
-            Assert.assertThat("Server received close reason",closeInfo.getReason(),closeReasonMatcher);
+            Assert.assertThat("Server received close reason",closeInfo.getReason(),nullValue());
         }
     }
 
@@ -418,7 +413,7 @@ public class ClientCloseTest
         int i = 0;
         while (!testendp.congestedFlush.get())
         {
-            int z = i - ((i / 26) * 26);
+            int z = i - (i / 26) * 26;
             char c = (char)('a' + z);
             Arrays.fill(msg,c);
             clientSocket.getRemote().sendStringByFuture(String.valueOf(msg));

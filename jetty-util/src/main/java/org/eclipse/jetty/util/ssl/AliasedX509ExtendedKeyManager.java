@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util.ssl;
 
@@ -50,17 +45,20 @@ public class AliasedX509ExtendedKeyManager extends X509ExtendedKeyManager
     @Override
     public String chooseClientAlias(String[] keyType, Principal[] issuers, Socket socket)
     {
-        if (_alias==null)
-            return _delegate.chooseClientAlias(keyType,issuers,socket);
+        if (_alias==null) {
+			return _delegate.chooseClientAlias(keyType,issuers,socket);
+		}
 
         for (String kt : keyType)
         {
             String[] aliases = _delegate.getClientAliases(kt,issuers);
             if (aliases!=null)
             {
-                for (String a:aliases)
-                    if (_alias.equals(a))
-                        return _alias;
+                for (String a:aliases) {
+					if (_alias.equals(a)) {
+						return _alias;
+					}
+				}
             }
         }
 
@@ -70,15 +68,18 @@ public class AliasedX509ExtendedKeyManager extends X509ExtendedKeyManager
     @Override
     public String chooseServerAlias(String keyType, Principal[] issuers, Socket socket)
     {
-        if (_alias==null)
-            return _delegate.chooseServerAlias(keyType,issuers,socket);
+        if (_alias==null) {
+			return _delegate.chooseServerAlias(keyType,issuers,socket);
+		}
 
         String[] aliases = _delegate.getServerAliases(keyType,issuers);
         if (aliases!=null)
         {
-            for (String a:aliases)
-                if (_alias.equals(a))
-                    return _alias;
+            for (String a:aliases) {
+				if (_alias.equals(a)) {
+					return _alias;
+				}
+			}
         }
 
         return null;
@@ -111,15 +112,18 @@ public class AliasedX509ExtendedKeyManager extends X509ExtendedKeyManager
     @Override
     public String chooseEngineServerAlias(String keyType, Principal[] issuers, SSLEngine engine)
     {
-        if (_alias==null)
-            return _delegate.chooseEngineServerAlias(keyType,issuers,engine);
+        if (_alias==null) {
+			return _delegate.chooseEngineServerAlias(keyType,issuers,engine);
+		}
 
         String[] aliases = _delegate.getServerAliases(keyType,issuers);
         if (aliases!=null)
         {
-            for (String a:aliases)
-                if (_alias.equals(a))
-                    return _alias;
+            for (String a:aliases) {
+				if (_alias.equals(a)) {
+					return _alias;
+				}
+			}
         }
 
         return null;
@@ -128,17 +132,20 @@ public class AliasedX509ExtendedKeyManager extends X509ExtendedKeyManager
     @Override
     public String chooseEngineClientAlias(String keyType[], Principal[] issuers, SSLEngine engine)
     {
-        if (_alias==null)
-            return _delegate.chooseEngineClientAlias(keyType,issuers,engine);
+        if (_alias==null) {
+			return _delegate.chooseEngineClientAlias(keyType,issuers,engine);
+		}
 
         for (String kt : keyType)
         {
             String[] aliases = _delegate.getClientAliases(kt,issuers);
             if (aliases!=null)
             {
-                for (String a:aliases)
-                    if (_alias.equals(a))
-                        return _alias;
+                for (String a:aliases) {
+					if (_alias.equals(a)) {
+						return _alias;
+					}
+				}
             }
         }
 

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 
 package org.eclipse.jetty.server.session;
@@ -29,7 +24,7 @@ import org.infinispan.commons.util.CloseableIteratorSet;
 
 public class InfinispanTestSessionServer extends AbstractTestServer
 {
-    static int __workers=0;
+    static int __workers;
     
 
 
@@ -53,7 +48,7 @@ public class InfinispanTestSessionServer extends AbstractTestServer
     public SessionIdManager newSessionIdManager(Object config)
     {
         InfinispanSessionIdManager idManager = new InfinispanSessionIdManager(getServer());
-        idManager.setWorkerName("w"+(__workers++));
+        idManager.setWorkerName("w"+__workers++);
         idManager.setCache((BasicCache)config);
         return idManager;
     }
@@ -79,12 +74,7 @@ public class InfinispanTestSessionServer extends AbstractTestServer
     public boolean exists (String id)
     {
         BasicCache cache = ((InfinispanSessionIdManager)_sessionIdManager).getCache();
-        if (cache != null)
-        {
-            return cache.containsKey(id);      
-        }
-        
-        return false;
+        return cache != null && cache.containsKey(id);
     }
     
     public Object get (String id)
@@ -110,8 +100,9 @@ public class InfinispanTestSessionServer extends AbstractTestServer
     public void clearCache ()
     { 
         BasicCache cache = ((InfinispanSessionIdManager)_sessionIdManager).getCache();
-        if (cache != null)
-            cache.clear();
+        if (cache != null) {
+			cache.clear();
+		}
     }
 
 }

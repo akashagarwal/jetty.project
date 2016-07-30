@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.rewrite.handler;
 
@@ -175,7 +170,7 @@ public class RewriteHandler extends HandlerWrapper
     private RuleContainer _rules;
     private EnumSet<DispatcherType> _dispatchTypes = EnumSet.of(DispatcherType.REQUEST, DispatcherType.ASYNC);
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public RewriteHandler()
     {
         _rules = new RuleContainer();
@@ -222,7 +217,7 @@ public class RewriteHandler extends HandlerWrapper
         _rules = rules;
     }
 
-    /*------------------------------------------------------------ */
+    /**------------------------------------------------------------. */
     public RuleContainer getRuleContainer()
     {
         return _rules;
@@ -230,7 +225,7 @@ public class RewriteHandler extends HandlerWrapper
     
     /* ------------------------------------------------------------ */
     /**
-     * Add a Rule
+     * Add a Rule.
      * @param rule The rule to add to the end of the rules array
      */
     public void addRule(Rule rule)
@@ -298,26 +293,26 @@ public class RewriteHandler extends HandlerWrapper
         _rules.setOriginalPathAttribute(originalPathAttribute);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public EnumSet<DispatcherType> getDispatcherTypes()
     {
         return _dispatchTypes;
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void setDispatcherTypes(EnumSet<DispatcherType> types)
     {
         _dispatchTypes=EnumSet.copyOf(types);
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void setDispatcherTypes(DispatcherType... types)
     {
         _dispatchTypes=EnumSet.copyOf(Arrays.asList(types));
     }
 
     /* ------------------------------------------------------------ */
-    /* (non-Javadoc)
+    /** (non-Javadoc)
      * @see org.eclipse.jetty.server.handler.HandlerWrapper#handle(java.lang.String, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, int)
      */
     @Override
@@ -331,8 +326,9 @@ public class RewriteHandler extends HandlerWrapper
                 target = (returned == null) ? target : returned;
             }
 
-            if (!baseRequest.isHandled())
-                super.handle(target, baseRequest, request, response);
+            if (!baseRequest.isHandled()) {
+				super.handle(target, baseRequest, request, response);
+			}
         }
     }
 

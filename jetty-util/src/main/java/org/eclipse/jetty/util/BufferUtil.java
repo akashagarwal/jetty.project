@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util;
 
@@ -281,26 +276,28 @@ public class BufferUtil
     }
 
     /* ------------------------------------------------------------ */
-    /** Get the space from the limit to the capacity
+    /** Get the space from the limit to the capacity.
      * @param buffer the buffer to get the space from
      * @return space
      */
     public static int space(ByteBuffer buffer)
     {
-        if (buffer == null)
-            return 0;
-        return buffer.capacity() - buffer.limit();
+        if (buffer != null) {
+			return buffer.capacity() - buffer.limit();
+		}
+        return 0;
     }
 
     /* ------------------------------------------------------------ */
-    /** Compact the buffer
+    /** Compact the buffer.
      * @param buffer the buffer to compact
      * @return true if the compact made a full buffer have space
      */
     public static boolean compact(ByteBuffer buffer)
     {
-        if (buffer.position()==0)
-            return false;
+        if (buffer.position()==0) {
+			return false;
+		}
         boolean full = buffer.limit() == buffer.capacity();
         buffer.compact().flip();
         return full && buffer.limit() < buffer.capacity();
@@ -339,9 +336,9 @@ public class BufferUtil
                 to.put(slice);
                 from.position(from.position() + put);
             }
-        }
-        else
-            put = 0;
+        } else {
+			put = 0;
+		}
 
         return put;
     }
@@ -381,7 +378,7 @@ public class BufferUtil
     }
 
     /* ------------------------------------------------------------ */
-    /** Appends a byte to a buffer
+    /** Appends a byte to a buffer.
      * @param to Buffer is flush mode
      * @param b byte to append
      */
@@ -443,7 +440,7 @@ public class BufferUtil
     }
 
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public static void readFrom(File file, ByteBuffer buffer) throws IOException
     {
         try(RandomAccessFile raf = new RandomAccessFile(file,"r"))
@@ -451,12 +448,13 @@ public class BufferUtil
             FileChannel channel = raf.getChannel();
             long needed=raf.length();
 
-            while (needed>0 && buffer.hasRemaining())
-                needed=needed-channel.read(buffer);
+            while (needed>0 && buffer.hasRemaining()) {
+				needed=needed-channel.read(buffer);
+			}
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public static void readFrom(InputStream is, int needed, ByteBuffer buffer) throws IOException
     {
         ByteBuffer tmp = allocate(8192);
@@ -464,15 +462,16 @@ public class BufferUtil
         while (needed > 0 && buffer.hasRemaining())
         {
             int l = is.read(tmp.array(), 0, 8192);
-            if (l < 0)
-                break;
+            if (l < 0) {
+				break;
+			}
             tmp.position(0);
             tmp.limit(l);
             buffer.put(tmp);
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public static void writeTo(ByteBuffer buffer, OutputStream out) throws IOException
     {
         if (buffer.hasArray())
@@ -520,8 +519,9 @@ public class BufferUtil
      */
     public static String toString(ByteBuffer buffer, Charset charset)
     {
-        if (buffer == null)
-            return null;
+        if (buffer == null) {
+			return null;
+		}
         byte[] array = buffer.hasArray() ? buffer.array() : null;
         if (array == null)
         {
@@ -543,8 +543,9 @@ public class BufferUtil
      */
     public static String toString(ByteBuffer buffer, int position, int length, Charset charset)
     {
-        if (buffer == null)
-            return null;
+        if (buffer == null) {
+			return null;
+		}
         byte[] array = buffer.hasArray() ? buffer.array() : null;
         if (array == null)
         {
@@ -592,16 +593,18 @@ public class BufferUtil
 
         int limit = position+length;
         
-        if (length<=0)
-            throw new NumberFormatException(toString(buffer,position,length,StandardCharsets.UTF_8));
+        if (length<=0) {
+			throw new NumberFormatException(toString(buffer,position,length,StandardCharsets.UTF_8));
+		}
         
         for (int i = position; i < limit; i++)
         {
             byte b = buffer.get(i);
             if (b <= SPACE)
             {
-                if (started)
-                    break;
+                if (started) {
+					break;
+				}
             }
             else if (b >= '0' && b <= '9')
             {
@@ -611,13 +614,14 @@ public class BufferUtil
             else if (b == MINUS && !started)
             {
                 minus = true;
-            }
-            else
-                break;
+            } else {
+				break;
+			}
         }
 
-        if (started)
-            return minus ? (-val) : val;
+        if (started) {
+			return minus ? -val : val;
+		}
         throw new NumberFormatException(toString(buffer));
     }
     
@@ -640,8 +644,9 @@ public class BufferUtil
             byte b = buffer.get(i);
             if (b <= SPACE)
             {
-                if (started)
-                    break;
+                if (started) {
+					break;
+				}
             }
             else if (b >= '0' && b <= '9')
             {
@@ -651,15 +656,15 @@ public class BufferUtil
             else if (b == MINUS && !started)
             {
                 minus = true;
-            }
-            else
-                break;
+            } else {
+				break;
+			}
         }
 
         if (started)
         {
             buffer.position(i);
-            return minus ? (-val) : val;
+            return minus ? -val : val;
         }
         throw new NumberFormatException(toString(buffer));
     }
@@ -682,8 +687,9 @@ public class BufferUtil
             byte b = buffer.get(i);
             if (b <= SPACE)
             {
-                if (started)
-                    break;
+                if (started) {
+					break;
+				}
             }
             else if (b >= '0' && b <= '9')
             {
@@ -693,13 +699,14 @@ public class BufferUtil
             else if (b == MINUS && !started)
             {
                 minus = true;
-            }
-            else
-                break;
+            } else {
+				break;
+			}
         }
 
-        if (started)
-            return minus ? (-val) : val;
+        if (started) {
+			return minus ? -val : val;
+		}
         throw new NumberFormatException(toString(buffer));
     }
 
@@ -737,8 +744,9 @@ public class BufferUtil
             {
                 if (n < hexDivisor)
                 {
-                    if (started)
-                        buffer.put((byte)'0');
+                    if (started) {
+						buffer.put((byte)'0');
+					}
                     continue;
                 }
 
@@ -750,7 +758,7 @@ public class BufferUtil
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public static void putDecInt(ByteBuffer buffer, int n)
     {
         if (n < 0)
@@ -761,9 +769,9 @@ public class BufferUtil
             {
                 buffer.put((byte)'2');
                 n = 147483648;
-            }
-            else
-                n = -n;
+            } else {
+				n = -n;
+			}
         }
 
         if (n < 10)
@@ -778,8 +786,9 @@ public class BufferUtil
             {
                 if (n < decDivisor)
                 {
-                    if (started)
-                        buffer.put((byte)'0');
+                    if (started) {
+						buffer.put((byte)'0');
+					}
                     continue;
                 }
 
@@ -801,9 +810,9 @@ public class BufferUtil
             {
                 buffer.put((byte)'9');
                 n = 223372036854775808L;
-            }
-            else
-                n = -n;
+            } else {
+				n = -n;
+			}
         }
 
         if (n < 10)
@@ -818,8 +827,9 @@ public class BufferUtil
             {
                 if (n < aDecDivisorsL)
                 {
-                    if (started)
-                        buffer.put((byte)'0');
+                    if (started) {
+						buffer.put((byte)'0');
+					}
                     continue;
                 }
 
@@ -852,9 +862,10 @@ public class BufferUtil
 
     public static ByteBuffer toBuffer(String s, Charset charset)
     {
-        if (s == null)
-            return EMPTY_BUFFER;
-        return toBuffer(s.getBytes(charset));
+        if (s != null) {
+			return toBuffer(s.getBytes(charset));
+		}
+        return EMPTY_BUFFER;
     }
 
     /**
@@ -866,9 +877,10 @@ public class BufferUtil
      */
     public static ByteBuffer toBuffer(byte[] array)
     {
-        if (array == null)
-            return EMPTY_BUFFER;
-        return toBuffer(array, 0, array.length);
+        if (array != null) {
+			return toBuffer(array, 0, array.length);
+		}
+        return EMPTY_BUFFER;
     }
 
     /**
@@ -884,9 +896,10 @@ public class BufferUtil
      */
     public static ByteBuffer toBuffer(byte array[], int offset, int length)
     {
-        if (array == null)
-            return EMPTY_BUFFER;
-        return ByteBuffer.wrap(array, offset, length);
+        if (array != null) {
+			return ByteBuffer.wrap(array, offset, length);
+		}
+        return EMPTY_BUFFER;
     }
 
     public static ByteBuffer toDirectBuffer(String s)
@@ -896,8 +909,9 @@ public class BufferUtil
 
     public static ByteBuffer toDirectBuffer(String s, Charset charset)
     {
-        if (s == null)
-            return EMPTY_BUFFER;
+        if (s == null) {
+			return EMPTY_BUFFER;
+		}
         byte[] bytes = s.getBytes(charset);
         ByteBuffer buf = ByteBuffer.allocateDirect(bytes.length);
         buf.put(bytes);
@@ -930,16 +944,18 @@ public class BufferUtil
 
     public static boolean isMappedBuffer(ByteBuffer buffer)
     {
-        if (!(buffer instanceof MappedByteBuffer))
-            return false;
+        if (!(buffer instanceof MappedByteBuffer)) {
+			return false;
+		}
         MappedByteBuffer mapped = (MappedByteBuffer) buffer;
 
         if (fdMappedByteBuffer!=null)
         {
             try
             {
-                if (fdMappedByteBuffer.get(mapped) instanceof FileDescriptor)
-                    return true;
+                if (fdMappedByteBuffer.get(mapped) instanceof FileDescriptor) {
+					return true;
+				}
             }
             catch(Exception e)
             {
@@ -952,15 +968,16 @@ public class BufferUtil
     public static ByteBuffer toBuffer(Resource resource,boolean direct) throws IOException
     {
         int len=(int)resource.length();
-        if (len<0)
-            throw new IllegalArgumentException("invalid resource: "+String.valueOf(resource)+" len="+len);
+        if (len<0) {
+			throw new IllegalArgumentException("invalid resource: "+resource+" len="+len);
+		}
         
         ByteBuffer buffer = direct?BufferUtil.allocateDirect(len):BufferUtil.allocate(len);
 
         int pos=BufferUtil.flipToFill(buffer);
-        if (resource.getFile()!=null)
-            BufferUtil.readFrom(resource.getFile(),buffer);
-        else
+        if (resource.getFile()!=null) {
+			BufferUtil.readFrom(resource.getFile(),buffer);
+		} else
         {
             try (InputStream is = resource.getInputStream();)
             {
@@ -974,8 +991,9 @@ public class BufferUtil
 
     public static String toSummaryString(ByteBuffer buffer)
     {
-        if (buffer == null)
-            return "null";
+        if (buffer == null) {
+			return "null";
+		}
         StringBuilder buf = new StringBuilder();
         buf.append("[p=");
         buf.append(buffer.position());
@@ -995,7 +1013,9 @@ public class BufferUtil
         builder.append('[');
         for (int i = 0; i < buffer.length; i++)
         {
-            if (i > 0) builder.append(',');
+            if (i > 0) {
+				builder.append(',');
+			}
             builder.append(toDetailString(buffer[i]));
         }
         builder.append(']');
@@ -1005,7 +1025,7 @@ public class BufferUtil
 
     
     /* ------------------------------------------------------------ */
-    /** Convert Buffer to string ID independent of content
+    /** Convert Buffer to string ID independent of content.
      */
     private static void idString(ByteBuffer buffer, StringBuilder out) 
     {
@@ -1019,13 +1039,13 @@ public class BufferUtil
             TypeUtil.toHex(array[1],out);
             TypeUtil.toHex(array[2],out);
             TypeUtil.toHex(array[3],out);
-        }
-        else
-            out.append(Integer.toHexString(System.identityHashCode(buffer)));
+        } else {
+			out.append(Integer.toHexString(System.identityHashCode(buffer)));
+		}
     }
     
     /* ------------------------------------------------------------ */
-    /** Convert Buffer to string ID independent of content
+    /** Convert Buffer to string ID independent of content.
      * @param buffer the buffet to generate a string ID from
      * @return A string showing the buffer ID
      */
@@ -1038,14 +1058,15 @@ public class BufferUtil
     
     
     /* ------------------------------------------------------------ */
-    /** Convert Buffer to a detail debug string of pointers and content
+    /** Convert Buffer to a detail debug string of pointers and content.
      * @param buffer the buffer to generate a detail string from
      * @return A string showing the pointers and content of the buffer
      */
     public static String toDetailString(ByteBuffer buffer)
     {
-        if (buffer == null)
-            return "null";
+        if (buffer == null) {
+			return "null";
+		}
 
         StringBuilder buf = new StringBuilder();
         idString(buffer,buf);
@@ -1112,18 +1133,19 @@ public class BufferUtil
 
     private static void appendContentChar(StringBuilder buf, byte b)
     {
-        if (b == '\\')
-            buf.append("\\\\");   
-        else if (b >= ' ')
-            buf.append((char)b);
-        else if (b == '\r')
-            buf.append("\\r");
-        else if (b == '\n')
-            buf.append("\\n");
-        else if (b == '\t')
-            buf.append("\\t");
-        else
-            buf.append("\\x").append(TypeUtil.toHexString(b));
+        if (b == '\\') {
+			buf.append("\\\\");
+		} else if (b >= ' ') {
+			buf.append((char)b);
+		} else if (b == '\r') {
+			buf.append("\\r");
+		} else if (b == '\n') {
+			buf.append("\\n");
+		} else if (b == '\t') {
+			buf.append("\\t");
+		} else {
+			buf.append("\\x").append(TypeUtil.toHexString(b));
+		}
     }
     
 
@@ -1135,8 +1157,9 @@ public class BufferUtil
      */
     public static String toHexSummary(ByteBuffer buffer)
     {
-        if (buffer == null)
-            return "null";
+        if (buffer == null) {
+			return "null";
+		}
         StringBuilder buf = new StringBuilder();
         
         buf.append("b[").append(buffer.remaining()).append("]=");
@@ -1153,13 +1176,13 @@ public class BufferUtil
     }
 
 
-    private final static int[] decDivisors =
+    private static final int[] decDivisors =
             {1000000000, 100000000, 10000000, 1000000, 100000, 10000, 1000, 100, 10, 1};
 
-    private final static int[] hexDivisors =
+    private static final int[] hexDivisors =
             {0x10000000, 0x1000000, 0x100000, 0x10000, 0x1000, 0x100, 0x10, 0x1};
 
-    private final static long[] decDivisorsL =
+    private static final long[] decDivisorsL =
             {1000000000000000000L, 100000000000000000L, 10000000000000000L, 1000000000000000L, 100000000000000L, 10000000000000L, 1000000000000L, 100000000000L,
                     10000000000L, 1000000000L, 100000000L, 10000000L, 1000000L, 100000L, 10000L, 1000L, 100L, 10L, 1L};
 
@@ -1171,25 +1194,31 @@ public class BufferUtil
 
     public static boolean isPrefix(ByteBuffer prefix, ByteBuffer buffer)
     {
-        if (prefix.remaining() > buffer.remaining())
-            return false;
+        if (prefix.remaining() > buffer.remaining()) {
+			return false;
+		}
         int bi = buffer.position();
-        for (int i = prefix.position(); i < prefix.limit(); i++)
-            if (prefix.get(i) != buffer.get(bi++))
-                return false;
+        for (int i = prefix.position(); i < prefix.limit(); i++) {
+			if (prefix.get(i) != buffer.get(bi++)) {
+				return false;
+			}
+		}
         return true;
     }
 
     public static ByteBuffer ensureCapacity(ByteBuffer buffer, int capacity)
     {
-        if (buffer==null)
-            return allocate(capacity);
+        if (buffer==null) {
+			return allocate(capacity);
+		}
         
-        if (buffer.capacity()>=capacity)
-            return buffer;
+        if (buffer.capacity()>=capacity) {
+			return buffer;
+		}
         
-        if (buffer.hasArray())
-            return ByteBuffer.wrap(Arrays.copyOfRange(buffer.array(), buffer.arrayOffset(), buffer.arrayOffset()+capacity),buffer.position(),buffer.remaining());
+        if (buffer.hasArray()) {
+			return ByteBuffer.wrap(Arrays.copyOfRange(buffer.array(), buffer.arrayOffset(), buffer.arrayOffset()+capacity),buffer.position(),buffer.remaining());
+		}
         
         throw new UnsupportedOperationException();
     }

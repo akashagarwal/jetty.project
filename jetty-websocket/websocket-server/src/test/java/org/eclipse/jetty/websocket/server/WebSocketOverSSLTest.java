@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.server;
 
@@ -64,7 +59,7 @@ public class WebSocketOverSSLTest
     }
 
     /**
-     * Test the requirement of issuing socket and receiving echo response
+     * Test the requirement of issuing socket and receiving echo response.
      * @throws Exception on test failure
      */
     @Test
@@ -88,8 +83,9 @@ public class WebSocketOverSSLTest
             String msg = "this is an echo ... cho ... ho ... o";
             RemoteEndpoint remote = session.getRemote();
             remote.sendString(msg);
-            if (remote.getBatchMode() == BatchMode.ON)
-                remote.flush();
+            if (remote.getBatchMode() == BatchMode.ON) {
+				remote.flush();
+			}
 
             // Read frame (hopefully text frame)
             clientSocket.messages.awaitEventCount(1,30,TimeUnit.SECONDS);
@@ -106,7 +102,7 @@ public class WebSocketOverSSLTest
     }
 
     /**
-     * Test that server session reports as secure
+     * Test that server session reports as secure.
      * @throws Exception on test failure
      */
     @Test
@@ -130,8 +126,9 @@ public class WebSocketOverSSLTest
             // Generate text frame
             RemoteEndpoint remote = session.getRemote();
             remote.sendString("session.isSecure");
-            if (remote.getBatchMode() == BatchMode.ON)
-                remote.flush();
+            if (remote.getBatchMode() == BatchMode.ON) {
+				remote.flush();
+			}
 
             // Read frame (hopefully text frame)
             clientSocket.messages.awaitEventCount(1,30,TimeUnit.SECONDS);
@@ -172,8 +169,9 @@ public class WebSocketOverSSLTest
             // Generate text frame
             RemoteEndpoint remote = session.getRemote();
             remote.sendString("session.upgradeRequest.requestURI");
-            if (remote.getBatchMode() == BatchMode.ON)
-                remote.flush();
+            if (remote.getBatchMode() == BatchMode.ON) {
+				remote.flush();
+			}
 
             // Read frame (hopefully text frame)
             clientSocket.messages.awaitEventCount(1,30,TimeUnit.SECONDS);

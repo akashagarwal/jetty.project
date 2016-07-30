@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.proxy;
 
@@ -69,10 +64,7 @@ public class ConnectHandlerSSLTest extends AbstractConnectHandlerTest
     public void testGETRequest() throws Exception
     {
         String hostPort = "localhost:" + serverConnector.getLocalPort();
-        String request = "" +
-                "CONNECT " + hostPort + " HTTP/1.1\r\n" +
-                "Host: " + hostPort + "\r\n" +
-                "\r\n";
+        String request = "CONNECT " + hostPort + " HTTP/1.1\r\n" + "Host: " + hostPort + "\r\n" + "\r\n";
         try (Socket socket = newSocket())
         {
             OutputStream output = socket.getOutputStream();
@@ -107,10 +99,7 @@ public class ConnectHandlerSSLTest extends AbstractConnectHandlerTest
     public void testPOSTRequests() throws Exception
     {
         String hostPort = "localhost:" + serverConnector.getLocalPort();
-        String request = "" +
-                "CONNECT " + hostPort + " HTTP/1.1\r\n" +
-                "Host: " + hostPort + "\r\n" +
-                "\r\n";
+        String request = "CONNECT " + hostPort + " HTTP/1.1\r\n" + "Host: " + hostPort + "\r\n" + "\r\n";
         try (Socket socket = newSocket())
         {
             OutputStream output = socket.getOutputStream();
@@ -129,12 +118,7 @@ public class ConnectHandlerSSLTest extends AbstractConnectHandlerTest
 
                 for (int i = 0; i < 10; ++i)
                 {
-                    request = "" +
-                            "POST /echo?param=" + i + " HTTP/1.1\r\n" +
-                            "Host: " + hostPort + "\r\n" +
-                            "Content-Length: 5\r\n" +
-                            "\r\n" +
-                            "HELLO";
+                    request = "POST /echo?param=" + i + " HTTP/1.1\r\n" + "Host: " + hostPort + "\r\n" + "Content-Length: 5\r\n" + "\r\n" + "HELLO";
                     output.write(request.getBytes(StandardCharsets.UTF_8));
                     output.flush();
 
@@ -167,22 +151,25 @@ public class ConnectHandlerSSLTest extends AbstractConnectHandlerTest
             {
                 StringBuilder builder = new StringBuilder();
                 builder.append(httpRequest.getMethod()).append(" ").append(uri);
-                if (httpRequest.getQueryString() != null)
-                    builder.append("?").append(httpRequest.getQueryString());
+                if (httpRequest.getQueryString() != null) {
+					builder.append("?").append(httpRequest.getQueryString());
+				}
 
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 InputStream input = httpRequest.getInputStream();
                 int read;
-                while ((read = input.read()) >= 0)
-                    baos.write(read);
+                while ((read = input.read()) >= 0) {
+					baos.write(read);
+				}
                 baos.close();
                 byte[] bytes = baos.toByteArray();
 
                 ServletOutputStream output = httpResponse.getOutputStream();
-                if (bytes.length == 0)
-                    output.print(builder.toString());
-                else
-                    output.println(builder.toString());
+                if (bytes.length == 0) {
+					output.print(builder.toString());
+				} else {
+					output.println(builder.toString());
+				}
                 output.write(bytes);
             }
             else

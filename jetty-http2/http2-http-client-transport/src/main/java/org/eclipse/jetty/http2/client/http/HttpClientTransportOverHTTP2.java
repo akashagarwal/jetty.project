@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http2.client.http;
 
@@ -125,8 +120,9 @@ public class HttpClientTransportOverHTTP2 extends ContainerLifeCycle implements 
 
         HttpDestinationOverHTTP2 destination = (HttpDestinationOverHTTP2)context.get(HTTP_DESTINATION_CONTEXT_KEY);
         SslContextFactory sslContextFactory = null;
-        if (HttpScheme.HTTPS.is(destination.getScheme()))
-            sslContextFactory = httpClient.getSslContextFactory();
+        if (HttpScheme.HTTPS.is(destination.getScheme())) {
+			sslContextFactory = httpClient.getSslContextFactory();
+		}
 
         client.connect(sslContextFactory, address, listenerPromise, listenerPromise, context);
     }
@@ -140,8 +136,9 @@ public class HttpClientTransportOverHTTP2 extends ContainerLifeCycle implements 
         HttpDestinationOverHTTP2 destination = (HttpDestinationOverHTTP2)context.get(HTTP_DESTINATION_CONTEXT_KEY);
         ProxyConfiguration.Proxy proxy = destination.getProxy();
         boolean ssl = proxy == null ? HttpScheme.HTTPS.is(destination.getScheme()) : proxy.isSecure();
-        if (ssl && isUseALPN())
-            factory = new ALPNClientConnectionFactory(client.getExecutor(), factory, client.getProtocols());
+        if (ssl && isUseALPN()) {
+			factory = new ALPNClientConnectionFactory(client.getExecutor(), factory, client.getProtocols());
+		}
         return factory.newConnection(endPoint, context);
     }
 
@@ -201,8 +198,9 @@ public class HttpClientTransportOverHTTP2 extends ContainerLifeCycle implements 
         public void onSettings(Session session, SettingsFrame frame)
         {
             Map<Integer, Integer> settings = frame.getSettings();
-            if (settings.containsKey(SettingsFrame.MAX_CONCURRENT_STREAMS))
-                destination().setMaxRequestsPerConnection(settings.get(SettingsFrame.MAX_CONCURRENT_STREAMS));
+            if (settings.containsKey(SettingsFrame.MAX_CONCURRENT_STREAMS)) {
+				destination().setMaxRequestsPerConnection(settings.get(SettingsFrame.MAX_CONCURRENT_STREAMS));
+			}
         }
 
         @Override
@@ -221,8 +219,9 @@ public class HttpClientTransportOverHTTP2 extends ContainerLifeCycle implements 
         public void onFailure(Session session, Throwable failure)
         {
             HttpConnectionOverHTTP2 c = connection;
-            if (c != null)
-                c.close(failure);
+            if (c != null) {
+				c.close(failure);
+			}
         }
     }
 }

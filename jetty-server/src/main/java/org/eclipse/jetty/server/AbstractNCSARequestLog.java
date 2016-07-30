@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 
@@ -55,9 +50,9 @@ public abstract class AbstractNCSARequestLog extends AbstractLifeCycle implement
     private String[] _ignorePaths;
     private boolean _extended;
     private transient PathMap<String> _ignorePathMap;
-    private boolean _logLatency = false;
-    private boolean _logCookies = false;
-    private boolean _logServer = false;
+    private boolean _logLatency;
+    private boolean _logCookies;
+    private boolean _logServer;
     private boolean _preferProxiedForAddress;
     private transient DateCache _logDateCache;
     private String _logDateFormat = "dd/MMM/yyyy:HH:mm:ss Z";
@@ -67,7 +62,7 @@ public abstract class AbstractNCSARequestLog extends AbstractLifeCycle implement
     /* ------------------------------------------------------------ */
 
     /**
-     * Is logging enabled
+     * Is logging enabled.
      * @return true if logging is enabled
      */
     protected abstract boolean isEnabled();
@@ -81,14 +76,15 @@ public abstract class AbstractNCSARequestLog extends AbstractLifeCycle implement
      */
     public abstract void write(String requestEntry) throws IOException;
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
 
     private void append(StringBuilder buf,String s)
     {
-        if (s==null || s.length()==0)
-            buf.append('-');
-        else
-            buf.append(s);
+        if (s==null || s.length()==0) {
+			buf.append('-');
+		} else {
+			buf.append(s);
+		}
     }
 
     /**
@@ -101,11 +97,13 @@ public abstract class AbstractNCSARequestLog extends AbstractLifeCycle implement
     {
         try
         {
-            if (_ignorePathMap != null && _ignorePathMap.getMatch(request.getRequestURI()) != null)
-                return;
+            if (_ignorePathMap != null && _ignorePathMap.getMatch(request.getRequestURI()) != null) {
+				return;
+			}
 
-            if (!isEnabled())
-                return;
+            if (!isEnabled()) {
+				return;
+			}
 
             StringBuilder buf = _buffers.get();
             buf.setLength(0);
@@ -122,8 +120,9 @@ public abstract class AbstractNCSARequestLog extends AbstractLifeCycle implement
                 addr = request.getHeader(HttpHeader.X_FORWARDED_FOR.toString());
             }
 
-            if (addr == null)
-                addr = request.getRemoteAddr();
+            if (addr == null) {
+				addr = request.getRemoteAddr();
+			}
 
             buf.append(addr);
             buf.append(" - ");
@@ -131,10 +130,11 @@ public abstract class AbstractNCSARequestLog extends AbstractLifeCycle implement
             append(buf,(authentication instanceof Authentication.User)?((Authentication.User)authentication).getUserIdentity().getUserPrincipal().getName():null);
 
             buf.append(" [");
-            if (_logDateCache != null)
-                buf.append(_logDateCache.format(request.getTimeStamp()));
-            else
-                buf.append(request.getTimeStamp());
+            if (_logDateCache != null) {
+				buf.append(_logDateCache.format(request.getTimeStamp()));
+			} else {
+				buf.append(request.getTimeStamp());
+			}
 
             buf.append("] \"");
             append(buf,request.getMethod());
@@ -147,52 +147,58 @@ public abstract class AbstractNCSARequestLog extends AbstractLifeCycle implement
             int status = response.getCommittedMetaData().getStatus();
             if (status >=0)
             {
-                buf.append((char)('0' + ((status / 100) % 10)));
-                buf.append((char)('0' + ((status / 10) % 10)));
-                buf.append((char)('0' + (status % 10)));
-            }
-            else
-                buf.append(status);
+                buf.append((char)('0' + (status / 100) % 10));
+                buf.append((char)('0' + (status / 10) % 10));
+                buf.append((char)('0' + status % 10));
+            } else {
+				buf.append(status);
+			}
 
             long written = response.getHttpChannel().getBytesWritten();
             if (written >= 0)
             {
                 buf.append(' ');
-                if (written > 99999)
-                    buf.append(written);
-                else
+                if (written > 99999) {
+					buf.append(written);
+				} else
                 {
-                    if (written > 9999)
-                        buf.append((char)('0' + ((written / 10000) % 10)));
-                    if (written > 999)
-                        buf.append((char)('0' + ((written / 1000) % 10)));
-                    if (written > 99)
-                        buf.append((char)('0' + ((written / 100) % 10)));
-                    if (written > 9)
-                        buf.append((char)('0' + ((written / 10) % 10)));
-                    buf.append((char)('0' + (written) % 10));
+                    if (written > 9999) {
+						buf.append((char)('0' + (written / 10000) % 10));
+					}
+                    if (written > 999) {
+						buf.append((char)('0' + (written / 1000) % 10));
+					}
+                    if (written > 99) {
+						buf.append((char)('0' + (written / 100) % 10));
+					}
+                    if (written > 9) {
+						buf.append((char)('0' + (written / 10) % 10));
+					}
+                    buf.append((char)('0' + written % 10));
                 }
                 buf.append(' ');
-            }
-            else
-                buf.append(" - ");
+            } else {
+				buf.append(" - ");
+			}
 
 
-            if (_extended)
-                logExtended(buf, request, response);
+            if (_extended) {
+				logExtended(buf, request, response);
+			}
 
             if (_logCookies)
             {
                 Cookie[] cookies = request.getCookies();
-                if (cookies == null || cookies.length == 0)
-                    buf.append(" -");
-                else
+                if (cookies == null || cookies.length == 0) {
+					buf.append(" -");
+				} else
                 {
                     buf.append(" \"");
                     for (int i = 0; i < cookies.length; i++)
                     {
-                        if (i != 0)
-                            buf.append(';');
+                        if (i != 0) {
+							buf.append(';');
+						}
                         buf.append(cookies[i].getName());
                         buf.append('=');
                         buf.append(cookies[i].getValue());
@@ -231,9 +237,9 @@ public abstract class AbstractNCSARequestLog extends AbstractLifeCycle implement
     protected void logExtended(Request request, StringBuilder b) throws IOException
     {
         String referer = request.getHeader(HttpHeader.REFERER.toString());
-        if (referer == null)
-            b.append("\"-\" ");
-        else
+        if (referer == null) {
+			b.append("\"-\" ");
+		} else
         {
             b.append('"');
             b.append(referer);
@@ -241,9 +247,9 @@ public abstract class AbstractNCSARequestLog extends AbstractLifeCycle implement
         }
 
         String agent = request.getHeader(HttpHeader.USER_AGENT.toString());
-        if (agent == null)
-            b.append("\"-\"");
-        else
+        if (agent == null) {
+			b.append("\"-\"");
+		} else
         {
             b.append('"');
             b.append(agent);
@@ -296,7 +302,7 @@ public abstract class AbstractNCSARequestLog extends AbstractLifeCycle implement
     }
 
     /**
-     * Retrieve log cookies flag
+     * Retrieve log cookies flag.
      *
      * @return value of the flag
      */
@@ -424,11 +430,12 @@ public abstract class AbstractNCSARequestLog extends AbstractLifeCycle implement
         if (_ignorePaths != null && _ignorePaths.length > 0)
         {
             _ignorePathMap = new PathMap<>();
-            for (int i = 0; i < _ignorePaths.length; i++)
-                _ignorePathMap.put(_ignorePaths[i], _ignorePaths[i]);
-        }
-        else
-            _ignorePathMap = null;
+            for (int i = 0; i < _ignorePaths.length; i++) {
+				_ignorePathMap.put(_ignorePaths[i], _ignorePaths[i]);
+			}
+        } else {
+			_ignorePathMap = null;
+		}
 
         super.doStart();
     }

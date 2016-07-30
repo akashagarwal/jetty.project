@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.jaas.spi;
 
@@ -48,7 +43,7 @@ public class JDBCLoginModule extends AbstractDatabaseLoginModule
     private String dbPassword;
 
     /**
-     * Get a connection from the DriverManager
+     * Get a connection from the DriverManager.
      * @see AbstractDatabaseLoginModule#getConnection()
      * @return the connection for this datasource
      * @throws Exception if unable to get the connection
@@ -56,12 +51,13 @@ public class JDBCLoginModule extends AbstractDatabaseLoginModule
     public Connection getConnection ()
     throws Exception
     {
-        if (!((dbDriver != null)
-                &&
-                (dbUrl != null)))
-            throw new IllegalStateException ("Database connection information not configured");
+        if (dbDriver == null || dbUrl == null) {
+			throw new IllegalStateException ("Database connection information not configured");
+		}
 
-        if(LOG.isDebugEnabled())LOG.debug("Connecting using dbDriver="+dbDriver+"+ dbUserName="+dbUserName+", dbPassword="+dbUrl);
+        if(LOG.isDebugEnabled()) {
+			LOG.debug("Connecting using dbDriver="+dbDriver+"+ dbUserName="+dbUserName+", dbPassword="+dbUrl);
+		}
 
         return DriverManager.getConnection (dbUrl,
                 dbUserName,
@@ -96,14 +92,17 @@ public class JDBCLoginModule extends AbstractDatabaseLoginModule
             dbUserName = (String)options.get("dbUserName");
             dbPassword = (String)options.get("dbPassword");
 
-            if (dbUserName == null)
-                dbUserName = "";
+            if (dbUserName == null) {
+				dbUserName = "";
+			}
 
-            if (dbPassword == null)
-                dbPassword = "";
+            if (dbPassword == null) {
+				dbPassword = "";
+			}
 
-            if (dbDriver != null)
-                Loader.loadClass(this.getClass(), dbDriver).newInstance();
+            if (dbDriver != null) {
+				Loader.loadClass(getClass(), dbDriver).newInstance();
+			}
         }
         catch (ClassNotFoundException e)
         {

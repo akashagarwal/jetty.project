@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util;
 
@@ -125,8 +120,9 @@ public class IteratingCallbackTest
             public void run()
             {
                 cb.iterate();
-                if (!cb.isSucceeded())
-                    scheduler.schedule(this, 50, TimeUnit.MILLISECONDS);
+                if (!cb.isSucceeded()) {
+					scheduler.schedule(this, 50, TimeUnit.MILLISECONDS);
+				}
             }
         }, 49, TimeUnit.MILLISECONDS);
 
@@ -148,10 +144,11 @@ public class IteratingCallbackTest
                 processed++;
                 if (i-- > 1)
                 {
-                    if (i > 5)
-                        succeeded(); // fake a completed IO operation
-                    else
-                        failed(new Exception("testing"));
+                    if (i > 5) {
+						succeeded(); // fake a completed IO operation
+					} else {
+						failed(new Exception("testing"));
+					}
                     return Action.SCHEDULED;
                 }
                 return Action.SUCCEEDED;
@@ -288,7 +285,7 @@ public class IteratingCallbackTest
         Assert.assertTrue(failureLatch.await(5, TimeUnit.SECONDS));
     }
 
-    private abstract static class TestCB extends IteratingCallback
+    private static abstract class TestCB extends IteratingCallback
     {
         protected Runnable successTask = new Runnable()
         {
@@ -307,7 +304,7 @@ public class IteratingCallbackTest
             }
         };
         protected CountDownLatch completed = new CountDownLatch(1);
-        protected int processed = 0;
+        protected int processed;
 
         @Override
         protected void onCompleteSuccess()

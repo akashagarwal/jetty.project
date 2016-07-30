@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.proxy;
 
@@ -57,10 +52,12 @@ public class ProxyServlet extends AbstractProxyServlet
         if (_log.isDebugEnabled())
         {
             StringBuffer uri = request.getRequestURL();
-            if (request.getQueryString() != null)
-                uri.append("?").append(request.getQueryString());
-            if (_log.isDebugEnabled())
-                _log.debug("{} rewriting: {} -> {}", requestId, uri, rewrittenTarget);
+            if (request.getQueryString() != null) {
+				uri.append("?").append(request.getQueryString());
+			}
+            if (_log.isDebugEnabled()) {
+				_log.debug("{} rewriting: {} -> {}", requestId, uri, rewrittenTarget);
+			}
         }
 
         if (rewrittenTarget == null)
@@ -82,8 +79,9 @@ public class ProxyServlet extends AbstractProxyServlet
         asyncContext.setTimeout(0);
         proxyRequest.timeout(getTimeout(), TimeUnit.MILLISECONDS);
 
-        if (hasContent(request))
-            proxyRequest.content(proxyRequestContent(request, response, proxyRequest));
+        if (hasContent(request)) {
+			proxyRequest.content(proxyRequestContent(request, response, proxyRequest));
+		}
 
         sendProxyRequest(request, response, proxyRequest);
     }
@@ -103,8 +101,9 @@ public class ProxyServlet extends AbstractProxyServlet
     {
         try
         {
-            if (_log.isDebugEnabled())
-                _log.debug("{} proxying content to downstream: {} bytes", getRequestId(request), length);
+            if (_log.isDebugEnabled()) {
+				_log.debug("{} proxying content to downstream: {} bytes", getRequestId(request), length);
+			}
             response.getOutputStream().write(buffer, offset, length);
             callback.succeeded();
         }
@@ -192,12 +191,14 @@ public class ProxyServlet extends AbstractProxyServlet
         @Override
         public void onComplete(Result result)
         {
-            if (result.isSucceeded())
-                onProxyResponseSuccess(request, response, result.getResponse());
-            else
-                onProxyResponseFailure(request, response, result.getResponse(), result.getFailure());
-            if (_log.isDebugEnabled())
-                _log.debug("{} proxying complete", getRequestId(request));
+            if (result.isSucceeded()) {
+				onProxyResponseSuccess(request, response, result.getResponse());
+			} else {
+				onProxyResponseFailure(request, response, result.getResponse(), result.getFailure());
+			}
+            if (_log.isDebugEnabled()) {
+				_log.debug("{} proxying complete", getRequestId(request));
+			}
         }
     }
 
@@ -224,8 +225,9 @@ public class ProxyServlet extends AbstractProxyServlet
         @Override
         protected ByteBuffer onRead(byte[] buffer, int offset, int length)
         {
-            if (_log.isDebugEnabled())
-                _log.debug("{} proxying content to upstream: {} bytes", getRequestId(request), length);
+            if (_log.isDebugEnabled()) {
+				_log.debug("{} proxying content to upstream: {} bytes", getRequestId(request), length);
+			}
             return onRequestContent(request, proxyRequest, buffer, offset, length);
         }
 

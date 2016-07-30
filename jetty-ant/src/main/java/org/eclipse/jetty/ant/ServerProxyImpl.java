@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2012 Sabre Holdings.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 
 package org.eclipse.jetty.ant;
@@ -79,23 +74,23 @@ public class ServerProxyImpl implements ServerProxy
     /** List of added web applications. */
     private List<AntWebAppContext> webApplications = new ArrayList<AntWebAppContext>();
 
-    /** other contexts to deploy */
+    /** Other contexts to deploy. */
     private ContextHandlers contextHandlers;
 
-    /** scan interval for changed files */
+    /** Scan interval for changed files. */
     private int scanIntervalSecs;
 
-    /** port to listen for stop command */
+    /** Port to listen for stop command. */
     private int stopPort;
 
-    /** security key for stop command */
+    /** Security key for stop command. */
     private String stopKey;
 
-    /** wait for all jetty threads to exit or continue */
+    /** Wait for all jetty threads to exit or continue. */
     private boolean daemon;
 
 
-    private boolean configured = false;
+    private boolean configured;
 
 
     
@@ -239,9 +234,6 @@ public class ServerProxyImpl implements ServerProxy
     }
 
 
-    /**
-     * @see org.eclipse.jetty.ant.utils.ServerProxy#start()
-     */
     public void start()
     {
         try
@@ -256,21 +248,22 @@ public class ServerProxyImpl implements ServerProxy
             
             String host = ((ServerConnector)server.getConnectors()[0]).getHost();
             
-            if (host == null)
+            if (host != null)
             {
-                System.setProperty("jetty.ant.server.host", "localhost");
+                System.setProperty("jetty.ant.server.host", host);
             }
             else
             {
-                System.setProperty("jetty.ant.server.host", host);
+                System.setProperty("jetty.ant.server.host", "localhost");
             }
             
             startScanners();
             
             TaskLog.log("Jetty AntTask Started");
 
-            if (!daemon)
-                server.join();
+            if (!daemon) {
+				server.join();
+			}
         }
         catch (InterruptedException e)
         {
@@ -286,9 +279,6 @@ public class ServerProxyImpl implements ServerProxy
 
 
   
-    /**
-     * @see org.eclipse.jetty.ant.utils.ServerProxy#getProxiedObject()
-     */
     public Object getProxiedObject()
     {
         return server;
@@ -348,8 +338,9 @@ public class ServerProxyImpl implements ServerProxy
      */
     private void configure()
     {
-        if (configured)
-            return;
+        if (configured) {
+			return;
+		}
         
         configured = true;
 
@@ -361,8 +352,9 @@ public class ServerProxyImpl implements ServerProxy
             monitor.setExitVm(false);
         }
         
-        if (tempDirectory != null && !tempDirectory.exists())
-            tempDirectory.mkdirs();
+        if (tempDirectory != null && !tempDirectory.exists()) {
+			tempDirectory.mkdirs();
+		}
         
         // Applies external configuration via jetty.xml
         applyJettyXml();
@@ -398,21 +390,19 @@ public class ServerProxyImpl implements ServerProxy
     }
     
     
-    /**
-     * 
-     */
     private void configureHandlers()
     {
         RequestLogHandler requestLogHandler = new RequestLogHandler();
-        if (requestLog != null)
-            requestLogHandler.setRequestLog(requestLog);
+        if (requestLog != null) {
+			requestLogHandler.setRequestLog(requestLog);
+		}
 
-        contexts = (ContextHandlerCollection) server
+        contexts = server
                 .getChildHandlerByClass(ContextHandlerCollection.class);
         if (contexts == null)
         {
             contexts = new ContextHandlerCollection();
-            HandlerCollection handlers = (HandlerCollection) server
+            HandlerCollection handlers = server
                     .getChildHandlerByClass(HandlerCollection.class);
             if (handlers == null)
             {
@@ -430,8 +420,9 @@ public class ServerProxyImpl implements ServerProxy
         //if there are any extra contexts to deploy
         if (contextHandlers != null && contextHandlers.getContextHandlers() != null)
         {
-            for (ContextHandler c:contextHandlers.getContextHandlers())
-                contexts.addHandler(c);
+            for (ContextHandler c:contextHandlers.getContextHandlers()) {
+				contexts.addHandler(c);
+			}
         }
     }
 
@@ -480,8 +471,9 @@ public class ServerProxyImpl implements ServerProxy
     {
         for (AntWebAppContext awc:webApplications)
         {
-            if (scanIntervalSecs <= 0)
-                return;
+            if (scanIntervalSecs <= 0) {
+				return;
+			}
 
             List<File> scanList = awc.getScanFiles();
  
@@ -498,16 +490,14 @@ public class ServerProxyImpl implements ServerProxy
     }
     
     
-    /**
-     * 
-     */
     private void configureWebApps()
     {
         for (AntWebAppContext awc:webApplications)
         {
             awc.setAttribute(AntWebAppContext.BASETEMPDIR, tempDirectory);
-            if (contexts != null)
-                contexts.addHandler(awc);
+            if (contexts != null) {
+				contexts.addHandler(awc);
+			}
         }
     }
     

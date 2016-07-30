@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.annotations;
 
@@ -39,13 +34,13 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 /**
- * TestServletAnnotations
+ * TestServletAnnotations.
  */
 public class TestServletAnnotations
 {
     public class TestWebServletAnnotationHandler extends WebServletAnnotationHandler
     {
-        List<DiscoveredAnnotation> _list = null;
+        List<DiscoveredAnnotation> _list;
 
         public TestWebServletAnnotationHandler(WebAppContext context, List<DiscoveredAnnotation> list)
         {
@@ -140,10 +135,10 @@ public class TestServletAnnotations
         assertNotNull(resultMappings);
         assertEquals(1, resultMappings.length);
         assertEquals(2, resultMappings[0].getPathSpecs().length);
-        resultMappings[0].getServletName().equals("DServlet");
+        "DServlet".equals(resultMappings[0].getServletName());
         for (String s:resultMappings[0].getPathSpecs())
         {
-            assertTrue (s.equals("/") || s.equals("/bah/*"));
+            assertTrue ("/".equals(s) || "/bah/*".equals(s));
         }
     }
 
@@ -181,22 +176,23 @@ public class TestServletAnnotations
         assertEquals(2, resultMappings.length);
         for (ServletMapping r:resultMappings)
         {
-           if (r.getServletName().equals("default"))
+           if ("default".equals(r.getServletName()))
            {
                assertEquals(1,r.getPathSpecs().length);
                assertEquals("/other", r.getPathSpecs()[0]);
            }
-           else if (r.getServletName().equals("DServlet"))
+           else if ("DServlet".equals(r.getServletName()))
            {
                assertEquals(2,r.getPathSpecs().length);
                for (String p:r.getPathSpecs())
                {
-                   if (!p.equals("/") && !p.equals("/bah/*"))
-                       fail("Unexpected path");
+                   if (!"/".equals(p) && !"/bah/*".equals(p)) {
+					fail("Unexpected path");
+				}
                }
-           }
-           else
-               fail("Unexpected servlet mapping");
+           } else {
+			fail("Unexpected servlet mapping");
+		}
         }
 
     }
@@ -224,16 +220,16 @@ public class TestServletAnnotations
         assertEquals(2, resultMappings.length);
         for (ServletMapping r:resultMappings)
         {
-            if (r.getServletName().equals("DServlet"))
+            if ("DServlet".equals(r.getServletName()))
             {
                 assertEquals(2, r.getPathSpecs().length);
             }
-            else if (r.getServletName().equals("foo"))
+            else if ("foo".equals(r.getServletName()))
             {
                 assertEquals(1, r.getPathSpecs().length);
-            }
-            else
-                fail("Unexpected servlet name");
+            } else {
+				fail("Unexpected servlet name");
+			}
         }
     }
 
@@ -268,8 +264,9 @@ public class TestServletAnnotations
         for (ServletMapping r:resultMappings)
         {
             assertEquals(1, r.getPathSpecs().length);
-            if (!r.getPathSpecs()[0].equals("/default") && !r.getPathSpecs()[0].equals("/other"))
-                fail("Unexpected path in mapping");
+            if (!"/default".equals(r.getPathSpecs()[0]) && !"/other".equals(r.getPathSpecs()[0])) {
+				fail("Unexpected path in mapping");
+			}
         }
 
     }
@@ -293,8 +290,9 @@ public class TestServletAnnotations
         assertEquals(2, resultMappings[0].getPathSpecs().length);
         for (String s:resultMappings[0].getPathSpecs())
         {
-            if (!s.equals("/") && !s.equals("/bah/*"))
-                fail("Unexpected path mapping");
+            if (!"/".equals(s) && !"/bah/*".equals(s)) {
+				fail("Unexpected path mapping");
+			}
         }
     }
 

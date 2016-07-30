@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.jndi.java;
 
@@ -38,7 +33,7 @@ import org.eclipse.jetty.util.log.Logger;
 
 
 /** 
- * javaRootURLContext
+ * JavaRootURLContext
  * <p>
  * This is the root of the <code>java:</code> url namespace
  * <p>
@@ -286,20 +281,25 @@ public class javaRootURLContext implements Context
     protected Name stripProtocol (Name name)
         throws NamingException
     {
-        if ((name != null) && (name.size() > 0))
+        if (name != null && name.size() > 0)
         {
             String head = name.get(0);
 
-            if(__log.isDebugEnabled())__log.debug("Head element of name is: "+head);
+            if(__log.isDebugEnabled()) {
+				__log.debug("Head element of name is: "+head);
+			}
 
             if (head.startsWith(URL_PREFIX))
             {
                 head = head.substring (URL_PREFIX.length());
                 name.remove(0);
-                if (head.length() > 0)
-                    name.add(0, head);
+                if (head.length() > 0) {
+					name.add(0, head);
+				}
 
-                if(__log.isDebugEnabled())__log.debug("name modified to "+name.toString());
+                if(__log.isDebugEnabled()) {
+					__log.debug("name modified to "+name);
+				}
             }
         }
 
@@ -312,11 +312,9 @@ public class javaRootURLContext implements Context
     {
         String newName = name;
 
-        if ((name != null) && (!name.equals("")))
-        {
-            if (name.startsWith(URL_PREFIX))
-               newName = name.substring(URL_PREFIX.length());
-        }
+        if (name != null && !"".equals(name) && name.startsWith(URL_PREFIX)) {
+			newName = name.substring(URL_PREFIX.length());
+		}
 
         return newName;
     }

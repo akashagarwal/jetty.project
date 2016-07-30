@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 
@@ -33,7 +28,7 @@ public class HttpConnectionFactory extends AbstractConnectionFactory implements 
 {
     private final HttpConfiguration _config;
     private HttpCompliance _httpCompliance;
-    private boolean _recordHttpComplianceViolations = false;
+    private boolean _recordHttpComplianceViolations;
 
     public HttpConnectionFactory()
     {
@@ -50,8 +45,9 @@ public class HttpConnectionFactory extends AbstractConnectionFactory implements 
         super(HttpVersion.HTTP_1_1.asString());
         _config=config;
         _httpCompliance=compliance==null?HttpCompliance.RFC7230:compliance;
-        if (config==null)
-            throw new IllegalArgumentException("Null HttpConfiguration");
+        if (config==null) {
+			throw new IllegalArgumentException("Null HttpConfiguration");
+		}
         addBean(_config);
     }
 

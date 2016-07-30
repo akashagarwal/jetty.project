@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.annotations;
 
@@ -25,7 +20,7 @@ import org.eclipse.jetty.util.TypeUtil;
 import org.objectweb.asm.Type;
 
 /**
- * Annotation Processing Utilities
+ * Annotation Processing Utilities.
  */
 public class Util
 { 
@@ -53,8 +48,7 @@ public class Util
      */
     public static boolean isServletType (Class c)
     {    
-        boolean isServlet = false;
-        if (javax.servlet.Servlet.class.isAssignableFrom(c) ||
+        return javax.servlet.Servlet.class.isAssignableFrom(c) ||
                 javax.servlet.Filter.class.isAssignableFrom(c) || 
                 javax.servlet.ServletContextListener.class.isAssignableFrom(c) ||
                 javax.servlet.ServletContextAttributeListener.class.isAssignableFrom(c) ||
@@ -62,17 +56,13 @@ public class Util
                 javax.servlet.ServletRequestAttributeListener.class.isAssignableFrom(c) ||
                 javax.servlet.http.HttpSessionListener.class.isAssignableFrom(c) ||
                 javax.servlet.http.HttpSessionAttributeListener.class.isAssignableFrom(c) ||
-                javax.servlet.AsyncListener.class.isAssignableFrom(c))
-
-                isServlet=true;
-        
-        return isServlet;  
+                javax.servlet.AsyncListener.class.isAssignableFrom(c);  
     }
     
     
     public static boolean supportsResourceInjection (Class c)
     {
-        if (javax.servlet.Servlet.class.isAssignableFrom(c) ||
+        return javax.servlet.Servlet.class.isAssignableFrom(c) ||
                 javax.servlet.Filter.class.isAssignableFrom(c) || 
                 javax.servlet.ServletContextListener.class.isAssignableFrom(c) ||
                 javax.servlet.ServletContextAttributeListener.class.isAssignableFrom(c) ||
@@ -82,16 +72,13 @@ public class Util
                 javax.servlet.http.HttpSessionAttributeListener.class.isAssignableFrom(c) ||
                 javax.servlet.http.HttpSessionIdListener.class.isAssignableFrom(c) ||
                 javax.servlet.AsyncListener.class.isAssignableFrom(c) ||
-                javax.servlet.http.HttpUpgradeHandler.class.isAssignableFrom(c))
-            return true;
-        
-        return false;
+                javax.servlet.http.HttpUpgradeHandler.class.isAssignableFrom(c);
     }
     
     
     public static boolean supportsPostConstructPreDestroy (Class c)
     {
-        if (javax.servlet.Servlet.class.isAssignableFrom(c) ||
+        return javax.servlet.Servlet.class.isAssignableFrom(c) ||
                 javax.servlet.Filter.class.isAssignableFrom(c) || 
                 javax.servlet.ServletContextListener.class.isAssignableFrom(c) ||
                 javax.servlet.ServletContextAttributeListener.class.isAssignableFrom(c) ||
@@ -101,10 +88,7 @@ public class Util
                 javax.servlet.http.HttpSessionAttributeListener.class.isAssignableFrom(c) ||
                 javax.servlet.http.HttpSessionIdListener.class.isAssignableFrom(c) ||
                 javax.servlet.AsyncListener.class.isAssignableFrom(c) ||
-                javax.servlet.http.HttpUpgradeHandler.class.isAssignableFrom(c))
-            return true;
-        
-        return false;
+                javax.servlet.http.HttpUpgradeHandler.class.isAssignableFrom(c);
     }
 
     public static boolean isEnvEntryType (Class type)
@@ -112,7 +96,7 @@ public class Util
         boolean result = false;
         for (int i=0;i<__envEntryClassTypes.length && !result;i++)
         {
-            result = (type.equals(__envEntryClassTypes[i]));
+            result = type.equals(__envEntryClassTypes[i]);
         }
         return result;
     }
@@ -122,15 +106,16 @@ public class Util
         boolean result = false;
         for (int i=0;i<__envEntryTypes.length && !result;i++)
         {
-            result = (desc.equals(__envEntryTypes[i]));
+            result = desc.equals(__envEntryTypes[i]);
         }
         return result;
     }
     
     public static String normalizePattern(String p)
     {
-        if (p!=null && p.length()>0 && !p.startsWith("/") && !p.startsWith("*"))
-            return "/"+p;
+        if (p!=null && p.length()>0 && !p.startsWith("/") && !p.startsWith("*")) {
+			return "/"+p;
+		}
         return p;
     }
     
@@ -146,8 +131,9 @@ public class Util
     public static Class[] convertTypes (Type[] types)
     throws Exception
     {
-        if (types==null)
-            return new Class[0];
+        if (types==null) {
+			return new Class[0];
+		}
         
         Class[] classArray = new Class[types.length];
         
@@ -161,8 +147,9 @@ public class Util
     public static Class convertType (Type t)
     throws Exception
     {
-        if (t == null)
-            return (Class)null;
+        if (t == null) {
+			return null;
+		}
         
         switch (t.getSort())
         {
@@ -201,7 +188,7 @@ public class Util
             }
             case Type.OBJECT:
             {
-                return (Loader.loadClass(null, t.getClassName()));
+                return Loader.loadClass(null, t.getClassName());
             }
             case Type.SHORT:
             {
@@ -219,8 +206,9 @@ public class Util
   
     public static String asCanonicalName (Type t)
     {
-        if (t == null)
-            return null;
+        if (t == null) {
+			return null;
+		}
         
         switch (t.getSort())
         {

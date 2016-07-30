@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 
@@ -54,8 +49,8 @@ public class InclusiveByteRange
 {
     private static final Logger LOG = Log.getLogger(InclusiveByteRange.class);
 
-    long first = 0;
-    long last  = 0;    
+    long first;
+    long last;    
 
     public InclusiveByteRange(long first, long last)
     {
@@ -106,16 +101,17 @@ public class InclusiveByteRange
                         int d = t.indexOf('-');
                         if (d < 0 || t.indexOf("-",d + 1) >= 0)
                         {
-                            if ("bytes".equals(t))
-                                continue;
+                            if ("bytes".equals(t)) {
+								continue;
+							}
                             LOG.warn("Bad range format: {}",t);
                             continue headers;
                         }
                         else if (d == 0)
                         {
-                            if (d + 1 < t.length())
-                                last = Long.parseLong(t.substring(d + 1).trim());
-                            else
+                            if (d + 1 < t.length()) {
+								last = Long.parseLong(t.substring(d + 1).trim());
+							} else
                             {
                                 LOG.warn("Bad range format: {}",t);
                                 continue;
@@ -125,15 +121,17 @@ public class InclusiveByteRange
                         {
                             first = Long.parseLong(t.substring(0,d).trim());
                             last = Long.parseLong(t.substring(d + 1).trim());
-                        }
-                        else
-                            first = Long.parseLong(t.substring(0,d).trim());
+                        } else {
+							first = Long.parseLong(t.substring(0,d).trim());
+						}
 
-                        if (first == -1 && last == -1)
-                            continue headers;
+                        if (first == -1 && last == -1) {
+							continue headers;
+						}
 
-                        if (first != -1 && last != -1 && (first > last))
-                            continue headers;
+                        if (first != -1 && last != -1 && first > last) {
+							continue headers;
+						}
 
                         if (first < size)
                         {
@@ -158,38 +156,41 @@ public class InclusiveByteRange
         return LazyList.getList(satRanges,true);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public long getFirst(long size)
     {
         if (first<0)
         {
             long tf=size-last;
-            if (tf<0)
-                tf=0;
+            if (tf<0) {
+				tf=0;
+			}
             return tf;
         }
         return first;
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public long getLast(long size)
     {
-        if (first<0)
-            return size-1;
+        if (first<0) {
+			return size-1;
+		}
         
-        if (last<0 ||last>=size)
-            return size-1;
+        if (last<0 ||last>=size) {
+			return size-1;
+		}
         return last;
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public long getSize(long size)
     {
         return getLast(size)-getFirst(size)+1;
     }
 
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public String toHeaderRangeString(long size)
     {
         StringBuilder sb = new StringBuilder(40);
@@ -202,7 +203,7 @@ public class InclusiveByteRange
         return sb.toString();
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public static String to416HeaderRangeString(long size)
     {
         StringBuilder sb = new StringBuilder(40);
@@ -212,14 +213,14 @@ public class InclusiveByteRange
     }
 
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public String toString()
     {
         StringBuilder sb = new StringBuilder(60);
-        sb.append(Long.toString(first));
+        sb.append(first);
         sb.append(":");
-        sb.append(Long.toString(last));
+        sb.append(last);
         return sb.toString();
     }
 

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http2.client;
 
@@ -111,8 +106,9 @@ public class PrefaceTest extends AbstractTest
             @Override
             public void onHeaders(Stream stream, HeadersFrame frame)
             {
-                if (frame.isEndStream())
-                    latch.countDown();
+                if (frame.isEndStream()) {
+					latch.countDown();
+				}
             }
         });
 
@@ -172,8 +168,9 @@ public class PrefaceTest extends AbstractTest
                 BufferUtil.clearToFill(buffer);
                 int read = socket.read(buffer);
                 BufferUtil.flipToFlush(buffer, 0);
-                if (read < 0)
-                    break;
+                if (read < 0) {
+					break;
+				}
                 parser.parse(buffer);
             }
 
@@ -231,13 +228,7 @@ public class PrefaceTest extends AbstractTest
         {
             socket.connect(new InetSocketAddress("localhost", connector.getLocalPort()));
 
-            String upgradeRequest = "" +
-                    "GET /one HTTP/1.1\r\n" +
-                    "Host: localhost\r\n" +
-                    "Connection: Upgrade, HTTP2-Settings\r\n" +
-                    "Upgrade: h2c\r\n" +
-                    "HTTP2-Settings: \r\n" +
-                    "\r\n";
+            String upgradeRequest = "GET /one HTTP/1.1\r\n" + "Host: localhost\r\n" + "Connection: Upgrade, HTTP2-Settings\r\n" + "Upgrade: h2c\r\n" + "HTTP2-Settings: \r\n" + "\r\n";
             ByteBuffer upgradeBuffer = ByteBuffer.wrap(upgradeRequest.getBytes(StandardCharsets.ISO_8859_1));
             socket.write(upgradeBuffer);
 
@@ -252,19 +243,22 @@ public class PrefaceTest extends AbstractTest
                 BufferUtil.clearToFill(buffer);
                 int read = socket.read(buffer);
                 BufferUtil.flipToFlush(buffer, 0);
-                if (read < 0)
-                    Assert.fail();
+                if (read < 0) {
+					Assert.fail();
+				}
 
                 int crlfs = 0;
                 while (buffer.hasRemaining())
                 {
                     byte b = buffer.get();
-                    if (b == '\r' || b == '\n')
-                        ++crlfs;
-                    else
-                        crlfs = 0;
-                    if (crlfs == 4)
-                        break http1;
+                    if (b == '\r' || b == '\n') {
+						++crlfs;
+					} else {
+						crlfs = 0;
+					}
+                    if (crlfs == 4) {
+						break http1;
+					}
                 }
             }
 
@@ -294,8 +288,9 @@ public class PrefaceTest extends AbstractTest
                 @Override
                 public void onSettings(SettingsFrame frame)
                 {
-                    if (frame.isReply())
-                        return;
+                    if (frame.isReply()) {
+						return;
+					}
                     Assert.assertEquals(maxConcurrentStreams, frame.getSettings().get(SettingsFrame.MAX_CONCURRENT_STREAMS));
                     clientSettingsLatch.countDown();
                 }
@@ -303,8 +298,9 @@ public class PrefaceTest extends AbstractTest
                 @Override
                 public void onHeaders(HeadersFrame frame)
                 {
-                    if (frame.isEndStream())
-                        responded.set(true);
+                    if (frame.isEndStream()) {
+						responded.set(true);
+					}
                 }
             }, 4096, 8192);
 
@@ -312,14 +308,16 @@ public class PrefaceTest extends AbstractTest
             while (true)
             {
                 parser.parse(buffer);
-                if (responded.get())
-                    break;
+                if (responded.get()) {
+					break;
+				}
 
                 BufferUtil.clearToFill(buffer);
                 int read = socket.read(buffer);
                 BufferUtil.flipToFlush(buffer, 0);
-                if (read < 0)
-                    Assert.fail();
+                if (read < 0) {
+					Assert.fail();
+				}
             }
 
             Assert.assertTrue(clientSettingsLatch.await(5, TimeUnit.SECONDS));

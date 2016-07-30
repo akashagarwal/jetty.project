@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.quickstart;
 
@@ -89,11 +84,13 @@ public class PreconfigureQuickStartWar
         // Do we need to unpack a war?
         if (war != null)
         {
-            if (war.isDirectory())
-                error("war file is directory");
+            if (war.isDirectory()) {
+				error("war file is directory");
+			}
 
-            if (!dir.exists())
-                dir.getFile().mkdirs();
+            if (!dir.exists()) {
+				dir.getFile().mkdirs();
+			}
             JarResource.newJarResource(war).copyTo(dir.getFile());
         }
         
@@ -103,8 +100,9 @@ public class PreconfigureQuickStartWar
 
         if (xml != null)
         {
-            if (xml.isDirectory() || !xml.toString().toLowerCase(Locale.ENGLISH).endsWith(".xml"))
-                error("Bad context.xml: "+xml);
+            if (xml.isDirectory() || !xml.toString().toLowerCase(Locale.ENGLISH).endsWith(".xml")) {
+				error("Bad context.xml: "+xml);
+			}
             XmlConfiguration xmlConfiguration = new XmlConfiguration(xml.getURL());
             xmlConfiguration.configure(webapp);
         }

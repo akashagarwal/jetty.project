@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.test;
 
@@ -76,9 +71,9 @@ public class HttpInputIntegrationTest
 {
     
     enum Mode { BLOCKING, ASYNC_DISPATCHED, ASYNC_OTHER_DISPATCHED, ASYNC_OTHER_WAIT }
-    public final static String EOF = "__EOF__";
-    public final static String DELAY = "__DELAY__";
-    public final static String ABORT = "__ABORT__";
+    public static final String EOF = "__EOF__";
+    public static final String DELAY = "__DELAY__";
+    public static final String ABORT = "__ABORT__";
     
     private static Server __server;
     private static HttpConfiguration __config;
@@ -275,8 +270,9 @@ public class HttpInputIntegrationTest
                 // prevent caller returning until other thread complete
                 try
                 {
-                    if (!latch.await(5,TimeUnit.SECONDS))
-                        Assert.fail();
+                    if (!latch.await(5,TimeUnit.SECONDS)) {
+						Assert.fail();
+					}
                 }
                 catch(Exception e)
                 {
@@ -295,8 +291,9 @@ public class HttpInputIntegrationTest
                     {
                         try
                         {
-                            if (!latch.await(5,TimeUnit.SECONDS))
-                                Assert.fail();
+                            if (!latch.await(5,TimeUnit.SECONDS)) {
+								Assert.fail();
+							}
                             
                             // Spin until state change
                             HttpChannelState.State s=request.getHttpChannelState().getState();
@@ -333,9 +330,11 @@ public class HttpInputIntegrationTest
         String response = client.send("/ctx/test?mode="+_mode,50,_delay,_length,_send);
         
         int sum=0;
-        for (String s:_send)
-            for (char c : s.toCharArray())
-                sum+=c;
+        for (String s:_send) {
+			for (char c : s.toCharArray()) {
+				sum+=c;
+			}
+		}
         
         assertThat(response,startsWith("HTTP"));
         assertThat(response,Matchers.containsString(" "+_status+" "));
@@ -349,9 +348,11 @@ public class HttpInputIntegrationTest
         System.err.printf("[%d] STRESS c=%s, m=%s, delayDispatch=%b delayInFrame=%s content-length:%d expect=%d read=%d content:%s%n",_id,_client.getSimpleName(),_mode,__config.isDelayDispatchUntilContent(),_delay,_length,_status,_read,_send);
 
         int sum=0;
-        for (String s:_send)
-            for (char c : s.toCharArray())
-                sum+=c;
+        for (String s:_send) {
+			for (char c : s.toCharArray()) {
+				sum+=c;
+			}
+		}
         final int summation=sum;
         
         
@@ -391,8 +392,9 @@ public class HttpInputIntegrationTest
             t[i]=new Thread(run);
             t[i].start();
         }
-        for (int i=0;i<threads;i++)
-            t[i].join();
+        for (int i=0;i<threads;i++) {
+			t[i].join();
+		}
         
         assertThat(count.get(),Matchers.is(threads*loops));
     }
@@ -417,8 +419,9 @@ public class HttpInputIntegrationTest
                     resp.setContentType("text/plain");
                     resp.getWriter().println("read="+content.length());
                     int sum = 0;
-                    for (char c:content.toCharArray())
-                        sum+=c;
+                    for (char c:content.toCharArray()) {
+						sum+=c;
+					}
                     resp.getWriter().println("sum="+sum);
                 }
                 catch(Exception e)
@@ -475,8 +478,9 @@ public class HttpInputIntegrationTest
                                             try
                                             {
                                                 int b = in.read();
-                                                if (b<0)
-                                                    return;
+                                                if (b<0) {
+													return;
+												}
                                                 sum.addAndGet(b);
                                                 int i=read.getAndIncrement();
                                                 if (b!=expected.charAt(i))
@@ -531,13 +535,15 @@ public class HttpInputIntegrationTest
             flush(local,buffer,delayMs,delayInFrame,true);
 
             boolean chunked=contentLength<0;
-            if (chunked)
-                buffer.append("Transfer-Encoding: chunked\r\n");
-            else
-                buffer.append("Content-Length: ").append(contentLength).append("\r\n");
+            if (chunked) {
+				buffer.append("Transfer-Encoding: chunked\r\n");
+			} else {
+				buffer.append("Content-Length: ").append(contentLength).append("\r\n");
+			}
 
-            if (contentLength>0)
-                buffer.append("Content-Type: text/plain\r\n");
+            if (contentLength>0) {
+				buffer.append("Content-Type: text/plain\r\n");
+			}
             buffer.append("\r\n");
 
             flush(local,buffer,delayMs,delayInFrame,false);
@@ -550,11 +556,12 @@ public class HttpInputIntegrationTest
                     flush(local,buffer,delayMs,delayInFrame,true);
                 }
 
-                buffer.append(c.substring(0,1));
+                buffer.append(c, 0, 1);
                 flush(local,buffer,delayMs,delayInFrame,true);
                 buffer.append(c.substring(1));
-                if (chunked)
-                    buffer.append("\r\n"); 
+                if (chunked) {
+					buffer.append("\r\n");
+				} 
                 flush(local,buffer,delayMs,delayInFrame,false);
             }
 
@@ -627,13 +634,15 @@ public class HttpInputIntegrationTest
                 flush(out,buffer,delayMs,delayInFrame,true);
 
                 boolean chunked=contentLength<0;
-                if (chunked)
-                    buffer.append("Transfer-Encoding: chunked\r\n");
-                else
-                    buffer.append("Content-Length: ").append(contentLength).append("\r\n");
+                if (chunked) {
+					buffer.append("Transfer-Encoding: chunked\r\n");
+				} else {
+					buffer.append("Content-Length: ").append(contentLength).append("\r\n");
+				}
                     
-                if (contentLength>0)
-                    buffer.append("Content-Type: text/plain\r\n");
+                if (contentLength>0) {
+					buffer.append("Content-Type: text/plain\r\n");
+				}
                 buffer.append("\r\n");
 
                 flush(out,buffer,delayMs,delayInFrame,false);
@@ -646,12 +655,13 @@ public class HttpInputIntegrationTest
                        flush(out,buffer,delayMs,delayInFrame,true);
                     }
                     
-                    buffer.append(c.substring(0,1));
+                    buffer.append(c, 0, 1);
                     flush(out,buffer,delayMs,delayInFrame,true);
                     buffer.append(c.substring(1));
                     flush(out,buffer,delayMs,delayInFrame,false);
-                    if (chunked)
-                        buffer.append("\r\n"); 
+                    if (chunked) {
+						buffer.append("\r\n");
+					} 
                 }
 
                 if (chunked)
@@ -698,7 +708,7 @@ public class HttpInputIntegrationTest
         {
             for (Connector c:__server.getConnectors())
             {
-                if (c instanceof NetworkConnector && c.getDefaultConnectionFactory().getProtocol().equals("SSL"))
+                if (c instanceof NetworkConnector && "SSL".equals(c.getDefaultConnectionFactory().getProtocol()))
                 {
                     _connector=(NetworkConnector)c;
                     break;

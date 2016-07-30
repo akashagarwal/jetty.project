@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util;
 
@@ -40,7 +35,7 @@ public class StringUtil
     private static final Logger LOG = Log.getLogger(StringUtil.class);
     
     
-    private final static Trie<String> CHARSETS= new ArrayTrie<>(256);
+    private static final Trie<String> CHARSETS= new ArrayTrie<>(256);
     
     public static final String ALL_INTERFACES="0.0.0.0";
     public static final String CRLF="\015\012";
@@ -50,8 +45,8 @@ public class StringUtil
     public static final String __LINE_SEPARATOR = System.lineSeparator();
        
     public static final String __ISO_8859_1="iso-8859-1";
-    public final static String __UTF8="utf-8";
-    public final static String __UTF16="utf-16";
+    public static final String __UTF8="utf-8";
+    public static final String __UTF16="utf-16";
     
     static
     {
@@ -90,7 +85,7 @@ public class StringUtil
     }
     
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public static final char[] lowercases = {
           '\000','\001','\002','\003','\004','\005','\006','\007',
           '\010','\011','\012','\013','\014','\015','\016','\017',
@@ -111,14 +106,15 @@ public class StringUtil
 
     /* ------------------------------------------------------------ */
     /**
-     * fast lower case conversion. Only works on ascii (not unicode)
+     * Fast lower case conversion. Only works on ascii (not unicode)
      * @param s the string to convert
      * @return a lower case version of s
      */
     public static String asciiToLowerCase(String s)
     {
-        if (s == null)
-            return null;
+        if (s == null) {
+			return null;
+		}
         
         char[] c = null;
         int i=s.length();
@@ -141,22 +137,25 @@ public class StringUtil
 
         while (i-->0)
         {
-            if(c[i]<=127)
-                c[i] = lowercases[c[i]];
+            if(c[i]<=127) {
+				c[i] = lowercases[c[i]];
+			}
         }
         
         return c==null?s:new String(c);
     }
 
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public static boolean startsWithIgnoreCase(String s,String w)
     {
-        if (w==null)
-            return true;
+        if (w==null) {
+			return true;
+		}
         
-        if (s==null || s.length()<w.length())
-            return false;
+        if (s==null || s.length()<w.length()) {
+			return false;
+		}
         
         for (int i=0;i<w.length();i++)
         {
@@ -164,31 +163,37 @@ public class StringUtil
             char c2=w.charAt(i);
             if (c1!=c2)
             {
-                if (c1<=127)
-                    c1=lowercases[c1];
-                if (c2<=127)
-                    c2=lowercases[c2];
-                if (c1!=c2)
-                    return false;
+                if (c1<=127) {
+					c1=lowercases[c1];
+				}
+                if (c2<=127) {
+					c2=lowercases[c2];
+				}
+                if (c1!=c2) {
+					return false;
+				}
             }
         }
         return true;
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public static boolean endsWithIgnoreCase(String s,String w)
     {
-        if (w==null)
-            return true;
+        if (w==null) {
+			return true;
+		}
 
-        if (s==null)
-            return false;
+        if (s==null) {
+			return false;
+		}
             
         int sl=s.length();
         int wl=w.length();
         
-        if (sl<wl)
-            return false;
+        if (sl<wl) {
+			return false;
+		}
         
         for (int i=wl;i-->0;)
         {
@@ -196,12 +201,15 @@ public class StringUtil
             char c2=w.charAt(i);
             if (c1!=c2)
             {
-                if (c1<=127)
-                    c1=lowercases[c1];
-                if (c2<=127)
-                    c2=lowercases[c2];
-                if (c1!=c2)
-                    return false;
+                if (c1<=127) {
+					c1=lowercases[c1];
+				}
+                if (c2<=127) {
+					c2=lowercases[c2];
+				}
+                if (c1!=c2) {
+					return false;
+				}
             }
         }
         return true;
@@ -209,22 +217,24 @@ public class StringUtil
     
     /* ------------------------------------------------------------ */
     /**
-     * returns the next index of a character from the chars string
+     * Returns the next index of a character from the chars string
      * @param s the input string to search
      * @param chars the chars to look for
      * @return the index of the character in the input stream found.
      */
     public static int indexFrom(String s,String chars)
     {
-        for (int i=0;i<s.length();i++)
-           if (chars.indexOf(s.charAt(i))>=0)
-              return i;
+        for (int i=0;i<s.length();i++) {
+			if (chars.indexOf(s.charAt(i))>=0) {
+				return i;
+			}
+		}
         return -1;
     }
     
     /* ------------------------------------------------------------ */
     /**
-     * replace substrings within string.
+     * Replace substrings within string.
      * @param s the input string
      * @param sub the string to look for
      * @param with the string to replace with
@@ -234,20 +244,22 @@ public class StringUtil
     {
         int c=0;
         int i=s.indexOf(sub,c);
-        if (i == -1)
-            return s;
+        if (i == -1) {
+			return s;
+		}
     
         StringBuilder buf = new StringBuilder(s.length()+with.length());
 
         do
         {
-            buf.append(s.substring(c,i));
+            buf.append(s, c, i);
             buf.append(with);
             c=i+sub.length();
         } while ((i=s.indexOf(sub,c))!=-1);
 
-        if (c<s.length())
-            buf.append(s.substring(c,s.length()));
+        if (c<s.length()) {
+			buf.append(s, c, s.length());
+		}
 
         return buf.toString();   
     }
@@ -265,7 +277,7 @@ public class StringUtil
 
 
     /* ------------------------------------------------------------ */
-    /** Append substring to StringBuilder 
+    /** Append substring to StringBuilder .
      * @param buf StringBuilder to append to
      * @param s String to append from
      * @param offset The offset of the substring
@@ -281,8 +293,9 @@ public class StringUtil
             int end=offset+length;
             for (int i=offset; i<end;i++)
             {
-                if (i>=s.length())
-                    break;
+                if (i>=s.length()) {
+					break;
+				}
                 buf.append(s.charAt(i));
             }
         }
@@ -291,7 +304,7 @@ public class StringUtil
     
     /* ------------------------------------------------------------ */
     /**
-     * append hex digit
+     * Append hex digit
      * @param buf the buffer to append to
      * @param b the byte to append
      * @param base the base of the hex output (almost always 16).
@@ -301,18 +314,20 @@ public class StringUtil
     {
         int bi=0xff&b;
         int c='0'+(bi/base)%base;
-        if (c>'9')
-            c= 'a'+(c-'0'-10);
+        if (c>'9') {
+			c= 'a'+(c-'0'-10);
+		}
         buf.append((char)c);
         c='0'+bi%base;
-        if (c>'9')
-            c= 'a'+(c-'0'-10);
+        if (c>'9') {
+			c= 'a'+(c-'0'-10);
+		}
         buf.append((char)c);
     }
 
     /* ------------------------------------------------------------ */
     /**
-     * Append 2 digits (zero padded) to the StringBuffer
+     * Append 2 digits (zero padded) to the StringBuffer.
      * 
      * @param buf the buffer to append to
      * @param i the value to append
@@ -328,7 +343,7 @@ public class StringUtil
     
     /* ------------------------------------------------------------ */
     /**
-     * Append 2 digits (zero padded) to the StringBuilder
+     * Append 2 digits (zero padded) to the StringBuilder.
      * 
      * @param buf the buffer to append to
      * @param i the value to append
@@ -349,29 +364,33 @@ public class StringUtil
      */
     public static String nonNull(String s)
     {
-        if (s==null)
-            return "";
-        return s;
+        if (s!=null) {
+			return s;
+		}
+        return "";
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public static boolean equals(String s,char[] buf, int offset, int length)
     {
-        if (s.length()!=length)
-            return false;
-        for (int i=0;i<length;i++)
-            if (buf[offset+i]!=s.charAt(i))
-                return false;
+        if (s.length()!=length) {
+			return false;
+		}
+        for (int i=0;i<length;i++) {
+			if (buf[offset+i]!=s.charAt(i)) {
+				return false;
+			}
+		}
         return true;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public static String toUTF8String(byte[] b,int offset,int length)
     {
         return new String(b,offset,length,StandardCharsets.UTF_8);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public static String toString(byte[] b,int offset,int length,String charset)
     {
         try
@@ -511,38 +530,40 @@ public class StringUtil
         return false;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public static boolean isUTF8(String charset)
     {
         return __UTF8.equalsIgnoreCase(charset)||__UTF8.equalsIgnoreCase(normalizeCharset(charset));
     }
 
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public static String printable(String name)
     {
-        if (name==null)
-            return null;
+        if (name==null) {
+			return null;
+		}
         StringBuilder buf = new StringBuilder(name.length());
         for (int i=0;i<name.length();i++)
         {
             char c=name.charAt(i);
-            if (!Character.isISOControl(c))
-                buf.append(c);
+            if (!Character.isISOControl(c)) {
+				buf.append(c);
+			}
         }
         return buf.toString();
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public static String printable(byte[] b)
     {
         StringBuilder buf = new StringBuilder();
         for (int i=0;i<b.length;i++)
         {
             char c=(char)b[i];
-            if (Character.isWhitespace(c)|| c>' ' && c<0x7f)
-                buf.append(c);
-            else 
+            if (Character.isWhitespace(c)|| (c>' ' && c<0x7f)) {
+				buf.append(c);
+			} else 
             {
                 buf.append("0x");
                 TypeUtil.toHex(b[i],buf);
@@ -593,7 +614,7 @@ public class StringUtil
         sidString.append("S-");
         
         // Add SID revision level (expect 1 but may change someday)
-        sidString.append(Byte.toString(sidBytes[0])).append('-');
+        sidString.append(sidBytes[0]).append('-');
         
         StringBuilder tmpBuilder = new StringBuilder();
         
@@ -615,10 +636,10 @@ public class StringUtil
             tmpBuilder.setLength(0);
             // these need to be zero padded hex and little endian
             tmpBuilder.append(String.format("%02X%02X%02X%02X", 
-                    (sidBytes[11 + offset] & 0xFF),
-                    (sidBytes[10 + offset] & 0xFF),
-                    (sidBytes[9 + offset] & 0xFF),
-                    (sidBytes[8 + offset] & 0xFF)));  
+                    sidBytes[11 + offset] & 0xFF,
+                    sidBytes[10 + offset] & 0xFF,
+                    sidBytes[9 + offset] & 0xFF,
+                    sidBytes[8 + offset] & 0xFF));  
             sidString.append('-').append(Long.parseLong(tmpBuilder.toString(), 16));
         }
         
@@ -641,7 +662,7 @@ public class StringUtil
         int subAuthorityCount = sidTokens.length - 3; // S-Rev-IdAuth-
         
         int byteCount = 0;
-        byte[] sidBytes = new byte[1 + 1 + 6 + (4 * subAuthorityCount)];
+        byte[] sidBytes = new byte[1 + 1 + 6 + 4 * subAuthorityCount];
         
         // the revision byte
         sidBytes[byteCount++] = (byte)Integer.parseInt(sidTokens[1]);
@@ -702,8 +723,9 @@ public class StringUtil
             char b = string.charAt(i);
             if (b <= ' ')
             {
-                if (started)
-                    break;
+                if (started) {
+					break;
+				}
             }
             else if (b >= '0' && b <= '9')
             {
@@ -713,13 +735,14 @@ public class StringUtil
             else if (b == '-' && !started)
             {
                 minus = true;
-            }
-            else
-                break;
+            } else {
+				break;
+			}
         }
 
-        if (started)
-            return minus?(-val):val;
+        if (started) {
+			return minus?-val:val;
+		}
         throw new NumberFormatException(string);
     }
     
@@ -741,8 +764,9 @@ public class StringUtil
             char b = string.charAt(i);
             if (b <= ' ')
             {
-                if (started)
-                    break;
+                if (started) {
+					break;
+				}
             }
             else if (b >= '0' && b <= '9')
             {
@@ -752,13 +776,14 @@ public class StringUtil
             else if (b == '-' && !started)
             {
                 minus = true;
-            }
-            else
-                break;
+            } else {
+				break;
+			}
         }
 
-        if (started)
-            return minus?(-val):val;
+        if (started) {
+			return minus?-val:val;
+		}
         throw new NumberFormatException(string);
     }
     
@@ -791,13 +816,16 @@ public class StringUtil
     */
     public static String[] arrayFromString(String s) 
     {
-        if (s==null)
-            return new String[]{};
+        if (s==null) {
+			return new String[]{};
+		}
 
-        if (!s.startsWith("[") || !s.endsWith("]"))
-            throw new IllegalArgumentException();
-        if (s.length()==2)
-            return new String[]{};
+        if (!s.startsWith("[") || !s.endsWith("]")) {
+			throw new IllegalArgumentException();
+		}
+        if (s.length()==2) {
+			return new String[]{};
+		}
 
         return csvSplit(s,1,s.length()-2);
     }
@@ -809,9 +837,10 @@ public class StringUtil
     */
     public static String[] csvSplit(String s)
     {
-        if (s==null)
-            return null;
-        return csvSplit(s,0,s.length());
+        if (s!=null) {
+			return csvSplit(s,0,s.length());
+		}
+        return null;
     }
     
     /**
@@ -823,10 +852,12 @@ public class StringUtil
      */
     public static String[] csvSplit(String s, int off,int len)
     {
-        if (s==null)
-            return null;
-        if (off<0 || len<0 || off>s.length())
-            throw new IllegalArgumentException();
+        if (s==null) {
+			return null;
+		}
+        if (off<0 || len<0 || off>s.length()) {
+			throw new IllegalArgumentException();
+		}
 
         List<String> list = new ArrayList<>();
         csvSplit(list,s,off,len);
@@ -851,8 +882,9 @@ public class StringUtil
      */
     public static List<String> csvSplit(List<String> list,String s, int off,int len)
     {
-        if (list==null)
-            list=new ArrayList<>();
+        if (list==null) {
+			list=new ArrayList<>();
+		}
         CsvSplitState state = CsvSplitState.PRE_DATA;
         StringBuilder out = new StringBuilder();
         int last=-1;
@@ -864,8 +896,9 @@ public class StringUtil
             switch(state)
             {
                 case PRE_DATA:
-                    if (Character.isWhitespace(ch))
-                        continue;
+                    if (Character.isWhitespace(ch)) {
+						continue;
+					}
 
                     if ('"'==ch)
                     {
@@ -978,8 +1011,9 @@ public class StringUtil
 
     public static String sanitizeXmlString(String html)
     {
-        if (html==null)
-            return null;
+        if (html==null) {
+			return null;
+		}
         
         int i=0;
         
@@ -998,14 +1032,16 @@ public class StringUtil
                     break loop;
 
                 default:
-                    if (Character.isISOControl(c) && !Character.isWhitespace(c))
-                        break loop;
+                    if (Character.isISOControl(c) && !Character.isWhitespace(c)) {
+						break loop;
+					}
             }
         }
 
         // No characters need sanitizing, so return original string
-        if (i==html.length())
-            return html;
+        if (i==html.length()) {
+			return html;
+		}
         
         // Create builder with OK content so far 
         StringBuilder out = new StringBuilder(html.length()*4/3);
@@ -1035,10 +1071,11 @@ public class StringUtil
                     break;
 
                 default:
-                    if (Character.isISOControl(c) && !Character.isWhitespace(c))
-                        out.append('?');
-                    else
-                        out.append(c);
+                    if (Character.isISOControl(c) && !Character.isWhitespace(c)) {
+						out.append('?');
+					} else {
+						out.append(c);
+					}
             }
         }
         return out.toString();
@@ -1047,7 +1084,7 @@ public class StringUtil
     /* ------------------------------------------------------------ */
     /** The String value of an Object
      * <p>This method calls {@link String#valueOf(Object)} unless the object is null,
-     * in which case null is returned</p>
+     * in which case null is returned</p>.
      * @param object The object
      * @return String value or null
      */

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.servlets;
 
@@ -100,11 +95,12 @@ public class DataRateLimitedServletTest
             for (int i=1024;i-->0;)
             {
                 int index=i%10;
-                Arrays.fill(b,(byte)('0'+(index)));
+                Arrays.fill(b,(byte)('0'+index));
                 out.write(b);
                 out.write('\n');
-                if (results[index]==null)
-                    results[index]=new String(b,StandardCharsets.US_ASCII);
+                if (results[index]==null) {
+					results[index]=new String(b,StandardCharsets.US_ASCII);
+				}
             }
         }
         
@@ -116,7 +112,8 @@ public class DataRateLimitedServletTest
         assertThat("Response Length",response.length(),greaterThan(1024*1024));
         assertThat("Duration",duration,greaterThan(PAUSE*1024L*1024/BUFFER));
         
-        for (int i=0;i<10;i++)
-            assertThat(response,containsString(results[i]));
+        for (int i=0;i<10;i++) {
+			assertThat(response,containsString(results[i]));
+		}
     }
 }

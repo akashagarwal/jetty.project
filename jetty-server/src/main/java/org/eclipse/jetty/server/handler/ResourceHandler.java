@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server.handler;
 
@@ -73,22 +68,22 @@ public class ResourceHandler extends HandlerWrapper implements ResourceFactory
     boolean _directory;
     boolean _gzip;
     boolean _etags;
-    int _minMemoryMappedContentLength=0;
+    int _minMemoryMappedContentLength;
     int _minAsyncContentLength=16*1024;
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public ResourceHandler()
     {
 
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public MimeTypes getMimeTypes()
     {
         return _mimeTypes;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void setMimeTypes(MimeTypes mimeTypes)
     {
         _mimeTypes = mimeTypes;
@@ -174,13 +169,13 @@ public class ResourceHandler extends HandlerWrapper implements ResourceFactory
         _etags = etags;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void doStart()
     throws Exception
     {
         Context scontext = ContextHandler.getCurrentContext();
-        _context = (scontext==null?null:scontext.getContextHandler());
+        _context = scontext==null?null:scontext.getContextHandler();
         _mimeTypes = _context==null?new MimeTypes():_context.getMimeTypes();
         
         super.doStart();
@@ -192,8 +187,6 @@ public class ResourceHandler extends HandlerWrapper implements ResourceFactory
      */
     public Resource getBaseResource()
     {
-        if (_baseResource==null)
-            return null;
         return _baseResource;
     }
 
@@ -203,9 +196,10 @@ public class ResourceHandler extends HandlerWrapper implements ResourceFactory
      */
     public String getResourceBase()
     {
-        if (_baseResource==null)
-            return null;
-        return _baseResource.toString();
+        if (_baseResource!=null) {
+			return _baseResource.toString();
+		}
+        return null;
     }
 
 
@@ -250,7 +244,7 @@ public class ResourceHandler extends HandlerWrapper implements ResourceFactory
         {
             if(_defaultStylesheet == null)
             {
-                _defaultStylesheet =  Resource.newResource(this.getClass().getResource("/jetty-dir.css"));
+                _defaultStylesheet =  Resource.newResource(getClass().getResource("/jetty-dir.css"));
             }
             return _defaultStylesheet;
         }
@@ -297,34 +291,36 @@ public class ResourceHandler extends HandlerWrapper implements ResourceFactory
         _cacheControl=cacheControl;
     }
 
-    /* ------------------------------------------------------------ */
-    /*
-     */
+    /** ------------------------------------------------------------. */
     @Override
     public Resource getResource(String path)
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("{} getResource({})",_context==null?_baseResource:_context,_baseResource,path);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("{} getResource({})",_context==null?_baseResource:_context,_baseResource,path);
+		}
 
-        if (path==null || !path.startsWith("/"))
-            return null;
+        if (path==null || !path.startsWith("/")) {
+			return null;
+		}
         
         try
         {
             Resource base = _baseResource;
             if (base==null)
             {
-                if (_context==null)
-                    return null;
-                return _context.getResource(path);
+                if (_context!=null) {
+					return _context.getResource(path);
+				}
+                return null;
             }
 
             path=URIUtil.canonicalPath(path);
             Resource r = base.addPath(path);
             if (r!=null && r.isAlias() && (_context==null || !_context.checkAlias(path, r)))
             {
-                if (LOG.isDebugEnabled())
-                    LOG.debug("resource={} alias={}",r,r.getAlias());
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("resource={} alias={}",r,r.getAlias());
+				}
                 return null;
             }
             return r;
@@ -337,7 +333,7 @@ public class ResourceHandler extends HandlerWrapper implements ResourceFactory
         return null;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected Resource getResource(HttpServletRequest request) throws MalformedURLException
     {
         String servletPath;
@@ -365,40 +361,39 @@ public class ResourceHandler extends HandlerWrapper implements ResourceFactory
     }
 
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public String[] getWelcomeFiles()
     {
         return _welcomeFiles;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void setWelcomeFiles(String[] welcomeFiles)
     {
         _welcomeFiles=welcomeFiles;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected Resource getWelcome(Resource directory) throws MalformedURLException, IOException
     {
         for (int i=0;i<_welcomeFiles.length;i++)
         {
             Resource welcome=directory.addPath(_welcomeFiles[i]);
-            if (welcome.exists() && !welcome.isDirectory())
-                return welcome;
+            if (welcome.exists() && !welcome.isDirectory()) {
+				return welcome;
+			}
         }
 
         return null;
     }
 
-    /* ------------------------------------------------------------ */
-    /*
-     * @see org.eclipse.jetty.server.Handler#handle(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, int)
-     */
+    /** ------------------------------------------------------------. */
     @Override
     public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
     {
-        if (baseRequest.isHandled())
-            return;
+        if (baseRequest.isHandled()) {
+			return;
+		}
 
         boolean skipContentBody = false;
 
@@ -417,10 +412,11 @@ public class ResourceHandler extends HandlerWrapper implements ResourceFactory
         
         if (LOG.isDebugEnabled())
         { 
-            if (resource==null)
-                LOG.debug("resource=null");
-            else
-                LOG.debug("resource={} alias={} exists={}",resource,resource.getAlias(),resource.exists());
+            if (resource!=null) {
+				LOG.debug("resource={} alias={} exists={}",resource,resource.getAlias(),resource.exists());
+			} else {
+				LOG.debug("resource=null");
+			}
         }
         
         
@@ -431,8 +427,9 @@ public class ResourceHandler extends HandlerWrapper implements ResourceFactory
             if (target.endsWith("/jetty-dir.css"))
             {
                 resource = getStylesheet();
-                if (resource==null)
-                    return;
+                if (resource==null) {
+					return;
+				}
                 response.setContentType("text/css");
             }
             else
@@ -458,9 +455,9 @@ public class ResourceHandler extends HandlerWrapper implements ResourceFactory
             }
 
             Resource welcome=getWelcome(resource);
-            if (welcome!=null && welcome.exists())
-                resource=welcome;
-            else
+            if (welcome!=null && welcome.exists()) {
+				resource=welcome;
+			} else
             {
                 doDirectory(request,response,resource);
                 baseRequest.setHandled(true);
@@ -497,16 +494,20 @@ public class ResourceHandler extends HandlerWrapper implements ResourceFactory
 
         // set the headers
         String mime=_mimeTypes.getMimeByExtension(resource.toString());
-        if (mime==null)
-            mime=_mimeTypes.getMimeByExtension(request.getPathInfo());
+        if (mime==null) {
+			mime=_mimeTypes.getMimeByExtension(request.getPathInfo());
+		}
         doResponseHeaders(response,resource,mime);
-        if (_etags)
-            baseRequest.getResponse().getHttpFields().put(HttpHeader.ETAG,etag);
-        if (last_modified>0)
-            response.setDateHeader(HttpHeader.LAST_MODIFIED.asString(),last_modified);
+        if (_etags) {
+			baseRequest.getResponse().getHttpFields().put(HttpHeader.ETAG,etag);
+		}
+        if (last_modified>0) {
+			response.setDateHeader(HttpHeader.LAST_MODIFIED.asString(),last_modified);
+		}
         
-        if(skipContentBody)
-            return;
+        if(skipContentBody) {
+			return;
+		}
         
         // Send the content
         OutputStream out =null;
@@ -514,10 +515,10 @@ public class ResourceHandler extends HandlerWrapper implements ResourceFactory
         catch(IllegalStateException e) {out = new WriterOutputStream(response.getWriter());}
 
         // Has the output been wrapped
-        if (!(out instanceof HttpOutput))
-            // Write content via wrapped output
+        if (!(out instanceof HttpOutput)) {
+			// Write content via wrapped output
             resource.writeTo(out,0,resource.length());
-        else
+		} else
         {
             // select async by size
             int min_async_size=_minAsyncContentLength==0?response.getBufferSize():_minAsyncContentLength;
@@ -558,35 +559,33 @@ public class ResourceHandler extends HandlerWrapper implements ResourceFactory
                 {
                     // Close of the channel/inputstream is done by the async sendContent
                     ReadableByteChannel channel= resource.getReadableByteChannel();
-                    if (channel!=null)
-                        ((HttpOutput)out).sendContent(channel,callback);
-                    else
-                        ((HttpOutput)out).sendContent(resource.getInputStream(),callback);
+                    if (channel!=null) {
+						((HttpOutput)out).sendContent(channel,callback);
+					} else {
+						((HttpOutput)out).sendContent(resource.getInputStream(),callback);
+					}
                 }
-            }
-            else
-            {
-                // Can we use a memory mapped file?
-                if (_minMemoryMappedContentLength>0 && 
-                    resource.length()>_minMemoryMappedContentLength &&
-                    resource instanceof PathResource)
-                {
-                    ByteBuffer buffer = BufferUtil.toMappedBuffer(resource.getFile());
-                    ((HttpOutput)out).sendContent(buffer);
-                }
-                else  // Do a blocking write of a channel (if available) or input stream
-                {
-                    ReadableByteChannel channel= resource.getReadableByteChannel();
-                    if (channel!=null)
-                        ((HttpOutput)out).sendContent(channel);
-                    else
-                        ((HttpOutput)out).sendContent(resource.getInputStream());
-                }
-            }
+            } else // Can we use a memory mapped file?
+			if (_minMemoryMappedContentLength>0 && 
+			    resource.length()>_minMemoryMappedContentLength &&
+			    resource instanceof PathResource)
+			{
+			    ByteBuffer buffer = BufferUtil.toMappedBuffer(resource.getFile());
+			    ((HttpOutput)out).sendContent(buffer);
+			}
+			else  // Do a blocking write of a channel (if available) or input stream
+			{
+			    ReadableByteChannel channel= resource.getReadableByteChannel();
+			    if (channel!=null) {
+					((HttpOutput)out).sendContent(channel);
+				} else {
+					((HttpOutput)out).sendContent(resource.getInputStream());
+				}
+			}
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected void doDirectory(HttpServletRequest request,HttpServletResponse response, Resource resource)
         throws IOException
     {
@@ -595,9 +594,9 @@ public class ResourceHandler extends HandlerWrapper implements ResourceFactory
             String listing = resource.getListHTML(request.getRequestURI(),request.getPathInfo().lastIndexOf("/") > 0);
             response.setContentType("text/html;charset=utf-8");
             response.getWriter().println(listing);
-        }
-        else
-            response.sendError(HttpStatus.FORBIDDEN_403);
+        } else {
+			response.sendError(HttpStatus.FORBIDDEN_403);
+		}
     }
 
     /* ------------------------------------------------------------ */
@@ -610,8 +609,9 @@ public class ResourceHandler extends HandlerWrapper implements ResourceFactory
      */
     protected void doResponseHeaders(HttpServletResponse response, Resource resource, String mimeType)
     {
-        if (mimeType!=null)
-            response.setContentType(mimeType);
+        if (mimeType!=null) {
+			response.setContentType(mimeType);
+		}
 
         long length=resource.length();
 
@@ -619,21 +619,25 @@ public class ResourceHandler extends HandlerWrapper implements ResourceFactory
         {
             HttpFields fields = ((Response)response).getHttpFields();
 
-            if (length>0)
-                ((Response)response).setLongContentLength(length);
+            if (length>0) {
+				((Response)response).setLongContentLength(length);
+			}
 
-            if (_cacheControl!=null)
-                fields.put(HttpHeader.CACHE_CONTROL,_cacheControl);
+            if (_cacheControl!=null) {
+				fields.put(HttpHeader.CACHE_CONTROL,_cacheControl);
+			}
         }
         else
         {
-            if (length>Integer.MAX_VALUE)
-                response.setHeader(HttpHeader.CONTENT_LENGTH.asString(),Long.toString(length));
-            else if (length>0)
-                response.setContentLength((int)length);
+            if (length>Integer.MAX_VALUE) {
+				response.setHeader(HttpHeader.CONTENT_LENGTH.asString(),Long.toString(length));
+			} else if (length>0) {
+				response.setContentLength((int)length);
+			}
 
-            if (_cacheControl!=null)
-                response.setHeader(HttpHeader.CACHE_CONTROL.asString(),_cacheControl);
+            if (_cacheControl!=null) {
+				response.setHeader(HttpHeader.CACHE_CONTROL.asString(),_cacheControl);
+			}
         }
     }
 }

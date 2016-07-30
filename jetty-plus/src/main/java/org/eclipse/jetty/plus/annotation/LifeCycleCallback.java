@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.plus.annotation;
 
@@ -31,7 +26,7 @@ import org.eclipse.jetty.util.TypeUtil;
 /**
  * LifeCycleCallback
  *
- *
+ *.
  */
 public abstract class LifeCycleCallback
 {
@@ -105,8 +100,9 @@ public abstract class LifeCycleCallback
     {
         if (_target == null)
         {
-            if (_targetClass == null)
-                _targetClass = Loader.loadClass(null, _className);
+            if (_targetClass == null) {
+				_targetClass = Loader.loadClass(null, _className);
+			}
             _target = _targetClass.getDeclaredMethod(_methodName, TypeUtil.NO_ARGS);
         }
 
@@ -133,8 +129,9 @@ public abstract class LifeCycleCallback
      */
     public Method findMethod (Package pack, Class<?> clazz, String methodName, boolean checkInheritance)
     {
-        if (clazz == null)
-            return null;
+        if (clazz == null) {
+			return null;
+		}
 
         try
         {
@@ -142,10 +139,11 @@ public abstract class LifeCycleCallback
             if (checkInheritance)
             {
                 int modifiers = method.getModifiers();
-                if (Modifier.isProtected(modifiers) || Modifier.isPublic(modifiers) || (!Modifier.isPrivate(modifiers)&&(pack.equals(clazz.getPackage()))))
-                    return method;
-                else
-                    return findMethod(clazz.getPackage(), clazz.getSuperclass(), methodName, true);
+                if (Modifier.isProtected(modifiers) || Modifier.isPublic(modifiers) || (!Modifier.isPrivate(modifiers)&&pack.equals(clazz.getPackage()))) {
+					return method;
+				} else {
+					return findMethod(clazz.getPackage(), clazz.getSuperclass(), methodName, true);
+				}
             }
             return method;
         }
@@ -157,26 +155,32 @@ public abstract class LifeCycleCallback
 
     public boolean equals (Object o)
     {
-        if (o==null)
-            return false;
-        if (!(o instanceof LifeCycleCallback))
-            return false;
+        if (o==null) {
+			return false;
+		}
+        if (!(o instanceof LifeCycleCallback)) {
+			return false;
+		}
         LifeCycleCallback callback = (LifeCycleCallback)o;
 
         if (callback.getTargetClass()==null)
         {
-            if (getTargetClass() != null)
-                return false;
+            if (getTargetClass() != null) {
+				return false;
+			}
         }
-        else if(!callback.getTargetClass().equals(getTargetClass()))
-           return false;
+        else if(!callback.getTargetClass().equals(getTargetClass())) {
+			return false;
+		}
         if (callback.getTarget()==null)
         {
-            if (getTarget() != null)
-                return false;
+            if (getTarget() != null) {
+				return false;
+			}
         }
-        else if (!callback.getTarget().equals(getTarget()))
-            return false;
+        else if (!callback.getTarget().equals(getTarget())) {
+			return false;
+		}
 
         return true;
     }

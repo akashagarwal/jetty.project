@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http2.hpack;
 
@@ -23,8 +18,10 @@ import java.nio.ByteBuffer;
 public class Huffman
 {
 
-    // Appendix C: Huffman Codes
-    // http://tools.ietf.org/html/draft-ietf-httpbis-header-compression-12#appendix-C
+    /**
+     * Appendix C: Huffman Codes
+     * http://tools.ietf.org/html/draft-ietf-httpbis-header-compression-12#appendix-C
+     */
     static final int[][] CODES =
     { 
         /*    (  0)  |11111111|11000                      */       {0x1ff8,13},
@@ -288,22 +285,26 @@ public class Huffman
 
     static final int[][] LCCODES = new int[CODES.length][];
     
-    // Huffman decode tree stored in a flattened char array for good 
-    // locality of reference.
+    /**
+     * Huffman decode tree stored in a flattened char array for good 
+     * locality of reference.
+     */
     static final char[] tree;
     static final char[] rowsym;
     static final byte[] rowbits;
 
-    // Build the Huffman lookup tree and LC TABLE
+    /** Build the Huffman lookup tree and LC TABLE. */
     static 
     {
         System.arraycopy(CODES,0,LCCODES,0,CODES.length);
-        for (int i='A';i<='Z';i++)
-            LCCODES[i]=LCCODES['a'+i-'A'];
+        for (int i='A';i<='Z';i++) {
+			LCCODES[i]=LCCODES['a'+i-'A'];
+		}
         
         int r=0;
-        for (int i=0;i<CODES.length;i++)
-            r+=(CODES[i][1]+7)/8;
+        for (int i=0;i<CODES.length;i++) {
+			r+=(CODES[i][1]+7)/8;
+		}
         tree=new char[r*256];
         rowsym=new char[r];
         rowbits=new byte[r];
@@ -319,7 +320,7 @@ public class Huffman
             while (len > 8) 
             {
                 len -= 8;
-                int i = ((code >>> len) & 0xFF);
+                int i = (code >>> len) & 0xFF;
 
                 int t=current*256+i;
                 current = tree[t];
@@ -339,8 +340,9 @@ public class Huffman
             int shift = 8 - len;
             int start = current*256 + ((code << shift) & 0xFF);
             int end = start + (1<<shift);
-            for (int i = start; i < end; i++)
-                tree[i]=(char)terminal;
+            for (int i = start; i < end; i++) {
+				tree[i]=(char)terminal;
+			}
         }
     }
 
@@ -369,7 +371,7 @@ public class Huffman
             bits += 8;
             while (bits >= 8) 
             {
-                int c = (current >>> (bits - 8)) & 0xFF;
+                int c = (current >>> bits - 8) & 0xFF;
                 node = tree[node*256+c];
                 if (rowbits[node]!=0) 
                 {
@@ -388,13 +390,15 @@ public class Huffman
 
         while (bits > 0) 
         {
-            int c = (current << (8 - bits)) & 0xFF;
+            int c = (current << 8 - bits) & 0xFF;
             node = tree[node*256+c];
-            if (rowbits[node]==0 || rowbits[node] > bits) 
-                break;
+            if (rowbits[node]==0 || rowbits[node] > bits) {
+				break;
+			}
             
-            if (rowbits[node]==0)
-                throw new IllegalStateException();
+            if (rowbits[node]==0) {
+				throw new IllegalStateException();
+			}
             
             out.append(rowsym[node]);
             bits -= rowbits[node];
@@ -431,8 +435,9 @@ public class Huffman
         for (int i=0;i<len;i++)
         {
             char c=s.charAt(i);
-            if (c>=128 || c<' ')
-                throw new IllegalArgumentException();
+            if (c>=128 || c<' ') {
+				throw new IllegalArgumentException();
+			}
             needed += table[c][1];
         }
 
@@ -451,8 +456,9 @@ public class Huffman
         for (int i=0;i<len;i++)
         {
             char c=s.charAt(i);
-            if (c>=128 || c<' ')
-                throw new IllegalArgumentException();
+            if (c>=128 || c<' ') {
+				throw new IllegalArgumentException();
+			}
             int code = table[c][0];
             int bits = table[c][1];
 
@@ -469,8 +475,8 @@ public class Huffman
 
         if (n > 0) 
         {
-          current <<= (8 - n);
-          current |= (0xFF >>> n); 
+          current <<= 8 - n;
+          current |= 0xFF >>> n; 
           array[p++]=(byte)current;
         }
         

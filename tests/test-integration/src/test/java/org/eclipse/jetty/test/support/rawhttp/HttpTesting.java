@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.test.support.rawhttp;
 
@@ -43,7 +38,7 @@ import org.eclipse.jetty.util.StringUtil;
  */
 public class HttpTesting
 {
-    private boolean debug = false;
+    private boolean debug;
     private HttpSocket httpSocket;
     private InetAddress serverHost;
     private int serverPort;
@@ -94,7 +89,7 @@ public class HttpTesting
 
             if (parsingHeader)
             {
-                if (line.equals(""))
+                if ("".equals(line))
                 {
                     parsingHeader = false;
                     continue;
@@ -125,8 +120,9 @@ public class HttpTesting
         while(BufferUtil.hasContent(buffer))
         {
             HttpTester.Response response = HttpTester.parseResponse(buffer);
-            if (response == null)
-                break;
+            if (response == null) {
+				break;
+			}
             list.add(response);
         }
         return list;
@@ -218,8 +214,9 @@ public class HttpTesting
        while(BufferUtil.hasContent(buffer))
        {
            HttpTester.Response response = HttpTester.parseResponse(buffer);
-           if (response == null)
-               break;
+           if (response == null) {
+			break;
+		}
            list.add(response);
        }
        return list;

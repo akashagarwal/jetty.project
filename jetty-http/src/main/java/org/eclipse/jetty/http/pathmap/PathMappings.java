@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http.pathmap;
 
@@ -43,8 +38,8 @@ public class PathMappings<E> implements Iterable<MappedResource<E>>, Dumpable
 {
     private static final Logger LOG = Log.getLogger(PathMappings.class);
     private List<MappedResource<E>> mappings = new ArrayList<MappedResource<E>>();
-    private MappedResource<E> defaultResource = null;
-    private MappedResource<E> rootResource = null;
+    private MappedResource<E> defaultResource;
+    private MappedResource<E> rootResource;
 
     @Override
     public String dump()
@@ -88,16 +83,19 @@ public class PathMappings<E> implements Iterable<MappedResource<E>>, Dumpable
             switch (mr.getPathSpec().group)
             {
                 case ROOT:
-                    if (matchRoot)
-                        ret.add(mr);
+                    if (matchRoot) {
+						ret.add(mr);
+					}
                     break;
                 case DEFAULT:
-                    if (matchRoot || mr.getPathSpec().matches(path))
-                        ret.add(mr);
+                    if (matchRoot || mr.getPathSpec().matches(path)) {
+						ret.add(mr);
+					}
                     break;
                 default:
-                    if (mr.getPathSpec().matches(path))
-                        ret.add(mr);
+                    if (mr.getPathSpec().matches(path)) {
+						ret.add(mr);
+					}
                     break;
             }
         }
@@ -106,7 +104,7 @@ public class PathMappings<E> implements Iterable<MappedResource<E>>, Dumpable
 
     public MappedResource<E> getMatch(String path)
     {
-        if (path.equals("/") && rootResource != null)
+        if ("/".equals(path) && rootResource != null)
         {
             return rootResource;
         }
@@ -146,14 +144,15 @@ public class PathMappings<E> implements Iterable<MappedResource<E>>, Dumpable
         // TODO: add warning when replacing an existing pathspec?
         
         mappings.add(entry);
-        if (LOG.isDebugEnabled())
-            LOG.debug("Added {} to {}",entry,this);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Added {} to {}",entry,this);
+		}
         Collections.sort(mappings);
     }
 
     @Override
     public String toString()
     {
-        return String.format("%s[size=%d]",this.getClass().getSimpleName(),mappings.size());
+        return String.format("%s[size=%d]",getClass().getSimpleName(),mappings.size());
     }
 }

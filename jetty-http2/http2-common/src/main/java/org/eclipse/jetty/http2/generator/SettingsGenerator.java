@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http2.generator;
 
@@ -47,8 +42,9 @@ public class SettingsGenerator extends FrameGenerator
         // Two bytes for the identifier, four bytes for the value.
         int entryLength = 2 + 4;
         int length = entryLength * settings.size();
-        if (length > getMaxFrameSize())
-            throw new IllegalArgumentException("Invalid settings, too big");
+        if (length > getMaxFrameSize()) {
+			throw new IllegalArgumentException("Invalid settings, too big");
+		}
 
         ByteBuffer header = generateHeader(lease, FrameType.SETTINGS, length, reply ? Flags.ACK : Flags.NONE, 0);
 

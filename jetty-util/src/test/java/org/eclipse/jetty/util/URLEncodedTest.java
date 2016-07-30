@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util;
 
@@ -36,7 +31,7 @@ import org.junit.Test;
 public class URLEncodedTest
 {
 
-    /* -------------------------------------------------------------- */
+    /** --------------------------------------------------------------. */
     static
     {
         /*
@@ -48,7 +43,7 @@ public class URLEncodedTest
     }
 
 
-    /* -------------------------------------------------------------- */
+    /** --------------------------------------------------------------. */
     @Test
     public void testUrlEncoded()
     {
@@ -101,8 +96,8 @@ public class URLEncodedTest
         url_encoded.decode("Name5=aaa&Name6=bbb");
         assertEquals("multi param size",2, url_encoded.size());
         assertTrue("multi encode "+url_encoded.encode(),
-                   url_encoded.encode().equals("Name5=aaa&Name6=bbb") ||
-                   url_encoded.encode().equals("Name6=bbb&Name5=aaa")
+                   "Name5=aaa&Name6=bbb".equals(url_encoded.encode()) ||
+                   "Name6=bbb&Name5=aaa".equals(url_encoded.encode())
                    );
         assertEquals("multi get","aaa", url_encoded.getString("Name5"));
         assertEquals("multi get","bbb", url_encoded.getString("Name6"));
@@ -150,13 +145,13 @@ public class URLEncodedTest
             url_encoded.decode("Name9=%u30ED%83e%83X%83g", Charset.forName("SJIS")); // "Test" in Japanese Katakana
             assertEquals("encoded param size",1, url_encoded.size());
             assertEquals("encoded get", "\u30ed\u30c6\u30b9\u30c8", url_encoded.getString("Name9"));   
-        }
-        else
-            assertTrue("Charset SJIS not supported by jvm", true);
+        } else {
+			assertTrue("Charset SJIS not supported by jvm", true);
+		}
     }
 
 
-    /* -------------------------------------------------------------- */
+    /** --------------------------------------------------------------. */
     @Test
     public void testBadEncoding()
     {
@@ -196,7 +191,7 @@ public class URLEncodedTest
     }
 
 
-    /* -------------------------------------------------------------- */
+    /** --------------------------------------------------------------. */
     @Test
     public void testUrlEncodedStream()
         throws Exception
@@ -230,14 +225,14 @@ public class URLEncodedTest
             UrlEncoded.decodeTo(in2, m2, Charset.forName("Shift_JIS"),-1,-1);
             assertEquals("stream length",1,m2.size());
             assertEquals("stream name","\u30c6\u30b9\u30c8",m2.getString("name"));
-        }
-        else
-            assertTrue("Charset Shift_JIS not supported by jvm", true);
+        } else {
+			assertTrue("Charset Shift_JIS not supported by jvm", true);
+		}
 
     }
 
 
-    /* -------------------------------------------------------------- */
+    /** --------------------------------------------------------------. */
     @Test
     public void testCharsetViaSystemProperty ()
     throws Exception
@@ -255,7 +250,7 @@ public class URLEncodedTest
         */
     }
 
-    /* -------------------------------------------------------------- */
+    /** --------------------------------------------------------------. */
     @Test
     public void testUtf8()
         throws Exception
@@ -271,7 +266,7 @@ public class URLEncodedTest
         Assert.assertEquals(expected,url_encoded.getString("text"));
     }
 
-    /* -------------------------------------------------------------- */
+    /** --------------------------------------------------------------. */
     @Test
     public void testNotUtf8() throws Exception
     {

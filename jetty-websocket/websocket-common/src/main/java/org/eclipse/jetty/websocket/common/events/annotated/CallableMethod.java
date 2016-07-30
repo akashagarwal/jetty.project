@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.common.events.annotated;
 
@@ -27,7 +22,7 @@ import org.eclipse.jetty.util.log.Logger;
 import org.eclipse.jetty.websocket.common.util.ReflectUtils;
 
 /**
- * A Callable Method
+ * A Callable Method.
  */
 public class CallableMethod
 {
@@ -47,7 +42,7 @@ public class CallableMethod
 
     public Object call(Object obj, Object... args)
     {
-        if ((this.pojo == null) || (this.method == null))
+        if (this.pojo == null || this.method == null)
         {
             LOG.warn("Cannot execute call: pojo={}, method={}",pojo,method);
             return null; // no call event method determined
@@ -108,13 +103,13 @@ public class CallableMethod
             {
                 err.append(", ");
             }
-            if (arg == null)
+            if (arg != null)
             {
-                err.append("<null>");
+                err.append(arg.getClass().getName());
             }
             else
             {
-                err.append(arg.getClass().getName());
+                err.append("<null>");
             }
             delim = true;
         }
@@ -140,6 +135,6 @@ public class CallableMethod
     @Override
     public String toString()
     {
-        return String.format("%s[%s]",this.getClass().getSimpleName(),method.toGenericString());
+        return String.format("%s[%s]",getClass().getSimpleName(),method.toGenericString());
     }
 }

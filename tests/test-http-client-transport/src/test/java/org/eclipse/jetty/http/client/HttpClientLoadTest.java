@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http.client;
 
@@ -166,13 +161,15 @@ public class HttpClientLoadTest extends AbstractTest
         // At least 25k requests to warmup properly (use -XX:+PrintCompilation to verify JIT activity)
         int runs = 1;
         int iterations = 500;
-        for (int i = 0; i < runs; ++i)
-            run(iterations);
+        for (int i = 0; i < runs; ++i) {
+			run(iterations);
+		}
 
         // Re-run after warmup
         iterations = 5_000;
-        for (int i = 0; i < runs; ++i)
-            run(iterations);
+        for (int i = 0; i < runs; ++i) {
+			run(iterations);
+		}
 
         System.gc();
 
@@ -242,8 +239,9 @@ public class HttpClientLoadTest extends AbstractTest
         long elapsed = TimeUnit.NANOSECONDS.toMillis(end - begin);
         logger.info("{} requests in {} ms, {} req/s", iterations, elapsed, elapsed > 0 ? iterations * 1000 / elapsed : -1);
 
-        for (String failure : failures)
-            logger.info("FAILED: {}", failure);
+        for (String failure : failures) {
+			logger.info("FAILED: {}", failure);
+		}
 
         Assert.assertTrue(failures.toString(), failures.isEmpty());
     }
@@ -259,13 +257,8 @@ public class HttpClientLoadTest extends AbstractTest
         boolean ssl = isTransportSecure();
 
         // Choose randomly whether to close the connection on the client or on the server
-        boolean clientClose = false;
-        if (!ssl && random.nextInt(100) < 5)
-            clientClose = true;
-        boolean serverClose = false;
-        if (!ssl && random.nextInt(100) < 5)
-            serverClose = true;
-
+        boolean clientClose = !ssl && random.nextInt(100) < 5;
+        boolean serverClose = !ssl && random.nextInt(100) < 5;
         int maxContentLength = 64 * 1024;
         int contentLength = random.nextInt(maxContentLength) + 1;
 
@@ -280,10 +273,11 @@ public class HttpClientLoadTest extends AbstractTest
                 .path("/" + requestId)
                 .method(method);
 
-        if (clientClose)
-            request.header(HttpHeader.CONNECTION, "close");
-        else if (serverClose)
-            request.header("X-Close", "true");
+        if (clientClose) {
+			request.header(HttpHeader.CONNECTION, "close");
+		} else if (serverClose) {
+			request.header("X-Close", "true");
+		}
 
         switch (method)
         {
@@ -307,16 +301,18 @@ public class HttpClientLoadTest extends AbstractTest
                 if (checkContentLength)
                 {
                     String content = response.getHeaders().get("X-Content");
-                    if (content != null)
-                        contentLength.set(Integer.parseInt(content));
+                    if (content != null) {
+						contentLength.set(Integer.parseInt(content));
+					}
                 }
             }
 
             @Override
             public void onContent(Response response, ByteBuffer content)
             {
-                if (checkContentLength)
-                    contentLength.addAndGet(-content.remaining());
+                if (checkContentLength) {
+					contentLength.addAndGet(-content.remaining());
+				}
             }
 
             @Override
@@ -328,8 +324,9 @@ public class HttpClientLoadTest extends AbstractTest
                     failures.add("Result failed " + result);
                 }
 
-                if (checkContentLength && contentLength.get() != 0)
-                    failures.add("Content length mismatch " + contentLength);
+                if (checkContentLength && contentLength.get() != 0) {
+					failures.add("Content length mismatch " + contentLength);
+				}
 
                 requestLatch.countDown();
                 latch.countDown();
@@ -381,8 +378,9 @@ public class HttpClientLoadTest extends AbstractTest
                 }
             }
 
-            if (Boolean.parseBoolean(request.getHeader("X-Close")))
-                response.setHeader("Connection", "close");
+            if (Boolean.parseBoolean(request.getHeader("X-Close"))) {
+				response.setHeader("Connection", "close");
+			}
 
             baseRequest.setHandled(true);
         }

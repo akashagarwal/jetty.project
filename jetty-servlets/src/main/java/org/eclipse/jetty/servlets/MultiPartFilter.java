@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.servlets;
 
@@ -98,47 +93,44 @@ import org.eclipse.jetty.util.log.Logger;
 public class MultiPartFilter implements Filter
 {
     private static final Logger LOG = Log.getLogger(MultiPartFilter.class);
-    public final static String CONTENT_TYPE_SUFFIX=".org.eclipse.jetty.servlet.contentType";
-    private final static String MULTIPART = "org.eclipse.jetty.servlet.MultiPartFile.multiPartInputStream";
+    public static final String CONTENT_TYPE_SUFFIX=".org.eclipse.jetty.servlet.contentType";
+    private static final String MULTIPART = "org.eclipse.jetty.servlet.MultiPartFile.multiPartInputStream";
     private File tempdir;
     private boolean _deleteFiles;
     private ServletContext _context;
-    private int _fileOutputBuffer = 0;
-    private boolean _writeFilesWithFilenames = false;
+    private int _fileOutputBuffer;
+    private boolean _writeFilesWithFilenames;
     private long _maxFileSize = -1L;
     private long _maxRequestSize = -1L;
     private int _maxFormKeys = Integer.getInteger("org.eclipse.jetty.server.Request.maxFormKeys", 1000);
 
-    /* ------------------------------------------------------------------------------- */
-    /**
-     * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
-     */
+    /** -------------------------------------------------------------------------------. */
     public void init(FilterConfig filterConfig) throws ServletException
     {
         tempdir=(File)filterConfig.getServletContext().getAttribute("javax.servlet.context.tempdir");
         _deleteFiles="true".equals(filterConfig.getInitParameter("deleteFiles"));
         String fileOutputBuffer = filterConfig.getInitParameter("fileOutputBuffer");
-        if(fileOutputBuffer!=null)
-            _fileOutputBuffer = Integer.parseInt(fileOutputBuffer);
+        if(fileOutputBuffer!=null) {
+			_fileOutputBuffer = Integer.parseInt(fileOutputBuffer);
+		}
         String maxFileSize = filterConfig.getInitParameter("maxFileSize");
-        if (maxFileSize != null)
-            _maxFileSize = Long.parseLong(maxFileSize.trim());
+        if (maxFileSize != null) {
+			_maxFileSize = Long.parseLong(maxFileSize.trim());
+		}
         String maxRequestSize = filterConfig.getInitParameter("maxRequestSize");
-        if (maxRequestSize != null)
-            _maxRequestSize = Long.parseLong(maxRequestSize.trim());
+        if (maxRequestSize != null) {
+			_maxRequestSize = Long.parseLong(maxRequestSize.trim());
+		}
 
         _context=filterConfig.getServletContext();
         String mfks = filterConfig.getInitParameter("maxFormKeys");
-        if (mfks!=null)
-            _maxFormKeys=Integer.parseInt(mfks);
+        if (mfks!=null) {
+			_maxFormKeys=Integer.parseInt(mfks);
+		}
         _writeFilesWithFilenames = "true".equalsIgnoreCase(filterConfig.getInitParameter("writeFilesWithFilenames"));
     }
 
-    /* ------------------------------------------------------------------------------- */
-    /**
-     * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest,
-     *      javax.servlet.ServletResponse, javax.servlet.FilterChain)
-     */
+    /** -------------------------------------------------------------------------------. */
     public void doFilter(ServletRequest request,ServletResponse response,FilterChain chain)
         throws IOException, ServletException
     {
@@ -157,10 +149,11 @@ public class MultiPartFilter implements Filter
         for (Map.Entry<String, String[]> entry : request.getParameterMap().entrySet())
         {
             Object value = entry.getValue();
-            if (value instanceof String[])
-                params.addValues(entry.getKey(), (String[])value);
-            else
-                params.add(entry.getKey(), value);
+            if (value instanceof String[]) {
+				params.addValues(entry.getKey(), (String[])value);
+			} else {
+				params.add(entry.getKey(), value);
+			}
         }
 
         MultipartConfigElement config = new MultipartConfigElement(tempdir.getCanonicalPath(), _maxFileSize, _maxRequestSize, _fileOutputBuffer);
@@ -177,8 +170,9 @@ public class MultiPartFilter implements Filter
                 while (itor.hasNext() && params.size() < _maxFormKeys)
                 {
                     Part p = itor.next();
-                    if (LOG.isDebugEnabled())
-                        LOG.debug("{}",p);
+                    if (LOG.isDebugEnabled()) {
+						LOG.debug("{}",p);
+					}
                     MultiPartInputStreamParser.MultiPart mp = (MultiPartInputStreamParser.MultiPart)p;
                     if (mp.getFile() != null)
                     {
@@ -186,8 +180,9 @@ public class MultiPartFilter implements Filter
                         if (mp.getContentDispositionFilename() != null)
                         {
                             params.add(mp.getName(), mp.getContentDispositionFilename());
-                            if (mp.getContentType() != null)
-                                params.add(mp.getName()+CONTENT_TYPE_SUFFIX, mp.getContentType());
+                            if (mp.getContentType() != null) {
+								params.add(mp.getName()+CONTENT_TYPE_SUFFIX, mp.getContentType());
+							}
                         }
                     }
                     else
@@ -195,8 +190,9 @@ public class MultiPartFilter implements Filter
                         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
                         IO.copy(p.getInputStream(), bytes);
                         params.add(p.getName(), bytes.toByteArray());
-                        if (p.getContentType() != null)
-                            params.add(p.getName()+CONTENT_TYPE_SUFFIX, p.getContentType());
+                        if (p.getContentType() != null) {
+							params.add(p.getName()+CONTENT_TYPE_SUFFIX, p.getContentType());
+						}
                     }
                 }
             }
@@ -211,11 +207,12 @@ public class MultiPartFilter implements Filter
     }
     
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     private void deleteFiles(ServletRequest request)
     {
-        if (!_deleteFiles)
-            return;
+        if (!_deleteFiles) {
+			return;
+		}
         
         MultiPartInputStreamParser mpis = (MultiPartInputStreamParser)request.getAttribute(MULTIPART);
         if (mpis != null)
@@ -232,48 +229,40 @@ public class MultiPartFilter implements Filter
         request.removeAttribute(MULTIPART);
     }
 
-    /* ------------------------------------------------------------------------------- */
-    /**
-     * @see javax.servlet.Filter#destroy()
-     */
+    /** -------------------------------------------------------------------------------. */
     public void destroy()
     {
     }
 
     /* ------------------------------------------------------------------------------- */
-    /* ------------------------------------------------------------------------------- */
+    /** -------------------------------------------------------------------------------. */
     private static class Wrapper extends HttpServletRequestWrapper
     {
         Charset _encoding=StandardCharsets.UTF_8;
         MultiMap<Object> _params;
 
-        /* ------------------------------------------------------------------------------- */
+        /** -------------------------------------------------------------------------------. */
         public Wrapper(HttpServletRequest request, MultiMap map)
         {
             super(request);
             this._params=map;
         }
 
-        /* ------------------------------------------------------------------------------- */
-        /**
-         * @see javax.servlet.ServletRequest#getContentLength()
-         */
+        /** -------------------------------------------------------------------------------. */
         @Override
         public int getContentLength()
         {
             return 0;
         }
 
-        /* ------------------------------------------------------------------------------- */
-        /**
-         * @see javax.servlet.ServletRequest#getParameter(java.lang.String)
-         */
+        /** -------------------------------------------------------------------------------. */
         @Override
         public String getParameter(String name)
         {
             Object o=_params.get(name);
-            if (!(o instanceof byte[]) && LazyList.size(o)>0)
-                o=LazyList.get(o,0);
+            if (!(o instanceof byte[]) && LazyList.size(o)>0) {
+				o=LazyList.get(o,0);
+			}
 
             if (o instanceof byte[])
             {
@@ -286,15 +275,13 @@ public class MultiPartFilter implements Filter
                     LOG.warn(e);
                 }
             }
-            else if (o!=null)
-                return String.valueOf(o);
+            else if (o!=null) {
+				return String.valueOf(o);
+			}
             return null;
         }
 
-        /* ------------------------------------------------------------------------------- */
-        /**
-         * @see javax.servlet.ServletRequest#getParameterMap()
-         */
+        /** -------------------------------------------------------------------------------. */
         @Override
         public Map<String, String[]> getParameterMap()
         {
@@ -308,26 +295,21 @@ public class MultiPartFilter implements Filter
             return Collections.unmodifiableMap(cmap);
         }
 
-        /* ------------------------------------------------------------------------------- */
-        /**
-         * @see javax.servlet.ServletRequest#getParameterNames()
-         */
+        /** -------------------------------------------------------------------------------. */
         @Override
         public Enumeration<String> getParameterNames()
         {
             return Collections.enumeration(_params.keySet());
         }
 
-        /* ------------------------------------------------------------------------------- */
-        /**
-         * @see javax.servlet.ServletRequest#getParameterValues(java.lang.String)
-         */
+        /** -------------------------------------------------------------------------------. */
         @Override
         public String[] getParameterValues(String name)
         {
             List l=_params.getValues(name);
-            if (l==null || l.size()==0)
-                return new String[0];
+            if (l==null || l.size()==0) {
+				return new String[0];
+			}
             String[] v = new String[l.size()];
             for (int i=0;i<l.size();i++)
             {
@@ -343,16 +325,14 @@ public class MultiPartFilter implements Filter
                         throw new RuntimeException(e);
                     }
                 }
-                else if (o instanceof String)
-                    v[i]=(String)o;
+                else if (o instanceof String) {
+					v[i]=(String)o;
+				}
             }
             return v;
         }
 
-        /* ------------------------------------------------------------------------------- */
-        /**
-         * @see javax.servlet.ServletRequest#setCharacterEncoding(java.lang.String)
-         */
+        /** -------------------------------------------------------------------------------. */
         @Override
         public void setCharacterEncoding(String enc)
             throws UnsupportedEncodingException
@@ -368,7 +348,7 @@ public class MultiPartFilter implements Filter
         }
         
         
-        /* ------------------------------------------------------------------------------- */
+        /** -------------------------------------------------------------------------------. */
         private String getParameterBytesAsString (String name, byte[] bytes) 
         throws UnsupportedEncodingException
         {
@@ -381,7 +361,7 @@ public class MultiPartFilter implements Filter
                 String tmp = MimeTypes.getCharsetFromContentType((String)ct);
                 try
                 {
-                    contentType = (tmp == null?_encoding:Charset.forName(tmp));
+                    contentType = tmp == null?_encoding:Charset.forName(tmp);
                 }
                 catch (UnsupportedCharsetException e)
                 {

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util;
 
@@ -42,7 +37,7 @@ public class IPAddressMapTest
         assertNull(map.match("10.5.2.0"));
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Test
     public void testOneRange()
     {
@@ -61,7 +56,7 @@ public class IPAddressMapTest
         assertNull(map.match("0.16.32.64"));
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Test
     public void testOneMissing()
     {
@@ -74,7 +69,7 @@ public class IPAddressMapTest
         assertNotNull(map.match("10.5.2.255"));
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Test
     public void testTwoMissing()
     {
@@ -90,7 +85,7 @@ public class IPAddressMapTest
         assertNotNull(map.match("10.5.255.1"));
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Test
     public void testThreeMissing()
     {
@@ -109,7 +104,7 @@ public class IPAddressMapTest
         assertNotNull(map.match("10.255.1.1"));
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Test
     public void testOneMixed()
     {
@@ -129,7 +124,7 @@ public class IPAddressMapTest
         assertNull(map.match("16.31.63.128"));
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Test
     public void testManyMixed()
     {

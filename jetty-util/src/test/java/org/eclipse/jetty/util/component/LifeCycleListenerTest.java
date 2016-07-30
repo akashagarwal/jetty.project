@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util.component;
 
@@ -138,16 +133,18 @@ public class LifeCycleListenerTest
         @Override
         protected void doStart() throws Exception
         {
-            if (cause!=null)
-                throw cause;
+            if (cause!=null) {
+				throw cause;
+			}
             super.doStart();
         }
 
         @Override
         protected void doStop() throws Exception
         {
-            if (cause!=null)
-                throw cause;
+            if (cause!=null) {
+				throw cause;
+			}
             super.doStop();
         }
 
@@ -160,18 +157,18 @@ public class LifeCycleListenerTest
     private class TestListener extends AbstractLifeCycle.AbstractLifeCycleListener
     {
         @SuppressWarnings("unused")
-        private boolean failure = false;
-        private boolean started = false;
-        private boolean starting = false;
-        private boolean stopped = false;
-        private boolean stopping = false;
+        private boolean failure;
+        private boolean started;
+        private boolean starting;
+        private boolean stopped;
+        private boolean stopping;
 
         private long startedTime;
         private long startingTime;
         private long stoppedTime;
         private long stoppingTime;
 
-        private Throwable cause = null;
+        private Throwable cause;
 
         public void lifeCycleFailure(LifeCycle event, Throwable cause)
         {

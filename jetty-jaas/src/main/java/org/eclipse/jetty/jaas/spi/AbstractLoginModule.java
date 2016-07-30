@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.jaas.spi;
 
@@ -49,8 +44,8 @@ public abstract class AbstractLoginModule implements LoginModule
 {
     private CallbackHandler callbackHandler;
 
-    private boolean authState = false;
-    private boolean commitState = false;
+    private boolean authState;
+    private boolean commitState;
     private JAASUserInfo currentUser;
     private Subject subject;
 
@@ -58,7 +53,7 @@ public abstract class AbstractLoginModule implements LoginModule
      * JAASUserInfo
      *
      * This class unites the UserInfo data with jaas concepts
-     * such as Subject and Principals
+     * such as Subject and Principals.
      */
     public class JAASUserInfo
     {
@@ -109,8 +104,9 @@ public abstract class AbstractLoginModule implements LoginModule
             if (this.user.getRoleNames() != null)
             {
                 Iterator<String> itor = this.user.getRoleNames().iterator();
-                while (itor.hasNext())
-                    this.roles.add(new JAASRole((String)itor.next()));
+                while (itor.hasNext()) {
+					this.roles.add(new JAASRole((String)itor.next()));
+				}
             }
         }
     }
@@ -171,7 +167,7 @@ public abstract class AbstractLoginModule implements LoginModule
     public boolean abort() throws LoginException
     {
         this.currentUser = null;
-        return (isAuthenticated() && isCommitted());
+        return isAuthenticated() && isCommitted();
     }
 
     /**
@@ -224,11 +220,13 @@ public abstract class AbstractLoginModule implements LoginModule
     {
         try
         {  
-            if (isIgnored())
-                return false;
+            if (isIgnored()) {
+				return false;
+			}
             
-            if (callbackHandler == null)
-                throw new LoginException ("No callback handler");
+            if (callbackHandler == null) {
+				throw new LoginException ("No callback handler");
+			}
 
             Callback[] callbacks = configureCallbacks();
             callbackHandler.handle(callbacks);
@@ -238,9 +236,11 @@ public abstract class AbstractLoginModule implements LoginModule
 
             webCredential = ((ObjectCallback)callbacks[1]).getObject(); //first check if ObjectCallback has the credential
             if (webCredential == null)
-                webCredential = ((PasswordCallback)callbacks[2]).getPassword(); //use standard PasswordCallback
+			 {
+				webCredential = ((PasswordCallback)callbacks[2]).getPassword(); //use standard PasswordCallback
+			}
 
-            if ((webUserName == null) || (webCredential == null))
+            if (webUserName == null || webCredential == null)
             {
                 setAuthenticated(false);
                 throw new FailedLoginException();
@@ -261,9 +261,9 @@ public abstract class AbstractLoginModule implements LoginModule
             {
                 currentUser.fetchRoles();
                 return true;
-            }
-            else
-                throw new FailedLoginException();
+            } else {
+				throw new FailedLoginException();
+			}
         }
         catch (IOException e)
         {
@@ -275,8 +275,9 @@ public abstract class AbstractLoginModule implements LoginModule
         }
         catch (Exception e)
         {
-            if (e instanceof LoginException)
-                throw (LoginException)e;
+            if (e instanceof LoginException) {
+				throw (LoginException)e;
+			}
             throw new LoginException (e.toString());
         }
     }

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.io;
 
@@ -101,8 +96,9 @@ public abstract class AbstractEndPoint extends IdleTimeout implements EndPoint
     @Override
     public void onOpen()
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("onOpen {}",this);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("onOpen {}",this);
+		}
         super.onOpen();
     }
 
@@ -158,8 +154,9 @@ public abstract class AbstractEndPoint extends IdleTimeout implements EndPoint
     protected void onIdleExpired(TimeoutException timeout)
     {
         Connection connection = _connection;
-        if (connection != null && !connection.onIdleExpired())
-            return;
+        if (connection != null && !connection.onIdleExpired()) {
+			return;
+		}
 
         boolean output_shutdown=isOutputShutdown();
         boolean input_shutdown=isInputShutdown();
@@ -173,10 +170,11 @@ public abstract class AbstractEndPoint extends IdleTimeout implements EndPoint
         // for a dispatched servlet or suspended request to extend beyond the connections idle
         // time.  So if this test would always close an idle endpoint that is not handled, then
         // we would need a mode to ignore timeouts for some HTTP states
-        if (isOpen() && (output_shutdown || input_shutdown) && !(fillFailed || writeFailed))
-            close();
-        else
-            LOG.debug("Ignored idle endpoint {}",this);
+        if (isOpen() && (output_shutdown || input_shutdown) && !fillFailed && !writeFailed) {
+			close();
+		} else {
+			LOG.debug("Ignored idle endpoint {}",this);
+		}
     }
 
     @Override
@@ -184,18 +182,20 @@ public abstract class AbstractEndPoint extends IdleTimeout implements EndPoint
     {
         Connection old_connection = getConnection();
 
-        if (LOG.isDebugEnabled())
-            LOG.debug("{} upgrading from {} to {}", this, old_connection, newConnection);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("{} upgrading from {} to {}", this, old_connection, newConnection);
+		}
 
         ByteBuffer prefilled = (old_connection instanceof Connection.UpgradeFrom)
                 ?((Connection.UpgradeFrom)old_connection).onUpgradeFrom():null;
         old_connection.onClose();
         old_connection.getEndPoint().setConnection(newConnection);
 
-        if (newConnection instanceof Connection.UpgradeTo)
-            ((Connection.UpgradeTo)newConnection).onUpgradeTo(prefilled);
-        else if (BufferUtil.hasContent(prefilled))
-            throw new IllegalStateException();
+        if (newConnection instanceof Connection.UpgradeTo) {
+			((Connection.UpgradeTo)newConnection).onUpgradeTo(prefilled);
+		} else if (BufferUtil.hasContent(prefilled)) {
+			throw new IllegalStateException();
+		}
 
         newConnection.onOpen();
     }

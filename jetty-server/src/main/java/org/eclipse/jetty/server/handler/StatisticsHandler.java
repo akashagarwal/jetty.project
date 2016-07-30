@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server.handler;
 
@@ -112,8 +107,9 @@ public class StatisticsHandler extends HandlerWrapper implements Graceful
             if (d==0)
             {
                 FutureCallback shutdown = _shutdown.get();
-                if (shutdown!=null)
-                    shutdown.succeeded();
+                if (shutdown!=null) {
+					shutdown.succeeded();
+				}
             }   
         }
     };
@@ -165,12 +161,13 @@ public class StatisticsHandler extends HandlerWrapper implements Graceful
         try
         {
             Handler handler = getHandler();
-            if (handler!=null && _shutdown.get()==null && isStarted())
-                handler.handle(path, baseRequest, request, response);
-            else if (baseRequest.isHandled())
+            if (handler!=null && _shutdown.get()==null && isStarted()) {
+				handler.handle(path, baseRequest, request, response);
+			} else if (baseRequest.isHandled())
             {
-                if (_wrapWarning.compareAndSet(false,true))
-                    LOG.warn("Bad statistics configuration. Latencies will be incorrect in {}",this);
+                if (_wrapWarning.compareAndSet(false,true)) {
+					LOG.warn("Bad statistics configuration. Latencies will be incorrect in {}",this);
+				}
             }
             else
             {
@@ -205,8 +202,9 @@ public class StatisticsHandler extends HandlerWrapper implements Graceful
                 if (shutdown!=null)
                 {
                     response.flushBuffer();
-                    if (d==0)
-                        shutdown.succeeded();
+                    if (d==0) {
+						shutdown.succeeded();
+					}
                 }   
             }
             // else onCompletion will handle it.
@@ -238,10 +236,10 @@ public class StatisticsHandler extends HandlerWrapper implements Graceful
                 default:
                     break;
             }
-        }
-        else
-            // will fall through to not found handler
+        } else {
+			// will fall through to not found handler
             _responses4xx.increment();
+		}
         _responsesTotalBytes.add(response.getContentCount());
     }
 
@@ -259,8 +257,9 @@ public class StatisticsHandler extends HandlerWrapper implements Graceful
     {
         super.doStop();
         FutureCallback shutdown = _shutdown.get();
-        if (shutdown!=null && !shutdown.isDone())
-            shutdown.failed(new TimeoutException());
+        if (shutdown!=null && !shutdown.isDone()) {
+			shutdown.failed(new TimeoutException());
+		}
     }
 
     /**
@@ -584,8 +583,9 @@ public class StatisticsHandler extends HandlerWrapper implements Graceful
         FutureCallback shutdown=new FutureCallback(false);
         _shutdown.compareAndSet(null,shutdown);
         shutdown=_shutdown.get();
-        if (_dispatchedStats.getCurrent()==0)
-            shutdown.succeeded();
+        if (_dispatchedStats.getCurrent()==0) {
+			shutdown.succeeded();
+		}
         return shutdown;
     }
 }

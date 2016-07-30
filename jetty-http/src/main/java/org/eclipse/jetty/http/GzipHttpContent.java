@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http;
 
@@ -26,22 +21,24 @@ import org.eclipse.jetty.http.MimeTypes.Type;
 
 import org.eclipse.jetty.util.resource.Resource;
 
-/* ------------------------------------------------------------ */
+/** ------------------------------------------------------------. */
 public class GzipHttpContent implements HttpContent
 {
     private final HttpContent _content; 
     private final HttpContent _contentGz;
-    public final static String ETAG_GZIP="--gzip";
-    public final static String ETAG_GZIP_QUOTE="--gzip\"";
-    public final static PreEncodedHttpField CONTENT_ENCODING_GZIP=new PreEncodedHttpField(HttpHeader.CONTENT_ENCODING,"gzip");
+    public static final String ETAG_GZIP="--gzip";
+    public static final String ETAG_GZIP_QUOTE="--gzip\"";
+    public static final PreEncodedHttpField CONTENT_ENCODING_GZIP=new PreEncodedHttpField(HttpHeader.CONTENT_ENCODING,"gzip");
     
     public static String removeGzipFromETag(String etag)
     {
-        if (etag==null)
-            return null;
+        if (etag==null) {
+			return null;
+		}
         int i = etag.indexOf(ETAG_GZIP_QUOTE);
-        if (i<0)
-            return etag;
+        if (i<0) {
+			return etag;
+		}
         return etag.substring(0,i)+'"';
     }
     

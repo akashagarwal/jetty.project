@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.webapp;
 
@@ -33,9 +28,9 @@ import org.eclipse.jetty.util.resource.Resource;
  */
 public interface Ordering
 {  
-    public List<Resource> order(List<Resource> fragments);
-    public boolean isAbsolute ();
-    public boolean hasOther();
+    List<Resource> order(List<Resource> fragments);
+    boolean isAbsolute ();
+    boolean hasOther();
 
     /**
      * AbsoluteOrdering
@@ -46,7 +41,7 @@ public interface Ordering
     {
         public static final String OTHER = "@@-OTHER-@@";
         protected List<String> _order = new ArrayList<String>();
-        protected boolean _hasOther = false;
+        protected boolean _hasOther;
         protected MetaData _metaData;
     
         public AbsoluteOrdering (MetaData metaData)
@@ -72,7 +67,7 @@ public interface Ordering
             int index = -1;
             for (String item:_order)
             {
-                if (!item.equals(OTHER))
+                if (!OTHER.equals(item))
                 {
                     FragmentDescriptor f = others.remove(item);
                     if (f != null)
@@ -83,14 +78,15 @@ public interface Ordering
                         tmp.remove(jar);
                     }
                 }
-                else
-                    index = orderedList.size(); //remember the index at which we want to add in all the others
+				else {
+					index = orderedList.size(); //remember the index at which we want to add in all the others
+				}
             }
             
             //3. if <other> was specified, insert rest of the fragments 
             if (_hasOther)
             {
-                orderedList.addAll((index < 0? 0: index), tmp);
+                orderedList.addAll(index < 0? 0: index, tmp);
             }
             
             return orderedList;
@@ -109,8 +105,9 @@ public interface Ordering
         
         public void addOthers ()
         {
-            if (_hasOther)
-                throw new IllegalStateException ("Duplicate <other> element in absolute ordering");
+            if (_hasOther) {
+				throw new IllegalStateException ("Duplicate <other> element in absolute ordering");
+			}
             
             _hasOther = true;
             _order.add(OTHER);
@@ -199,20 +196,18 @@ public interface Ordering
                 boolean changesNone = orderList(_noOthers);
                 
                 //we're finished on a clean pass through with no ordering changes
-                done = (!changesBefore && !changesAfter && !changesNone);
+                done = !changesBefore && !changesAfter && !changesNone;
             }
-            while (!done && (--maxIterations >0));
+            while (!done && --maxIterations >0);
             
             //4. merge before-others + no-others +after-others
-            if (!done)
-                throw new IllegalStateException("Circular references for fragments");
+            if (!done) {
+				throw new IllegalStateException("Circular references for fragments");
+			}
             
-            for (Resource r: _beforeOthers)
-                orderedList.add(r);
-            for (Resource r: _noOthers)
-                orderedList.add(r);
-            for(Resource r: _afterOthers)
-                orderedList.add(r);
+            orderedList.addAll(_beforeOthers);
+            orderedList.addAll(_noOthers);
+            orderedList.addAll(_afterOthers);
             
             return orderedList;
         }
@@ -282,15 +277,10 @@ public interface Ordering
                                changes = true;
                                // must be in the noOthers list or it would have been an error
                                Resource bResource = _metaData.getJarForFragment(b);
-                               if (bResource != null)
-                               {
-                                   //If its in the no-others list, insert into this list so that we are before it
-                                   if (_noOthers.remove(bResource))
-                                   {
-                                       insert(list, idx1+1, b);
-                                      
-                                   }
-                               }
+                               if (bResource != null && _noOthers.remove(bResource)) {
+							       insert(list, idx1+1, b);
+							      
+							   }
                            }
                            else
                            {
@@ -322,13 +312,9 @@ public interface Ordering
                                changes = true;
                                //take it out of the noOthers list and put it in the right place in this list
                                Resource aResource = _metaData.getJarForFragment(a);
-                               if (aResource != null)
-                               {
-                                   if (_noOthers.remove(aResource))
-                                   {
-                                       insert(list,idx1, aResource);       
-                                   }
-                               }
+                               if (aResource != null && _noOthers.remove(aResource)) {
+							       insert(list,idx1, aResource);       
+							   }
                            }
                            else
                            {
@@ -384,10 +370,12 @@ public interface Ordering
                {
                    //The list we're looking at is the afterOthers, then a will be the tail of
                    //the final list.  If b is in the beforeOthers list, then b will be before a and an error.
-                   if (_beforeOthers.contains(fragNameB))
-                       throw new IllegalStateException("Incorrect relationship: "+fragNameA+" before "+fragNameB);
-                   else
-                       return false; //b could be moved to the list
+                   if (_beforeOthers.contains(fragNameB)) {
+					throw new IllegalStateException("Incorrect relationship: "+fragNameA+" before "+fragNameB);
+				}
+				else {
+					return false; //b could be moved to the list
+				}
                }
            }
           
@@ -429,10 +417,12 @@ public interface Ordering
                {
                    //The list we're looking at is beforeOthers, and contains a and will be before
                    //everything else in the final ist. If b is in the afterOthers list, then a cannot be before b.
-                   if (_afterOthers.contains(fragNameB))
-                       throw new IllegalStateException("Incorrect relationship: "+fragNameB+" after "+fragNameA);
-                   else
-                       return false; //b could be moved from noOthers list
+                   if (_afterOthers.contains(fragNameB)) {
+					throw new IllegalStateException("Incorrect relationship: "+fragNameB+" after "+fragNameA);
+				}
+				else {
+					return false; //b could be moved from noOthers list
+				}
                }
            }
     
@@ -450,43 +440,49 @@ public interface Ordering
        protected void insert(List<Resource> list, int index, String fragName)
        {
            Resource jar = _metaData.getJarForFragment(fragName);
-           if (jar == null)
-               throw new IllegalStateException("No jar for insertion");
+           if (jar == null) {
+			throw new IllegalStateException("No jar for insertion");
+		}
            
            insert(list, index, jar);
        }
     
        protected void insert(List<Resource> list, int index, Resource resource)
        {
-           if (list == null)
-               throw new IllegalStateException("List is null for insertion");
+           if (list == null) {
+			throw new IllegalStateException("List is null for insertion");
+		}
            
            //add it at the end
-           if (index > list.size())
-               list.add(resource);
-           else
-               list.add(index, resource);
+           if (index > list.size()) {
+			list.add(resource);
+		} else {
+			list.add(index, resource);
+		}
        }
     
        protected void remove (List<Resource> resources, Resource r)
        {
-           if (resources == null)
-               return;
+           if (resources == null) {
+			return;
+		}
            resources.remove(r);
        }
     
        protected int getIndexOf(List<Resource> resources, String fragmentName)
        {
           FragmentDescriptor fd = _metaData.getFragment(fragmentName);
-          if (fd == null)
-              return -1;
+          if (fd == null) {
+			return -1;
+		}
           
           
           Resource r = _metaData.getJarForFragment(fragmentName);
-          if (r == null)
-              return -1;
+          if (r != null) {
+			return resources.indexOf(r);
+		}
           
-          return resources.indexOf(r);
+          return -1;
        }
     }
   

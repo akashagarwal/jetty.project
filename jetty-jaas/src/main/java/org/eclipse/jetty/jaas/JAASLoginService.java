@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.jaas;
 
@@ -50,7 +45,7 @@ import org.eclipse.jetty.util.log.Logger;
 /* ---------------------------------------------------- */
 /** 
  * JAASLoginService
- *
+ *.
  */
 public class JAASLoginService extends AbstractLifeCycle implements LoginService
 {
@@ -104,7 +99,7 @@ public class JAASLoginService extends AbstractLifeCycle implements LoginService
 
     /* ---------------------------------------------------- */
     /**
-     * Set the name of the realm
+     * Set the name of the realm.
      *
      * @param name a <code>String</code> value
      */
@@ -143,43 +138,43 @@ public class JAASLoginService extends AbstractLifeCycle implements LoginService
         _loginModuleName = name;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void setCallbackHandlerClass (String classname)
     {
         _callbackHandlerClass = classname;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void setRoleClassNames (String[] classnames)
     {
         ArrayList<String> tmp = new ArrayList<String>();
 
-        if (classnames != null)
-            tmp.addAll(Arrays.asList(classnames));
+        if (classnames != null) {
+			tmp.addAll(Arrays.asList(classnames));
+		}
 
-        if (!tmp.contains(DEFAULT_ROLE_CLASS_NAME))
-            tmp.add(DEFAULT_ROLE_CLASS_NAME);
+        if (!tmp.contains(DEFAULT_ROLE_CLASS_NAME)) {
+			tmp.add(DEFAULT_ROLE_CLASS_NAME);
+		}
         _roleClassNames = tmp.toArray(new String[tmp.size()]);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public String[] getRoleClassNames()
     {
         return _roleClassNames;
     }
 
-    /* ------------------------------------------------------------ */
-    /**
-     * @see org.eclipse.jetty.util.component.AbstractLifeCycle#doStart()
-     */
+    /** ------------------------------------------------------------. */
     protected void doStart() throws Exception
     {
-        if (_identityService==null)
-            _identityService=new DefaultIdentityService();
+        if (_identityService==null) {
+			_identityService=new DefaultIdentityService();
+		}
         super.doStart();
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public UserIdentity login(final String username,final Object credentials, final ServletRequest request)
     {
@@ -211,11 +206,12 @@ public class JAASLoginService extends AbstractLifeCycle implements LoginService
                             else if (callback instanceof RequestParameterCallback)
                             {
                                 RequestParameterCallback rpc = (RequestParameterCallback)callback;
-                                if (request!=null)
-                                    rpc.setParameterValues(Arrays.asList(request.getParameterValues(rpc.getParameterName())));
-                            }
-                            else
-                                throw new UnsupportedCallbackException(callback);
+                                if (request!=null) {
+									rpc.setParameterValues(Arrays.asList(request.getParameterValues(rpc.getParameterName())));
+								}
+                            } else {
+								throw new UnsupportedCallbackException(callback);
+							}
                         }
                     }
                 };
@@ -265,14 +261,14 @@ public class JAASLoginService extends AbstractLifeCycle implements LoginService
         return null;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public boolean validate(UserIdentity user)
     {
         // TODO optionally check user is still valid
         return true;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     private String getUserName(CallbackHandler callbackHandler) throws IOException, UnsupportedCallbackException
     {
         NameCallback nameCallback = new NameCallback("foo");
@@ -280,7 +276,7 @@ public class JAASLoginService extends AbstractLifeCycle implements LoginService
         return nameCallback.getName();
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void logout(UserIdentity user)
     {
         Set<JAASUserPrincipal> userPrincipals = user.getSubject().getPrincipals(JAASUserPrincipal.class);
@@ -296,7 +292,7 @@ public class JAASLoginService extends AbstractLifeCycle implements LoginService
     }
 
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private String[] getGroups (Subject subject)
     {

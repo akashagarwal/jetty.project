@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.jsr356;
 
@@ -73,15 +68,15 @@ public class ClientContainer extends ContainerLifeCycle implements WebSocketCont
 {
     private static final Logger LOG = Log.getLogger(ClientContainer.class);
 
-    /** The delegated Container Scope */
+    /** The delegated Container Scope. */
     private final WebSocketContainerScope scopeDelegate;
-    /** Tracking all primitive decoders for the container */
+    /** Tracking all primitive decoders for the container. */
     private final DecoderFactory decoderFactory;
-    /** Tracking all primitive encoders for the container */
+    /** Tracking all primitive encoders for the container. */
     private final EncoderFactory encoderFactory;
-    /** Tracking for all declared Client endpoints */
+    /** Tracking for all declared Client endpoints. */
     private final Map<Class<?>, EndpointMetadata> endpointClientMetadataCache;
-    /** The jetty websocket client in use for this container */
+    /** The jetty websocket client in use for this container. */
     private WebSocketClient client;
 
     public ClientContainer()
@@ -319,7 +314,7 @@ public class ClientContainer extends ContainerLifeCycle implements WebSocketCont
     }
 
     /**
-     * Used in {@link Session#getOpenSessions()}
+     * Used in {@link Session#getOpenSessions()}.
      * @return the set of open sessions
      */
     public Set<Session> getOpenSessions()

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util;
 
@@ -37,7 +32,7 @@ import org.junit.runner.RunWith;
 @RunWith(AdvancedRunner.class)
 public class DateCacheTest
 {
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Test
     @Slow
     public void testDateCache() throws Exception
@@ -61,10 +56,11 @@ public class DateCacheTest
             last=f;
             f=dc.formatNow(now);
             // System.err.printf("%s %s%n",f,last==f);
-            if (last==f)
-                hits++;
-            else
-                misses++;
+            if (last==f) {
+				hits++;
+			} else {
+				misses++;
+			}
 
             TimeUnit.MILLISECONDS.sleep(100);
             now=System.currentTimeMillis();

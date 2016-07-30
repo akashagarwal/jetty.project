@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.io;
 
@@ -48,8 +43,9 @@ public abstract class AbstractConnection implements Connection
 
     protected AbstractConnection(EndPoint endp, Executor executor)
     {
-        if (executor == null)
-            throw new IllegalArgumentException("Executor must not be null!");
+        if (executor == null) {
+			throw new IllegalArgumentException("Executor must not be null!");
+		}
         _endPoint = endp;
         _executor = executor;
         _readCallback = new ReadCallback();
@@ -137,8 +133,9 @@ public abstract class AbstractConnection implements Connection
      */
     public void fillInterested()
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("fillInterested {}",this);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("fillInterested {}",this);
+		}
         getEndPoint().fillInterested(_readCallback);
     }
 
@@ -159,18 +156,20 @@ public abstract class AbstractConnection implements Connection
      */
     protected void onFillInterestedFailed(Throwable cause)
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("{} onFillInterestedFailed {}", this, cause);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("{} onFillInterestedFailed {}", this, cause);
+		}
         if (_endPoint.isOpen())
         {
             boolean close = true;
-            if (cause instanceof TimeoutException)
-                close = onReadTimeout();
+            if (cause instanceof TimeoutException) {
+				close = onReadTimeout();
+			}
             if (close)
             {
-                if (_endPoint.isOutputShutdown())
-                    _endPoint.close();
-                else
+                if (_endPoint.isOutputShutdown()) {
+					_endPoint.close();
+				} else
                 {
                     _endPoint.shutdownOutput();
                     fillInterested();
@@ -180,7 +179,7 @@ public abstract class AbstractConnection implements Connection
     }
 
     /**
-     * <p>Callback method invoked when the endpoint failed to be ready to be read after a timeout</p>
+     * <p>Callback method invoked when the endpoint failed to be ready to be read after a timeout</p>.
      * @return true to signal that the endpoint must be closed, false to keep the endpoint open
      */
     protected boolean onReadTimeout()
@@ -191,21 +190,25 @@ public abstract class AbstractConnection implements Connection
     @Override
     public void onOpen()
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("onOpen {}", this);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("onOpen {}", this);
+		}
 
-        for (Listener listener : listeners)
-            listener.onOpened(this);
+        for (Listener listener : listeners) {
+			listener.onOpened(this);
+		}
     }
 
     @Override
     public void onClose()
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("onClose {}",this);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("onClose {}",this);
+		}
 
-        for (Listener listener : listeners)
-            listener.onClosed(this);
+        for (Listener listener : listeners) {
+			listener.onClosed(this);
+		}
     }
 
     @Override

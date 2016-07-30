@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 
@@ -59,7 +54,7 @@ public class HttpConfiguration
     private long _blockingTimeout=-1;
     private String _secureScheme = HttpScheme.HTTPS.asString();
     private boolean _sendServerVersion = true;
-    private boolean _sendXPoweredBy = false;
+    private boolean _sendXPoweredBy;
     private boolean _sendDateHeader = true;
     private boolean _delayDispatchUntilContent = true;
     private boolean _persistentConnectionsEnabled = true;
@@ -83,7 +78,7 @@ public class HttpConfiguration
      */
     public interface Customizer
     {
-        public void customize(Connector connector, HttpConfiguration channelConfig, Request request);
+        void customize(Connector connector, HttpConfiguration channelConfig, Request request);
     }
     
     public interface ConnectionFactory
@@ -104,8 +99,9 @@ public class HttpConfiguration
     public HttpConfiguration(HttpConfiguration config)
     {
         _customizers.addAll(config._customizers);
-        for (String s:config._formEncodedMethods.keySet())
-            _formEncodedMethods.put(s,Boolean.TRUE);
+        for (String s:config._formEncodedMethods.keySet()) {
+			_formEncodedMethods.put(s,Boolean.TRUE);
+		}
         _outputBufferSize=config._outputBufferSize;
         _outputAggregationSize=config._outputAggregationSize;
         _requestHeaderSize=config._requestHeaderSize;
@@ -135,71 +131,73 @@ public class HttpConfiguration
         _customizers.add(customizer);
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public List<Customizer> getCustomizers()
     {
         return _customizers;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public <T> T getCustomizer(Class<T> type)
     {
-        for (Customizer c : _customizers)
-            if (type.isAssignableFrom(c.getClass()))
-                return (T)c;
+        for (Customizer c : _customizers) {
+			if (type.isAssignableFrom(c.getClass())) {
+				return (T)c;
+			}
+		}
         return null;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @ManagedAttribute("The size in bytes of the output buffer used to aggregate HTTP output")
     public int getOutputBufferSize()
     {
         return _outputBufferSize;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @ManagedAttribute("The maximum size in bytes for HTTP output to be aggregated")
     public int getOutputAggregationSize()
     {
         return _outputAggregationSize;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @ManagedAttribute("The maximum allowed size in bytes for a HTTP request header")
     public int getRequestHeaderSize()
     {
         return _requestHeaderSize;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @ManagedAttribute("The maximum allowed size in bytes for a HTTP response header")
     public int getResponseHeaderSize()
     {
         return _responseHeaderSize;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @ManagedAttribute("The maximum allowed size in bytes for a HTTP header field cache")
     public int getHeaderCacheSize()
     {
         return _headerCacheSize;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @ManagedAttribute("The port to which Integral or Confidential security constraints are redirected")
     public int getSecurePort()
     {
         return _securePort;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @ManagedAttribute("The scheme with which Integral or Confidential security constraints are redirected")
     public String getSecureScheme()
     {
         return _secureScheme;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @ManagedAttribute("True if HTTP/1 persistent connection are enabled")
     public boolean isPersistentConnectionsEnabled()
     {
@@ -233,58 +231,60 @@ public class HttpConfiguration
         _blockingTimeout = blockingTimeout;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void setPersistentConnectionsEnabled(boolean persistentConnectionsEnabled)
     {
         _persistentConnectionsEnabled = persistentConnectionsEnabled;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void setSendServerVersion (boolean sendServerVersion)
     {
         _sendServerVersion = sendServerVersion;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @ManagedAttribute("if true, send the Server header in responses")
     public boolean getSendServerVersion()
     {
         return _sendServerVersion;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void writePoweredBy(Appendable out,String preamble,String postamble) throws IOException
     {
         if (getSendServerVersion())
         {
-            if (preamble!=null)
-                out.append(preamble);
+            if (preamble!=null) {
+				out.append(preamble);
+			}
             out.append(Jetty.POWERED_BY);
-            if (postamble!=null)
-                out.append(postamble);
+            if (postamble!=null) {
+				out.append(postamble);
+			}
         }
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void setSendXPoweredBy (boolean sendXPoweredBy)
     {
         _sendXPoweredBy=sendXPoweredBy;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @ManagedAttribute("if true, send the X-Powered-By header in responses")
     public boolean getSendXPoweredBy()
     {
         return _sendXPoweredBy;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void setSendDateHeader(boolean sendDateHeader)
     {
         _sendDateHeader = sendDateHeader;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @ManagedAttribute("if true, include the date in HTTP headers")
     public boolean getSendDateHeader()
     {
@@ -300,7 +300,7 @@ public class HttpConfiguration
         _delayDispatchUntilContent = delay;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @ManagedAttribute("if true, delay the application dispatch until content is available")
     public boolean isDelayDispatchUntilContent()
     {
@@ -399,12 +399,12 @@ public class HttpConfiguration
         _secureScheme = secureScheme;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public String toString()
     {
         return String.format("%s@%x{%d/%d,%d/%d,%s://:%d,%s}",
-                this.getClass().getSimpleName(),
+                getClass().getSimpleName(),
                 hashCode(),
                 _outputBufferSize, _outputAggregationSize,
                 _requestHeaderSize,_responseHeaderSize,
@@ -421,8 +421,9 @@ public class HttpConfiguration
     public void setFormEncodedMethods(String... methods)
     {
         _formEncodedMethods.clear();
-        for (String method:methods)
-            addFormEncodedMethod(method);
+        for (String method:methods) {
+			addFormEncodedMethod(method);
+		}
     }
     
     /* ------------------------------------------------------------ */
@@ -437,7 +438,7 @@ public class HttpConfiguration
     }
 
     /* ------------------------------------------------------------ */
-    /** Add a form encoded HTTP Method 
+    /** Add a form encoded HTTP Method .
      * @param method HTTP Method of requests that can be decoded as 
      * x-www-form-urlencoded content to be made available via the 
      * {@link Request#getParameter(String)} and associated APIs
@@ -449,7 +450,7 @@ public class HttpConfiguration
     
     /* ------------------------------------------------------------ */
     /**
-     * Test if the method type supports <code>x-www-form-urlencoded</code> content
+     * Test if the method type supports <code>x-www-form-urlencoded</code> content.
      * 
      * @param method the method type
      * @return True of the requests of this method type can be

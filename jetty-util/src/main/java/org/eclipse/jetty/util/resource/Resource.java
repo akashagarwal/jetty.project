@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util.resource;
 
@@ -69,7 +64,7 @@ public abstract class Resource implements ResourceFactory, Closeable
         __defaultUseCaches=useCaches;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public static boolean getDefaultUseCaches ()
     {
         return __defaultUseCaches;
@@ -106,8 +101,9 @@ public abstract class Resource implements ResourceFactory, Closeable
      */
     static Resource newResource(URL url, boolean useCaches)
     {
-        if (url==null)
-            return null;
+        if (url==null) {
+			return null;
+		}
 
         String url_string=url.toExternalForm();
         if( url_string.startsWith( "file:"))
@@ -174,8 +170,9 @@ public abstract class Resource implements ResourceFactory, Closeable
                 try
                 {
                     // It's a file.
-                    if (resource.startsWith("./"))
-                        resource=resource.substring(2);
+                    if (resource.startsWith("./")) {
+						resource=resource.substring(2);
+					}
                     File file=new File(resource).getCanonicalFile();
                     return new PathResource(file);
                 }
@@ -196,7 +193,7 @@ public abstract class Resource implements ResourceFactory, Closeable
         return newResource(url, useCaches);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public static Resource newResource(File file)
     {
         return new PathResource(file.toPath());
@@ -221,8 +218,9 @@ public abstract class Resource implements ResourceFactory, Closeable
             try
             {
                 url = loader.getResource(resource);
-                if (url == null && resource.startsWith("/"))
-                    url = loader.getResource(resource.substring(1));
+                if (url == null && resource.startsWith("/")) {
+					url = loader.getResource(resource.substring(1));
+				}
             }
             catch (IllegalArgumentException e)
             {
@@ -239,22 +237,25 @@ public abstract class Resource implements ResourceFactory, Closeable
             if (loader!=null)
             {
                 url=loader.getResource(resource);
-                if (url==null && resource.startsWith("/"))
-                    url=loader.getResource(resource.substring(1));
+                if (url==null && resource.startsWith("/")) {
+					url=loader.getResource(resource.substring(1));
+				}
             }
         }
         
         if (url==null)
         {
             url=ClassLoader.getSystemResource(resource);
-            if (url==null && resource.startsWith("/"))
-                url=ClassLoader.getSystemResource(resource.substring(1));
+            if (url==null && resource.startsWith("/")) {
+				url=ClassLoader.getSystemResource(resource.substring(1));
+			}
         }
         
-        if (url==null)
-            return null;
+        if (url!=null) {
+			return newResource(url);
+		}
         
-        return newResource(url);
+        return null;
     }
 
     /* ------------------------------------------------------------ */
@@ -283,27 +284,29 @@ public abstract class Resource implements ResourceFactory, Closeable
     {
         URL url=Resource.class.getResource(name);
         
-        if (url==null)
-            url=Loader.getResource(Resource.class,name);
-        if (url==null)
-            return null;
-        return newResource(url,useCaches);
+        if (url==null) {
+			url=Loader.getResource(Resource.class,name);
+		}
+        if (url!=null) {
+			return newResource(url,useCaches);
+		}
+        return null;
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public static boolean isContainedIn (Resource r, Resource containingResource) throws MalformedURLException
     {
         return r.isContainedIn(containingResource);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     protected void finalize()
     {
         close();
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public abstract boolean isContainedIn (Resource r) throws MalformedURLException;
     
     
@@ -407,7 +410,7 @@ public abstract class Resource implements ResourceFactory, Closeable
 
     /* ------------------------------------------------------------ */
     /**
-     * Input stream to the resource
+     * Input stream to the resource.
      * 
      * @return an input stream to the resource
      * @throws IOException if unable to open the input stream
@@ -447,7 +450,7 @@ public abstract class Resource implements ResourceFactory, Closeable
     
     /* ------------------------------------------------------------ */
     /**
-     * list of resource names contained in the given resource.
+     * List of resource names contained in the given resource.
      * 
      * @return a list of resource names contained in the given resource.
      * Note: The resource names are not URL encoded.
@@ -500,7 +503,7 @@ public abstract class Resource implements ResourceFactory, Closeable
     }
         
     /* ------------------------------------------------------------ */
-    // FIXME: this appears to not be used
+    /** FIXME: this appears to not be used */
     @SuppressWarnings("javadoc")
     public Object getAssociate()
     {
@@ -508,7 +511,7 @@ public abstract class Resource implements ResourceFactory, Closeable
     }
 
     /* ------------------------------------------------------------ */
-    // FIXME: this appear to not be used
+    /** FIXME: this appear to not be used */
     @SuppressWarnings("javadoc")
     public void setAssociate(Object o)
     {
@@ -544,12 +547,14 @@ public abstract class Resource implements ResourceFactory, Closeable
         throws IOException
     {
         base=URIUtil.canonicalPath(base);
-        if (base==null || !isDirectory())
-            return null;
+        if (base==null || !isDirectory()) {
+			return null;
+		}
         
         String[] ls = list();
-        if (ls==null)
-            return null;
+        if (ls==null) {
+			return null;
+		}
         Arrays.sort(ls);
         
         String decodedBase = URIUtil.decodePath(base);
@@ -583,8 +588,9 @@ public abstract class Resource implements ResourceFactory, Closeable
             
             buf.append(path);
             
-            if (item.isDirectory() && !path.endsWith("/"))
-                buf.append(URIUtil.SLASH);
+            if (item.isDirectory() && !path.endsWith("/")) {
+				buf.append(URIUtil.SLASH);
+			}
             
             // URIUtil.encodePath(buf,path);
             buf.append("\">");
@@ -630,8 +636,9 @@ public abstract class Resource implements ResourceFactory, Closeable
                     break loop;
             }
         }
-        if (buf==null)
-            return raw;
+        if (buf==null) {
+			return raw;
+		}
 
         for (int i=0;i<raw.length();i++)
         {
@@ -677,10 +684,11 @@ public abstract class Resource implements ResourceFactory, Closeable
         try (InputStream in = getInputStream())
         {
             in.skip(start);
-            if (count<0)
-                IO.copy(in,out);
-            else
-                IO.copy(in,out,count);
+            if (count<0) {
+				IO.copy(in,out);
+			} else {
+				IO.copy(in,out,count);
+			}
         }
     }    
     
@@ -696,8 +704,9 @@ public abstract class Resource implements ResourceFactory, Closeable
     public void copyTo(File destination)
         throws IOException
     {
-        if (destination.exists())
-            throw new IllegalArgumentException(destination + " exists");
+        if (destination.exists()) {
+			throw new IllegalArgumentException(destination + " exists");
+		}
         
         try (OutputStream out = new FileOutputStream(destination))
         {
@@ -726,8 +735,9 @@ public abstract class Resource implements ResourceFactory, Closeable
             String name=getName();
             int length=name.length();
             long lhash=0;
-            for (int i=0; i<length;i++)
-                lhash=31*lhash+name.charAt(i);
+            for (int i=0; i<length;i++) {
+				lhash=31*lhash+name.charAt(i);
+			}
             
             B64Code.encode(lastModified()^lhash,b);
             B64Code.encode(length()^lhash,b);
@@ -741,7 +751,7 @@ public abstract class Resource implements ResourceFactory, Closeable
         }
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public Collection<Resource> getAllResources()
     {
         try
@@ -754,10 +764,11 @@ public abstract class Resource implements ResourceFactory, Closeable
                     for (String i:list)
                     {
                         Resource r=addPath(i);
-                        if (r.isDirectory())
-                            deep.addAll(r.getAllResources());
-                        else
-                            deep.add(r);
+                        if (r.isDirectory()) {
+							deep.addAll(r.getAllResources());
+						} else {
+							deep.add(r);
+						}
                     }
                 }
             }

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util;
 
@@ -57,7 +52,7 @@ import org.eclipse.jetty.util.thread.Locker;
 public abstract class IteratingCallback implements Callback
 {
     /**
-     * The internal states of this callback
+     * The internal states of this callback.
      */
     private enum State
     {
@@ -74,23 +69,23 @@ public abstract class IteratingCallback implements Callback
         PROCESSING,
 
         /**
-         * Waiting for a schedule callback
+         * Waiting for a schedule callback.
          */
         PENDING,
 
         /**
-         * Called by a schedule callback
+         * Called by a schedule callback.
          */
         CALLED,
 
         /**
          * The overall job has succeeded as indicated by a {@link Action#SUCCEEDED} return
-         * from {@link IteratingCallback#process()}
+         * from {@link IteratingCallback#process()}.
          */
         SUCCEEDED,
 
         /**
-         * The overall job has failed as indicated by a call to {@link IteratingCallback#failed(Throwable)}
+         * The overall job has failed as indicated by a call to {@link IteratingCallback#failed(Throwable)}.
          */
         FAILED,
 
@@ -220,8 +215,9 @@ public abstract class IteratingCallback implements Callback
                 }
             }
         }
-        if (process)
-            processing();
+        if (process) {
+			processing();
+		}
     }
 
     private void processing()
@@ -321,8 +317,9 @@ public abstract class IteratingCallback implements Callback
             }
         }
 
-        if (on_complete_success)
-            onCompleteSuccess();
+        if (on_complete_success) {
+			onCompleteSuccess();
+		}
     }
 
     /**
@@ -361,8 +358,9 @@ public abstract class IteratingCallback implements Callback
                 }
             }
         }
-        if (process)
-            processing();
+        if (process) {
+			processing();
+		}
     }
 
     /**
@@ -397,8 +395,9 @@ public abstract class IteratingCallback implements Callback
                     throw new IllegalStateException(toString());
             }
         }
-        if (failure)
-            onCompleteFailure(x);
+        if (failure) {
+			onCompleteFailure(x);
+		}
     }
 
     public void close()
@@ -423,12 +422,13 @@ public abstract class IteratingCallback implements Callback
             }
         }
 
-        if(failure)
-            onCompleteFailure(new ClosedChannelException());
+        if(failure) {
+			onCompleteFailure(new ClosedChannelException());
+		}
     }
 
-    /*
-     * only for testing
+    /**
+     * Only for testing.
      * @return whether this callback is idle and {@link #iterate()} needs to be called
      */
     boolean isIdle()

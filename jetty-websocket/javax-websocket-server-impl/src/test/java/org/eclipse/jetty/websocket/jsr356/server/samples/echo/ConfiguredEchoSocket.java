@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.jsr356.server.samples.echo;
 
@@ -37,7 +32,7 @@ import org.eclipse.jetty.websocket.jsr356.server.samples.beans.DateDecoder;
 import org.eclipse.jetty.websocket.jsr356.server.samples.beans.TimeEncoder;
 
 /**
- * Annotated echo socket, using all of the annotation configurations
+ * Annotated echo socket, using all of the annotation configurations.
  */
 @ServerEndpoint(
         value = "/echo",
@@ -82,19 +77,18 @@ public class ConfiguredEchoSocket
                 }
                 else
                 {
-                    List<String> protocols = new ArrayList<>();
-                    protocols.addAll(serverConfig.getSubprotocols());
+                    List<String> protocols = new ArrayList<String>(serverConfig.getSubprotocols());
                     Collections.sort(protocols);
                     return join(protocols,", ");
                 }
             case "configurator":
-                if (serverConfig == null)
+                if (serverConfig != null)
                 {
-                    return "<not a ServerEndpointConfig>";
+                    return serverConfig.getConfigurator().getClass().getName();
                 }
                 else
                 {
-                    return serverConfig.getConfigurator().getClass().getName();
+                    return "<not a ServerEndpointConfig>";
                 }
             default:
                 // normal echo

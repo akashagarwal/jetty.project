@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.common;
 
@@ -106,7 +101,7 @@ public abstract class WebSocketFrame implements Frame
      * </pre>
      */
     protected byte finRsvOp;
-    protected boolean masked = false;
+    protected boolean masked;
 
     protected byte mask[];
     /**
@@ -117,7 +112,7 @@ public abstract class WebSocketFrame implements Frame
     protected ByteBuffer data;
 
     /**
-     * Construct form opcode
+     * Construct form opcode.
      * @param opcode the opcode the frame is based on
      */
     protected WebSocketFrame(byte opcode)
@@ -153,8 +148,9 @@ public abstract class WebSocketFrame implements Frame
         finRsvOp = copy.finRsvOp;
         masked = copy.masked;
         mask = null;
-        if (copy.mask != null)
-            mask = Arrays.copyOf(copy.mask, copy.mask.length);
+        if (copy.mask != null) {
+			mask = Arrays.copyOf(copy.mask, copy.mask.length);
+		}
     }
 
     @Override
@@ -184,19 +180,7 @@ public abstract class WebSocketFrame implements Frame
         {
             return false;
         }
-        if (finRsvOp != other.finRsvOp)
-        {
-            return false;
-        }
-        if (!Arrays.equals(mask,other.mask))
-        {
-            return false;
-        }
-        if (masked != other.masked)
-        {
-            return false;
-        }
-        return true;
+        return finRsvOp == other.finRsvOp && Arrays.equals(mask,other.mask) && !masked == !other.masked;
     }
 
     @Override
@@ -228,11 +212,11 @@ public abstract class WebSocketFrame implements Frame
     @Override
     public int getPayloadLength()
     {
-        if (data == null)
+        if (data != null)
         {
-            return 0;
+            return data.remaining();
         }
-        return data.remaining();
+        return 0;
     }
 
     @Override
@@ -246,16 +230,15 @@ public abstract class WebSocketFrame implements Frame
     {
         final int prime = 31;
         int result = 1;
-        result = (prime * result) + ((data == null)?0:data.hashCode());
-        result = (prime * result) + finRsvOp;
-        result = (prime * result) + Arrays.hashCode(mask);
-        return result;
+        result = prime * result + ((data == null)?0:data.hashCode());
+        result = prime * result + finRsvOp;
+        return prime * result + Arrays.hashCode(mask);
     }
 
     @Override
     public boolean hasPayload()
     {
-        return ((data != null) && data.hasRemaining());
+        return data != null && data.hasRemaining();
     }
 
     public abstract boolean isControlFrame();
@@ -316,7 +299,7 @@ public abstract class WebSocketFrame implements Frame
     public Frame setMask(byte[] maskingKey)
     {
         this.mask = maskingKey;
-        this.masked = (mask != null);
+        this.masked = mask != null;
         return this;
     }
 

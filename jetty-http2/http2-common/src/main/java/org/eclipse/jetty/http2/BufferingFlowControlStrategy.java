@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http2;
 
@@ -98,8 +93,9 @@ public class BufferingFlowControlStrategy extends AbstractFlowControlStrategy
     @Override
     public void onDataConsumed(ISession session, IStream stream, int length)
     {
-        if (length <= 0)
-            return;
+        if (length <= 0) {
+			return;
+		}
 
         float ratio = bufferRatio;
 
@@ -111,29 +107,25 @@ public class BufferingFlowControlStrategy extends AbstractFlowControlStrategy
             if (sessionLevel.compareAndSet(level, 0))
             {
                 session.updateRecvWindow(level);
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Data consumed, {} bytes, updated session recv window by {}/{} for {}", length, level, maxLevel, session);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("Data consumed, {} bytes, updated session recv window by {}/{} for {}", length, level, maxLevel, session);
+				}
                 windowFrame = new WindowUpdateFrame(0, level);
-            }
-            else
-            {
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Data consumed, {} bytes, concurrent session recv window level {}/{} for {}", length, sessionLevel, maxLevel, session);
-            }
-        }
-        else
-        {
-            if (LOG.isDebugEnabled())
-                LOG.debug("Data consumed, {} bytes, session recv window level {}/{} for {}", length, level, maxLevel, session);
-        }
+            } else if (LOG.isDebugEnabled()) {
+				LOG.debug("Data consumed, {} bytes, concurrent session recv window level {}/{} for {}", length, sessionLevel, maxLevel, session);
+			}
+        } else if (LOG.isDebugEnabled()) {
+			LOG.debug("Data consumed, {} bytes, session recv window level {}/{} for {}", length, level, maxLevel, session);
+		}
 
         Frame[] windowFrames = Frame.EMPTY_ARRAY;
         if (stream != null)
         {
             if (stream.isClosed())
             {
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Data consumed, {} bytes, ignoring update stream recv window for closed {}", length, stream);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("Data consumed, {} bytes, ignoring update stream recv window for closed {}", length, stream);
+				}
             }
             else
             {
@@ -146,25 +138,25 @@ public class BufferingFlowControlStrategy extends AbstractFlowControlStrategy
                     {
                         level = streamLevel.getAndSet(0);
                         stream.updateRecvWindow(level);
-                        if (LOG.isDebugEnabled())
-                            LOG.debug("Data consumed, {} bytes, updated stream recv window by {}/{} for {}", length, level, maxLevel, stream);
+                        if (LOG.isDebugEnabled()) {
+							LOG.debug("Data consumed, {} bytes, updated stream recv window by {}/{} for {}", length, level, maxLevel, stream);
+						}
                         WindowUpdateFrame frame = new WindowUpdateFrame(stream.getId(), level);
-                        if (windowFrame == null)
-                            windowFrame = frame;
-                        else
-                            windowFrames = new Frame[]{frame};
-                    }
-                    else
-                    {
-                        if (LOG.isDebugEnabled())
-                            LOG.debug("Data consumed, {} bytes, stream recv window level {}/{} for {}", length, level, maxLevel, stream);
-                    }
+                        if (windowFrame != null) {
+							windowFrames = new Frame[]{frame};
+						} else {
+							windowFrame = frame;
+						}
+                    } else if (LOG.isDebugEnabled()) {
+						LOG.debug("Data consumed, {} bytes, stream recv window level {}/{} for {}", length, level, maxLevel, stream);
+					}
                 }
             }
         }
 
-        if (windowFrame != null)
-            session.frames(stream, Callback.NOOP, windowFrame, windowFrames);
+        if (windowFrame != null) {
+			session.frames(stream, Callback.NOOP, windowFrame, windowFrames);
+		}
     }
 
     @Override

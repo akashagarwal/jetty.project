@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 
 package org.eclipse.jetty.maven.plugin;
@@ -33,7 +28,7 @@ import org.eclipse.jetty.util.StringUtil;
 /**
  * WarPluginInfo
  * <p>
- * Information about the maven-war-plugin contained in the pom
+ * Information about the maven-war-plugin contained in the pom.
  */
 public class WarPluginInfo
 {
@@ -53,7 +48,7 @@ public class WarPluginInfo
     
     
     /**
-     * Find the maven-war-plugin, if one is configured
+     * Find the maven-war-plugin, if one is configured.
      * @return the plugin
      */
     public Plugin getPlugin()
@@ -61,16 +56,18 @@ public class WarPluginInfo
         if (_plugin == null)
         {
             List plugins = _project.getBuildPlugins();
-            if (plugins == null)
-                return null;
+            if (plugins == null) {
+				return null;
+			}
 
 
             Iterator itor = plugins.iterator();
             while (itor.hasNext() && _plugin==null)
             {
                 Plugin plugin = (Plugin)itor.next();
-                if ("maven-war-plugin".equals(plugin.getArtifactId()))
-                    _plugin = plugin;
+                if ("maven-war-plugin".equals(plugin.getArtifactId())) {
+					_plugin = plugin;
+				}
             }
         }
         return _plugin;
@@ -80,7 +77,7 @@ public class WarPluginInfo
     
 
     /**
-     * Get value of dependentWarIncludes for maven-war-plugin
+     * Get value of dependentWarIncludes for maven-war-plugin.
      * @return the list of dependent war includes
      */
     public List<String> getDependentMavenWarIncludes()
@@ -89,16 +86,19 @@ public class WarPluginInfo
         {
             getPlugin();
 
-            if (_plugin == null)
-                return null;
+            if (_plugin == null) {
+				return null;
+			}
 
             Xpp3Dom node = (Xpp3Dom)_plugin.getConfiguration();
-            if (node == null)
-                return null;
+            if (node == null) {
+				return null;
+			}
 
             node = node.getChild("dependentWarIncludes");
-            if (node == null)
-                return null;
+            if (node == null) {
+				return null;
+			}
             String val = node.getValue();
             _dependentMavenWarIncludes = StringUtil.csvSplit(null,val,0,val.length());
         }
@@ -109,7 +109,7 @@ public class WarPluginInfo
     
     
     /**
-     * Get value of dependentWarExcludes for maven-war-plugin
+     * Get value of dependentWarExcludes for maven-war-plugin.
      * @return the list of dependent war excludes
      */
     public List<String> getDependentMavenWarExcludes()
@@ -118,16 +118,19 @@ public class WarPluginInfo
         {
             getPlugin();
 
-            if (_plugin == null)
-                return null;
+            if (_plugin == null) {
+				return null;
+			}
 
             Xpp3Dom node = (Xpp3Dom)_plugin.getConfiguration();
-            if (node == null)
-                return null;
+            if (node == null) {
+				return null;
+			}
 
             node = node.getChild("dependentWarExcludes");
-            if (node == null)
-                return null;
+            if (node == null) {
+				return null;
+			}
             String val = node.getValue();
             _dependentMavenWarExcludes = StringUtil.csvSplit(null,val,0,val.length());
         }
@@ -148,23 +151,27 @@ public class WarPluginInfo
         {
             getPlugin();
 
-            if (_plugin == null)
-                return Collections.emptyList();
+            if (_plugin == null) {
+				return Collections.emptyList();
+			}
 
             getDependentMavenWarIncludes();
             getDependentMavenWarExcludes();
 
             Xpp3Dom node = (Xpp3Dom)_plugin.getConfiguration();
-            if (node == null)
-                return Collections.emptyList();
+            if (node == null) {
+				return Collections.emptyList();
+			}
 
             node = node.getChild("overlays");
-            if (node == null)
-                return Collections.emptyList();
+            if (node == null) {
+				return Collections.emptyList();
+			}
 
             Xpp3Dom[] nodes = node.getChildren("overlay");
-            if (nodes == null)
-                return Collections.emptyList();
+            if (nodes == null) {
+				return Collections.emptyList();
+			}
 
             _overlayConfigs = new ArrayList<OverlayConfig>();
             for (int i=0;i<nodes.length;i++)
@@ -187,12 +194,14 @@ public class WarPluginInfo
     {
         getPlugin();
 
-        if (_plugin == null)
-            return "";
+        if (_plugin == null) {
+			return "";
+		}
         
         Xpp3Dom node = (Xpp3Dom)_plugin.getConfiguration();
-        if (node == null)
-            return "";
-        return node.toString();
+        if (node != null) {
+			return node.toString();
+		}
+        return "";
     }
 }

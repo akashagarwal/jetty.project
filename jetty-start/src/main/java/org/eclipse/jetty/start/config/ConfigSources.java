@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.start.config;
 
@@ -105,7 +100,7 @@ public class ConfigSources implements Iterable<ConfigSource>
     private String getValue(String arg)
     {
         int idx = arg.indexOf('=');
-        if (idx == (-1))
+        if (idx == -1)
         {
             throw new UsageException(ERR_BAD_ARG,"Argument is missing a required value: %s",arg);
         }
@@ -132,7 +127,7 @@ public class ConfigSources implements Iterable<ConfigSource>
     public String toString()
     {
         StringBuilder str = new StringBuilder();
-        str.append(this.getClass().getSimpleName());
+        str.append(getClass().getSimpleName());
         str.append('[');
         boolean delim = false;
         for (ConfigSource source : sources)

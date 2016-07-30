@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 
@@ -96,14 +91,16 @@ class SuspendHandler extends HandlerWrapper implements AsyncListener
             {
                 InputStream in = request.getInputStream();
                 int b=in.read();
-                while(b!=-1)
-                    b=in.read();
+                while(b!=-1) {
+					b=in.read();
+				}
             }
 
             final AsyncContext asyncContext = baseRequest.startAsync();
             asyncContext.addListener(this);
-            if (_suspendFor>0)
-                asyncContext.setTimeout(_suspendFor);
+            if (_suspendFor>0) {
+				asyncContext.setTimeout(_suspendFor);
+			}
 
             if (_completeAfter>0)
             {

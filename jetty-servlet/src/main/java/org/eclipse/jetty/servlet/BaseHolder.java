@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.servlet;
 
@@ -47,19 +42,19 @@ public abstract class BaseHolder<T> extends AbstractLifeCycle implements Dumpabl
     
     public enum Source { EMBEDDED, JAVAX_API, DESCRIPTOR, ANNOTATION };
     
-    final protected Source _source;
+    protected final Source _source;
     protected transient Class<? extends T> _class;
     protected String _className;
     protected boolean _extInstance;
     protected ServletHandler _servletHandler;
     
-    /* ---------------------------------------------------------------- */
+    /** ----------------------------------------------------------------. */
     protected BaseHolder(Source source)
     {
         _source=source;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public Source getSource()
     {
         return _source;
@@ -67,25 +62,27 @@ public abstract class BaseHolder<T> extends AbstractLifeCycle implements Dumpabl
     
     /* ------------------------------------------------------------ */
     /**
-     * Do any setup necessary after starting
+     * Do any setup necessary after starting.
      * @throws Exception if unable to initialize
      */
     public void initialize()
     throws Exception
     {
-        if (!isStarted())
-            throw new IllegalStateException("Not started: "+this);
+        if (!isStarted()) {
+			throw new IllegalStateException("Not started: "+this);
+		}
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @SuppressWarnings("unchecked")
     @Override
     public void doStart()
         throws Exception
     {
         //if no class already loaded and no classname, make permanently unavailable
-        if (_class==null && (_className==null || _className.equals("")))
-            throw new UnavailableException("No class in holder");
+        if (_class==null && (_className==null || "".equals(_className))) {
+			throw new UnavailableException("No class in holder");
+		}
         
         //try to load class
         if (_class==null)
@@ -93,8 +90,9 @@ public abstract class BaseHolder<T> extends AbstractLifeCycle implements Dumpabl
             try
             {
                 _class=Loader.loadClass(Holder.class, _className);
-                if(LOG.isDebugEnabled())
-                    LOG.debug("Holding {} from {}",_class,_class.getClassLoader());
+                if(LOG.isDebugEnabled()) {
+					LOG.debug("Holding {} from {}",_class,_class.getClassLoader());
+				}
             }
             catch (Exception e)
             {
@@ -105,24 +103,25 @@ public abstract class BaseHolder<T> extends AbstractLifeCycle implements Dumpabl
     }
     
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void doStop()
         throws Exception
     {
-        if (!_extInstance)
-            _class=null;
+        if (!_extInstance) {
+			_class=null;
+		}
     }
 
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @ManagedAttribute(value="Class Name", readonly=true)
     public String getClassName()
     {
         return _className;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public Class<? extends T> getHeldClass()
     {
         return _class;
@@ -171,14 +170,15 @@ public abstract class BaseHolder<T> extends AbstractLifeCycle implements Dumpabl
     }
     
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected void illegalStateIfContextStarted()
     {
         if (_servletHandler!=null)
         {
             ServletContext context=_servletHandler.getServletContext();
-            if ((context instanceof ContextHandler.Context) && ((ContextHandler.Context)context).getContextHandler().isStarted())
-                throw new IllegalStateException("Started");
+            if (context instanceof ContextHandler.Context && ((ContextHandler.Context)context).getContextHandler().isStarted()) {
+				throw new IllegalStateException("Started");
+			}
         }
     }
     
@@ -192,15 +192,14 @@ public abstract class BaseHolder<T> extends AbstractLifeCycle implements Dumpabl
     }
     
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void dump(Appendable out, String indent) throws IOException
     {
-        out.append(toString())
-        .append(" - ").append(AbstractLifeCycle.getState(this)).append("\n");
+        out.append(this).append(" - ").append(AbstractLifeCycle.getState(this)).append("\n");
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public String dump()
     {

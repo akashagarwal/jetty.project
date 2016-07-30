@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 
@@ -35,8 +30,9 @@ public abstract class NegotiatingServerConnectionFactory extends AbstractConnect
 {
     public static void checkProtocolNegotiationAvailable()
     {
-        if (!isAvailableInBootClassPath("org.eclipse.jetty.alpn.ALPN"))
-            throw new IllegalStateException("No ALPN classes available");
+        if (!isAvailableInBootClassPath("org.eclipse.jetty.alpn.ALPN")) {
+			throw new IllegalStateException("No ALPN classes available");
+		}
     }
 
     private static boolean isAvailableInBootClassPath(String className)
@@ -44,8 +40,9 @@ public abstract class NegotiatingServerConnectionFactory extends AbstractConnect
         try
         {
             Class<?> klass = ClassLoader.getSystemClassLoader().loadClass(className);
-            if (klass.getClassLoader() != null)
-                throw new IllegalStateException(className + " must be on JVM boot classpath");
+            if (klass.getClassLoader() != null) {
+				throw new IllegalStateException(className + " must be on JVM boot classpath");
+			}
             return true;
         }
         catch (ClassNotFoundException x)
@@ -67,8 +64,9 @@ public abstract class NegotiatingServerConnectionFactory extends AbstractConnect
             for (String p : negotiatedProtocols)
             {
                 p = p.trim();
-                if (!p.isEmpty())
-                    this.negotiatedProtocols.add(p.trim());
+                if (!p.isEmpty()) {
+					this.negotiatedProtocols.add(p.trim());
+				}
             }
         }
     }
@@ -111,10 +109,11 @@ public abstract class NegotiatingServerConnectionFactory extends AbstractConnect
         String dft = defaultProtocol;
         if (dft == null && !negotiated.isEmpty())
         {
-            if (negotiated.contains(HttpVersion.HTTP_1_1.asString()))
-                dft = HttpVersion.HTTP_1_1.asString();
-            else
-                dft = negotiated.get(0);
+            if (negotiated.contains(HttpVersion.HTTP_1_1.asString())) {
+				dft = HttpVersion.HTTP_1_1.asString();
+			} else {
+				dft = negotiated.get(0);
+			}
         }
 
         SSLEngine engine = null;
@@ -122,10 +121,11 @@ public abstract class NegotiatingServerConnectionFactory extends AbstractConnect
         while (engine == null && ep != null)
         {
             // TODO make more generic
-            if (ep instanceof SslConnection.DecryptedEndPoint)
-                engine = ((SslConnection.DecryptedEndPoint)ep).getSslConnection().getSSLEngine();
-            else
-                ep = null;
+            if (ep instanceof SslConnection.DecryptedEndPoint) {
+				engine = ((SslConnection.DecryptedEndPoint)ep).getSslConnection().getSSLEngine();
+			} else {
+				ep = null;
+			}
         }
 
         return configure(newServerConnection(connector, endPoint, engine, negotiated, dft), connector, endPoint);

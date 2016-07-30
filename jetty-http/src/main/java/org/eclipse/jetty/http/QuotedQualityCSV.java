@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http;
 
@@ -34,23 +29,24 @@ import java.util.List;
  */
 public class QuotedQualityCSV implements Iterable<String>
 {    
-    private final static Double ZERO=new Double(0.0);
-    private final static Double ONE=new Double(1.0);
+    private static final Double ZERO=Double.valueOf(0.0);
+    private static final Double ONE=Double.valueOf(1.0);
     private enum State { VALUE, PARAM_NAME, PARAM_VALUE, Q_VALUE};
     
     private final List<String> _values = new ArrayList<>();
     private final List<Double> _quality = new ArrayList<>();
-    private boolean _sorted = false;
+    private boolean _sorted;
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public QuotedQualityCSV(String... values)
     {
-        for (String v:values)
-            addValue(v);
+        for (String v:values) {
+			addValue(v);
+		}
     }
 
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void addValue(String value)
     {
         StringBuffer buffer = new StringBuffer();
@@ -69,9 +65,9 @@ public class QuotedQualityCSV implements Iterable<String>
             // Handle quoting https://tools.ietf.org/html/rfc7230#section-3.2.6
             if (quoted && c!=0)
             {
-                if (sloshed)
-                    sloshed=false;
-                else
+                if (sloshed) {
+					sloshed=false;
+				} else
                 {
                     switch(c)
                     {
@@ -80,8 +76,9 @@ public class QuotedQualityCSV implements Iterable<String>
                             break;
                         case '"':
                             quoted=false;
-                            if (state==State.Q_VALUE)
-                                continue;
+                            if (state==State.Q_VALUE) {
+								continue;
+							}
                             break;
                     }
                 }
@@ -96,14 +93,16 @@ public class QuotedQualityCSV implements Iterable<String>
             {
                 case ' ':
                 case '\t':
-                    if (buffer.length()>last_length) // not leading OWS
-                        buffer.append(c);
+                    if (buffer.length()>last_length) {
+						buffer.append(c);
+					}
                     continue;
 
                 case '"':
                     quoted=true;
-                    if (state==State.Q_VALUE)
-                        continue;
+                    if (state==State.Q_VALUE) {
+						continue;
+					}
         
                     buffer.append(c);
                     nws_length=buffer.length();
@@ -114,7 +113,7 @@ public class QuotedQualityCSV implements Iterable<String>
                     {
                         try
                         {
-                            q=new Double(buffer.substring(last_length));
+                            q=Double.valueOf(buffer.substring(last_length));
                         }
                         catch(Exception e)
                         {
@@ -135,7 +134,7 @@ public class QuotedQualityCSV implements Iterable<String>
                     {
                         try
                         {
-                            q=new Double(buffer.substring(last_length));
+                            q=Double.valueOf(buffer.substring(last_length));
                         }
                         catch(Exception e)
                         {
@@ -206,16 +205,18 @@ public class QuotedQualityCSV implements Iterable<String>
 
     public List<String> getValues()
     {
-        if (!_sorted)
-            sort();
+        if (!_sorted) {
+			sort();
+		}
         return _values;
     }
     
     @Override
     public Iterator<String> iterator()
     {
-        if (!_sorted)
-            sort();
+        if (!_sorted) {
+			sort();
+		}
         return _values.iterator();
     }
 

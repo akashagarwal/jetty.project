@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.jndi.factories;
 
@@ -112,8 +107,9 @@ public class MailSessionReference extends Reference implements ObjectFactory
      */
     public Object getObjectInstance(Object ref, Name arg1, Context arg2, Hashtable arg3) throws Exception
     {
-        if (ref == null)
-        return null;
+        if (ref == null) {
+			return null;
+		}
 
         Reference reference = (Reference)ref;
 
@@ -128,18 +124,20 @@ public class MailSessionReference extends Reference implements ObjectFactory
             RefAddr refAddr = (RefAddr)refs.nextElement();
             String name = refAddr.getType();
             String value =  (String)refAddr.getContent();
-            if (name.equalsIgnoreCase("user"))
-                user = value;
-            else if (name.equalsIgnoreCase("pwd"))
-                password = value;
-            else
-                props.put(name, value);
+            if ("user".equalsIgnoreCase(name)) {
+				user = value;
+			} else if ("pwd".equalsIgnoreCase(name)) {
+				password = value;
+			} else {
+				props.put(name, value);
+			}
         }
 
-        if (password == null)
-            return Session.getInstance(props);
-        else
-            return Session.getInstance(props, new PasswordAuthenticator(user, password));
+        if (password != null) {
+			return Session.getInstance(props, new PasswordAuthenticator(user, password));
+		} else {
+			return Session.getInstance(props);
+		}
     }
 
 
@@ -156,8 +154,9 @@ public class MailSessionReference extends Reference implements ObjectFactory
     public void setPassword (String password)
     {
         StringRefAddr addr = (StringRefAddr)get("pwd");
-        if (addr != null)
-            throw new RuntimeException ("password already set on SessionReference, can't be changed");
+        if (addr != null) {
+			throw new RuntimeException ("password already set on SessionReference, can't be changed");
+		}
         add(new StringRefAddr ("pwd", password));
     }
 
@@ -168,8 +167,9 @@ public class MailSessionReference extends Reference implements ObjectFactory
         {
             Map.Entry e = (Map.Entry)entries.next();
             StringRefAddr sref = (StringRefAddr)get((String)e.getKey());
-            if (sref != null)
-                throw new RuntimeException ("property "+e.getKey()+" already set on Session reference, can't be changed");
+            if (sref != null) {
+				throw new RuntimeException ("property "+e.getKey()+" already set on Session reference, can't be changed");
+			}
             add(new StringRefAddr((String)e.getKey(), (String)e.getValue()));
         }
     }

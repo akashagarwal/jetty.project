@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.servlets;
 
@@ -89,27 +84,33 @@ public class PushCacheFilter implements Filter
     public void init(FilterConfig config) throws ServletException
     {
         String associatePeriod = config.getInitParameter("associatePeriod");
-        if (associatePeriod != null)
-            _associatePeriod = Long.parseLong(associatePeriod);
+        if (associatePeriod != null) {
+			_associatePeriod = Long.parseLong(associatePeriod);
+		}
 
         String maxAssociations = config.getInitParameter("maxAssociations");
-        if (maxAssociations != null)
-            _maxAssociations = Integer.parseInt(maxAssociations);
+        if (maxAssociations != null) {
+			_maxAssociations = Integer.parseInt(maxAssociations);
+		}
 
         String hosts = config.getInitParameter("hosts");
-        if (hosts != null)
-            Collections.addAll(_hosts, StringUtil.csvSplit(hosts));
+        if (hosts != null) {
+			Collections.addAll(_hosts, StringUtil.csvSplit(hosts));
+		}
 
         String ports = config.getInitParameter("ports");
-        if (ports != null)
-            for (String p : StringUtil.csvSplit(ports))
-                _ports.add(Integer.parseInt(p));
+        if (ports != null) {
+			for (String p : StringUtil.csvSplit(ports)) {
+				_ports.add(Integer.parseInt(p));
+			}
+		}
 
         // Expose for JMX.
         config.getServletContext().setAttribute(config.getFilterName(), this);
 
-        if (LOG.isDebugEnabled())
-            LOG.debug("period={} max={} hosts={} ports={}", _associatePeriod, _maxAssociations, _hosts, _ports);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("period={} max={} hosts={} ports={}", _associatePeriod, _maxAssociations, _hosts, _ports);
+		}
     }
 
     @Override
@@ -133,8 +134,9 @@ public class PushCacheFilter implements Filter
         {
             HttpField field = fields.getField(i);
             HttpHeader header = field.getHeader();
-            if (header == null)
-                continue;
+            if (header == null) {
+				continue;
+			}
 
             switch (header)
             {
@@ -154,20 +156,23 @@ public class PushCacheFilter implements Filter
             }
         }
 
-        if (LOG.isDebugEnabled())
-            LOG.debug("{} {} referrer={} conditional={} synthetic={}", request.getMethod(), request.getRequestURI(), referrer, conditional, isPushRequest(request));
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("{} {} referrer={} conditional={} synthetic={}", request.getMethod(), request.getRequestURI(), referrer, conditional, isPushRequest(request));
+		}
 
         String path = URIUtil.addPaths(request.getServletPath(), request.getPathInfo());
         String query = request.getQueryString();
-        if (query != null)
-            path += "?" + query;
+        if (query != null) {
+			path += "?" + query;
+		}
         if (referrer != null)
         {
             HttpURI referrerURI = new HttpURI(referrer);
             String host = referrerURI.getHost();
             int port = referrerURI.getPort();
-            if (port <= 0)
-                port = request.isSecure() ? 443 : 80;
+            if (port <= 0) {
+				port = request.isSecure() ? 443 : 80;
+			}
 
             boolean referredFromHere = _hosts.size() > 0 ? _hosts.contains(host) : host.equals(request.getServerName());
             referredFromHere &= _ports.size() > 0 ? _ports.contains(port) : port == request.getServerPort();
@@ -177,8 +182,9 @@ public class PushCacheFilter implements Filter
                 if ("GET".equalsIgnoreCase(request.getMethod()))
                 {
                     String referrerPath = referrerURI.getPath();
-                    if (referrerPath == null)
-                        referrerPath = "/";
+                    if (referrerPath == null) {
+						referrerPath = "/";
+					}
                     if (referrerPath.startsWith(request.getContextPath()))
                     {
                         String referrerPathNoContext = referrerPath.substring(request.getContextPath().length());
@@ -197,39 +203,25 @@ public class PushCacheFilter implements Filter
                                         // Not strictly concurrent-safe, just best effort to limit associations.
                                         if (associated.size() <= _maxAssociations)
                                         {
-                                            if (associated.putIfAbsent(path, dispatcher) == null)
-                                            {
-                                                if (LOG.isDebugEnabled())
-                                                    LOG.debug("Associated {} to {}", path, referrerPathNoContext);
-                                            }
-                                        }
-                                        else
-                                        {
-                                            if (LOG.isDebugEnabled())
-                                                LOG.debug("Not associated {} to {}, exceeded max associations of {}", path, referrerPathNoContext, _maxAssociations);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        if (LOG.isDebugEnabled())
-                                            LOG.debug("Not associated {} to {}, outside associate period of {}ms", path, referrerPathNoContext, _associatePeriod);
-                                    }
+                                            if (associated.putIfAbsent(path, dispatcher) == null && LOG.isDebugEnabled()) {
+												LOG.debug("Associated {} to {}", path, referrerPathNoContext);
+											}
+                                        } else if (LOG.isDebugEnabled()) {
+											LOG.debug("Not associated {} to {}, exceeded max associations of {}", path, referrerPathNoContext, _maxAssociations);
+										}
+                                    } else if (LOG.isDebugEnabled()) {
+										LOG.debug("Not associated {} to {}, outside associate period of {}ms", path, referrerPathNoContext, _associatePeriod);
+									}
                                 }
                             }
-                        }
-                        else
-                        {
-                            if (LOG.isDebugEnabled())
-                                LOG.debug("Not associated {} to {}, referring to self", path, referrerPathNoContext);
-                        }
+                        } else if (LOG.isDebugEnabled()) {
+							LOG.debug("Not associated {} to {}, referring to self", path, referrerPathNoContext);
+						}
                     }
                 }
-            }
-            else
-            {
-                if (LOG.isDebugEnabled())
-                    LOG.debug("External referrer {}", referrer);
-            }
+            } else if (LOG.isDebugEnabled()) {
+				LOG.debug("External referrer {}", referrer);
+			}
         }
 
         PrimaryResource primaryResource = _cache.get(path);
@@ -239,8 +231,9 @@ public class PushCacheFilter implements Filter
             primaryResource = _cache.putIfAbsent(path, r);
             primaryResource = primaryResource == null ? r : primaryResource;
             primaryResource._timestamp.compareAndSet(0, now);
-            if (LOG.isDebugEnabled())
-                LOG.debug("Cached primary resource {}", path);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Cached primary resource {}", path);
+			}
         }
         else
         {
@@ -248,8 +241,9 @@ public class PushCacheFilter implements Filter
             if (last < _renew && primaryResource._timestamp.compareAndSet(last, now))
             {
                 primaryResource._associated.clear();
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Clear associated resources for {}", path);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("Clear associated resources for {}", path);
+				}
             }
         }
 
@@ -265,12 +259,14 @@ public class PushCacheFilter implements Filter
                 for (Map.Entry<String, RequestDispatcher> entry : parent._associated.entrySet())
                 {
                     PrimaryResource child = _cache.get(entry.getKey());
-                    if (child != null)
-                        queue.offer(child);
+                    if (child != null) {
+						queue.offer(child);
+					}
 
                     Dispatcher dispatcher = (Dispatcher)entry.getValue();
-                    if (LOG.isDebugEnabled())
-                        LOG.debug("Pushing {} for {}", dispatcher, path);
+                    if (LOG.isDebugEnabled()) {
+						LOG.debug("Pushing {} for {}", dispatcher, path);
+					}
                     dispatcher.push(request);
                 }
             }

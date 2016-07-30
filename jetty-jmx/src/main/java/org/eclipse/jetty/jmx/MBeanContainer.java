@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.jmx;
 
@@ -37,12 +32,12 @@ import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.log.Logger;
 
 /**
- * Container class for the MBean instances
+ * Container class for the MBean instances.
  */
 public class MBeanContainer implements Container.InheritedListener, Dumpable
 {
-    private final static Logger LOG = Log.getLogger(MBeanContainer.class.getName());
-    private final static ConcurrentMap<String, AtomicInteger> __unique = new ConcurrentHashMap<>();
+    private static final Logger LOG = Log.getLogger(MBeanContainer.class.getName());
+    private static final ConcurrentMap<String, AtomicInteger> __unique = new ConcurrentHashMap<>();
 
     public static void resetUnique()
     {
@@ -51,10 +46,10 @@ public class MBeanContainer implements Container.InheritedListener, Dumpable
 
     private final MBeanServer _mbeanServer;
     private final Map<Object, ObjectName> _beans = new ConcurrentHashMap<>();
-    private String _domain = null;
+    private String _domain;
 
     /**
-     * Lookup an object name by instance
+     * Lookup an object name by instance.
      *
      * @param object instance for which object name is looked up
      * @return object name associated with specified instance, or null if not found
@@ -65,7 +60,7 @@ public class MBeanContainer implements Container.InheritedListener, Dumpable
     }
 
     /**
-     * Lookup an instance by object name
+     * Lookup an instance by object name.
      *
      * @param objectName object name of instance
      * @return instance associated with specified object name, or null if not found
@@ -74,14 +69,15 @@ public class MBeanContainer implements Container.InheritedListener, Dumpable
     {
         for (Map.Entry<Object, ObjectName> entry : _beans.entrySet())
         {
-            if (entry.getKey().equals(objectName))
-                return entry.getValue();
+            if (entry.getKey().equals(objectName)) {
+				return entry.getValue();
+			}
         }
         return null;
     }
 
     /**
-     * Constructs MBeanContainer
+     * Constructs MBeanContainer.
      *
      * @param server instance of MBeanServer for use by container
      */
@@ -91,7 +87,7 @@ public class MBeanContainer implements Container.InheritedListener, Dumpable
     }
 
     /**
-     * Retrieve instance of MBeanServer used by container
+     * Retrieve instance of MBeanServer used by container.
      *
      * @return instance of MBeanServer
      */
@@ -101,7 +97,7 @@ public class MBeanContainer implements Container.InheritedListener, Dumpable
     }
 
     /**
-     * Set domain to be used to add MBeans
+     * Set domain to be used to add MBeans.
      *
      * @param domain domain name
      */
@@ -111,7 +107,7 @@ public class MBeanContainer implements Container.InheritedListener, Dumpable
     }
 
     /**
-     * Retrieve domain name used to add MBeans
+     * Retrieve domain name used to add MBeans.
      *
      * @return domain name
      */
@@ -124,8 +120,9 @@ public class MBeanContainer implements Container.InheritedListener, Dumpable
     @Override
     public void beanAdded(Container parent, Object obj)
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("beanAdded {}->{}", parent, obj);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("beanAdded {}->{}", parent, obj);
+		}
 
         // Is there an object name for the parent ?
         ObjectName parentObjectName = null;
@@ -141,15 +138,17 @@ public class MBeanContainer implements Container.InheritedListener, Dumpable
         }
 
         // Does the mbean already exist ?
-        if (obj == null || _beans.containsKey(obj))
-            return;
+        if (obj == null || _beans.containsKey(obj)) {
+			return;
+		}
 
         try
         {
             // Create an MBean for the object.
             Object mbean = ObjectMBean.mbeanFor(obj);
-            if (mbean == null)
-                return;
+            if (mbean == null) {
+				return;
+			}
 
             ObjectName objectName = null;
             if (mbean instanceof ObjectMBean)
@@ -163,28 +162,33 @@ public class MBeanContainer implements Container.InheritedListener, Dumpable
             {
                 // If no explicit domain, create one.
                 String domain = _domain;
-                if (domain == null)
-                    domain = obj.getClass().getPackage().getName();
+                if (domain == null) {
+					domain = obj.getClass().getPackage().getName();
+				}
 
                 String type = obj.getClass().getName().toLowerCase(Locale.ENGLISH);
                 int dot = type.lastIndexOf('.');
-                if (dot >= 0)
-                    type = type.substring(dot + 1);
+                if (dot >= 0) {
+					type = type.substring(dot + 1);
+				}
 
                 StringBuilder buf = new StringBuilder();
 
                 String context = (mbean instanceof ObjectMBean) ? makeName(((ObjectMBean)mbean).getObjectContextBasis()) : null;
-                if (context == null && parentObjectName != null)
-                    context = parentObjectName.getKeyProperty("context");
+                if (context == null && parentObjectName != null) {
+					context = parentObjectName.getKeyProperty("context");
+				}
 
-                if (context != null && context.length() > 1)
-                    buf.append("context=").append(context).append(",");
+                if (context != null && context.length() > 1) {
+					buf.append("context=").append(context).append(",");
+				}
 
                 buf.append("type=").append(type);
 
                 String name = (mbean instanceof ObjectMBean) ? makeName(((ObjectMBean)mbean).getObjectNameBasis()) : context;
-                if (name != null && name.length() > 1)
-                    buf.append(",").append("name=").append(name);
+                if (name != null && name.length() > 1) {
+					buf.append(",").append("name=").append(name);
+				}
 
                 String basis = buf.toString();
 
@@ -193,16 +197,18 @@ public class MBeanContainer implements Container.InheritedListener, Dumpable
                 {
                     count = new AtomicInteger();
                     AtomicInteger existing = __unique.putIfAbsent(basis, count);
-                    if (existing != null)
-                        count = existing;
+                    if (existing != null) {
+						count = existing;
+					}
                 }
 
                 objectName = ObjectName.getInstance(domain + ":" + basis + ",id=" + count.getAndIncrement());
             }
 
             _mbeanServer.registerMBean(mbean, objectName);
-            if (LOG.isDebugEnabled())
-                LOG.debug("Registered {}", objectName);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Registered {}", objectName);
+			}
 
             _beans.put(obj, objectName);
         }
@@ -215,13 +221,15 @@ public class MBeanContainer implements Container.InheritedListener, Dumpable
     @Override
     public void beanRemoved(Container parent, Object obj)
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("beanRemoved {}", obj);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("beanRemoved {}", obj);
+		}
 
         ObjectName objectName = _beans.remove(obj);
 
-        if (objectName != null)
-            unregister(objectName);
+        if (objectName != null) {
+			unregister(objectName);
+		}
     }
 
     /**
@@ -230,15 +238,16 @@ public class MBeanContainer implements Container.InheritedListener, Dumpable
      */
     public String makeName(String basis)
     {
-        if (basis == null)
-            return null;
-        return basis
-                .replace(':', '_')
-                .replace('*', '_')
-                .replace('?', '_')
-                .replace('=', '_')
-                .replace(',', '_')
-                .replace(' ', '_');
+        if (basis != null) {
+			return basis
+			        .replace(':', '_')
+			        .replace('*', '_')
+			        .replace('?', '_')
+			        .replace('=', '_')
+			        .replace(',', '_')
+			        .replace(' ', '_');
+		}
+        return null;
     }
 
     @Override
@@ -266,8 +275,9 @@ public class MBeanContainer implements Container.InheritedListener, Dumpable
         try
         {
             getMBeanServer().unregisterMBean(objectName);
-            if (LOG.isDebugEnabled())
-                LOG.debug("Unregistered {}", objectName);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Unregistered {}", objectName);
+			}
         }
         catch (MBeanRegistrationException | InstanceNotFoundException x)
         {

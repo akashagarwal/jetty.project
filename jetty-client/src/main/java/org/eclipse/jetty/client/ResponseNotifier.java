@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.client;
 
@@ -42,8 +37,9 @@ public class ResponseNotifier
         for (int i = 0; i < listeners.size(); ++i)
         {
             Response.ResponseListener listener = listeners.get(i);
-            if (listener instanceof Response.BeginListener)
-                notifyBegin((Response.BeginListener)listener, response);
+            if (listener instanceof Response.BeginListener) {
+				notifyBegin((Response.BeginListener)listener, response);
+			}
         }
     }
 
@@ -66,8 +62,9 @@ public class ResponseNotifier
         for (int i = 0; i < listeners.size(); ++i)
         {
             Response.ResponseListener listener = listeners.get(i);
-            if (listener instanceof Response.HeaderListener)
-                result &= notifyHeader((Response.HeaderListener)listener, response, field);
+            if (listener instanceof Response.HeaderListener) {
+				result &= notifyHeader((Response.HeaderListener)listener, response, field);
+			}
         }
         return result;
     }
@@ -91,8 +88,9 @@ public class ResponseNotifier
         for (int i = 0; i < listeners.size(); ++i)
         {
             Response.ResponseListener listener = listeners.get(i);
-            if (listener instanceof Response.HeadersListener)
-                notifyHeaders((Response.HeadersListener)listener, response);
+            if (listener instanceof Response.HeadersListener) {
+				notifyHeaders((Response.HeadersListener)listener, response);
+			}
         }
     }
 
@@ -135,8 +133,9 @@ public class ResponseNotifier
         for (int i = 0; i < listeners.size(); ++i)
         {
             Response.ResponseListener listener = listeners.get(i);
-            if (listener instanceof Response.SuccessListener)
-                notifySuccess((Response.SuccessListener)listener, response);
+            if (listener instanceof Response.SuccessListener) {
+				notifySuccess((Response.SuccessListener)listener, response);
+			}
         }
     }
 
@@ -158,8 +157,9 @@ public class ResponseNotifier
         for (int i = 0; i < listeners.size(); ++i)
         {
             Response.ResponseListener listener = listeners.get(i);
-            if (listener instanceof Response.FailureListener)
-                notifyFailure((Response.FailureListener)listener, response, failure);
+            if (listener instanceof Response.FailureListener) {
+				notifyFailure((Response.FailureListener)listener, response, failure);
+			}
         }
     }
 
@@ -181,8 +181,9 @@ public class ResponseNotifier
         for (int i = 0; i < listeners.size(); ++i)
         {
             Response.ResponseListener listener = listeners.get(i);
-            if (listener instanceof Response.CompleteListener)
-                notifyComplete((Response.CompleteListener)listener, result);
+            if (listener instanceof Response.CompleteListener) {
+				notifyComplete((Response.CompleteListener)listener, result);
+			}
         }
     }
 
@@ -204,12 +205,14 @@ public class ResponseNotifier
         for (Iterator<HttpField> iterator = response.getHeaders().iterator(); iterator.hasNext();)
         {
             HttpField field = iterator.next();
-            if (!notifyHeader(listeners, response, field))
-                iterator.remove();
+            if (!notifyHeader(listeners, response, field)) {
+				iterator.remove();
+			}
         }
         notifyHeaders(listeners, response);
-        if (response instanceof ContentResponse)
-            notifyContent(listeners, response, ByteBuffer.wrap(((ContentResponse)response).getContent()), Callback.NOOP);
+        if (response instanceof ContentResponse) {
+			notifyContent(listeners, response, ByteBuffer.wrap(((ContentResponse)response).getContent()), Callback.NOOP);
+		}
         notifySuccess(listeners, response);
     }
 
@@ -225,12 +228,14 @@ public class ResponseNotifier
         for (Iterator<HttpField> iterator = response.getHeaders().iterator(); iterator.hasNext();)
         {
             HttpField field = iterator.next();
-            if (!notifyHeader(listeners, response, field))
-                iterator.remove();
+            if (!notifyHeader(listeners, response, field)) {
+				iterator.remove();
+			}
         }
         notifyHeaders(listeners, response);
-        if (response instanceof ContentResponse)
-            notifyContent(listeners, response, ByteBuffer.wrap(((ContentResponse)response).getContent()), Callback.NOOP);
+        if (response instanceof ContentResponse) {
+			notifyContent(listeners, response, ByteBuffer.wrap(((ContentResponse)response).getContent()), Callback.NOOP);
+		}
         notifyFailure(listeners, response, failure);
     }
 
@@ -259,8 +264,9 @@ public class ResponseNotifier
         @Override
         protected Action process() throws Exception
         {
-            if (index == listeners.size())
-                return Action.SUCCEEDED;
+            if (index == listeners.size()) {
+				return Action.SUCCEEDED;
+			}
 
             Response.ResponseListener listener = listeners.get(index);
             if (listener instanceof Response.AsyncContentListener)
@@ -270,13 +276,12 @@ public class ResponseNotifier
                 // passing it to the listener that may consume it.
                 buffer.clear();
                 ResponseNotifier.this.notifyContent((Response.AsyncContentListener)listener, response, buffer, this);
-                return Action.SCHEDULED;
             }
             else
             {
                 succeeded();
-                return Action.SCHEDULED;
             }
+			return Action.SCHEDULED;
         }
 
         @Override

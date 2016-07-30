@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.server.ab;
 
@@ -43,7 +38,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 /**
- * Test of Close Handling
+ * Test of Close Handling.
  */
 public class TestABCase7 extends AbstractABCase
 {
@@ -51,7 +46,7 @@ public class TestABCase7 extends AbstractABCase
     public TestTracker tt = new TestTracker();
 
     /**
-     * Basic message then close frame, normal behavior
+     * Basic message then close frame, normal behavior.
      * @throws Exception on test failure
      */
     @Test
@@ -75,7 +70,7 @@ public class TestABCase7 extends AbstractABCase
     }
 
     /**
-     * Close frame, then another close frame (send frame ignored)
+     * Close frame, then another close frame (send frame ignored).
      * @throws Exception on test failure
      */
     @Test
@@ -99,7 +94,7 @@ public class TestABCase7 extends AbstractABCase
     }
 
     /**
-     * Close frame, then ping frame (no pong received)
+     * Close frame, then ping frame (no pong received).
      * @throws Exception on test failure
      */
     @Test
@@ -123,7 +118,7 @@ public class TestABCase7 extends AbstractABCase
     }
 
     /**
-     * Close frame, then ping frame (no pong received)
+     * Close frame, then ping frame (no pong received).
      * @throws Exception on test failure
      */
     @Test
@@ -147,7 +142,7 @@ public class TestABCase7 extends AbstractABCase
     }
 
     /**
-     * Text fin=false, close, then continuation fin=true
+     * Text fin=false, close, then continuation fin=true.
      * @throws Exception on test failure
      */
     @Test
@@ -172,7 +167,7 @@ public class TestABCase7 extends AbstractABCase
     }
 
     /**
-     * 256k msg, then close, then ping
+     * 256k msg, then close, then ping.
      * @throws Exception on test failure
      */
     @Test
@@ -202,7 +197,7 @@ public class TestABCase7 extends AbstractABCase
     }
 
     /**
-     * close with no payload (payload length 0)
+     * Close with no payload (payload length 0).
      * @throws Exception on test failure
      */
     @Test
@@ -225,7 +220,7 @@ public class TestABCase7 extends AbstractABCase
     }
 
     /**
-     * close with invalid payload (payload length 1)
+     * Close with invalid payload (payload length 1).
      * @throws Exception on test failure
      */
     @Test
@@ -251,7 +246,7 @@ public class TestABCase7 extends AbstractABCase
     }
 
     /**
-     * close with valid payload (payload length 2)
+     * Close with valid payload (payload length 2).
      * @throws Exception on test failure
      */
     @Test
@@ -274,7 +269,7 @@ public class TestABCase7 extends AbstractABCase
     }
 
     /**
-     * close with valid payload (with reason)
+     * Close with valid payload (with reason).
      * @throws Exception on test failure
      */
     @Test
@@ -297,7 +292,7 @@ public class TestABCase7 extends AbstractABCase
     }
 
     /**
-     * close with valid payload (with 123 byte reason)
+     * Close with valid payload (with 123 byte reason).
      * @throws Exception on test failure
      */
     @Test
@@ -324,7 +319,7 @@ public class TestABCase7 extends AbstractABCase
     }
 
     /**
-     * close with invalid UTF8 in payload
+     * Close with invalid UTF8 in payload.
      * @throws Exception on test failure
      */
     @Test

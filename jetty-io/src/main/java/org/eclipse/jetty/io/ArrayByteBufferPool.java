@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.io;
 
@@ -42,16 +37,21 @@ public class ArrayByteBufferPool implements ByteBufferPool
     
     public ArrayByteBufferPool(int minSize, int increment, int maxSize, int maxQueue)
     {
-        if (minSize<=0)
-            minSize=0;
-        if (increment<=0)
-            increment=1024;
-        if (maxSize<=0)
-            maxSize=64*1024;
-        if (minSize>=increment)
-            throw new IllegalArgumentException("minSize >= increment");
-        if ((maxSize%increment)!=0 || increment>=maxSize)
-            throw new IllegalArgumentException("increment must be a divisor of maxSize");
+        if (minSize<=0) {
+			minSize=0;
+		}
+        if (increment<=0) {
+			increment=1024;
+		}
+        if (maxSize<=0) {
+			maxSize=64*1024;
+		}
+        if (minSize>=increment) {
+			throw new IllegalArgumentException("minSize >= increment");
+		}
+        if (maxSize%increment!=0 || increment>=maxSize) {
+			throw new IllegalArgumentException("increment must be a divisor of maxSize");
+		}
         _min=minSize;
         _inc=increment;
 
@@ -72,10 +72,11 @@ public class ArrayByteBufferPool implements ByteBufferPool
     public ByteBuffer acquire(int size, boolean direct)
     {
         ByteBufferPool.Bucket bucket = bucketFor(size,direct);
-        if (bucket==null)
-            return direct ? BufferUtil.allocateDirect(size) : BufferUtil.allocate(size);
+        if (bucket!=null) {
+			return bucket.acquire(direct);
+		}
             
-        return bucket.acquire(direct);
+        return direct ? BufferUtil.allocateDirect(size) : BufferUtil.allocate(size);
             
     }
 
@@ -85,8 +86,9 @@ public class ArrayByteBufferPool implements ByteBufferPool
         if (buffer!=null)
         {    
             ByteBufferPool.Bucket bucket = bucketFor(buffer.capacity(),buffer.isDirect());
-            if (bucket!=null)
-                bucket.release(buffer);
+            if (bucket!=null) {
+				bucket.release(buffer);
+			}
         }
     }
 
@@ -101,17 +103,17 @@ public class ArrayByteBufferPool implements ByteBufferPool
 
     private ByteBufferPool.Bucket bucketFor(int size,boolean direct)
     {
-        if (size<=_min)
-            return null;
+        if (size<=_min) {
+			return null;
+		}
         int b=(size-1)/_inc;
-        if (b>=_direct.length)
-            return null;
-        ByteBufferPool.Bucket bucket = direct?_direct[b]:_indirect[b];
-                
-        return bucket;
+        if (b>=_direct.length) {
+			return null;
+		}
+        return direct?_direct[b]:_indirect[b];
     }
 
-    // Package local for testing
+    /** Package local for testing. */
     ByteBufferPool.Bucket[] bucketsFor(boolean direct)
     {
         return direct ? _direct : _indirect;

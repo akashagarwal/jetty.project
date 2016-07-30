@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.proxy;
 
@@ -127,8 +122,9 @@ public class AsyncMiddleManServletTest
         configuration.setSendDateHeader(false);
         configuration.setSendServerVersion(false);
         String value = initParams.get("outputBufferSize");
-        if (value != null)
-            configuration.setOutputBufferSize(Integer.valueOf(value));
+        if (value != null) {
+			configuration.setOutputBufferSize(Integer.valueOf(value));
+		}
         proxyConnector = new ServerConnector(proxy, new HttpConnectionFactory(configuration));
         proxy.addConnector(proxyConnector);
 
@@ -200,10 +196,11 @@ public class AsyncMiddleManServletTest
             protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
             {
                 String transferEncoding = request.getHeader(HttpHeader.TRANSFER_ENCODING.asString());
-                if (expectChunked)
-                    Assert.assertNotNull(transferEncoding);
-                else
-                    Assert.assertNull(transferEncoding);
+                if (expectChunked) {
+					Assert.assertNotNull(transferEncoding);
+				} else {
+					Assert.assertNull(transferEncoding);
+				}
                 response.setHeader(HttpHeader.CONTENT_ENCODING.asString(), "gzip");
                 super.service(request, response);
             }
@@ -358,8 +355,9 @@ public class AsyncMiddleManServletTest
     @Test
     public void testManySequentialTransformations() throws Exception
     {
-        for (int i = 0; i < 8; ++i)
-            testTransformUpstreamAndDownstreamKnownContentLengthGzipped();
+        for (int i = 0; i < 8; ++i) {
+			testTransformUpstreamAndDownstreamKnownContentLengthGzipped();
+		}
     }
 
     @Test
@@ -531,10 +529,11 @@ public class AsyncMiddleManServletTest
                     @Override
                     public void transform(ByteBuffer input, boolean finished, List<ByteBuffer> output) throws IOException
                     {
-                        if (++count < 2)
-                            output.add(input);
-                        else
-                            throw new NullPointerException("explicitly_thrown_by_test");
+                        if (++count < 2) {
+							output.add(input);
+						} else {
+							throw new NullPointerException("explicitly_thrown_by_test");
+						}
                     }
                 };
             }
@@ -550,8 +549,9 @@ public class AsyncMiddleManServletTest
                     @Override
                     public void onComplete(Result result)
                     {
-                        if (result.isSucceeded() && result.getResponse().getStatus() == 502)
-                            latch.countDown();
+                        if (result.isSucceeded() && result.getResponse().getStatus() == 502) {
+							latch.countDown();
+						}
                     }
                 });
 
@@ -614,10 +614,11 @@ public class AsyncMiddleManServletTest
                     @Override
                     public void transform(ByteBuffer input, boolean finished, List<ByteBuffer> output) throws IOException
                     {
-                        if (++count < 2)
-                            output.add(input);
-                        else
-                            throw new NullPointerException("explicitly_thrown_by_test");
+                        if (++count < 2) {
+							output.add(input);
+						} else {
+							throw new NullPointerException("explicitly_thrown_by_test");
+						}
                     }
                 };
             }
@@ -676,8 +677,9 @@ public class AsyncMiddleManServletTest
             protected ContentTransformer newServerResponseContentTransformer(HttpServletRequest clientRequest, HttpServletResponse proxyResponse, Response serverResponse)
             {
                 ContentTransformer transformer = new BufferingContentTransformer();
-                if (gzipped)
-                    transformer = new GZIPContentTransformer(transformer);
+                if (gzipped) {
+					transformer = new GZIPContentTransformer(transformer);
+				}
                 return transformer;
             }
         });
@@ -737,8 +739,9 @@ public class AsyncMiddleManServletTest
                     @Override
                     public void transform(ByteBuffer input, boolean finished, List<ByteBuffer> output) throws IOException
                     {
-                        if (!finished)
-                            output.add(input);
+                        if (!finished) {
+							output.add(input);
+						}
                     }
                 };
             }
@@ -776,8 +779,9 @@ public class AsyncMiddleManServletTest
                     public void onComplete(Result result)
                     {
                         System.err.println(result);
-                        if (result.getResponse().getStatus() == 500)
-                            latch.countDown();
+                        if (result.getResponse().getStatus() == 500) {
+							latch.countDown();
+						}
                     }
                 });
         content.offer(ByteBuffer.allocate(512));
@@ -799,10 +803,11 @@ public class AsyncMiddleManServletTest
             @Override
             protected int readClientRequestContent(ServletInputStream input, byte[] buffer) throws IOException
             {
-                if (++count < 2)
-                    return super.readClientRequestContent(input, buffer);
-                else
-                    throw new IOException("explicitly_thrown_by_test");
+                if (++count < 2) {
+					return super.readClientRequestContent(input, buffer);
+				} else {
+					throw new IOException("explicitly_thrown_by_test");
+				}
             }
         });
         startClient();
@@ -816,8 +821,9 @@ public class AsyncMiddleManServletTest
                     @Override
                     public void onComplete(Result result)
                     {
-                        if (result.getResponse().getStatus() == 502)
-                            latch.countDown();
+                        if (result.getResponse().getStatus() == 502) {
+							latch.countDown();
+						}
                     }
                 });
         content.offer(ByteBuffer.allocate(512));
@@ -860,10 +866,11 @@ public class AsyncMiddleManServletTest
             @Override
             protected void writeProxyResponseContent(ServletOutputStream output, ByteBuffer content) throws IOException
             {
-                if (++count < writeCount)
-                    super.writeProxyResponseContent(output, content);
-                else
-                    throw new IOException("explicitly_thrown_by_test");
+                if (++count < writeCount) {
+					super.writeProxyResponseContent(output, content);
+				} else {
+					throw new IOException("explicitly_thrown_by_test");
+				}
             }
         });
         startClient();
@@ -1238,8 +1245,9 @@ public class AsyncMiddleManServletTest
                 return new AfterContentTransformer()
                 {
                     {
-                        if (useDisk)
-                            setMaxInputBufferSize(0);
+                        if (useDisk) {
+							setMaxInputBufferSize(0);
+						}
                     }
 
                     @Override
@@ -1484,8 +1492,9 @@ public class AsyncMiddleManServletTest
         {
             for (Path file : files)
             {
-                if (!Files.isDirectory(file))
-                    Files.delete(file);
+                if (!Files.isDirectory(file)) {
+					Files.delete(file);
+				}
             }
         }
         return targetTestsDir;
@@ -1551,27 +1560,24 @@ public class AsyncMiddleManServletTest
 
                         // Transform the matches.
                         Utf8StringBuilder builder = new Utf8StringBuilder();
-                        for (ByteBuffer buffer : matches)
-                            builder.append(buffer);
+                        for (ByteBuffer buffer : matches) {
+							builder.append(buffer);
+						}
                         String transformed = transform(builder.toString());
                         output.add(ByteBuffer.wrap(transformed.getBytes(StandardCharsets.UTF_8)));
                         output.add(slice);
                     }
-                }
-                else
-                {
-                    if (match)
-                    {
-                        matching = true;
-                        ByteBuffer copy = ByteBuffer.allocate(slice.remaining());
-                        copy.put(slice).flip();
-                        matches.add(copy);
-                    }
-                    else
-                    {
-                        output.add(slice);
-                    }
-                }
+                } else if (match)
+				{
+				    matching = true;
+				    ByteBuffer copy = ByteBuffer.allocate(slice.remaining());
+				    copy.put(slice).flip();
+				    matches.add(copy);
+				}
+				else
+				{
+				    output.add(slice);
+				}
             }
         }
 
@@ -1619,19 +1625,16 @@ public class AsyncMiddleManServletTest
                     }
 
                     ++state;
-                    if (state == token.length)
-                        return false;
-                }
-                else
-                {
-                    // Look for the ending quote.
-                    if (current == '"')
-                    {
-                        buffer.position(buffer.position() - 1);
-                        state = 0;
-                        return true;
-                    }
-                }
+                    if (state == token.length) {
+						return false;
+					}
+                } else // Look for the ending quote.
+				if (current == '"')
+				{
+				    buffer.position(buffer.position() - 1);
+				    state = 0;
+				    return true;
+				}
             }
             return state == token.length;
         }
@@ -1707,7 +1710,7 @@ public class AsyncMiddleManServletTest
             for (int i = input.position(); i < input.limit(); i++)
             {
                 byte b = input.get(i);
-                if ((b == (byte)'\n') || (b == (byte)'\r'))
+                if (b == (byte)'\n' || b == (byte)'\r')
                 {
                     return i;
                 }

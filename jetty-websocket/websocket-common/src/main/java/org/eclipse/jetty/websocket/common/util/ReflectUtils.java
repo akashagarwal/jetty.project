@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.common.util;
 
@@ -29,15 +24,15 @@ public class ReflectUtils
 {
     private static class GenericRef
     {
-        // The base class reference lookup started from
+        /** The base class reference lookup started from. */
         private final Class<?> baseClass;
-        // The interface that we are interested in
+        /** The interface that we are interested in. */
         private final Class<?> ifaceClass;
 
-        // The actual class generic interface was found on
+        /** The actual class generic interface was found on. */
         Class<?> genericClass;
 
-        // The found genericType
+        /** The found genericType. */
         public Type genericType;
         private int genericIndex;
 
@@ -49,7 +44,7 @@ public class ReflectUtils
 
         public boolean needsUnwrap()
         {
-            return (genericClass == null) && (genericType != null) && (genericType instanceof TypeVariable<?>);
+            return genericClass == null && genericType != null && genericType instanceof TypeVariable<?>;
         }
 
         public void setGenericFromType(Type type, int index)
@@ -119,7 +114,7 @@ public class ReflectUtils
         }
         else
         {
-            sb.append(type.toString());
+            sb.append(type);
         }
 
         return sb;
@@ -226,7 +221,7 @@ public class ReflectUtils
 
     private static boolean resolveGenericRef(GenericRef ref, Type type)
     {
-        if ((type == null) || (type == Object.class))
+        if (type == null || type == Object.class)
         {
             return false;
         }
@@ -286,21 +281,17 @@ public class ReflectUtils
         {
             ParameterizedType ptype = (ParameterizedType)type;
             Class<?> rawClass = (Class<?>)ptype.getRawType();
-            if (resolveGenericRef(ref,rawClass))
-            {
-                if (ref.needsUnwrap())
-                {
-                    // debug("## Unwrap ParameterizedType %s::%s",toShortName(type),toShortName(rawClass));
-                    TypeVariable<?> needVar = (TypeVariable<?>)ref.genericType;
-                    // debug("needs unwrap of type var [%s] - index [%d]",toShortName(needVar),ref.genericIndex);
-                    int typeParamIdx = findTypeParameterIndex(rawClass,needVar);
-                    // debug("type paramIdx of %s::%s is index [%d]",toShortName(rawClass),toShortName(needVar),typeParamIdx);
+            if (resolveGenericRef(ref,rawClass) && ref.needsUnwrap()) {
+			    // debug("## Unwrap ParameterizedType %s::%s",toShortName(type),toShortName(rawClass));
+			    TypeVariable<?> needVar = (TypeVariable<?>)ref.genericType;
+			    // debug("needs unwrap of type var [%s] - index [%d]",toShortName(needVar),ref.genericIndex);
+			    int typeParamIdx = findTypeParameterIndex(rawClass,needVar);
+			    // debug("type paramIdx of %s::%s is index [%d]",toShortName(rawClass),toShortName(needVar),typeParamIdx);
 
-                    Type arg = ptype.getActualTypeArguments()[typeParamIdx];
-                    ref.setGenericFromType(arg,typeParamIdx);
-                    return true;
-                }
-            }
+			    Type arg = ptype.getActualTypeArguments()[typeParamIdx];
+			    ref.setGenericFromType(arg,typeParamIdx);
+			    return true;
+			}
         }
 
         return false;
@@ -368,9 +359,9 @@ public class ReflectUtils
         Type[] params = method.getGenericParameterTypes();
         for (int j = 0; j < params.length; j++)
         {
-            boolean ellipses = method.isVarArgs() && (j == (params.length - 1));
+            boolean ellipses = method.isVarArgs() && j == (params.length - 1);
             appendTypeName(str,params[j],ellipses);
-            if (j < (params.length - 1))
+            if (j < params.length - 1)
             {
                 str.append(", ");
             }

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util.component;
 
@@ -43,8 +38,7 @@ public interface LifeCycle
      * @see #stop()
      * @see #isFailed()
      */
-    @ManagedOperation(value="Starts the instance", impact="ACTION")
-    public void start()
+    @ManagedOperation(value="Starts the instance", impact="ACTION") void start()
         throws Exception;
 
     /* ------------------------------------------------------------ */
@@ -57,15 +51,14 @@ public interface LifeCycle
      * @see #start()
      * @see #isFailed()
      */
-    @ManagedOperation(value="Stops the instance", impact="ACTION")
-    public void stop()
+    @ManagedOperation(value="Stops the instance", impact="ACTION") void stop()
         throws Exception;
 
     /* ------------------------------------------------------------ */
     /**
      * @return true if the component is starting or has been started.
      */
-    public boolean isRunning();
+    boolean isRunning();
 
     /* ------------------------------------------------------------ */
     /**
@@ -73,21 +66,21 @@ public interface LifeCycle
      * @see #start()
      * @see #isStarting()
      */
-    public boolean isStarted();
+    boolean isStarted();
 
     /* ------------------------------------------------------------ */
     /**
      * @return true if the component is starting.
      * @see #isStarted()
      */
-    public boolean isStarting();
+    boolean isStarting();
 
     /* ------------------------------------------------------------ */
     /**
      * @return true if the component is stopping.
      * @see #isStopped()
      */
-    public boolean isStopping();
+    boolean isStopping();
 
     /* ------------------------------------------------------------ */
     /**
@@ -95,19 +88,19 @@ public interface LifeCycle
      * @see #stop()
      * @see #isStopping()
      */
-    public boolean isStopped();
+    boolean isStopped();
 
     /* ------------------------------------------------------------ */
     /**
      * @return true if the component has failed to start or has failed to stop.
      */
-    public boolean isFailed();
+    boolean isFailed();
     
-    /* ------------------------------------------------------------ */
-    public void addLifeCycleListener(LifeCycle.Listener listener);
+    /** ------------------------------------------------------------. */
+    void addLifeCycleListener(LifeCycle.Listener listener);
 
-    /* ------------------------------------------------------------ */
-    public void removeLifeCycleListener(LifeCycle.Listener listener);
+    /** ------------------------------------------------------------. */
+    void removeLifeCycleListener(LifeCycle.Listener listener);
     
 
     /* ------------------------------------------------------------ */
@@ -116,10 +109,10 @@ public interface LifeCycle
      */
     public interface Listener extends EventListener
     {
-        public void lifeCycleStarting(LifeCycle event);
-        public void lifeCycleStarted(LifeCycle event);
-        public void lifeCycleFailure(LifeCycle event,Throwable cause);
-        public void lifeCycleStopping(LifeCycle event);
-        public void lifeCycleStopped(LifeCycle event);
+        void lifeCycleStarting(LifeCycle event);
+        void lifeCycleStarted(LifeCycle event);
+        void lifeCycleFailure(LifeCycle event,Throwable cause);
+        void lifeCycleStopping(LifeCycle event);
+        void lifeCycleStopped(LifeCycle event);
     }
 }

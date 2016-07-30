@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 
@@ -33,7 +28,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public interface Authentication
 {
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public static class Failed extends QuietServletException
     {
        public Failed(String message)
@@ -55,7 +50,7 @@ public interface Authentication
     
     /* ------------------------------------------------------------ */
     /** A wrapped authentication with methods provide the
-     * wrapped request/response for use by the application
+     * wrapped request/response for use by the application.
      */
     public interface Wrapped extends Authentication
     {
@@ -90,7 +85,7 @@ public interface Authentication
         
         
         /* ------------------------------------------------------------ */
-        /** Login with the LOGIN authenticator
+        /** Login with the LOGIN authenticator.
          * @param username the username
          * @param password the password
          * @param request the request
@@ -134,7 +129,7 @@ public interface Authentication
      * This convenience instance is for non mandatory authentication where credentials
      * have been presented and checked, but failed authentication. 
      */
-    public final static Authentication UNAUTHENTICATED = new Authentication(){@Override
+    Authentication UNAUTHENTICATED = new Authentication(){@Override
     public String toString(){return "UNAUTHENTICATED";}};
 
     /* ------------------------------------------------------------ */
@@ -143,7 +138,7 @@ public interface Authentication
      * This convenience instance us for non mandatory authentication when no 
      * credentials are present to be checked.
      */
-    public final static Authentication NOT_CHECKED = new Authentication(){@Override
+    Authentication NOT_CHECKED = new Authentication(){@Override
     public String toString(){return "NOT CHECKED";}};
 
     /* ------------------------------------------------------------ */
@@ -151,7 +146,7 @@ public interface Authentication
      * <p>
      * This convenience instance is for when an authentication challenge has been sent.
      */
-    public final static Authentication SEND_CONTINUE = new Authentication.Challenge(){@Override
+    Authentication SEND_CONTINUE = new Authentication.Challenge(){@Override
     public String toString(){return "CHALLENGE";}};
 
     /* ------------------------------------------------------------ */
@@ -159,8 +154,8 @@ public interface Authentication
      * <p>
      * This convenience instance is for when an authentication failure has been sent.
      */
-    public final static Authentication SEND_FAILURE = new Authentication.Failure(){@Override
+    Authentication SEND_FAILURE = new Authentication.Failure(){@Override
     public String toString(){return "FAILURE";}};
-    public final static Authentication SEND_SUCCESS = new SendSuccess(){@Override
+    Authentication SEND_SUCCESS = new SendSuccess(){@Override
     public String toString(){return "SEND_SUCCESS";}};
 }

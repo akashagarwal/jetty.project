@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http.spi;
 
@@ -33,7 +28,8 @@ public class DelegatingThreadPool extends ContainerLifeCycle implements ThreadPo
 {
     private static final Logger LOG = Log.getLogger(DelegatingThreadPool.class);
     
-    private Executor _executor; // memory barrier provided by start/stop semantics
+    /** Memory barrier provided by start/stop semantics. */
+    private Executor _executor;
 
     public DelegatingThreadPool(Executor executor)
     {
@@ -41,35 +37,37 @@ public class DelegatingThreadPool extends ContainerLifeCycle implements ThreadPo
         addBean(_executor);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public Executor getExecutor()
     {
         return _executor;
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void setExecutor(Executor executor)
     {
-        if (isRunning())
-            throw new IllegalStateException(getState());
+        if (isRunning()) {
+			throw new IllegalStateException(getState());
+		}
         updateBean(_executor,executor);
         _executor=executor;
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void execute(Runnable job)
     {
         _executor.execute(job);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public int getIdleThreads()
     {
         final Executor executor=_executor;
-        if (executor instanceof ThreadPool)
-            return ((ThreadPool)executor).getIdleThreads();
+        if (executor instanceof ThreadPool) {
+			return ((ThreadPool)executor).getIdleThreads();
+		}
         
         if (executor instanceof ThreadPoolExecutor)
         {
@@ -79,13 +77,14 @@ public class DelegatingThreadPool extends ContainerLifeCycle implements ThreadPo
         return -1;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public int getThreads()
     {
         final Executor executor=_executor;
-        if (executor instanceof ThreadPool)
-            return ((ThreadPool)executor).getThreads();
+        if (executor instanceof ThreadPool) {
+			return ((ThreadPool)executor).getThreads();
+		}
         
         if (executor instanceof ThreadPoolExecutor)
         {
@@ -95,13 +94,14 @@ public class DelegatingThreadPool extends ContainerLifeCycle implements ThreadPo
         return -1;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public boolean isLowOnThreads()
     {
         final Executor executor=_executor;
-        if (executor instanceof ThreadPool)
-            return ((ThreadPool)executor).isLowOnThreads();
+        if (executor instanceof ThreadPool) {
+			return ((ThreadPool)executor).isLowOnThreads();
+		}
         
         if (executor instanceof ThreadPoolExecutor)
         {
@@ -113,26 +113,28 @@ public class DelegatingThreadPool extends ContainerLifeCycle implements ThreadPo
         return false;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void join() throws InterruptedException
     {
         final Executor executor=_executor;
-        if (executor instanceof ThreadPool)
-            ((ThreadPool)executor).join();
-        else if (executor instanceof ExecutorService)
-            ((ExecutorService)executor).awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
-        else
-            throw new IllegalStateException();
+        if (executor instanceof ThreadPool) {
+			((ThreadPool)executor).join();
+		} else if (executor instanceof ExecutorService) {
+			((ExecutorService)executor).awaitTermination(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
+		} else {
+			throw new IllegalStateException();
+		}
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     protected void doStop() throws Exception
     {
         super.doStop();
-        if (!(_executor instanceof LifeCycle) && (_executor instanceof ExecutorService))
-            ((ExecutorService)_executor).shutdownNow();
+        if (!(_executor instanceof LifeCycle) && _executor instanceof ExecutorService) {
+			((ExecutorService)_executor).shutdownNow();
+		}
     }
 
 }

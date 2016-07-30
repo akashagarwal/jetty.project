@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 
 package org.eclipse.jetty.http2.hpack;
@@ -34,9 +29,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 
-/* ------------------------------------------------------------ */
-/**
- */
+/** ------------------------------------------------------------. */
 public class HpackContextTest
 {
 
@@ -112,8 +105,9 @@ public class HpackContextTest
         Entry[] entry = new Entry[field.length];
         
         // Add 2 name entries to fill table
-        for (int i=0;i<=1;i++)
-            entry[i]=ctx.add(field[i]);
+        for (int i=0;i<=1;i++) {
+			entry[i]=ctx.add(field[i]);
+		}
         
         // check there is a name reference and it is the most recent added
         assertEquals(entry[1],ctx.get("name"));
@@ -225,8 +219,9 @@ public class HpackContextTest
         
 
         // Add 4 more entries
-        for (int i=1;i<=4;i++)  
-            entry[i]=ctx.add(field[i]);
+        for (int i=1;i<=4;i++) {
+			entry[i]=ctx.add(field[i]);
+		}
 
         // Check newest entry is at 62 oldest at 66
         assertEquals(5,ctx.size());
@@ -268,8 +263,9 @@ public class HpackContextTest
         assertEquals(null,ctx.get(62+ctx.size()));
         
         // Add 4 more entries
-        for (int i=6;i<=9;i++)  
-            entry[i]=ctx.add(field[i]);
+        for (int i=6;i<=9;i++) {
+			entry[i]=ctx.add(field[i]);
+		}
         
         // Check newest entry is at 1 oldest at 5
         index=66;
@@ -288,8 +284,9 @@ public class HpackContextTest
         
 
         // Add new entries enough so that array queue will wrap
-        for (int i=10;i<=52;i++)
-            entry[i]=ctx.add(new HttpField("n"+i,"v"+i));
+        for (int i=10;i<=52;i++) {
+			entry[i]=ctx.add(new HttpField("n"+i,"v"+i));
+		}
 
         index=66;
         for (int i=48;i<=52;i++)  
@@ -324,8 +321,9 @@ public class HpackContextTest
         Entry[] entry = new Entry[field.length];
         
         // Add 5 entries
-        for (int i=0;i<=4;i++)  
-            entry[i]=ctx.add(field[i]);
+        for (int i=0;i<=4;i++) {
+			entry[i]=ctx.add(field[i]);
+		}
         
         assertEquals(5,ctx.size());
         
@@ -366,8 +364,9 @@ public class HpackContextTest
         
 
         // Add 5 entries
-        for (int i=5;i<=9;i++)  
-            entry[i]=ctx.add(field[i]);
+        for (int i=5;i<=9;i++) {
+			entry[i]=ctx.add(field[i]);
+		}
         
         assertEquals(6,ctx.size());
 
@@ -394,8 +393,9 @@ public class HpackContextTest
         }
         
         // add 50 fields
-        for (int i=0;i<50;i++)
-            ctx.add(new HttpField("n"+i,"v"+i));
+        for (int i=0;i<50;i++) {
+			ctx.add(new HttpField("n"+i,"v"+i));
+		}
 
         // check indexes
         index=67+50;

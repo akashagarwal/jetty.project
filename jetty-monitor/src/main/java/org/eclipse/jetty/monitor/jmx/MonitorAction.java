@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.monitor.jmx;
 
@@ -42,7 +37,7 @@ public abstract class MonitorAction
 
     /* ------------------------------------------------------------ */
     /**
-     * Creates a new monitor action 
+     * Creates a new monitor action .
      * 
      * @param trigger event trigger to be associated with this action
      * @throws InvalidParameterException if trigger is invalid
@@ -56,7 +51,7 @@ public abstract class MonitorAction
     
     /* ------------------------------------------------------------ */
     /**
-     * Creates a new monitor action 
+     * Creates a new monitor action .
      * 
      * @param trigger event trigger to be associated with this action
      * @param notifier event notifier to be associated with this action
@@ -70,7 +65,7 @@ public abstract class MonitorAction
     
     /* ------------------------------------------------------------ */
     /**
-     * Creates a new monitor action 
+     * Creates a new monitor action .
      * 
      * @param trigger event trigger to be associated with this action
      * @param notifier event notifier to be associated with this action
@@ -85,7 +80,7 @@ public abstract class MonitorAction
 
     /* ------------------------------------------------------------ */
     /**
-     * Creates a new monitor action 
+     * Creates a new monitor action .
      * 
      * @param trigger event trigger to be associated with this action
      * @param notifier event notifier to be associated with this action
@@ -96,8 +91,9 @@ public abstract class MonitorAction
     public MonitorAction(EventTrigger trigger, EventNotifier notifier, long pollInterval, long pollDelay)
         throws InvalidParameterException
     {
-        if (trigger == null)
-            throw new InvalidParameterException("Trigger cannot be null");
+        if (trigger == null) {
+			throw new InvalidParameterException("Trigger cannot be null");
+		}
         
         _id = randomUUID().toString();
         _trigger = trigger;
@@ -108,7 +104,7 @@ public abstract class MonitorAction
     
     /* ------------------------------------------------------------ */
     /**
-     * Retrieve the identification string of the monitor action
+     * Retrieve the identification string of the monitor action.
      * 
      * @return unique identification string
      */
@@ -121,7 +117,7 @@ public abstract class MonitorAction
    
     /* ------------------------------------------------------------ */
     /**
-     * Retrieve the event trigger of the monitor action
+     * Retrieve the event trigger of the monitor action.
      * 
      * @return associated event trigger
      */
@@ -132,7 +128,7 @@ public abstract class MonitorAction
     
     /* ------------------------------------------------------------ */
     /**
-     * Retrieve the poll interval
+     * Retrieve the poll interval.
      * 
      * @return interval value (in milliseconds)
      */
@@ -143,7 +139,7 @@ public abstract class MonitorAction
     
 
     /* ------------------------------------------------------------ */
-    /** Retrieve the poll delay
+    /** Retrieve the poll delay.
      * @return delay value (in milliseconds)
      */
     public long getPollDelay()
@@ -161,8 +157,9 @@ public abstract class MonitorAction
     public final void doExecute(long timestamp)
     {
         EventState<?> state =_trigger.getState(timestamp);
-        if (_notifier != null)
-            _notifier.notify(_trigger, state, timestamp);
+        if (_notifier != null) {
+			_notifier.notify(_trigger, state, timestamp);
+		}
         execute(_trigger, state, timestamp);
     }
 

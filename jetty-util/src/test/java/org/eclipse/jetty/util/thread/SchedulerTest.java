@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util.thread;
 
@@ -40,7 +35,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 
-@RunWith(value = Parameterized.class)
+@RunWith(Parameterized.class)
 public class SchedulerTest
 {
     @Parameterized.Parameters
@@ -264,9 +259,9 @@ public class SchedulerTest
                             {
                                 expected_to_execute=true;
                                 cancel=delay+1000;
-                            }
-                            else
-                                expected_to_execute=false;
+                            } else {
+								expected_to_execute=false;
+							}
 
                             schedules.incrementAndGet();
                             Scheduler.Task task=_scheduler.schedule(new Runnable()
@@ -275,10 +270,11 @@ public class SchedulerTest
                                 public void run()
                                 {
                                     long lateness=System.currentTimeMillis()-expected;
-                                    if (expected_to_execute)
-                                        executions.set(lateness);
-                                    else
-                                        executions.set(6666);
+                                    if (expected_to_execute) {
+										executions.set(lateness);
+									} else {
+										executions.set(6666);
+									}
 
                                 }
                             },delay,TimeUnit.MILLISECONDS);
@@ -288,18 +284,15 @@ public class SchedulerTest
                             if (task.cancel())
                             {
                                 long lateness=now-expected;
-                                if (expected_to_execute)
-                                    cancellations.set(lateness);
-                                else
-                                    cancellations.set(0);
-                            }
-                            else
-                            {
-                                if (!expected_to_execute)
-                                {
-                                    cancellations.set(9999);
-                                }
-                            }
+                                if (expected_to_execute) {
+									cancellations.set(lateness);
+								} else {
+									cancellations.set(0);
+								}
+                            } else if (!expected_to_execute)
+							{
+							    cancellations.set(9999);
+							}
 
                             Thread.yield();
                         }
@@ -312,11 +305,13 @@ public class SchedulerTest
             };
         }
 
-        for (Thread thread : test)
-            thread.start();
+        for (Thread thread : test) {
+			thread.start();
+		}
 
-        for (Thread thread : test)
-            thread.join();
+        for (Thread thread : test) {
+			thread.join();
+		}
 
         // there were some executions and cancellations
         Assert.assertThat(executions.getCount(),Matchers.greaterThan(0L));

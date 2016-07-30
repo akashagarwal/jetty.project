@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.xml;
 
@@ -59,7 +54,7 @@ public class XmlAppendable
     {
         _out=out;
         _indent=indent;
-        _out.append("<?xml version=\"1.0\" encoding=\""+encoding+"\"?>\n");
+        _out.append("<?xml version=\"1.0\" encoding=\"").append(encoding).append("\"?>\n");
     }
 
     public XmlAppendable openTag(String tag, Map<String,String> attributes) throws IOException
@@ -83,8 +78,9 @@ public class XmlAppendable
     
     public XmlAppendable content(String s) throws IOException
     {
-        if (s!=null)
-            _out.append(StringUtil.sanitizeXmlString(s));
+        if (s!=null) {
+			_out.append(StringUtil.sanitizeXmlString(s));
+		}
         
         return this;
     }
@@ -137,13 +133,15 @@ public class XmlAppendable
     
     public XmlAppendable closeTag() throws IOException
     {
-        if (_tags.isEmpty())
-            throw new IllegalStateException("Tags closed");
+        if (_tags.isEmpty()) {
+			throw new IllegalStateException("Tags closed");
+		}
         String tag=_tags.pop();
         _space=_space.substring(0,_space.length()-_indent);
         _out.append(_space).append("</").append(tag).append(">\n");
-        if (_tags.isEmpty() && _out instanceof Closeable)
-            ((Closeable)_out).close();
+        if (_tags.isEmpty() && _out instanceof Closeable) {
+			((Closeable)_out).close();
+		}
         return this;
     }
     

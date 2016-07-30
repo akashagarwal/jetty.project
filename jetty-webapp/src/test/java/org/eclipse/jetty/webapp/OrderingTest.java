@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.webapp;
 
@@ -37,7 +32,7 @@ import org.eclipse.jetty.webapp.Ordering.RelativeOrdering;
 import org.junit.Test;
 
 /**
- * OrderingTest
+ * OrderingTest.
  */
 public class OrderingTest
 {
@@ -50,45 +45,30 @@ public class OrderingTest
             _name =name;
         }
 
-        /**
-         * @see org.eclipse.jetty.util.resource.Resource#addPath(java.lang.String)
-         */
         @Override
         public Resource addPath(String path) throws IOException, MalformedURLException
         {
             return null;
         }
 
-        /**
-         * @see org.eclipse.jetty.util.resource.Resource#delete()
-         */
         @Override
         public boolean delete() throws SecurityException
         {
             return false;
         }
 
-        /**
-         * @see org.eclipse.jetty.util.resource.Resource#exists()
-         */
         @Override
         public boolean exists()
         {
             return false;
         }
 
-        /**
-         * @see org.eclipse.jetty.util.resource.Resource#getFile()
-         */
         @Override
         public File getFile() throws IOException
         {
             return null;
         }
 
-        /**
-         * @see org.eclipse.jetty.util.resource.Resource#getInputStream()
-         */
         @Override
         public InputStream getInputStream() throws IOException
         {
@@ -101,9 +81,6 @@ public class OrderingTest
             return null;
         }
 
-        /**
-         * @see org.eclipse.jetty.util.resource.Resource#getName()
-         */
         @Override
         public String getName()
         {
@@ -116,62 +93,41 @@ public class OrderingTest
             return null;
         }
 
-        /**
-         * @see org.eclipse.jetty.util.resource.Resource#isContainedIn(org.eclipse.jetty.util.resource.Resource)
-         */
         @Override
         public boolean isContainedIn(Resource r) throws MalformedURLException
         {
             return false;
         }
 
-        /**
-         * @see org.eclipse.jetty.util.resource.Resource#isDirectory()
-         */
         @Override
         public boolean isDirectory()
         {
             return false;
         }
 
-        /**
-         * @see org.eclipse.jetty.util.resource.Resource#lastModified()
-         */
         @Override
         public long lastModified()
         {
             return 0;
         }
 
-        /**
-         * @see org.eclipse.jetty.util.resource.Resource#length()
-         */
         @Override
         public long length()
         {
             return 0;
         }
 
-        /**
-         * @see org.eclipse.jetty.util.resource.Resource#list()
-         */
         @Override
         public String[] list()
         {
             return null;
         }
 
-        /**
-         * @see org.eclipse.jetty.util.resource.Resource#close()
-         */
         @Override
         public void close()
         {
         }
 
-        /**
-         * @see org.eclipse.jetty.util.resource.Resource#renameTo(org.eclipse.jetty.util.resource.Resource)
-         */
         @Override
         public boolean renameTo(Resource dest) throws SecurityException
         {
@@ -258,18 +214,18 @@ public class OrderingTest
         //((RelativeOrdering)metaData._ordering).addBeforeOthers(r6);
         f6._befores.add("B");
 
-        //
         // p.70 outcome: F, B, D, E, C, A
-        //
         String[] outcomes = {"FBDECA"};
         List<Resource> orderedList = metaData._ordering.order(resources);
 
         String result = "";
-        for (Resource r:orderedList)
-            result+=(((TestResource)r)._name);
+        for (Resource r:orderedList) {
+			result+=((TestResource)r)._name;
+		}
 
-        if (!checkResult(result, outcomes))
-            fail("No outcome matched "+result);
+        if (!checkResult(result, outcomes)) {
+			fail("No outcome matched "+result);
+		}
     }
 
 
@@ -359,7 +315,6 @@ public class OrderingTest
         // E, B, F, noname, C, D
         // E, B, F, noname, D, C
         // E, B, F, D, noname, C
-        //
         String[] outcomes = {"BEFplainCD",
                              "BEFplainDC",
                              "EBFplainCD",
@@ -367,11 +322,13 @@ public class OrderingTest
                              "EBFDplain"};
 
         String orderedNames = "";
-        for (Resource r:orderedList)
-            orderedNames+=(((TestResource)r)._name);
+        for (Resource r:orderedList) {
+			orderedNames+=((TestResource)r)._name;
+		}
 
-        if (!checkResult(orderedNames, outcomes))
-            fail("No outcome matched "+orderedNames);
+        if (!checkResult(orderedNames, outcomes)) {
+			fail("No outcome matched "+orderedNames);
+		}
     }
 
     @Test
@@ -429,12 +386,10 @@ public class OrderingTest
         metaData._webFragmentResourceMap.put(jar4, f4);
         //((RelativeOrdering)metaData._ordering).addNoOthers(f4);
         f4._otherType = FragmentDescriptor.OtherType.None;
-        //
         // p.71-72 possible outcomes are:
         // C,B,D,A
         // C,D,B,A
         // C,B,A,D
-        //
         String[] outcomes = {"CBDA",
                              "CDBA",
                              "CBAD"};
@@ -442,11 +397,13 @@ public class OrderingTest
 
         List<Resource> orderedList = metaData._ordering.order(resources);
         String result = "";
-        for (Resource r:orderedList)
-           result+=(((TestResource)r)._name);
+        for (Resource r:orderedList) {
+			result+=((TestResource)r)._name;
+		}
 
-        if (!checkResult(result, outcomes))
-            fail ("No outcome matched "+result);
+        if (!checkResult(result, outcomes)) {
+			fail ("No outcome matched "+result);
+		}
     }
 
     @Test
@@ -498,11 +455,13 @@ public class OrderingTest
 
         List<Resource> orderedList = metaData._ordering.order(resources);
         String result = "";
-        for (Resource r:orderedList)
-           result+=(((TestResource)r)._name);
+        for (Resource r:orderedList) {
+			result+=((TestResource)r)._name;
+		}
 
-        if (!checkResult(result, outcomes))
-            fail ("No outcome matched "+result);
+        if (!checkResult(result, outcomes)) {
+			fail ("No outcome matched "+result);
+		}
     }
 
     @Test
@@ -618,8 +577,9 @@ public class OrderingTest
         {
             List<Resource> orderedList = metaData._ordering.order(resources);
             String result = "";
-            for (Resource r:orderedList)
-                result +=((TestResource)r)._name;
+            for (Resource r:orderedList) {
+				result +=((TestResource)r)._name;
+			}
             System.err.println("Invalid Result = "+result);
             fail("A and B have an impossible relationship to C");
         }
@@ -633,9 +593,7 @@ public class OrderingTest
     public void testAbsoluteOrdering1 ()
     throws Exception
     {
-        //
         // A,B,C,others
-        //
         List<Resource> resources = new ArrayList<Resource>();
         WebAppContext wac = new WebAppContext();
         MetaData metaData = new MetaData();
@@ -697,11 +655,13 @@ public class OrderingTest
 
         String[] outcomes = {"ABCDEplain"};
         String result = "";
-        for (Resource r:list)
-            result += ((TestResource)r)._name;
+        for (Resource r:list) {
+			result += ((TestResource)r)._name;
+		}
 
-        if (!checkResult(result, outcomes))
-            fail("No outcome matched "+result);
+        if (!checkResult(result, outcomes)) {
+			fail("No outcome matched "+result);
+		}
     }
 
     @Test
@@ -769,12 +729,14 @@ public class OrderingTest
         List<Resource> list = metaData._ordering.order(resources);
         String[] outcomes = {"CBA"};
         String result = "";
-        for (Resource r:list)
-            result += ((TestResource)r)._name;
+        for (Resource r:list) {
+			result += ((TestResource)r)._name;
+		}
 
 
-        if (!checkResult(result, outcomes))
-            fail("No outcome matched "+result);
+        if (!checkResult(result, outcomes)) {
+			fail("No outcome matched "+result);
+		}
     }
 
     @Test
@@ -854,11 +816,13 @@ public class OrderingTest
 
         List<Resource> orderedList = metaData._ordering.order(resources);
         String result = "";
-        for (Resource r:orderedList)
-           result+=(((TestResource)r)._name);
+        for (Resource r:orderedList) {
+			result+=((TestResource)r)._name;
+		}
 
-        if (!checkResult(result, outcomes))
-            fail ("No outcome matched "+result);
+        if (!checkResult(result, outcomes)) {
+			fail ("No outcome matched "+result);
+		}
     }
 
     @Test
@@ -892,20 +856,20 @@ public class OrderingTest
         List<Resource> orderedList = metaData._ordering.order(resources);
         String[] outcomes = {"plainBplainCA"};
         String result = "";
-        for (Resource r:orderedList)
-           result+=(((TestResource)r)._name);
+        for (Resource r:orderedList) {
+			result+=((TestResource)r)._name;
+		}
         
-        if (!checkResult(result, outcomes))
-            fail ("No outcome matched "+result);
+        if (!checkResult(result, outcomes)) {
+			fail ("No outcome matched "+result);
+		}
     }
     
     @Test
     public void testAbsoluteOrderingWithPlainJars()
     throws Exception
     {
-        //
         // A,B,C,others
-        //
         List<Resource> resources = new ArrayList<Resource>();
         WebAppContext wac = new WebAppContext();
         MetaData metaData = new MetaData();
@@ -974,11 +938,13 @@ public class OrderingTest
 
         String[] outcomes = {"ABCDEplainplain1plain2"};
         String result = "";
-        for (Resource r:list)
-            result += ((TestResource)r)._name;
+        for (Resource r:list) {
+			result += ((TestResource)r)._name;
+		}
 
-        if (!checkResult(result, outcomes))
-            fail("No outcome matched "+result);
+        if (!checkResult(result, outcomes)) {
+			fail("No outcome matched "+result);
+		}
     }
 
 
@@ -988,8 +954,9 @@ public class OrderingTest
         boolean matched = false;
         for (String s:outcomes)
         {
-            if (s.equals(result))
-                matched = true;
+            if (s.equals(result)) {
+				matched = true;
+			}
         }
         return matched;
     }

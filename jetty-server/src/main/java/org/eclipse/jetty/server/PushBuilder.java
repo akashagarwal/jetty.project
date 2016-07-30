@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 
@@ -74,7 +69,7 @@ public interface PushBuilder
      * @param method the method to be used for the push.  
      * @return this builder.
      */
-    public abstract PushBuilder method(String method);
+    PushBuilder method(String method);
     
     /** Set the query string to be used for the push.  
      * Defaults to the requests query string.
@@ -85,7 +80,7 @@ public interface PushBuilder
      * @param  queryString the query string to be used for the push. 
      * @return this builder.
      */
-    public abstract PushBuilder queryString(String queryString);
+    PushBuilder queryString(String queryString);
     
     /** Set the SessionID to be used for the push.
      * The session ID will be set in the same way it was on the associated request (ie
@@ -96,7 +91,7 @@ public interface PushBuilder
      * @param sessionId the SessionID to be used for the push.
      * @return this builder.
      */
-    public abstract PushBuilder sessionId(String sessionId);
+    PushBuilder sessionId(String sessionId);
     
     /** Set if the request is to be conditional.
      * If the request is conditional, any available values from {@link #etag(String)} or 
@@ -106,21 +101,21 @@ public interface PushBuilder
      * @param  conditional true if the push request is conditional
      * @return this builder.
      */
-    public abstract PushBuilder conditional(boolean conditional);
+    PushBuilder conditional(boolean conditional);
     
     /** Set a header to be used for the push.  
      * @param name The header name to set
      * @param value The header value to set
      * @return this builder.
      */
-    public abstract PushBuilder setHeader(String name, String value);
+    PushBuilder setHeader(String name, String value);
     
     /** Add a header to be used for the push.  
      * @param name The header name to add
      * @param value The header value to add
      * @return this builder.
      */
-    public abstract PushBuilder addHeader(String name, String value);
+    PushBuilder addHeader(String name, String value);
     
     /** Set the URI path to be used for the push.  
      * The path may start with "/" in which case it is treated as an
@@ -132,7 +127,7 @@ public interface PushBuilder
      * query string.
      * @return this builder.
      */
-    public abstract PushBuilder path(String path);
+    PushBuilder path(String path);
     
     /** Set the etag to be used for conditional pushes.  
      * The etag will be used only if {@link #isConditional()} is true.
@@ -141,7 +136,7 @@ public interface PushBuilder
      * @param etag the etag to be used for the push.
      * @return this builder.
      */
-    public abstract PushBuilder etag(String etag);
+    PushBuilder etag(String etag);
 
     /** Set the last modified date to be used for conditional pushes.  
      * The last modified date will be used only if {@link #isConditional()} is true.
@@ -150,7 +145,7 @@ public interface PushBuilder
      * @param lastModified the last modified date to be used for the push.
      * @return this builder.
      * */
-    public abstract PushBuilder lastModified(String lastModified);
+    PushBuilder lastModified(String lastModified);
 
 
     /** Push a resource.
@@ -164,21 +159,21 @@ public interface PushBuilder
      * other fields are left as is for possible reuse in another push.
      * @throws IllegalArgumentException if the method set expects a request body (eg POST)
      */
-    public abstract void push();
+    void push();
     
     
     
     
     
-    public abstract String getMethod();
-    public abstract String getQueryString();
-    public abstract String getSessionId();
-    public abstract boolean isConditional();
-    public abstract Set<String> getHeaderNames();
-    public abstract String getHeader(String name);
-    public abstract String getPath();
-    public abstract String getEtag();
-    public abstract String getLastModified();
+    String getMethod();
+    String getQueryString();
+    String getSessionId();
+    boolean isConditional();
+    Set<String> getHeaderNames();
+    String getHeader(String name);
+    String getPath();
+    String getEtag();
+    String getLastModified();
 
 
 

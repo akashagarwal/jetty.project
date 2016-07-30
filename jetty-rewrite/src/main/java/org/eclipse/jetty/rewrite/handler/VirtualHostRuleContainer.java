@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.rewrite.handler;
 
@@ -29,7 +24,7 @@ import org.eclipse.jetty.util.ArrayUtil;
  * Groups rules that apply only to a specific virtual host
  * or sets of virtual hosts
  * 
- *  
+ *.  
  */
 
 public class VirtualHostRuleContainer extends RuleContainer
@@ -50,8 +45,9 @@ public class VirtualHostRuleContainer extends RuleContainer
         else 
         {
             _virtualHosts = new String[virtualHosts.length];
-            for ( int i = 0; i < virtualHosts.length; i++ )
-                _virtualHosts[i] = normalizeHostname( virtualHosts[i]);
+            for ( int i = 0; i < virtualHosts.length; i++ ) {
+				_virtualHosts[i] = normalizeHostname( virtualHosts[i]);
+			}
         }
     }
 
@@ -76,7 +72,7 @@ public class VirtualHostRuleContainer extends RuleContainer
     }
 
     /**
-     * Process the contained rules if the request is applicable to the virtual hosts of this rule
+     * Process the contained rules if the request is applicable to the virtual hosts of this rule.
      * @param target target field to pass on to the contained rules
      * @param request request object to pass on to the contained rules
      * @param response response object to pass on to the contained rules
@@ -90,8 +86,9 @@ public class VirtualHostRuleContainer extends RuleContainer
             for( String ruleHost : _virtualHosts )
             {
                 if(ruleHost == null || ruleHost.equalsIgnoreCase(requestHost)
-                        || (ruleHost.startsWith("*.") && ruleHost.regionMatches(true,2,requestHost,requestHost.indexOf(".")+1,ruleHost.length()-2)))
-                    return apply(target, request, response);
+                        || (ruleHost.startsWith("*.") && ruleHost.regionMatches(true,2,requestHost,requestHost.indexOf(".")+1,ruleHost.length()-2))) {
+					return apply(target, request, response);
+				}
             }
         }
         else
@@ -101,14 +98,16 @@ public class VirtualHostRuleContainer extends RuleContainer
         return null;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     private String normalizeHostname( String host )
     {
-        if ( host == null )
-            return null;
+        if ( host == null ) {
+			return null;
+		}
         
-        if ( host.endsWith( "." ) )
-            return host.substring( 0, host.length() -1);
+        if ( host.endsWith( "." ) ) {
+			return host.substring( 0, host.length() -1);
+		}
       
             return host;
     }

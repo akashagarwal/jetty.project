@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 
@@ -95,12 +90,14 @@ public abstract class AbstractConnectionFactory extends ContainerLifeCycle imple
         if (connector instanceof ContainerLifeCycle)
         {
             ContainerLifeCycle aggregate = (ContainerLifeCycle)connector;
-            for (Connection.Listener listener : aggregate.getBeans(Connection.Listener.class))
-                connection.addListener(listener);
+            for (Connection.Listener listener : aggregate.getBeans(Connection.Listener.class)) {
+				connection.addListener(listener);
+			}
         }
         // Add Connection.Listeners from this factory
-        for (Connection.Listener listener : getBeans(Connection.Listener.class))
-            connection.addListener(listener);
+        for (Connection.Listener listener : getBeans(Connection.Listener.class)) {
+			connection.addListener(listener);
+		}
 
         return connection;
     }
@@ -108,23 +105,25 @@ public abstract class AbstractConnectionFactory extends ContainerLifeCycle imple
     @Override
     public String toString()
     {
-        return String.format("%s@%x%s",this.getClass().getSimpleName(),hashCode(),getProtocols());
+        return String.format("%s@%x%s",getClass().getSimpleName(),hashCode(),getProtocols());
     }
 
     public static ConnectionFactory[] getFactories(SslContextFactory sslContextFactory, ConnectionFactory... factories)
     {
         factories=ArrayUtil.removeNulls(factories);
 
-        if (sslContextFactory==null)
-            return factories;
+        if (sslContextFactory==null) {
+			return factories;
+		}
 
         for (ConnectionFactory factory : factories)
         {
             if (factory instanceof HttpConfiguration.ConnectionFactory)
             {
                 HttpConfiguration config = ((HttpConfiguration.ConnectionFactory)factory).getHttpConfiguration();
-                if (config.getCustomizer(SecureRequestCustomizer.class)==null)
-                    config.addCustomizer(new SecureRequestCustomizer());
+                if (config.getCustomizer(SecureRequestCustomizer.class)==null) {
+					config.addCustomizer(new SecureRequestCustomizer());
+				}
             }
         }
         return ArrayUtil.prependToArray(new SslConnectionFactory(sslContextFactory,factories[0].getProtocol()),factories,ConnectionFactory.class);

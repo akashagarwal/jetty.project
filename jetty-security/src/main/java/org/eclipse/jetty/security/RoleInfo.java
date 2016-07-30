@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.security;
 
@@ -39,7 +34,7 @@ public class RoleInfo
     private UserDataConstraint _userDataConstraint;
 
     /**
-     * List of permitted roles
+     * List of permitted roles.
      */
     private final Set<String> _roles = new CopyOnWriteArraySet<String>();
 
@@ -90,8 +85,9 @@ public class RoleInfo
     public void setAnyRole(boolean anyRole)
     {
         this._isAnyRole=anyRole;
-        if (anyRole)
-            _checked = true;
+        if (anyRole) {
+			_checked = true;
+		}
     }
     
     public boolean isAnyAuth ()
@@ -102,8 +98,9 @@ public class RoleInfo
     public void setAnyAuth(boolean anyAuth)
     {
         this._isAnyAuth=anyAuth;
-        if (anyAuth)
-            _checked = true;
+        if (anyAuth) {
+			_checked = true;
+		}
     }
 
     public UserDataConstraint getUserDataConstraint()
@@ -113,15 +110,17 @@ public class RoleInfo
 
     public void setUserDataConstraint(UserDataConstraint userDataConstraint)
     {
-        if (userDataConstraint == null) throw new NullPointerException("Null UserDataConstraint");
-        if (this._userDataConstraint == null)
+        if (userDataConstraint == null) {
+			throw new NullPointerException("Null UserDataConstraint");
+		}
+        if (this._userDataConstraint != null)
         {
            
-            this._userDataConstraint = userDataConstraint;
+            this._userDataConstraint = this._userDataConstraint.combine(userDataConstraint);
         }
         else
         {
-            this._userDataConstraint = this._userDataConstraint.combine(userDataConstraint);
+            this._userDataConstraint = userDataConstraint;
         }
     }
 
@@ -137,18 +136,17 @@ public class RoleInfo
 
     public void combine(RoleInfo other)
     {
-        if (other._forbidden)
-            setForbidden(true);
-        else if (!other._checked) // TODO is this the right way around???
-            setChecked(true);
-        else if (other._isAnyRole)
-            setAnyRole(true);
-        else if (other._isAnyAuth)
-            setAnyAuth(true);
-        else if (!_isAnyRole)
+        if (other._forbidden) {
+			setForbidden(true);
+		} else if (!other._checked) {
+			setChecked(true);
+		} else if (other._isAnyRole) {
+			setAnyRole(true);
+		} else if (other._isAnyAuth) {
+			setAnyAuth(true);
+		} else if (!_isAnyRole)
         {
-            for (String r : other._roles)
-                _roles.add(r);
+            _roles.addAll(other._roles);
         }
         
         setUserDataConstraint(other._userDataConstraint);

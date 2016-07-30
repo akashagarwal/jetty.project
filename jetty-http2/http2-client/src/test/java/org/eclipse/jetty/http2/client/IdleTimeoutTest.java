@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 
 package org.eclipse.jetty.http2.client;
@@ -78,8 +73,9 @@ public class IdleTimeoutTest extends AbstractTest
             @Override
             public void onClose(Session session, GoAwayFrame frame)
             {
-                if (session.isClosed() && ((HTTP2Session)session).isDisconnected())
-                    latch.countDown();
+                if (session.isClosed() && ((HTTP2Session)session).isDisconnected()) {
+					latch.countDown();
+				}
             }
         });
 
@@ -117,8 +113,9 @@ public class IdleTimeoutTest extends AbstractTest
             @Override
             public void onClose(Session session, GoAwayFrame frame)
             {
-                if (session.isClosed() && ((HTTP2Session)session).isDisconnected())
-                    latch.countDown();
+                if (session.isClosed() && ((HTTP2Session)session).isDisconnected()) {
+					latch.countDown();
+				}
             }
         });
 
@@ -213,8 +210,9 @@ public class IdleTimeoutTest extends AbstractTest
             @Override
             public void onClose(Session session, GoAwayFrame frame)
             {
-                if (session.isClosed() && ((HTTP2Session)session).isDisconnected())
-                    closeLatch.countDown();
+                if (session.isClosed() && ((HTTP2Session)session).isDisconnected()) {
+					closeLatch.countDown();
+				}
             }
         });
         client.setIdleTimeout(idleTimeout);
@@ -251,8 +249,9 @@ public class IdleTimeoutTest extends AbstractTest
             @Override
             public void onClose(Session session, GoAwayFrame frame)
             {
-                if (session.isClosed() && ((HTTP2Session)session).isDisconnected())
-                    closeLatch.countDown();
+                if (session.isClosed() && ((HTTP2Session)session).isDisconnected()) {
+					closeLatch.countDown();
+				}
             }
         });
         client.setIdleTimeout(idleTimeout);
@@ -541,8 +540,9 @@ public class IdleTimeoutTest extends AbstractTest
                 {
                     int read = input.read(buffer);
                     Log.getLogger(IdleTimeoutTest.class).info("Read {} bytes", read);
-                    if (read < 0)
-                        break;
+                    if (read < 0) {
+						break;
+					}
                     sleep(delay);
                 }
             }
@@ -559,8 +559,9 @@ public class IdleTimeoutTest extends AbstractTest
             @Override
             public void onHeaders(Stream stream, HeadersFrame frame)
             {
-                if (frame.isEndStream())
-                    latch.countDown();
+                if (frame.isEndStream()) {
+					latch.countDown();
+				}
             }
         });
         Stream stream = promise.get(5, TimeUnit.SECONDS);

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.servlets;
 
@@ -74,8 +69,9 @@ public class ThreadStarvationTest
     @After
     public void dispose() throws Exception
     {
-        if (_server != null)
-            _server.stop();
+        if (_server != null) {
+			_server.stop();
+		}
     }
 
     @Test
@@ -98,8 +94,9 @@ public class ThreadStarvationTest
             Arrays.fill(chunk,(byte)'X');
             chunk[chunk.length-2]='\r';
             chunk[chunk.length-1]='\n';
-            for (int i = 0; i < 256 * 1024; ++i)
-                output.write(chunk);
+            for (int i = 0; i < 256 * 1024; ++i) {
+				output.write(chunk);
+			}
         }
 
         final CountDownLatch writePending = new CountDownLatch(1);
@@ -135,10 +132,7 @@ public class ThreadStarvationTest
             Socket socket = new Socket("localhost", connector.getLocalPort());
             sockets.add(socket);
             OutputStream output = socket.getOutputStream();
-            String request = "" +
-                    "GET /" + resourceName + " HTTP/1.1\r\n" +
-                    "Host: localhost\r\n" +
-                    "\r\n";
+            String request = "GET /" + resourceName + " HTTP/1.1\r\n" + "Host: localhost\r\n" + "\r\n";
             output.write(request.getBytes(StandardCharsets.UTF_8));
             output.flush();
             Thread.sleep(100);
@@ -170,32 +164,37 @@ public class ThreadStarvationTest
                         while (state<4 && header.length()<2048)
                         {
                             int ch=input.read();
-                            if (ch<0)
-                                break;
+                            if (ch<0) {
+								break;
+							}
                             header.append((char)ch);
                             switch(state)
                             {
                                 case 0:
-                                    if (ch=='\r')
-                                        state=1;
+                                    if (ch=='\r') {
+										state=1;
+									}
                                     break;
                                 case 1:
-                                    if (ch=='\n')
-                                        state=2;
-                                    else
-                                        state=0;
+                                    if (ch=='\n') {
+										state=2;
+									} else {
+										state=0;
+									}
                                     break;
                                 case 2:
-                                    if (ch=='\r')
-                                        state=3;
-                                    else
-                                        state=0;
+                                    if (ch=='\r') {
+										state=3;
+									} else {
+										state=0;
+									}
                                     break;
                                 case 3:
-                                    if (ch=='\n')
-                                        state=4;
-                                    else
-                                        state=0;
+                                    if (ch=='\n') {
+										state=4;
+									} else {
+										state=0;
+									}
                                     break;
                             }
                         }
@@ -203,8 +202,9 @@ public class ThreadStarvationTest
                         while (total<expected)
                         {
                             int read=input.read(buffer);
-                            if (read<0)
-                                break;
+                            if (read<0) {
+								break;
+							}
                             total+=read;
                         }
                     }
@@ -234,8 +234,9 @@ public class ThreadStarvationTest
         }
         
         // We could read everything, good.
-        for (Socket socket : sockets)
-            socket.close();
+        for (Socket socket : sockets) {
+			socket.close();
+		}
     }
     
     @Test
@@ -310,11 +311,8 @@ public class ThreadStarvationTest
                 Socket socket = new Socket("localhost", connector.getLocalPort());
                 sockets.add(socket);
                 OutputStream output = socket.getOutputStream();
-                String request = "" +
-                        "GET / HTTP/1.1\r\n" +
-                        "Host: localhost\r\n" +
-                        //                    "Connection: close\r\n" +
-                        "\r\n";
+                String request = "GET / HTTP/1.1\r\n" + "Host: localhost\r\n" + //                    "Connection: close\r\n" +
+				"\r\n";
                 output.write(request.getBytes(StandardCharsets.UTF_8));
                 output.flush();
             }
@@ -342,32 +340,37 @@ public class ThreadStarvationTest
                             while (state<4 && header.length()<2048)
                             {
                                 int ch=input.read();
-                                if (ch<0)
-                                    break;
+                                if (ch<0) {
+									break;
+								}
                                 header.append((char)ch);
                                 switch(state)
                                 {
                                     case 0:
-                                        if (ch=='\r')
-                                            state=1;
+                                        if (ch=='\r') {
+											state=1;
+										}
                                         break;
                                     case 1:
-                                        if (ch=='\n')
-                                            state=2;
-                                        else
-                                            state=0;
+                                        if (ch=='\n') {
+											state=2;
+										} else {
+											state=0;
+										}
                                         break;
                                     case 2:
-                                        if (ch=='\r')
-                                            state=3;
-                                        else
-                                            state=0;
+                                        if (ch=='\r') {
+											state=3;
+										} else {
+											state=0;
+										}
                                         break;
                                     case 3:
-                                        if (ch=='\n')
-                                            state=4;
-                                        else
-                                            state=0;
+                                        if (ch=='\n') {
+											state=4;
+										} else {
+											state=0;
+										}
                                         break;
                                 }
                             }
@@ -400,8 +403,9 @@ public class ThreadStarvationTest
             }
 
             // We could read everything, good.
-            for (Socket socket : sockets)
-                socket.close();
+            for (Socket socket : sockets) {
+				socket.close();
+			}
             
             _server.stop();
         }

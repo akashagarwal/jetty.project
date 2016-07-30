@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.nosql.mongodb;
 
@@ -52,9 +47,7 @@ public class IdleSessionTest
 
     public MongoTestServer createServer(int port, int max, int scavenge)
     {
-        MongoTestServer server =  new MongoTestServer(port,max,scavenge);
-
-        return server;
+        return new MongoTestServer(port,max,scavenge);
     }
     
 
@@ -157,7 +150,7 @@ public class IdleSessionTest
             checkSessionIdle();
 
             //wait until the session should be expired
-            pause (inactivePeriod + (inactivePeriod/2));
+            pause (inactivePeriod + inactivePeriod/2);
             
             //make a request to try and deidle the session
             //make another request to de-idle the session
@@ -197,9 +190,9 @@ public class IdleSessionTest
     
     public static class TestServlet extends HttpServlet
     {
-        public String originalId = null;
+        public String originalId;
         
-        public HttpSession _session = null;
+        public HttpSession _session;
 
         @Override
         protected void doGet(HttpServletRequest request, HttpServletResponse httpServletResponse) throws ServletException, IOException
@@ -208,7 +201,7 @@ public class IdleSessionTest
             if ("init".equals(action))
             {
                 HttpSession session = request.getSession(true);
-                session.setAttribute("value", new Integer(1));
+                session.setAttribute("value", Integer.valueOf(1));
                 originalId = session.getId();
                 assertTrue(!((NoSqlSession)session).isIdle());
                 _session = session;
@@ -221,7 +214,7 @@ public class IdleSessionTest
                 assertTrue(!((NoSqlSession)session).isIdle());
                 Integer v = (Integer)session.getAttribute("value");
                 assertNotNull(v);
-                session.setAttribute("value", new Integer(v.intValue()+1));
+                session.setAttribute("value", Integer.valueOf(v.intValue()+1));
             }
             else if ("testfail".equals(action))
             {

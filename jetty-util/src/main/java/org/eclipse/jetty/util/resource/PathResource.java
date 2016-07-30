@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util.resource;
 
@@ -51,8 +46,8 @@ import org.eclipse.jetty.util.log.Logger;
 public class PathResource extends Resource
 {
     private static final Logger LOG = Log.getLogger(PathResource.class);
-    private final static LinkOption NO_FOLLOW_LINKS[] = new LinkOption[] { LinkOption.NOFOLLOW_LINKS };
-    private final static LinkOption FOLLOW_LINKS[] = new LinkOption[] {};
+    private static final LinkOption NO_FOLLOW_LINKS[] = new LinkOption[] { LinkOption.NOFOLLOW_LINKS };
+    private static final LinkOption FOLLOW_LINKS[] = new LinkOption[] {};
     
     private final Path path;
     private final Path alias;
@@ -83,8 +78,9 @@ public class PathResource extends Resource
 
         try
         {
-            if (Files.isSymbolicLink(path))
-                return path.getParent().resolve(Files.readSymbolicLink(path));
+            if (Files.isSymbolicLink(path)) {
+				return path.getParent().resolve(Files.readSymbolicLink(path));
+			}
             if (Files.exists(path))
             {
                 Path real = abs.toRealPath(FOLLOW_LINKS);
@@ -189,7 +185,7 @@ public class PathResource extends Resource
 
     /**
      * Construct a new PathResource from a parent PathResource
-     * and child sub path
+     * and child sub path.
      *
      * @param parent the parent path resource
      * @param childPath the child sub path
@@ -201,8 +197,9 @@ public class PathResource extends Resource
         // obtained via URIUtil.addDecodedPath(uri,childPath)
 
         this.path = parent.path.getFileSystem().getPath(parent.path.toString(), childPath);
-        if (isDirectory() &&!childPath.endsWith("/"))
-            childPath+="/";
+        if (isDirectory() &&!childPath.endsWith("/")) {
+			childPath+="/";
+		}
         this.uri = URIUtil.addDecodedPath(parent.uri,childPath);
         this.alias = checkAliasPath();
     }
@@ -222,7 +219,7 @@ public class PathResource extends Resource
             throw new IllegalArgumentException("not an absolute uri");
         }
 
-        if (!uri.getScheme().equalsIgnoreCase("file"))
+        if (!"file".equalsIgnoreCase(uri.getScheme()))
         {
             throw new IllegalArgumentException("not file: scheme");
         }
@@ -280,11 +277,13 @@ public class PathResource extends Resource
     {
         String cpath = URIUtil.canonicalPath(subpath);
 
-        if ((cpath == null) || (cpath.length() == 0))
-            throw new MalformedURLException(subpath);
+        if (cpath == null || cpath.length() == 0) {
+			throw new MalformedURLException(subpath);
+		}
 
-        if ("/".equals(cpath))
-            return this;
+        if ("/".equals(cpath)) {
+			return this;
+		}
 
         // subpaths are always under PathResource
         // compensate for input subpaths like "/subdir"
@@ -382,8 +381,9 @@ public class PathResource extends Resource
          * usage of java.io.FileInputStream(File) which will trigger
          * an IOException on construction if the path is a directory
          */
-        if (Files.isDirectory(path))
-            throw new IOException(path + " is a directory");
+        if (Files.isDirectory(path)) {
+			throw new IOException(path + " is a directory");
+		}
 
         return Files.newInputStream(path,StandardOpenOption.READ);
     }
@@ -424,8 +424,7 @@ public class PathResource extends Resource
     {
         final int prime = 31;
         int result = 1;
-        result = (prime * result) + ((path == null)?0:path.hashCode());
-        return result;
+        return prime * result + ((path == null)?0:path.hashCode());
     }
 
     @Override

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 
 package org.eclipse.jetty.embedded;
@@ -60,9 +55,7 @@ import org.eclipse.jetty.servlets.PushSessionCacheFilter;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 
 
-/* ------------------------------------------------------------ */
-/**
- */
+/** ------------------------------------------------------------. */
 public class Http2Server
 {
     public static void main(String... args) throws Exception
@@ -165,13 +158,15 @@ public class Http2Server
         protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
         {
             String code=request.getParameter("code");
-            if (code!=null)
-                response.setStatus(Integer.parseInt(code));
+            if (code!=null) {
+				response.setStatus(Integer.parseInt(code));
+			}
 
             HttpSession session = request.getSession(true);
-            if (session.isNew())
-                response.addCookie(new Cookie("bigcookie",
+            if (session.isNew()) {
+				response.addCookie(new Cookie("bigcookie",
                 "This is a test cookies that was created on "+new Date()+" and is used by the jetty http/2 test servlet."));
+			}
             response.setHeader("Custom","Value");
             response.setContentType("text/plain");
             String content = "Hello from Jetty using "+request.getProtocol() +"\n";
@@ -180,9 +175,11 @@ public class Http2Server
             content+="date="+new Date()+"\n";
             
 	    Cookie[] cookies = request.getCookies();
-	    if (cookies!=null && cookies.length>0)
-		for (Cookie c : cookies)
-		    content+="cookie "+c.getName()+"="+c.getValue()+"\n";
+	    if (cookies!=null && cookies.length>0) {
+			for (Cookie c : cookies) {
+				content+="cookie "+c.getName()+"="+c.getValue()+"\n";
+			}
+		}
             
             response.setContentLength(content.length());
             response.getOutputStream().print(content);

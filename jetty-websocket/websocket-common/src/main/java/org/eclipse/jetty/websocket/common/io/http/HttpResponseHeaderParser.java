@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.common.io.http;
 
@@ -68,28 +63,24 @@ public class HttpResponseHeaderParser
 
     public boolean isDone()
     {
-        return (state == State.END);
+        return state == State.END;
     }
 
     public HttpResponseHeaderParseListener parse(ByteBuffer buf) throws ParseException
     {
-        while (!isDone() && (buf.remaining() > 0))
+        while (!isDone() && buf.remaining() > 0)
         {
             String line = lineParser.parse(buf);
-            if (line != null)
-            {
-                if (parseHeader(line))
-                {
-                    // Now finished with parsing the entire response header
-                    // Save the remaining bytes for WebSocket to process.
-                    
-                    ByteBuffer copy = ByteBuffer.allocate(buf.remaining());
-                    BufferUtil.put(buf,copy);
-                    BufferUtil.flipToFlush(copy,0);
-                    this.listener.setRemainingBuffer(copy);
-                    return listener;
-                }
-            }
+            if (line != null && parseHeader(line)) {
+			    // Now finished with parsing the entire response header
+			    // Save the remaining bytes for WebSocket to process.
+			    
+			    ByteBuffer copy = ByteBuffer.allocate(buf.remaining());
+			    BufferUtil.put(buf,copy);
+			    BufferUtil.flipToFlush(copy,0);
+			    this.listener.setRemainingBuffer(copy);
+			    return listener;
+			}
         }
         return null;
     }

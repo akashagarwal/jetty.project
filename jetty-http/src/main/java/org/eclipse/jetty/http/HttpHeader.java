@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http;
 
@@ -126,14 +121,15 @@ public enum HttpHeader
     UNKNOWN("::UNKNOWN::");
 
 
-    /* ------------------------------------------------------------ */
-    public final static Trie<HttpHeader> CACHE= new ArrayTrie<>(560);
+    /** ------------------------------------------------------------. */
+    public static final Trie<HttpHeader> CACHE= new ArrayTrie<>(560);
     static
     {
-        for (HttpHeader header : HttpHeader.values())
-            if (header!=UNKNOWN)
-                if (!CACHE.put(header.toString(),header))
-                    throw new IllegalStateException();
+        for (HttpHeader header : HttpHeader.values()) {
+			if (header!=UNKNOWN && !CACHE.put(header.toString(),header)) {
+				throw new IllegalStateException();
+			}
+		}
     }
     
     private final String _string;
@@ -141,7 +137,7 @@ public enum HttpHeader
     private final byte[] _bytesColonSpace;
     private final ByteBuffer _buffer;
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     HttpHeader(String s)
     {
         _string=s;
@@ -150,37 +146,37 @@ public enum HttpHeader
         _buffer=ByteBuffer.wrap(_bytes);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public ByteBuffer toBuffer()
     {
         return _buffer.asReadOnlyBuffer();
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public byte[] getBytes()
     {
         return _bytes;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public byte[] getBytesColonSpace()
     {
         return _bytesColonSpace;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public boolean is(String s)
     {
         return _string.equalsIgnoreCase(s);    
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public String asString()
     {
         return _string;
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public String toString()
     {

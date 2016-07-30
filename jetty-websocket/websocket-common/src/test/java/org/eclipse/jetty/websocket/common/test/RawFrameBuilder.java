@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.common.test;
 
@@ -42,7 +37,7 @@ public class RawFrameBuilder
         if (mask != null)
         {
             Assert.assertThat("Mask.length",mask.length,is(4));
-            putLength(buf,length,(mask != null));
+            putLength(buf,length,mask != null);
             buf.put(mask);
         }
         else
@@ -70,7 +65,7 @@ public class RawFrameBuilder
         {
             throw new IllegalArgumentException("Length cannot be negative");
         }
-        byte b = (masked?(byte)0x80:0x00);
+        byte b = masked?(byte)0x80:0x00;
 
         // write the uncompressed length
         if (length > 0xFF_FF)

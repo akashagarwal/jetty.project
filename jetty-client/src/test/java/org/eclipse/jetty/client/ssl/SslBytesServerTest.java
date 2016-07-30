@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.client.ssl;
 
@@ -129,8 +124,9 @@ public class SslBytesServerTest extends SslBytesTest
                     protected boolean onReadTimeout()
                     {
                         final Runnable idleHook = SslBytesServerTest.this.idleHook;
-                        if (idleHook != null)
-                            idleHook.run();
+                        if (idleHook != null) {
+							idleHook.run();
+						}
                         return super.onReadTimeout();
                     }
                 }, connector, endPoint);
@@ -200,18 +196,21 @@ public class SslBytesServerTest extends SslBytesTest
                         while (length > 0)
                         {
                             int read = input.read(buffer);
-                            if (read < 0)
-                                throw new EOFException();
+                            if (read < 0) {
+								throw new EOFException();
+							}
                             length -= read;
-                            if (target.startsWith("/echo"))
-                                output.write(buffer, 0, read);
+                            if (target.startsWith("/echo")) {
+								output.write(buffer, 0, read);
+							}
                         }
                     }
                 }
                 catch (IOException x)
                 {
-                    if (!(target.endsWith("suppress_exception")))
-                        throw x;
+                    if (!target.endsWith("suppress_exception")) {
+						throw x;
+					}
                 }
             }
         });
@@ -228,12 +227,15 @@ public class SslBytesServerTest extends SslBytesTest
     @After
     public void destroy() throws Exception
     {
-        if (proxy != null)
-            proxy.stop();
-        if (server != null)
-            server.stop();
-        if (threadPool != null)
-            threadPool.shutdownNow();
+        if (proxy != null) {
+			proxy.stop();
+		}
+        if (server != null) {
+			server.stop();
+		}
+        if (threadPool != null) {
+			threadPool.shutdownNow();
+		}
     }
 
     @Test(timeout=10000)
@@ -625,8 +627,9 @@ public class SslBytesServerTest extends SslBytesTest
         Assert.assertTrue(line.startsWith("HTTP/1.1 200 "));
         while ((line = reader.readLine()) != null)
         {
-            if (line.trim().length() == 0)
-                break;
+            if (line.trim().length() == 0) {
+				break;
+			}
         }
 
         // Check that we did not spin
@@ -651,8 +654,9 @@ public class SslBytesServerTest extends SslBytesTest
 
         // Client Hello
         TLSRecord record = proxy.readFromClient();
-        for (byte b : record.getBytes())
-            proxy.flushToServer(5, b);
+        for (byte b : record.getBytes()) {
+			proxy.flushToServer(5, b);
+		}
 
         // Server Hello + Certificate + Server Done
         record = proxy.readFromServer();
@@ -660,18 +664,21 @@ public class SslBytesServerTest extends SslBytesTest
 
         // Client Key Exchange
         record = proxy.readFromClient();
-        for (byte b : record.getBytes())
-            proxy.flushToServer(5,b);
+        for (byte b : record.getBytes()) {
+			proxy.flushToServer(5,b);
+		}
 
         // Change Cipher Spec
         record = proxy.readFromClient();
-        for (byte b : record.getBytes())
-            proxy.flushToServer(5, b);
+        for (byte b : record.getBytes()) {
+			proxy.flushToServer(5, b);
+		}
 
         // Client Done
         record = proxy.readFromClient();
-        for (byte b : record.getBytes())
-            proxy.flushToServer(5, b);
+        for (byte b : record.getBytes()) {
+			proxy.flushToServer(5, b);
+		}
 
         // Change Cipher Spec
         record = proxy.readFromServer();
@@ -696,8 +703,9 @@ public class SslBytesServerTest extends SslBytesTest
 
         // Application data
         record = proxy.readFromClient();
-        for (byte b : record.getBytes())
-            proxy.flushToServer(5, b);
+        for (byte b : record.getBytes()) {
+			proxy.flushToServer(5, b);
+		}
         Assert.assertNull(request.get(1, TimeUnit.SECONDS));
 
         // Application data
@@ -711,8 +719,9 @@ public class SslBytesServerTest extends SslBytesTest
         Assert.assertTrue(line.startsWith("HTTP/1.1 200 "));
         while ((line = reader.readLine()) != null)
         {
-            if (line.trim().length() == 0)
-                break;
+            if (line.trim().length() == 0) {
+				break;
+			}
         }
 
         // Check that we did not spin
@@ -727,8 +736,9 @@ public class SslBytesServerTest extends SslBytesTest
 
         // Close Alert
         record = proxy.readFromClient();
-        for (byte b : record.getBytes())
-            proxy.flushToServer(5, b);
+        for (byte b : record.getBytes()) {
+			proxy.flushToServer(5, b);
+		}
         // Socket close
         record = proxy.readFromClient();
         Assert.assertNull(String.valueOf(record), record);
@@ -1234,8 +1244,9 @@ public class SslBytesServerTest extends SslBytesTest
         Assert.assertTrue(line.startsWith("HTTP/1.1 200 "));
         while ((line = reader.readLine()) != null)
         {
-            if (line.trim().length() == 0)
-                break;
+            if (line.trim().length() == 0) {
+				break;
+			}
         }
 
         // Check that we did not spin
@@ -1307,8 +1318,9 @@ public class SslBytesServerTest extends SslBytesTest
         Assert.assertTrue(line.startsWith("HTTP/1.1 200 "));
         while ((line = reader.readLine()) != null)
         {
-            if (line.trim().length() == 0)
-                break;
+            if (line.trim().length() == 0) {
+				break;
+			}
         }
 
         // Check that we did not spin
@@ -1320,7 +1332,7 @@ public class SslBytesServerTest extends SslBytesTest
         closeClient(client);
     }
 
-    // TODO work out why this test frequently fails
+    /** TODO work out why this test frequently fails. */
     @Ignore
     @Test(timeout=10000)
     public void testRequestWithContentWithRenegotiationInMiddleOfContentWhenRenegotiationIsForbidden() throws Exception
@@ -1345,13 +1357,7 @@ public class SslBytesServerTest extends SslBytesTest
 
         // Write only part of the body
         automaticProxyFlow = proxy.startAutomaticFlow();
-        clientOutput.write(("" +
-                "POST / HTTP/1.1\r\n" +
-                "Host: localhost\r\n" +
-                "Content-Type: text/plain\r\n" +
-                "Content-Length: " + (content1.length() + content2.length()) + "\r\n" +
-                "\r\n" +
-                content1).getBytes(StandardCharsets.UTF_8));
+        clientOutput.write(("POST / HTTP/1.1\r\n" + "Host: localhost\r\n" + "Content-Type: text/plain\r\n" + "Content-Length: " + (content1.length() + content2.length()) + "\r\n" + "\r\n" + content1).getBytes(StandardCharsets.UTF_8));
         clientOutput.flush();
         Assert.assertTrue(automaticProxyFlow.stop(5, TimeUnit.SECONDS));
 
@@ -1429,13 +1435,7 @@ public class SslBytesServerTest extends SslBytesTest
 
         // Write only part of the body
         automaticProxyFlow = proxy.startAutomaticFlow();
-        clientOutput.write(("" +
-                "POST / HTTP/1.1\r\n" +
-                "Host: localhost\r\n" +
-                "Content-Type: text/plain\r\n" +
-                "Content-Length: " + (content1.length() + content2.length()) + "\r\n" +
-                "\r\n" +
-                content1).getBytes(StandardCharsets.UTF_8));
+        clientOutput.write(("POST / HTTP/1.1\r\n" + "Host: localhost\r\n" + "Content-Type: text/plain\r\n" + "Content-Length: " + (content1.length() + content2.length()) + "\r\n" + "\r\n" + content1).getBytes(StandardCharsets.UTF_8));
         clientOutput.flush();
         Assert.assertTrue(automaticProxyFlow.stop(5, TimeUnit.SECONDS));
 
@@ -1520,8 +1520,9 @@ public class SslBytesServerTest extends SslBytesTest
         Assert.assertTrue(line.startsWith("HTTP/1.1 200 "));
         while ((line = reader.readLine()) != null)
         {
-            if (line.trim().length() == 0)
-                break;
+            if (line.trim().length() == 0) {
+				break;
+			}
         }
 
         // Check that we did not spin
@@ -1555,13 +1556,7 @@ public class SslBytesServerTest extends SslBytesTest
 
         // Write only part of the body
         automaticProxyFlow = proxy.startAutomaticFlow();
-        clientOutput.write(("" +
-                "POST / HTTP/1.1\r\n" +
-                "Host: localhost\r\n" +
-                "Content-Type: text/plain\r\n" +
-                "Content-Length: " + (content1.length() + content2.length()) + "\r\n" +
-                "\r\n" +
-                content1).getBytes(StandardCharsets.UTF_8));
+        clientOutput.write(("POST / HTTP/1.1\r\n" + "Host: localhost\r\n" + "Content-Type: text/plain\r\n" + "Content-Length: " + (content1.length() + content2.length()) + "\r\n" + "\r\n" + content1).getBytes(StandardCharsets.UTF_8));
         clientOutput.flush();
         Assert.assertTrue(automaticProxyFlow.stop(5, TimeUnit.SECONDS));
 
@@ -1674,8 +1669,9 @@ public class SslBytesServerTest extends SslBytesTest
         Assert.assertTrue(line.startsWith("HTTP/1.1 200 "));
         while ((line = reader.readLine()) != null)
         {
-            if (line.trim().length() == 0)
-                break;
+            if (line.trim().length() == 0) {
+				break;
+			}
         }
 
         // Check that we did not spin
@@ -1701,14 +1697,7 @@ public class SslBytesServerTest extends SslBytesTest
         Arrays.fill(data, (byte)'Y');
         String content = new String(data, StandardCharsets.UTF_8);
         automaticProxyFlow = proxy.startAutomaticFlow();
-        clientOutput.write(("" +
-                "POST / HTTP/1.1\r\n" +
-                "Host: localhost\r\n" +
-                "Content-Type: text/plain\r\n" +
-                "Content-Length: " + content.length() + "\r\n" +
-                "Connection: close\r\n" +
-                "\r\n" +
-                content).getBytes(StandardCharsets.UTF_8));
+        clientOutput.write(("POST / HTTP/1.1\r\n" + "Host: localhost\r\n" + "Content-Type: text/plain\r\n" + "Content-Length: " + content.length() + "\r\n" + "Connection: close\r\n" + "\r\n" + content).getBytes(StandardCharsets.UTF_8));
         clientOutput.flush();
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(client.getInputStream(), StandardCharsets.UTF_8));
@@ -1717,8 +1706,9 @@ public class SslBytesServerTest extends SslBytesTest
         Assert.assertTrue(line.startsWith("HTTP/1.1 200 "));
         while ((line = reader.readLine()) != null)
         {
-            if (line.trim().length() == 0)
-                break;
+            if (line.trim().length() == 0) {
+				break;
+			}
         }
         Assert.assertTrue(automaticProxyFlow.stop(5, TimeUnit.SECONDS));
 

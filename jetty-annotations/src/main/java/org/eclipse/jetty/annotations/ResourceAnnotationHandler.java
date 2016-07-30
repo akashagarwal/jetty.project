@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.annotations;
 
@@ -62,31 +57,34 @@ public class ResourceAnnotationHandler extends AbstractIntrospectableAnnotationH
             handleClass(clazz);
 
             Method[] methods = clazz.getDeclaredMethods();
-            for (int i=0; i<methods.length; i++)
-                handleMethod(clazz, methods[i]);
+            for (int i=0; i<methods.length; i++) {
+				handleMethod(clazz, methods[i]);
+			}
             Field[] fields = clazz.getDeclaredFields();
             //For each field, get all of it's annotations
-            for (int i=0; i<fields.length; i++)
-                handleField(clazz, fields[i]);
+            for (int i=0; i<fields.length; i++) {
+				handleField(clazz, fields[i]);
+			}
         }
     }
 
      public void handleClass (Class<?> clazz)
      {
-         Resource resource = (Resource)clazz.getAnnotation(Resource.class);
+         Resource resource = clazz.getAnnotation(Resource.class);
          if (resource != null)
          {
              String name = resource.name();
              String mappedName = resource.mappedName();
 
-             if (name==null || name.trim().equals(""))
-                 throw new IllegalStateException ("Class level Resource annotations must contain a name (Common Annotations Spec Section 2.3)");
+             if (name==null || "".equals(name.trim())) {
+				throw new IllegalStateException ("Class level Resource annotations must contain a name (Common Annotations Spec Section 2.3)");
+			}
 
              try
              {
-                 if (!org.eclipse.jetty.plus.jndi.NamingEntryUtil.bindToENC(_context, name,mappedName))
-                     if (!org.eclipse.jetty.plus.jndi.NamingEntryUtil.bindToENC(_context.getServer(), name,mappedName))
-                         throw new IllegalStateException("No resource at "+(mappedName==null?name:mappedName));
+                 if (!org.eclipse.jetty.plus.jndi.NamingEntryUtil.bindToENC(_context, name,mappedName) && !org.eclipse.jetty.plus.jndi.NamingEntryUtil.bindToENC(_context.getServer(), name,mappedName)) {
+					throw new IllegalStateException("No resource at "+(mappedName==null?name:mappedName));
+				}
              }
              catch (NamingException e)
              {
@@ -97,7 +95,7 @@ public class ResourceAnnotationHandler extends AbstractIntrospectableAnnotationH
 
     public void handleField(Class<?> clazz, Field field)
     {
-        Resource resource = (Resource)field.getAnnotation(Resource.class);
+        Resource resource = field.getAnnotation(Resource.class);
         if (resource != null)
         {
             //JavaEE Spec 5.2.3: Field cannot be static
@@ -118,8 +116,8 @@ public class ResourceAnnotationHandler extends AbstractIntrospectableAnnotationH
             String name = clazz.getCanonicalName()+"/"+field.getName();
 
             //allow @Resource name= to override the field name
-            name = (resource.name()!=null && !resource.name().trim().equals("")? resource.name(): name);
-            String mappedName = (resource.mappedName()!=null && !resource.mappedName().trim().equals("")?resource.mappedName():null);
+            name = resource.name()!=null && !"".equals(resource.name().trim())? resource.name(): name;
+            String mappedName = resource.mappedName()!=null && !"".equals(resource.mappedName().trim())?resource.mappedName():null;
             //get the type of the Field
             Class<?> type = field.getType();
 
@@ -149,17 +147,19 @@ public class ResourceAnnotationHandler extends AbstractIntrospectableAnnotationH
                 try
                 {
                     boolean bound = org.eclipse.jetty.plus.jndi.NamingEntryUtil.bindToENC(_context, name, mappedName);
-                    if (!bound)
-                        bound = org.eclipse.jetty.plus.jndi.NamingEntryUtil.bindToENC(_context.getServer(), name, mappedName);
-                    if (!bound)
-                        bound =  org.eclipse.jetty.plus.jndi.NamingEntryUtil.bindToENC(null, name, mappedName);
+                    if (!bound) {
+						bound = org.eclipse.jetty.plus.jndi.NamingEntryUtil.bindToENC(_context.getServer(), name, mappedName);
+					}
+                    if (!bound) {
+						bound =  org.eclipse.jetty.plus.jndi.NamingEntryUtil.bindToENC(null, name, mappedName);
+					}
                     if (!bound)
                     {
                         //see if there is an env-entry value been bound
                         try
                         {
                             InitialContext ic = new InitialContext();
-                            String nameInEnvironment = (mappedName!=null?mappedName:name);
+                            String nameInEnvironment = mappedName!=null?mappedName:name;
                             ic.lookup("java:comp/env/"+nameInEnvironment);
                             bound = true;
                         }
@@ -196,8 +196,9 @@ public class ResourceAnnotationHandler extends AbstractIntrospectableAnnotationH
                     //if this is an env-entry type resource and there is no value bound for it, it isn't
                     //an error, it just means that perhaps the code will use a default value instead
                     // JavaEE Spec. sec 5.4.1.3
-                    if (!Util.isEnvEntryType(type))
-                        throw new IllegalStateException(e);
+                    if (!Util.isEnvEntryType(type)) {
+						throw new IllegalStateException(e);
+					}
                 }
             }
         }
@@ -216,7 +217,7 @@ public class ResourceAnnotationHandler extends AbstractIntrospectableAnnotationH
     public void handleMethod(Class<?> clazz, Method method)
     {
 
-        Resource resource = (Resource)method.getAnnotation(Resource.class);
+        Resource resource = method.getAnnotation(Resource.class);
         if (resource != null)
         {
             /*
@@ -269,8 +270,8 @@ public class ResourceAnnotationHandler extends AbstractIntrospectableAnnotationH
             name = name.substring(0,1).toLowerCase(Locale.ENGLISH)+name.substring(1);
             name = clazz.getCanonicalName()+"/"+name;
 
-            name = (resource.name()!=null && !resource.name().trim().equals("")? resource.name(): name);
-            String mappedName = (resource.mappedName()!=null && !resource.mappedName().trim().equals("")?resource.mappedName():null);
+            name = resource.name()!=null && !"".equals(resource.name().trim())? resource.name(): name;
+            String mappedName = resource.mappedName()!=null && !"".equals(resource.mappedName().trim())?resource.mappedName():null;
             Class<?> paramType = method.getParameterTypes()[0];
 
             Class<?> resourceType = resource.type();
@@ -303,12 +304,14 @@ public class ResourceAnnotationHandler extends AbstractIntrospectableAnnotationH
                     boolean bound = org.eclipse.jetty.plus.jndi.NamingEntryUtil.bindToENC(_context, name, mappedName);
 
                     //try the server's environment
-                    if (!bound)
-                        bound = org.eclipse.jetty.plus.jndi.NamingEntryUtil.bindToENC(_context.getServer(), name, mappedName);
+                    if (!bound) {
+						bound = org.eclipse.jetty.plus.jndi.NamingEntryUtil.bindToENC(_context.getServer(), name, mappedName);
+					}
 
                     //try the jvm's environment
-                    if (!bound)
-                        bound = org.eclipse.jetty.plus.jndi.NamingEntryUtil.bindToENC(null, name, mappedName);
+                    if (!bound) {
+						bound = org.eclipse.jetty.plus.jndi.NamingEntryUtil.bindToENC(null, name, mappedName);
+					}
 
                     //TODO if it is an env-entry from web.xml it can be injected, in which case there will be no
                     //NamingEntry, just a value bound in java:comp/env
@@ -317,7 +320,7 @@ public class ResourceAnnotationHandler extends AbstractIntrospectableAnnotationH
                         try
                         {
                             InitialContext ic = new InitialContext();
-                            String nameInEnvironment = (mappedName!=null?mappedName:name);
+                            String nameInEnvironment = mappedName!=null?mappedName:name;
                             ic.lookup("java:comp/env/"+nameInEnvironment);
                             bound = true;
                         }
@@ -353,8 +356,9 @@ public class ResourceAnnotationHandler extends AbstractIntrospectableAnnotationH
                     //if this is an env-entry type resource and there is no value bound for it, it isn't
                     //an error, it just means that perhaps the code will use a default value instead
                     // JavaEE Spec. sec 5.4.1.3
-                    if (!Util.isEnvEntryType(paramType))
-                        throw new IllegalStateException(e);
+                    if (!Util.isEnvEntryType(paramType)) {
+						throw new IllegalStateException(e);
+					}
                 }
             }
 

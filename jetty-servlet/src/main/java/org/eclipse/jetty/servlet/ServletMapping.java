@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.servlet;
 
@@ -32,7 +27,7 @@ public class ServletMapping
     private boolean _default;
     
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public ServletMapping()
     {
     }
@@ -74,13 +69,15 @@ public class ServletMapping
      */
     public boolean containsPathSpec (String pathSpec)
     {
-        if (_pathSpecs == null || _pathSpecs.length == 0)
-            return false;
+        if (_pathSpecs == null || _pathSpecs.length == 0) {
+			return false;
+		}
         
         for (String p:_pathSpecs)
         {
-            if (p.equals(pathSpec))
-                return true;
+            if (p.equals(pathSpec)) {
+				return true;
+			}
         }
         return false;
     }
@@ -104,7 +101,7 @@ public class ServletMapping
     }
     
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @ManagedAttribute(value="default", readonly=true)
     public boolean isDefault()
     {
@@ -112,19 +109,19 @@ public class ServletMapping
     }
     
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void setDefault(boolean fromDefault)
     {
         _default = fromDefault;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public String toString()
     {
         return (_pathSpecs==null?"[]":Arrays.asList(_pathSpecs).toString())+"=>"+_servletName; 
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void dump(Appendable out, String indent) throws IOException
     {
         out.append(String.valueOf(this)).append("\n");

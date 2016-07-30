@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.client;
 
@@ -107,8 +102,9 @@ public abstract class HttpReceiver
      */
     protected boolean responseBegin(HttpExchange exchange)
     {
-        if (!updateResponseState(ResponseState.IDLE, ResponseState.TRANSIENT))
-            return false;
+        if (!updateResponseState(ResponseState.IDLE, ResponseState.TRANSIENT)) {
+			return false;
+		}
 
         HttpConversation conversation = exchange.getConversation();
         HttpResponse response = exchange.getResponse();
@@ -120,18 +116,21 @@ public abstract class HttpReceiver
         if (protocolHandler != null)
         {
             handlerListener = protocolHandler.getResponseListener();
-            if (LOG.isDebugEnabled())
-                LOG.debug("Found protocol handler {}", protocolHandler);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Found protocol handler {}", protocolHandler);
+			}
         }
         exchange.getConversation().updateResponseListeners(handlerListener);
 
-        if (LOG.isDebugEnabled())
-            LOG.debug("Response begin {}", response);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Response begin {}", response);
+		}
         ResponseNotifier notifier = destination.getResponseNotifier();
         notifier.notifyBegin(conversation.getResponseListeners(), response);
 
-        if (updateResponseState(ResponseState.TRANSIENT, ResponseState.BEGIN))
-            return true;
+        if (updateResponseState(ResponseState.TRANSIENT, ResponseState.BEGIN)) {
+			return true;
+		}
 
         terminateResponse(exchange);
         return false;
@@ -159,8 +158,9 @@ public abstract class HttpReceiver
                 case BEGIN:
                 case HEADER:
                 {
-                    if (updateResponseState(current, ResponseState.TRANSIENT))
-                        break out;
+                    if (updateResponseState(current, ResponseState.TRANSIENT)) {
+						break out;
+					}
                     break;
                 }
                 default:
@@ -185,8 +185,9 @@ public abstract class HttpReceiver
                     case SET_COOKIE2:
                     {
                         URI uri = exchange.getRequest().getURI();
-                        if (uri != null)
-                            storeCookie(uri, field);
+                        if (uri != null) {
+							storeCookie(uri, field);
+						}
                         break;
                     }
                     default:
@@ -197,8 +198,9 @@ public abstract class HttpReceiver
             }
         }
 
-        if (updateResponseState(ResponseState.TRANSIENT, ResponseState.HEADER))
-            return true;
+        if (updateResponseState(ResponseState.TRANSIENT, ResponseState.HEADER)) {
+			return true;
+		}
 
         terminateResponse(exchange);
         return false;
@@ -218,8 +220,9 @@ public abstract class HttpReceiver
         }
         catch (IOException x)
         {
-            if (LOG.isDebugEnabled())
-                LOG.debug(x);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug(x);
+			}
         }
     }
 
@@ -241,8 +244,9 @@ public abstract class HttpReceiver
                 case BEGIN:
                 case HEADER:
                 {
-                    if (updateResponseState(current, ResponseState.TRANSIENT))
-                        break out;
+                    if (updateResponseState(current, ResponseState.TRANSIENT)) {
+						break out;
+					}
                     break;
                 }
                 default:
@@ -253,8 +257,9 @@ public abstract class HttpReceiver
         }
 
         HttpResponse response = exchange.getResponse();
-        if (LOG.isDebugEnabled())
-            LOG.debug("Response headers {}{}{}", response, System.lineSeparator(), response.getHeaders().toString().trim());
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Response headers {}{}{}", response, System.lineSeparator(), response.getHeaders().toString().trim());
+		}
         ResponseNotifier notifier = getHttpDestination().getResponseNotifier();
         notifier.notifyHeaders(exchange.getConversation().getResponseListeners(), response);
 
@@ -274,8 +279,9 @@ public abstract class HttpReceiver
             }
         }
 
-        if (updateResponseState(ResponseState.TRANSIENT, ResponseState.HEADERS))
-            return true;
+        if (updateResponseState(ResponseState.TRANSIENT, ResponseState.HEADERS)) {
+			return true;
+		}
 
         terminateResponse(exchange);
         return false;
@@ -301,8 +307,9 @@ public abstract class HttpReceiver
                 case HEADERS:
                 case CONTENT:
                 {
-                    if (updateResponseState(current, ResponseState.TRANSIENT))
-                        break out;
+                    if (updateResponseState(current, ResponseState.TRANSIENT)) {
+						break out;
+					}
                     break;
                 }
                 default:
@@ -314,8 +321,9 @@ public abstract class HttpReceiver
         }
 
         HttpResponse response = exchange.getResponse();
-        if (LOG.isDebugEnabled())
-            LOG.debug("Response content {}{}{}", response, System.lineSeparator(), BufferUtil.toDetailString(buffer));
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Response content {}{}{}", response, System.lineSeparator(), BufferUtil.toDetailString(buffer));
+		}
 
         ResponseNotifier notifier = getHttpDestination().getResponseNotifier();
         List<Response.ResponseListener> listeners = exchange.getConversation().getResponseListeners();
@@ -333,11 +341,13 @@ public abstract class HttpReceiver
                 while (buffer.hasRemaining())
                 {
                     ByteBuffer decoded = decoder.decode(buffer);
-                    if (!decoded.hasRemaining())
-                        continue;
+                    if (!decoded.hasRemaining()) {
+						continue;
+					}
                     decodeds.add(decoded);
-                    if (LOG.isDebugEnabled())
-                        LOG.debug("Response content decoded ({}) {}{}{}", decoder, response, System.lineSeparator(), BufferUtil.toDetailString(decoded));
+                    if (LOG.isDebugEnabled()) {
+						LOG.debug("Response content decoded ({}) {}{}{}", decoder, response, System.lineSeparator(), BufferUtil.toDetailString(decoded));
+					}
                 }
 
                 if (decodeds.isEmpty())
@@ -348,8 +358,9 @@ public abstract class HttpReceiver
                 {
                     int size = decodeds.size();
                     CountingCallback counter = new CountingCallback(callback, size);
-                    for (int i = 0; i < size; ++i)
-                        notifier.notifyContent(listeners, response, decodeds.get(i), counter);
+                    for (int i = 0; i < size; ++i) {
+						notifier.notifyContent(listeners, response, decodeds.get(i), counter);
+					}
                 }
             }
             catch (Throwable x)
@@ -358,8 +369,9 @@ public abstract class HttpReceiver
             }
         }
 
-        if (updateResponseState(ResponseState.TRANSIENT, ResponseState.CONTENT))
-            return true;
+        if (updateResponseState(ResponseState.TRANSIENT, ResponseState.CONTENT)) {
+			return true;
+		}
 
         terminateResponse(exchange);
         return false;
@@ -378,8 +390,9 @@ public abstract class HttpReceiver
     {
         // Mark atomically the response as completed, with respect
         // to concurrency between response success and response failure.
-        if (!exchange.responseComplete(null))
-            return false;
+        if (!exchange.responseComplete(null)) {
+			return false;
+		}
 
         responseState.set(ResponseState.IDLE);
 
@@ -387,16 +400,18 @@ public abstract class HttpReceiver
         reset();
 
         HttpResponse response = exchange.getResponse();
-        if (LOG.isDebugEnabled())
-            LOG.debug("Response success {}", response);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Response success {}", response);
+		}
         List<Response.ResponseListener> listeners = exchange.getConversation().getResponseListeners();
         ResponseNotifier notifier = getHttpDestination().getResponseNotifier();
         notifier.notifySuccess(listeners, response);
 
         // Special case for 100 Continue that cannot
         // be handled by the ContinueProtocolHandler.
-        if (exchange.getResponse().getStatus() == HttpStatus.CONTINUE_100)
-            return true;
+        if (exchange.getResponse().getStatus() == HttpStatus.CONTINUE_100) {
+			return true;
+		}
 
         // Mark atomically the response as terminated, with
         // respect to concurrency between request and response.
@@ -417,19 +432,7 @@ public abstract class HttpReceiver
     protected boolean responseFailure(Throwable failure)
     {
         HttpExchange exchange = getHttpExchange();
-        // In case of a response error, the failure has already been notified
-        // and it is possible that a further attempt to read in the receive
-        // loop throws an exception that reenters here but without exchange;
-        // or, the server could just have timed out the connection.
-        if (exchange == null)
-            return false;
-
-        // Mark atomically the response as completed, with respect
-        // to concurrency between response success and response failure.
-        if (exchange.responseComplete(failure))
-            return abort(exchange, failure);
-
-        return false;
+        return exchange != null && exchange.responseComplete(failure) && abort(exchange, failure);
     }
 
     private void terminateResponse(HttpExchange exchange)
@@ -442,21 +445,25 @@ public abstract class HttpReceiver
     {
         HttpResponse response = exchange.getResponse();
 
-        if (LOG.isDebugEnabled())
-            LOG.debug("Response complete {}", response);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Response complete {}", response);
+		}
 
         if (result != null)
         {
             boolean ordered = getHttpDestination().getHttpClient().isStrictEventOrdering();
-            if (!ordered)
-                channel.exchangeTerminated(exchange, result);
-            if (LOG.isDebugEnabled())
-                LOG.debug("Request/Response {}: {}", failure == null ? "succeeded" : "failed", result);
+            if (!ordered) {
+				channel.exchangeTerminated(exchange, result);
+			}
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Request/Response {}: {}", failure == null ? "succeeded" : "failed", result);
+			}
             List<Response.ResponseListener> listeners = exchange.getConversation().getResponseListeners();
             ResponseNotifier notifier = getHttpDestination().getResponseNotifier();
             notifier.notifyComplete(listeners, result);
-            if (ordered)
-                channel.exchangeTerminated(exchange, result);
+            if (ordered) {
+				channel.exchangeTerminated(exchange, result);
+			}
         }
     }
 
@@ -514,8 +521,9 @@ public abstract class HttpReceiver
         dispose();
 
         HttpResponse response = exchange.getResponse();
-        if (LOG.isDebugEnabled())
-            LOG.debug("Response failure {} {} on {}: {}", response, exchange, getHttpChannel(), failure);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Response failure {} {} on {}: {}", response, exchange, getHttpChannel(), failure);
+		}
         List<Response.ResponseListener> listeners = exchange.getConversation().getResponseListeners();
         ResponseNotifier notifier = getHttpDestination().getResponseNotifier();
         notifier.notifyFailure(listeners, response, failure);
@@ -526,12 +534,9 @@ public abstract class HttpReceiver
             // respect to concurrency between request and response.
             Result result = exchange.terminateResponse();
             terminateResponse(exchange, result);
-        }
-        else
-        {
-            if (LOG.isDebugEnabled())
-                LOG.debug("Concurrent failure: response termination skipped, performed by helpers");
-        }
+        } else if (LOG.isDebugEnabled()) {
+			LOG.debug("Concurrent failure: response termination skipped, performed by helpers");
+		}
 
         return true;
     }
@@ -539,11 +544,9 @@ public abstract class HttpReceiver
     private boolean updateResponseState(ResponseState from, ResponseState to)
     {
         boolean updated = responseState.compareAndSet(from, to);
-        if (!updated)
-        {
-            if (LOG.isDebugEnabled())
-                LOG.debug("State update failed: {} -> {}: {}", from, to, responseState.get());
-        }
+        if (!updated && LOG.isDebugEnabled()) {
+			LOG.debug("State update failed: {} -> {}: {}", from, to, responseState.get());
+		}
         return updated;
     }
 
@@ -567,27 +570,27 @@ public abstract class HttpReceiver
          */
         TRANSIENT,
         /**
-         * The response is not yet received, the initial state
+         * The response is not yet received, the initial state.
          */
         IDLE,
         /**
-         * The response status code has been received
+         * The response status code has been received.
          */
         BEGIN,
         /**
-         * The response headers are being received
+         * The response headers are being received.
          */
         HEADER,
         /**
-         * All the response headers have been received
+         * All the response headers have been received.
          */
         HEADERS,
         /**
-         * The response content is being received
+         * The response content is being received.
          */
         CONTENT,
         /**
-         * The response is failed
+         * The response is failed.
          */
         FAILURE
     }

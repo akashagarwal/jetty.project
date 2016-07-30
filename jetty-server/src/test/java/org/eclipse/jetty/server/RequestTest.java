@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 
@@ -267,8 +262,9 @@ public class RequestTest
     public void testMultiPart() throws Exception
     {        
         final File testTmpDir = File.createTempFile("reqtest", null);
-        if (testTmpDir.exists())
-            testTmpDir.delete();
+        if (testTmpDir.exists()) {
+			testTmpDir.delete();
+		}
         testTmpDir.mkdir();
         testTmpDir.deleteOnExit();
         assertTrue(testTmpDir.list().length == 0);
@@ -329,8 +325,9 @@ public class RequestTest
     {        
         //a bad multipart where one of the fields has no name
         final File testTmpDir = File.createTempFile("badmptest", null);
-        if (testTmpDir.exists())
-            testTmpDir.delete();
+        if (testTmpDir.exists()) {
+			testTmpDir.delete();
+		}
         testTmpDir.mkdir();
         testTmpDir.deleteOnExit();
         assertTrue(testTmpDir.list().length == 0);
@@ -662,11 +659,13 @@ public class RequestTest
                 for (int i=0;i<len;i++)
                 {
                     int b=in.read();
-                    if (b<0)
-                        return false;
+                    if (b<0) {
+						return false;
+					}
                 }
-                if (in.read()>0)
-                    return false;
+                if (in.read()>0) {
+					return false;
+				}
 
                 length.set(len);
                 return true;
@@ -865,10 +864,10 @@ public class RequestTest
 
         String responses = _connector.getResponses(request);
 
-        int index=responses.indexOf("read="+(int)'0');
+        int index=responses.indexOf("read="+'0');
         assertTrue(index>0);
 
-        index=responses.indexOf("read="+(int)'A',index+7);
+        index=responses.indexOf("read="+'A',index+7);
         assertTrue(index>0);
     }
 
@@ -986,10 +985,10 @@ public class RequestTest
 
         String responses = _connector.getResponses(request);
 
-        int index=responses.indexOf("read="+(int)'0');
+        int index=responses.indexOf("read="+'0');
         assertTrue(index>0);
 
-        index=responses.indexOf("read="+(int)'A',index+7);
+        index=responses.indexOf("read="+'A',index+7);
         assertTrue(index>0);
     }
 
@@ -1112,8 +1111,9 @@ public class RequestTest
             public boolean check(HttpServletRequest request,HttpServletResponse response) throws IOException
             {
                 javax.servlet.http.Cookie[] ca = request.getCookies();
-                if (ca!=null)
-                    cookies.addAll(Arrays.asList(ca));
+                if (ca!=null) {
+					cookies.addAll(Arrays.asList(ca));
+				}
                 response.getOutputStream().println("Hello World");
                 return true;
             }
@@ -1270,8 +1270,9 @@ public class RequestTest
             @Override
             public boolean check(HttpServletRequest request,HttpServletResponse response)
             {
-                for (int i=0;i<cookie.length; i++)
-                    cookie[i]=null;
+                for (int i=0;i<cookie.length; i++) {
+					cookie[i]=null;
+				}
 
                 Cookie[] cookies = request.getCookies();
                 for (int i=0;cookies!=null && i<cookies.length; i++)
@@ -1354,15 +1355,17 @@ public class RequestTest
                 try (BufferedReader in = new BufferedReader(new FileReader(evil_keys)))
                 {
                     String key=null;
-                    while((key=in.readLine())!=null)
-                        buf.append("&").append(key).append("=").append("x");
+                    while((key=in.readLine())!=null) {
+						buf.append("&").append(key).append("=").append("x");
+					}
                 }
             }
             else
             {
                 // we will just create a lot of keys and make sure the limit is applied
-                for (int i=0;i<2000;i++)
-                    buf.append("&").append("K").append(i).append("=").append("x");
+                for (int i=0;i<2000;i++) {
+					buf.append("&").append("K").append(i).append("=").append("x");
+				}
             }
             buf.append("&c=d");
 
@@ -1388,7 +1391,7 @@ public class RequestTest
             String response = _connector.getResponses(request);
             assertThat(response,Matchers.containsString("IllegalStateException"));
             long now=System.currentTimeMillis();
-            assertTrue((now-start)<5000);
+            assertTrue(now-start<5000);
         }
     }
 
@@ -1404,8 +1407,9 @@ public class RequestTest
             StringBuilder buf = new StringBuilder(4000000);
             buf.append("a=b");
             // we will just create a lot of keys and make sure the limit is applied
-            for (int i=0;i<500;i++)
-                buf.append("&").append("K").append(i).append("=").append("x");
+            for (int i=0;i<500;i++) {
+				buf.append("&").append("K").append(i).append("=").append("x");
+			}
             buf.append("&c=d");
 
             _handler._checker = new RequestTester()
@@ -1429,7 +1433,7 @@ public class RequestTest
             String response = _connector.getResponses(request);
             assertTrue(response.contains("IllegalStateException"));
             long now=System.currentTimeMillis();
-            assertTrue((now-start)<5000);
+            assertTrue(now-start<5000);
         }
     }
 
@@ -1458,13 +1462,15 @@ public class RequestTest
 
             if (request.getContentLength()>0
                     && !MimeTypes.Type.FORM_ENCODED.asString().equals(request.getContentType())
-                    && !request.getContentType().startsWith("multipart/form-data"))
-                _content=IO.toString(request.getInputStream());
+                    && !request.getContentType().startsWith("multipart/form-data")) {
+				_content=IO.toString(request.getInputStream());
+			}
 
-            if (_checker!=null && _checker.check(request,response))
-                response.setStatus(200);
-            else
-                response.sendError(500);
+            if (_checker!=null && _checker.check(request,response)) {
+				response.setStatus(200);
+			} else {
+				response.sendError(500);
+			}
         }
     }
 

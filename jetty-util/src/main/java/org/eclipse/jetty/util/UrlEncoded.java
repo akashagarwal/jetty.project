@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util;
 
@@ -78,13 +73,13 @@ public class UrlEncoded extends MultiMap<String> implements Cloneable
         ENCODING=encoding;
     }
     
-    /* ----------------------------------------------------------------- */
+    /** -----------------------------------------------------------------. */
     public UrlEncoded(UrlEncoded url)
     {
         super(url);
     }
     
-    /* ----------------------------------------------------------------- */
+    /** -----------------------------------------------------------------. */
     public UrlEncoded()
     {
     }
@@ -94,13 +89,13 @@ public class UrlEncoded extends MultiMap<String> implements Cloneable
         decodeTo(query,this,ENCODING);
     }
 
-    /* ----------------------------------------------------------------- */
+    /** -----------------------------------------------------------------. */
     public void decode(String query)
     {
         decodeTo(query,this,ENCODING);
     }
     
-    /* ----------------------------------------------------------------- */
+    /** -----------------------------------------------------------------. */
     public void decode(String query,Charset charset)
     {
         decodeTo(query,this,charset);
@@ -148,15 +143,16 @@ public class UrlEncoded extends MultiMap<String> implements Cloneable
      */
     public static String encode(MultiMap<String> map, Charset charset, boolean equalsForNullValue)
     {
-        if (charset==null)
-            charset=ENCODING;
+        if (charset==null) {
+			charset=ENCODING;
+		}
 
         StringBuilder result = new StringBuilder(128);
 
         boolean delim = false;
         for(Map.Entry<String, List<String>> entry: map.entrySet())
         {
-            String key = entry.getKey().toString();
+            String key = entry.getKey();
             List<String> list = entry.getValue();
             int s=list.size();
             
@@ -168,31 +164,35 @@ public class UrlEncoded extends MultiMap<String> implements Cloneable
             if (s==0)
             {
                 result.append(encodeString(key,charset));
-                if(equalsForNullValue)
-                    result.append('=');
+                if(equalsForNullValue) {
+					result.append('=');
+				}
             }
             else
             {
                 for (int i=0;i<s;i++)
                 {
-                    if (i>0)
-                        result.append('&');
+                    if (i>0) {
+						result.append('&');
+					}
                     String val=list.get(i);
                     result.append(encodeString(key,charset));
 
                     if (val!=null)
                     {
-                        String str=val.toString();
+                        String str=val;
                         if (str.length()>0)
                         {
                             result.append('=');
                             result.append(encodeString(str,charset));
                         }
-                        else if (equalsForNullValue)
-                            result.append('=');
+                        else if (equalsForNullValue) {
+							result.append('=');
+						}
                     }
-                    else if (equalsForNullValue)
-                        result.append('=');
+                    else if (equalsForNullValue) {
+						result.append('=');
+					}
                 }
             }
             delim = true;
@@ -219,8 +219,9 @@ public class UrlEncoded extends MultiMap<String> implements Cloneable
      */
     public static void decodeTo(String content, MultiMap<String> map, Charset charset)
     {
-        if (charset==null)
-            charset=ENCODING;
+        if (charset==null) {
+			charset=ENCODING;
+		}
 
         if (charset==StandardCharsets.UTF_8)
         {
@@ -257,8 +258,9 @@ public class UrlEncoded extends MultiMap<String> implements Cloneable
                       value=null;
                       break;
                   case '=':
-                      if (key!=null)
-                          break;
+                      if (key!=null) {
+						break;
+					}
                       key = encoded?decodeString(content,mark+1,i-mark-1,charset):content.substring(mark+1,i);
                       mark=i;
                       encoded=false;
@@ -291,7 +293,7 @@ public class UrlEncoded extends MultiMap<String> implements Cloneable
         }
     }
 
-    /* -------------------------------------------------------------- */
+    /** --------------------------------------------------------------. */
     public static void decodeUtf8To(String query, MultiMap<String> map)
     {
         decodeUtf8To(query,0,query.length(),map);
@@ -452,8 +454,9 @@ public class UrlEncoded extends MultiMap<String> implements Cloneable
                         }
                         key = null;
                         value=null;
-                        if (maxKeys>0 && map.size()>maxKeys)
-                            throw new IllegalStateException("Form too many keys");
+                        if (maxKeys>0 && map.size()>maxKeys) {
+							throw new IllegalStateException("Form too many keys");
+						}
                         break;
                         
                     case '=':
@@ -481,16 +484,18 @@ public class UrlEncoded extends MultiMap<String> implements Cloneable
                                 if (code2>=0)
                                 {
                                     int code3=in.read();
-                                    if (code3>=0)
-                                        buffer.append(Character.toChars((convertHexDigit(code0)<<12)+(convertHexDigit(code1)<<8)+(convertHexDigit(code2)<<4)+convertHexDigit(code3)));
+                                    if (code3>=0) {
+										buffer.append(Character.toChars((convertHexDigit(code0)<<12)+(convertHexDigit(code1)<<8)+(convertHexDigit(code2)<<4)+convertHexDigit(code3)));
+									}
                                 }
                             }
                         }
                         else if (code0>=0)
                         {
                             int code1=in.read();
-                            if (code1>=0)
-                                buffer.append((char)((convertHexDigit(code0)<<4)+convertHexDigit(code1)));
+                            if (code1>=0) {
+								buffer.append((char)((convertHexDigit(code0)<<4)+convertHexDigit(code1)));
+							}
                         }
                         break;
                      
@@ -498,8 +503,9 @@ public class UrlEncoded extends MultiMap<String> implements Cloneable
                         buffer.append((char)b);
                     break;
                 }
-                if (maxLength>=0 && (++totalLength > maxLength))
-                    throw new IllegalStateException("Form too large");
+                if (maxLength>=0 && ++totalLength > maxLength) {
+					throw new IllegalStateException("Form too large");
+				}
             }
             
             if (key != null)
@@ -554,8 +560,9 @@ public class UrlEncoded extends MultiMap<String> implements Cloneable
                             }
                             key = null;
                             value=null;
-                            if (maxKeys>0 && map.size()>maxKeys)
-                                throw new IllegalStateException("Form too many keys");
+                            if (maxKeys>0 && map.size()>maxKeys) {
+								throw new IllegalStateException("Form too many keys");
+							}
                             break;
 
                         case '=':
@@ -607,8 +614,9 @@ public class UrlEncoded extends MultiMap<String> implements Cloneable
                                 }
                             }
                             
-                            if (!decoded)
-                                buffer.getStringBuilder().append(Utf8Appendable.REPLACEMENT);
+                            if (!decoded) {
+								buffer.getStringBuilder().append(Utf8Appendable.REPLACEMENT);
+							}
 
                             break;
                           
@@ -628,8 +636,9 @@ public class UrlEncoded extends MultiMap<String> implements Cloneable
                     LOG.warn(e.toString());
                     LOG.debug(e);
                 }
-                if (maxLength>=0 && (++totalLength > maxLength))
-                    throw new IllegalStateException("Form too large");
+                if (maxLength>=0 && ++totalLength > maxLength) {
+					throw new IllegalStateException("Form too large");
+				}
             }
             
             if (key != null)
@@ -645,7 +654,7 @@ public class UrlEncoded extends MultiMap<String> implements Cloneable
         }
     }
     
-    /* -------------------------------------------------------------- */
+    /** --------------------------------------------------------------. */
     public static void decodeUtf16To(InputStream in, MultiMap<String> map, int maxLength, int maxKeys) throws IOException
     {
         InputStreamReader input = new InputStreamReader(in,StandardCharsets.UTF_16);
@@ -670,19 +679,21 @@ public class UrlEncoded extends MultiMap<String> implements Cloneable
     {
         if (charset==null)
         {
-            if (ENCODING.equals(StandardCharsets.UTF_8))
-                decodeUtf8To(in,map,maxLength,maxKeys);
-            else
-                decodeTo(in,map,ENCODING,maxLength,maxKeys);
+            if (ENCODING.equals(StandardCharsets.UTF_8)) {
+				decodeUtf8To(in,map,maxLength,maxKeys);
+			} else {
+				decodeTo(in,map,ENCODING,maxLength,maxKeys);
+			}
         }
-        else if (StringUtil.__UTF8.equalsIgnoreCase(charset))
-            decodeUtf8To(in,map,maxLength,maxKeys);
-        else if (StringUtil.__ISO_8859_1.equalsIgnoreCase(charset))
-            decode88591To(in,map,maxLength,maxKeys);
-        else if (StringUtil.__UTF16.equalsIgnoreCase(charset))
-            decodeUtf16To(in,map,maxLength,maxKeys);
-        else
-            decodeTo(in,map,Charset.forName(charset),maxLength,maxKeys);
+        else if (StringUtil.__UTF8.equalsIgnoreCase(charset)) {
+			decodeUtf8To(in,map,maxLength,maxKeys);
+		} else if (StringUtil.__ISO_8859_1.equalsIgnoreCase(charset)) {
+			decode88591To(in,map,maxLength,maxKeys);
+		} else if (StringUtil.__UTF16.equalsIgnoreCase(charset)) {
+			decodeUtf16To(in,map,maxLength,maxKeys);
+		} else {
+			decodeTo(in,map,Charset.forName(charset),maxLength,maxKeys);
+		}
     }
     
     /* -------------------------------------------------------------- */
@@ -698,8 +709,9 @@ public class UrlEncoded extends MultiMap<String> implements Cloneable
     throws IOException
     {
         //no charset present, use the configured default
-        if (charset==null) 
-           charset=ENCODING;
+        if (charset==null) {
+			charset=ENCODING;
+		}
             
         if (StandardCharsets.UTF_8.equals(charset))
         {
@@ -750,8 +762,9 @@ public class UrlEncoded extends MultiMap<String> implements Cloneable
                             }
                             key = null;
                             value=null;
-                            if (maxKeys>0 && map.size()>maxKeys)
-                                throw new IllegalStateException("Form too many keys");
+                            if (maxKeys>0 && map.size()>maxKeys) {
+								throw new IllegalStateException("Form too many keys");
+							}
                             break;
                         case '=':
                             if (key!=null)
@@ -777,8 +790,9 @@ public class UrlEncoded extends MultiMap<String> implements Cloneable
                                     if (code2>=0)
                                     {
                                         int code3=in.read();
-                                        if (code3>=0)
-                                            output.write(new String(Character.toChars((convertHexDigit(code0)<<12)+(convertHexDigit(code1)<<8)+(convertHexDigit(code2)<<4)+convertHexDigit(code3))).getBytes(charset));
+                                        if (code3>=0) {
+											output.write(new String(Character.toChars((convertHexDigit(code0)<<12)+(convertHexDigit(code1)<<8)+(convertHexDigit(code2)<<4)+convertHexDigit(code3))).getBytes(charset));
+										}
                                     }
                                 }
 
@@ -786,8 +800,9 @@ public class UrlEncoded extends MultiMap<String> implements Cloneable
                             else if (code0>=0)
                             {
                                 int code1=in.read();
-                                if (code1>=0)
-                                    output.write((convertHexDigit(code0)<<4)+convertHexDigit(code1));
+                                if (code1>=0) {
+									output.write((convertHexDigit(code0)<<4)+convertHexDigit(code1));
+								}
                             }
                             break;
                         default:
@@ -796,8 +811,9 @@ public class UrlEncoded extends MultiMap<String> implements Cloneable
                     }
 
                     totalLength++;
-                    if (maxLength>=0 && totalLength > maxLength)
-                        throw new IllegalStateException("Form too large");
+                    if (maxLength>=0 && totalLength > maxLength) {
+						throw new IllegalStateException("Form too large");
+					}
                 }
 
                 size=output.size();
@@ -807,8 +823,9 @@ public class UrlEncoded extends MultiMap<String> implements Cloneable
                     output.setCount(0);
                     map.add(key,value);
                 }
-                else if (size>0)
-                    map.add(output.toString(charset),"");
+                else if (size>0) {
+					map.add(output.toString(charset),"");
+				}
             }
         }
     }
@@ -850,9 +867,9 @@ public class UrlEncoded extends MultiMap<String> implements Cloneable
                     {
                         buffer=new Utf8StringBuffer(length);
                         buffer.getStringBuffer().append(encoded,offset,offset+i+1);
-                    }
-                    else
-                        buffer.getStringBuffer().append(c);
+                    } else {
+						buffer.getStringBuffer().append(c);
+					}
                 }
                 else if (c=='+')
                 {
@@ -872,13 +889,13 @@ public class UrlEncoded extends MultiMap<String> implements Cloneable
                         buffer.getStringBuffer().append(encoded,offset,offset+i);
                     }
                     
-                    if ((i+2)<length)
+                    if (i+2<length)
                     {
                         try
                         {
                             if ('u'==encoded.charAt(offset+i+1))
                             {
-                                if((i+5)<length)
+                                if(i+5<length)
                                 {
                                     int o=offset+i+2;
                                     i+=5;
@@ -917,14 +934,16 @@ public class UrlEncoded extends MultiMap<String> implements Cloneable
                         i=length;
                     }
                 }
-                else if (buffer!=null)
-                    buffer.getStringBuffer().append(c);
+                else if (buffer!=null) {
+					buffer.getStringBuffer().append(c);
+				}
             }
 
             if (buffer==null)
             {
-                if (offset==0 && encoded.length()==length)
-                    return encoded;
+                if (offset==0 && encoded.length()==length) {
+					return encoded;
+				}
                 return encoded.substring(offset,offset+length);
             }
 
@@ -943,9 +962,9 @@ public class UrlEncoded extends MultiMap<String> implements Cloneable
                     {
                         buffer=new StringBuffer(length);
                         buffer.append(encoded,offset,offset+i+1);
-                    }
-                    else
-                        buffer.append(c);
+                    } else {
+						buffer.append(c);
+					}
                 }
                 else if (c=='+')
                 {
@@ -1024,8 +1043,9 @@ public class UrlEncoded extends MultiMap<String> implements Cloneable
                             i++;
                         }
 
-                        if (i>=length)
-                            break;
+                        if (i>=length) {
+							break;
+						}
                         c = encoded.charAt(offset+i);
                     }
 
@@ -1033,14 +1053,16 @@ public class UrlEncoded extends MultiMap<String> implements Cloneable
                     buffer.append(new String(ba,0,n,charset));
 
                 }
-                else if (buffer!=null)
-                    buffer.append(c);
+                else if (buffer!=null) {
+					buffer.append(c);
+				}
             }
 
             if (buffer==null)
             {
-                if (offset==0 && encoded.length()==length)
-                    return encoded;
+                if (offset==0 && encoded.length()==length) {
+					return encoded;
+				}
                 return encoded.substring(offset,offset+length);
             }
 
@@ -1067,8 +1089,9 @@ public class UrlEncoded extends MultiMap<String> implements Cloneable
      */
     public static String encodeString(String string,Charset charset)
     {
-        if (charset==null)
-            charset=ENCODING;
+        if (charset==null) {
+			charset=ENCODING;
+		}
         byte[] bytes=null;
         bytes=string.getBytes(charset);
         
@@ -1086,9 +1109,9 @@ public class UrlEncoded extends MultiMap<String> implements Cloneable
                 noEncode=false;
                 encoded[n++]=(byte)'+';
             }
-            else if (b>='a' && b<='z' ||
-                     b>='A' && b<='Z' ||
-                     b>='0' && b<='9')
+            else if ((b>='a' && b<='z') ||
+                     (b>='A' && b<='Z') ||
+                     (b>='0' && b<='9'))
             {
                 encoded[n++]=b;
             }
@@ -1097,28 +1120,29 @@ public class UrlEncoded extends MultiMap<String> implements Cloneable
                 noEncode=false;
                 encoded[n++]=(byte)'%';
                 byte nibble= (byte) ((b&0xf0)>>4);
-                if (nibble>=10)
-                    encoded[n++]=(byte)('A'+nibble-10);
-                else
-                    encoded[n++]=(byte)('0'+nibble);
+                if (nibble>=10) {
+					encoded[n++]=(byte)('A'+nibble-10);
+				} else {
+					encoded[n++]=(byte)('0'+nibble);
+				}
                 nibble= (byte) (b&0xf);
-                if (nibble>=10)
-                    encoded[n++]=(byte)('A'+nibble-10);
-                else
-                    encoded[n++]=(byte)('0'+nibble);
+                if (nibble>=10) {
+					encoded[n++]=(byte)('A'+nibble-10);
+				} else {
+					encoded[n++]=(byte)('0'+nibble);
+				}
             }
         }
 
-        if (noEncode)
-            return string;
+        if (noEncode) {
+			return string;
+		}
         
         return new String(encoded,0,n,charset);
     }
 
 
-    /* ------------------------------------------------------------ */
-    /** 
-     */
+    /** ------------------------------------------------------------. */
     @Override
     public Object clone()
     {

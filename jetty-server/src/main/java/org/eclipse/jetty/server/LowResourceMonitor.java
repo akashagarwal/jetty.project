@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 
@@ -72,7 +67,7 @@ public class LowResourceMonitor extends AbstractLifeCycle
     private int _maxConnections;
     private long _maxMemory;
     private int _lowResourcesIdleTimeout=1000;
-    private int _maxLowResourcesTime=0;
+    private int _maxLowResourcesTime;
     private boolean _monitorThreads=true;
     private final AtomicBoolean _low = new AtomicBoolean();
     private String _cause;
@@ -118,9 +113,10 @@ public class LowResourceMonitor extends AbstractLifeCycle
     @ManagedAttribute("The monitored connectors. If null then all server connectors are monitored")
     public Collection<Connector> getMonitoredConnectors()
     {
-        if (_monitoredConnectors==null)
-            return Collections.emptyList();
-        return Arrays.asList(_monitoredConnectors);
+        if (_monitoredConnectors!=null) {
+			return Arrays.asList(_monitoredConnectors);
+		}
+        return Collections.emptyList();
     }
 
     /**
@@ -128,10 +124,11 @@ public class LowResourceMonitor extends AbstractLifeCycle
      */
     public void setMonitoredConnectors(Collection<Connector> monitoredConnectors)
     {
-        if (monitoredConnectors==null || monitoredConnectors.size()==0)
-            _monitoredConnectors=null;
-        else
-            _monitoredConnectors = monitoredConnectors.toArray(new Connector[monitoredConnectors.size()]);
+        if (monitoredConnectors==null || monitoredConnectors.size()==0) {
+			_monitoredConnectors=null;
+		} else {
+			_monitoredConnectors = monitoredConnectors.toArray(new Connector[monitoredConnectors.size()]);
+		}
     }
 
     @ManagedAttribute("The monitor period in ms")
@@ -237,15 +234,17 @@ public class LowResourceMonitor extends AbstractLifeCycle
     @Override
     protected void doStop() throws Exception
     {
-        if (_scheduler instanceof LRMScheduler)
-            _scheduler.stop();
+        if (_scheduler instanceof LRMScheduler) {
+			_scheduler.stop();
+		}
         super.doStop();
     }
 
     protected Connector[] getMonitoredOrServerConnectors()
     {
-        if (_monitoredConnectors!=null && _monitoredConnectors.length>0)
-            return _monitoredConnectors;
+        if (_monitoredConnectors!=null && _monitoredConnectors.length>0) {
+			return _monitoredConnectors;
+		}
         return _server.getConnectors();
     }
 
@@ -309,28 +308,26 @@ public class LowResourceMonitor extends AbstractLifeCycle
             }
 
             // Too long in low resources state?
-            if (_maxLowResourcesTime>0 && (System.currentTimeMillis()-_lowStarted)>_maxLowResourcesTime)
-                setLowResources();
-        }
-        else
-        {
-            if (_low.compareAndSet(true,false))
-            {
-                LOG.info("Low Resources cleared");
-                _reasons=null;
-                _lowStarted=0;
-                _cause=null;
-                clearLowResources();
-            }
-        }
+            if (_maxLowResourcesTime>0 && System.currentTimeMillis()-_lowStarted>_maxLowResourcesTime) {
+				setLowResources();
+			}
+        } else if (_low.compareAndSet(true,false))
+		{
+		    LOG.info("Low Resources cleared");
+		    _reasons=null;
+		    _lowStarted=0;
+		    _cause=null;
+		    clearLowResources();
+		}
     }
 
     protected void setLowResources()
     {
         for(Connector connector : getMonitoredOrServerConnectors())
         {
-            for (EndPoint endPoint : connector.getConnectedEndPoints())
-                endPoint.setIdleTimeout(_lowResourcesIdleTimeout);
+            for (EndPoint endPoint : connector.getConnectedEndPoints()) {
+				endPoint.setIdleTimeout(_lowResourcesIdleTimeout);
+			}
         }
     }
 
@@ -338,16 +335,18 @@ public class LowResourceMonitor extends AbstractLifeCycle
     {
         for(Connector connector : getMonitoredOrServerConnectors())
         {
-            for (EndPoint endPoint : connector.getConnectedEndPoints())
-                endPoint.setIdleTimeout(connector.getIdleTimeout());
+            for (EndPoint endPoint : connector.getConnectedEndPoints()) {
+				endPoint.setIdleTimeout(connector.getIdleTimeout());
+			}
         }
     }
 
     private String low(String reasons, String newReason)
     {
-        if (reasons==null)
-            return newReason;
-        return reasons+", "+newReason;
+        if (reasons!=null) {
+			return reasons+", "+newReason;
+		}
+        return newReason;
     }
 
 

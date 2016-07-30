@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.jsr356;
 
@@ -48,7 +43,7 @@ import org.junit.Test;
 import static org.hamcrest.Matchers.instanceOf;
 
 /**
- * This class tests receiving of messages by different types of {@link MessageHandler}
+ * This class tests receiving of messages by different types of {@link MessageHandler}.
  */
 public class MessageReceivingTest {
     private static final Logger LOG = Log.getLogger(EndpointEchoTest.class);
@@ -114,14 +109,16 @@ public class MessageReceivingTest {
         Assert.assertThat(echoer, instanceOf(javax.websocket.Endpoint.class));
         // Issue connect using instance of class that extends Endpoint
         final Session session = container.connectToServer(echoer, serverUri);
-        if (LOG.isDebugEnabled())
-            LOG.debug("Client Connected: {}", session);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Client Connected: {}", session);
+		}
         session.getBasicRemote().sendText("");
         session.getBasicRemote().sendText("Echo");
         session.getBasicRemote().sendText(VERY_LONG_STRING);
         session.getBasicRemote().sendText("Echo");
-        if (LOG.isDebugEnabled())
-            LOG.debug("Client Message Sent");
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Client Message Sent");
+		}
         echoer.handler.getMessageQueue().awaitMessages(2, 1000, TimeUnit.MILLISECONDS);
     }
 
@@ -136,12 +133,14 @@ public class MessageReceivingTest {
         Assert.assertThat(echoer, instanceOf(javax.websocket.Endpoint.class));
         // Issue connect using instance of class that extends Endpoint
         final Session session = container.connectToServer(echoer, serverUri);
-        if (LOG.isDebugEnabled())
-            LOG.debug("Client Connected: {}", session);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Client Connected: {}", session);
+		}
         session.getBasicRemote().sendText("");
         session.getBasicRemote().sendText("Echo");
-        if (LOG.isDebugEnabled())
-            LOG.debug("Client Message Sent");
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Client Message Sent");
+		}
         echoer.handler.getMessageQueue().awaitMessages(2, 1000, TimeUnit.MILLISECONDS);
     }
 
@@ -156,12 +155,14 @@ public class MessageReceivingTest {
         Assert.assertThat(echoer, instanceOf(javax.websocket.Endpoint.class));
         // Issue connect using instance of class that extends Endpoint
         final Session session = container.connectToServer(echoer, serverUri);
-        if (LOG.isDebugEnabled())
-            LOG.debug("Client Connected: {}", session);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Client Connected: {}", session);
+		}
         sendBinary(session, "");
         sendBinary(session, "Echo");
-        if (LOG.isDebugEnabled())
-            LOG.debug("Client Message Sent");
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Client Message Sent");
+		}
         echoer.handler.getMessageQueue().awaitMessages(2, 1000, TimeUnit.MILLISECONDS);
     }
 
@@ -176,12 +177,14 @@ public class MessageReceivingTest {
         Assert.assertThat(echoer, instanceOf(javax.websocket.Endpoint.class));
         // Issue connect using instance of class that extends Endpoint
         final Session session = container.connectToServer(echoer, serverUri);
-        if (LOG.isDebugEnabled())
-            LOG.debug("Client Connected: {}", session);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Client Connected: {}", session);
+		}
         sendBinary(session, "");
         sendBinary(session, "Echo");
-        if (LOG.isDebugEnabled())
-            LOG.debug("Client Message Sent");
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Client Message Sent");
+		}
         echoer.handler.getMessageQueue().awaitMessages(2, 1000, TimeUnit.MILLISECONDS);
     }
 

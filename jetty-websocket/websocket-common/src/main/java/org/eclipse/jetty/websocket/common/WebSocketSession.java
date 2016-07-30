@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.common;
 
@@ -122,7 +117,7 @@ public class WebSocketSession extends ContainerLifeCycle implements Session, Rem
     }
 
     /**
-     * Harsh disconnect
+     * Harsh disconnect.
      */
     @Override
     public void disconnect()
@@ -141,18 +136,22 @@ public class WebSocketSession extends ContainerLifeCycle implements Session, Rem
     @Override
     protected void doStart() throws Exception
     {
-        if(LOG.isDebugEnabled())
-            LOG.debug("starting - {}",this);
+        if(LOG.isDebugEnabled()) {
+			LOG.debug("starting - {}",this);
+		}
 
         Iterator<RemoteEndpointFactory> iter = ServiceLoader.load(RemoteEndpointFactory.class).iterator();
-        if (iter.hasNext())
-            remoteEndpointFactory = iter.next();
+        if (iter.hasNext()) {
+			remoteEndpointFactory = iter.next();
+		}
 
-        if (remoteEndpointFactory == null)
-            remoteEndpointFactory = this;
+        if (remoteEndpointFactory == null) {
+			remoteEndpointFactory = this;
+		}
 
-        if (LOG.isDebugEnabled())
-            LOG.debug("Using RemoteEndpointFactory: {}", remoteEndpointFactory);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Using RemoteEndpointFactory: {}", remoteEndpointFactory);
+		}
 
         super.doStart();
     }
@@ -160,8 +159,9 @@ public class WebSocketSession extends ContainerLifeCycle implements Session, Rem
     @Override
     protected void doStop() throws Exception
     {
-        if(LOG.isDebugEnabled())
-            LOG.debug("stopping - {}",this);
+        if(LOG.isDebugEnabled()) {
+			LOG.debug("stopping - {}",this);
+		}
         try
         {
             close(StatusCode.SHUTDOWN,"Shutdown");
@@ -184,7 +184,7 @@ public class WebSocketSession extends ContainerLifeCycle implements Session, Rem
         }
         else
         {
-            out.append(incomingHandler.toString()).append(System.lineSeparator());
+            out.append(incomingHandler).append(System.lineSeparator());
         }
 
         out.append(indent).append(" +- outgoingHandler : ");
@@ -194,7 +194,7 @@ public class WebSocketSession extends ContainerLifeCycle implements Session, Rem
         }
         else
         {
-            out.append(outgoingHandler.toString()).append(System.lineSeparator());
+            out.append(outgoingHandler).append(System.lineSeparator());
         }
     }
 
@@ -235,7 +235,7 @@ public class WebSocketSession extends ContainerLifeCycle implements Session, Rem
 
     public ClassLoader getClassLoader()
     {
-        return this.getClass().getClassLoader();
+        return getClass().getClassLoader();
     }
 
     public LogicalConnection getConnection()
@@ -255,7 +255,7 @@ public class WebSocketSession extends ContainerLifeCycle implements Session, Rem
     }
 
     /**
-     * The idle timeout in milliseconds
+     * The idle timeout in milliseconds.
      */
     @Override
     public long getIdleTimeout()
@@ -296,11 +296,12 @@ public class WebSocketSession extends ContainerLifeCycle implements Session, Rem
     @Override
     public RemoteEndpoint getRemote()
     {
-        if(LOG_OPEN.isDebugEnabled())
-            LOG_OPEN.debug("[{}] {}.getRemote()",policy.getBehavior(),this.getClass().getSimpleName());
+        if(LOG_OPEN.isDebugEnabled()) {
+			LOG_OPEN.debug("[{}] {}.getRemote()",policy.getBehavior(),getClass().getSimpleName());
+		}
         ConnectionState state = connection.getIOState().getConnectionState();
 
-        if ((state == ConnectionState.OPEN) || (state == ConnectionState.CONNECTED))
+        if (state == ConnectionState.OPEN || state == ConnectionState.CONNECTED)
         {
             return remote;
         }
@@ -343,12 +344,11 @@ public class WebSocketSession extends ContainerLifeCycle implements Session, Rem
     {
         final int prime = 31;
         int result = 1;
-        result = (prime * result) + ((connection == null)?0:connection.hashCode());
-        return result;
+        return prime * result + ((connection == null)?0:connection.hashCode());
     }
 
     /**
-     * Incoming Errors from Parser
+     * Incoming Errors from Parser.
      */
     @Override
     public void incomingError(Throwable t)
@@ -361,7 +361,7 @@ public class WebSocketSession extends ContainerLifeCycle implements Session, Rem
     }
 
     /**
-     * Incoming Raw Frames from Parser
+     * Incoming Raw Frames from Parser.
      */
     @Override
     public void incomingFrame(Frame frame)
@@ -385,11 +385,7 @@ public class WebSocketSession extends ContainerLifeCycle implements Session, Rem
     @Override
     public boolean isOpen()
     {
-        if (this.connection == null)
-        {
-            return false;
-        }
-        return this.connection.isOpen();
+        return this.connection != null && this.connection.isOpen();
     }
 
     @Override
@@ -427,8 +423,9 @@ public class WebSocketSession extends ContainerLifeCycle implements Session, Rem
     @Override
     public void onOpened(Connection connection)
     {
-        if(LOG_OPEN.isDebugEnabled())
-            LOG_OPEN.debug("[{}] {}.onOpened()",policy.getBehavior(),this.getClass().getSimpleName());
+        if(LOG_OPEN.isDebugEnabled()) {
+			LOG_OPEN.debug("[{}] {}.onOpened()",policy.getBehavior(),getClass().getSimpleName());
+		}
         open();
     }
 
@@ -445,8 +442,9 @@ public class WebSocketSession extends ContainerLifeCycle implements Session, Rem
                 notifyClose(close.getStatusCode(),close.getReason());
                 try
                 {
-                    if (LOG.isDebugEnabled())
-                        LOG.debug("{}.onSessionClosed()",containerScope.getClass().getSimpleName());
+                    if (LOG.isDebugEnabled()) {
+						LOG.debug("{}.onSessionClosed()",containerScope.getClass().getSimpleName());
+					}
                     containerScope.onSessionClosed(this);
                 }
                 catch (Throwable t)
@@ -458,8 +456,9 @@ public class WebSocketSession extends ContainerLifeCycle implements Session, Rem
                 // notify session listeners
                 try
                 {
-                    if (LOG.isDebugEnabled())
-                        LOG.debug("{}.onSessionOpened()",containerScope.getClass().getSimpleName());
+                    if (LOG.isDebugEnabled()) {
+						LOG.debug("{}.onSessionOpened()",containerScope.getClass().getSimpleName());
+					}
                     containerScope.onSessionOpened(this);
                 }
                 catch (Throwable t)
@@ -476,12 +475,13 @@ public class WebSocketSession extends ContainerLifeCycle implements Session, Rem
     }
 
     /**
-     * Open/Activate the session
+     * Open/Activate the session.
      */
     public void open()
     {
-        if(LOG_OPEN.isDebugEnabled())
-            LOG_OPEN.debug("[{}] {}.open()",policy.getBehavior(),this.getClass().getSimpleName());
+        if(LOG_OPEN.isDebugEnabled()) {
+			LOG_OPEN.debug("[{}] {}.open()",policy.getBehavior(),getClass().getSimpleName());
+		}
 
         if (remote != null)
         {
@@ -496,8 +496,9 @@ public class WebSocketSession extends ContainerLifeCycle implements Session, Rem
 
             // Connect remote
             remote = remoteEndpointFactory.newRemoteEndpoint(connection,outgoingHandler,getBatchMode());
-            if(LOG_OPEN.isDebugEnabled())
-                LOG_OPEN.debug("[{}] {}.open() remote={}",policy.getBehavior(),this.getClass().getSimpleName(),remote);
+            if(LOG_OPEN.isDebugEnabled()) {
+				LOG_OPEN.debug("[{}] {}.open() remote={}",policy.getBehavior(),getClass().getSimpleName(),remote);
+			}
 
             // Open WebSocket
             websocket.openSession(this);
@@ -535,7 +536,7 @@ public class WebSocketSession extends ContainerLifeCycle implements Session, Rem
     }
 
     /**
-     * Set the timeout in milliseconds
+     * Set the timeout in milliseconds.
      */
     @Override
     public void setIdleTimeout(long ms)

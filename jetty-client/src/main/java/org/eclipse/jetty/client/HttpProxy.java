@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.client;
 
@@ -89,20 +84,20 @@ public class HttpProxy extends ProxyConfiguration.Proxy
                     @SuppressWarnings("unchecked")
                     Promise<Connection> promise = (Promise<Connection>)context.get(HttpClientTransport.HTTP_CONNECTION_PROMISE_CONTEXT_KEY);
                     Promise<Connection> wrapped = promise;
-                    if (promise instanceof Promise.Wrapper)
-                        wrapped = ((Promise.Wrapper<Connection>)promise).unwrap();
+                    if (promise instanceof Promise.Wrapper) {
+						wrapped = ((Promise.Wrapper<Connection>)promise).unwrap();
+					}
                     if (wrapped instanceof TunnelPromise)
                     {
                         ((TunnelPromise)wrapped).setEndPoint(endPoint);
-                        return connectionFactory.newConnection(endPoint, context);
                     }
                     else
                     {
                         // Replace the promise with the proxy promise that creates the tunnel to the server.
                         CreateTunnelPromise tunnelPromise = new CreateTunnelPromise(connectionFactory, endPoint, promise, context);
                         context.put(HttpClientTransport.HTTP_CONNECTION_PROMISE_CONTEXT_KEY, tunnelPromise);
-                        return connectionFactory.newConnection(endPoint, context);
                     }
+					return connectionFactory.newConnection(endPoint, context);
                 }
                 else
                 {
@@ -210,8 +205,9 @@ public class HttpProxy extends ProxyConfiguration.Proxy
                 // but we need the old Connection linked for the upgrade to do its job.
                 endPoint.setConnection(oldConnection);
                 endPoint.upgrade(newConnection);
-                if (LOG.isDebugEnabled())
-                    LOG.debug("HTTP tunnel established: {} over {}", oldConnection, newConnection);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("HTTP tunnel established: {} over {}", oldConnection, newConnection);
+				}
             }
             catch (Throwable x)
             {

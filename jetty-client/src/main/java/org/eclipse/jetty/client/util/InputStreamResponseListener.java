@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.client.util;
 
@@ -114,8 +109,9 @@ public class InputStreamResponseListener extends Listener.Adapter
     {
         if (content.remaining() == 0)
         {
-            if (LOG.isDebugEnabled())
-                LOG.debug("Skipped empty content {}", content);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Skipped empty content {}", content);
+			}
             callback.succeeded();
             return;
         }
@@ -126,8 +122,9 @@ public class InputStreamResponseListener extends Listener.Adapter
             closed = this.closed;
             if (!closed)
             {
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Queueing content {}", content);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("Queueing content {}", content);
+				}
                 chunks.add(new DeferredContentProvider.Chunk(content, callback));
                 lock.notifyAll();
             }
@@ -135,8 +132,9 @@ public class InputStreamResponseListener extends Listener.Adapter
 
         if (closed)
         {
-            if (LOG.isDebugEnabled())
-                LOG.debug("InputStream closed, ignored content {}", content);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("InputStream closed, ignored content {}", content);
+			}
             callback.failed(new AsynchronousCloseException());
         }
     }
@@ -146,13 +144,15 @@ public class InputStreamResponseListener extends Listener.Adapter
     {
         synchronized (lock)
         {
-            if (!closed)
-                chunks.add(EOF);
+            if (!closed) {
+				chunks.add(EOF);
+			}
             lock.notifyAll();
         }
 
-        if (LOG.isDebugEnabled())
-            LOG.debug("End of content");
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("End of content");
+		}
     }
 
     @Override
@@ -161,15 +161,17 @@ public class InputStreamResponseListener extends Listener.Adapter
         List<Callback> callbacks;
         synchronized (lock)
         {
-            if (this.failure != null)
-                return;
+            if (this.failure != null) {
+				return;
+			}
             this.failure = failure;
             callbacks = drain();
             lock.notifyAll();
         }
 
-        if (LOG.isDebugEnabled())
-            LOG.debug("Content failure", failure);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Content failure", failure);
+		}
 
         callbacks.forEach(callback -> callback.failed(failure));
     }
@@ -195,10 +197,11 @@ public class InputStreamResponseListener extends Listener.Adapter
 
         if (LOG.isDebugEnabled())
         {
-            if (failure == null)
-                LOG.debug("Result success");
-            else
-                LOG.debug("Result failure", failure);
+            if (failure != null) {
+				LOG.debug("Result failure", failure);
+			} else {
+				LOG.debug("Result success");
+			}
         }
 
         callbacks.forEach(callback -> callback.failed(failure));
@@ -220,13 +223,15 @@ public class InputStreamResponseListener extends Listener.Adapter
     public Response get(long timeout, TimeUnit unit) throws InterruptedException, TimeoutException, ExecutionException
     {
         boolean expired = !responseLatch.await(timeout, unit);
-        if (expired)
-            throw new TimeoutException();
+        if (expired) {
+			throw new TimeoutException();
+		}
         synchronized (lock)
         {
             // If the request failed there is no response.
-            if (response == null)
-                throw new ExecutionException(failure);
+            if (response == null) {
+				throw new ExecutionException(failure);
+			}
             return response;
         }
     }
@@ -246,8 +251,9 @@ public class InputStreamResponseListener extends Listener.Adapter
     public Result await(long timeout, TimeUnit unit) throws InterruptedException, TimeoutException
     {
         boolean expired = !resultLatch.await(timeout, unit);
-        if (expired)
-            throw new TimeoutException();
+        if (expired) {
+			throw new TimeoutException();
+		}
         synchronized (lock)
         {
             return result;
@@ -264,8 +270,9 @@ public class InputStreamResponseListener extends Listener.Adapter
     public InputStream getInputStream()
     {
         InputStream result = new Input();
-        if (stream.compareAndSet(null, result))
-            return result;
+        if (stream.compareAndSet(null, result)) {
+			return result;
+		}
         return IO.getClosedStream();
     }
 
@@ -277,8 +284,9 @@ public class InputStreamResponseListener extends Listener.Adapter
             while (true)
             {
                 DeferredContentProvider.Chunk chunk = chunks.peek();
-                if (chunk == null || chunk == EOF)
-                    break;
+                if (chunk == null || chunk == EOF) {
+					break;
+				}
                 callbacks.add(chunk.callback);
                 chunks.poll();
             }
@@ -293,8 +301,9 @@ public class InputStreamResponseListener extends Listener.Adapter
         {
             byte[] tmp = new byte[1];
             int read = read(tmp);
-            if (read < 0)
-                return read;
+            if (read < 0) {
+				return read;
+			}
             return tmp[0] & 0xFF;
         }
 
@@ -311,17 +320,21 @@ public class InputStreamResponseListener extends Listener.Adapter
                     while (true)
                     {
                         chunk = chunks.peek();
-                        if (chunk == EOF)
-                            return -1;
+                        if (chunk == EOF) {
+							return -1;
+						}
 
-                        if (chunk != null)
-                            break;
+                        if (chunk != null) {
+							break;
+						}
 
-                        if (failure != null)
-                            throw toIOException(failure);
+                        if (failure != null) {
+							throw toIOException(failure);
+						}
 
-                        if (closed)
-                            throw new AsynchronousCloseException();
+                        if (closed) {
+							throw new AsynchronousCloseException();
+						}
 
                         lock.wait();
                     }
@@ -335,8 +348,9 @@ public class InputStreamResponseListener extends Listener.Adapter
                         chunks.poll();
                     }
                 }
-                if (callback != null)
-                    callback.succeeded();
+                if (callback != null) {
+					callback.succeeded();
+				}
                 return result;
             }
             catch (InterruptedException x)
@@ -347,10 +361,11 @@ public class InputStreamResponseListener extends Listener.Adapter
 
         private IOException toIOException(Throwable failure)
         {
-            if (failure instanceof IOException)
-                return (IOException)failure;
-            else
-                return new IOException(failure);
+            if (failure instanceof IOException) {
+				return (IOException)failure;
+			} else {
+				return new IOException(failure);
+			}
         }
 
         @Override
@@ -359,15 +374,17 @@ public class InputStreamResponseListener extends Listener.Adapter
             List<Callback> callbacks;
             synchronized (lock)
             {
-                if (closed)
-                    return;
+                if (closed) {
+					return;
+				}
                 closed = true;
                 callbacks = drain();
                 lock.notifyAll();
             }
 
-            if (LOG.isDebugEnabled())
-                LOG.debug("InputStream close");
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("InputStream close");
+			}
 
             Throwable failure = new AsynchronousCloseException();
             callbacks.forEach(callback -> callback.failed(failure));

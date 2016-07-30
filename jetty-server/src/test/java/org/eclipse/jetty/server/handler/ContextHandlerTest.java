@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server.handler;
 
@@ -470,8 +465,9 @@ public class ContextHandlerTest
     {
         File tmpDir = new File( System.getProperty( "basedir",".") + "/target/tmp/ContextHandlerTest" );
         tmpDir=tmpDir.getCanonicalFile();
-        if (!tmpDir.exists())
-            Assert.assertTrue(tmpDir.mkdirs());
+        if (!tmpDir.exists()) {
+			Assert.assertTrue(tmpDir.mkdirs());
+		}
         File tmp = File.createTempFile("cht",null, tmpDir );
         Assert.assertTrue(tmp.delete());
         Assert.assertTrue(tmp.mkdir());
@@ -498,10 +494,11 @@ public class ContextHandlerTest
         for(String host : requestHosts)
         {
             connector.getResponses("GET / HTTP/1.1\n" + "Host: "+host+"\nConnection:close\n\n");
-            if(succeed)
-                Assert.assertTrue("'" + host + "' should have been handled.", handler.isHandled());
-            else
-                Assert.assertFalse("'" + host + "' should not have been handled.", handler.isHandled());
+            if(succeed) {
+				Assert.assertTrue("'" + host + "' should have been handled.", handler.isHandled());
+			} else {
+				Assert.assertFalse("'" + host + "' should not have been handled.", handler.isHandled());
+			}
             handler.reset();
         }
 

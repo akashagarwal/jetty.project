@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.client;
 
@@ -40,8 +35,9 @@ public abstract class PoolingHttpDestination<C extends Connection> extends HttpD
         this.connectionPool = newConnectionPool(client);
         addBean(connectionPool);
         Sweeper sweeper = client.getBean(Sweeper.class);
-        if (sweeper != null)
-            sweeper.offer(connectionPool);
+        if (sweeper != null) {
+			sweeper.offer(connectionPool);
+		}
     }
 
     @Override
@@ -52,8 +48,9 @@ public abstract class PoolingHttpDestination<C extends Connection> extends HttpD
         addBean(connectionPool);
         super.doStart();
         Sweeper sweeper = client.getBean(Sweeper.class);
-        if (sweeper != null)
-            sweeper.offer(connectionPool);
+        if (sweeper != null) {
+			sweeper.offer(connectionPool);
+		}
     }
 
     @Override
@@ -61,8 +58,9 @@ public abstract class PoolingHttpDestination<C extends Connection> extends HttpD
     {
         HttpClient client = getHttpClient();
         Sweeper sweeper = client.getBean(Sweeper.class);
-        if (sweeper != null)
-            sweeper.remove(connectionPool);
+        if (sweeper != null) {
+			sweeper.remove(connectionPool);
+		}
         super.doStop();
         removeBean(connectionPool);
     }
@@ -92,8 +90,9 @@ public abstract class PoolingHttpDestination<C extends Connection> extends HttpD
 
     public void send()
     {
-        if (getHttpExchanges().isEmpty())
-            return;
+        if (getHttpExchanges().isEmpty()) {
+			return;
+		}
         process();
     }
 
@@ -108,11 +107,13 @@ public abstract class PoolingHttpDestination<C extends Connection> extends HttpD
         while (true)
         {
             C connection = acquire();
-            if (connection == null)
-                break;
+            if (connection == null) {
+				break;
+			}
             boolean proceed = process(connection);
-            if (!proceed)
-                break;
+            if (!proceed) {
+				break;
+			}
         }
     }
 
@@ -130,16 +131,19 @@ public abstract class PoolingHttpDestination<C extends Connection> extends HttpD
     {
         HttpClient client = getHttpClient();
         final HttpExchange exchange = getHttpExchanges().poll();
-        if (LOG.isDebugEnabled())
-            LOG.debug("Processing exchange {} on {} of {}", exchange, connection, this);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Processing exchange {} on {} of {}", exchange, connection, this);
+		}
         if (exchange == null)
         {
-            if (!connectionPool.release(connection))
-                connection.close();
+            if (!connectionPool.release(connection)) {
+				connection.close();
+			}
             if (!client.isRunning())
             {
-                if (LOG.isDebugEnabled())
-                    LOG.debug("{} is stopping", client);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("{} is stopping", client);
+				}
                 connection.close();
             }
             return false;
@@ -150,11 +154,13 @@ public abstract class PoolingHttpDestination<C extends Connection> extends HttpD
             Throwable cause = request.getAbortCause();
             if (cause != null)
             {
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Aborted before processing {}: {}", exchange, cause);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("Aborted before processing {}: {}", exchange, cause);
+				}
                 // Won't use this connection, release it back.
-                if (!connectionPool.release(connection))
-                    connection.close();
+                if (!connectionPool.release(connection)) {
+					connection.close();
+				}
                 // It may happen that the request is aborted before the exchange
                 // is created. Aborting the exchange a second time will result in
                 // a no-operation, so we just abort here to cover that edge case.
@@ -165,13 +171,12 @@ public abstract class PoolingHttpDestination<C extends Connection> extends HttpD
                 SendFailure result = send(connection, exchange);
                 if (result != null)
                 {
-                    if (LOG.isDebugEnabled())
-                        LOG.debug("Send failed {} for {}", result, exchange);
-                    if (result.retry)
-                    {
-                        if (enqueue(getHttpExchanges(), exchange))
-                            return true;
-                    }
+                    if (LOG.isDebugEnabled()) {
+						LOG.debug("Send failed {} for {}", result, exchange);
+					}
+                    if (result.retry && enqueue(getHttpExchanges(), exchange)) {
+						return true;
+					}
 
                     request.abort(result.failure);
                 }
@@ -187,28 +192,28 @@ public abstract class PoolingHttpDestination<C extends Connection> extends HttpD
     {
         @SuppressWarnings("unchecked")
         C connection = (C)c;
-        if (LOG.isDebugEnabled())
-            LOG.debug("Released {}", connection);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Released {}", connection);
+		}
         HttpClient client = getHttpClient();
         if (client.isRunning())
         {
             if (connectionPool.isActive(connection))
             {
-                if (connectionPool.release(connection))
-                    send();
-                else
-                    connection.close();
-            }
-            else
-            {
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Released explicit {}", connection);
-            }
+                if (connectionPool.release(connection)) {
+					send();
+				} else {
+					connection.close();
+				}
+            } else if (LOG.isDebugEnabled()) {
+				LOG.debug("Released explicit {}", connection);
+			}
         }
         else
         {
-            if (LOG.isDebugEnabled())
-                LOG.debug("{} is stopped", client);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("{} is stopped", client);
+			}
             connection.close();
         }
     }
@@ -232,15 +237,12 @@ public abstract class PoolingHttpDestination<C extends Connection> extends HttpD
                 // in HttpClient and will be used for other requests.
                 getHttpClient().removeDestination(this);
             }
-        }
-        else
-        {
-            // We need to execute queued requests even if this connection failed.
-            // We may create a connection that is not needed, but it will eventually
-            // idle timeout, so no worries.
-            if (removed)
-                process();
-        }
+        } else // We need to execute queued requests even if this connection failed.
+		// We may create a connection that is not needed, but it will eventually
+		// idle timeout, so no worries.
+		if (removed) {
+			process();
+		}
     }
 
     public void close()

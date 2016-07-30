@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.client;
 
@@ -41,7 +36,7 @@ import org.eclipse.jetty.websocket.api.UpgradeRequest;
 import org.eclipse.jetty.websocket.api.extensions.ExtensionConfig;
 
 /**
- * Allowing a generate from a UpgradeRequest
+ * Allowing a generate from a UpgradeRequest.
  */
 public class ClientUpgradeRequest extends UpgradeRequest
 {
@@ -157,7 +152,7 @@ public class ClientUpgradeRequest extends UpgradeRequest
 
         // Cookies
         List<HttpCookie> cookies = getCookies();
-        if ((cookies != null) && (cookies.size() > 0))
+        if (cookies != null && cookies.size() > 0)
         {
             request.append("Cookie: ");
             boolean needDelim = false;
@@ -260,8 +255,7 @@ public class ClientUpgradeRequest extends UpgradeRequest
                 else
                 {
                     // break link to original
-                    List<String> copy = new ArrayList<>();
-                    copy.addAll(values);
+                    List<String> copy = new ArrayList<String>(values);
                     pmap.put(key,copy);
                 }
             }

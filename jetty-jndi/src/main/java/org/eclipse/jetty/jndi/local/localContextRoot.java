@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.jndi.local;
 
@@ -48,7 +43,7 @@ import org.eclipse.jetty.util.log.Logger;
 
 /**
  *
- * localContext
+ * LocalContext
  *
  * Implementation of the delegate for InitialContext for the local namespace.
  *
@@ -58,8 +53,8 @@ import org.eclipse.jetty.util.log.Logger;
  */
 public class localContextRoot implements Context
 {
-    private final static Logger __log=NamingUtil.__log;
-    protected final static NamingContext __root = new NamingRoot();
+    private static final Logger __log=NamingUtil.__log;
+    protected static final NamingContext __root = new NamingRoot();
     private final Hashtable<String,Object> _env;
 
 
@@ -91,7 +86,7 @@ public class localContextRoot implements Context
     }
 
 
-    /*
+    /**
      * Root has to use the localContextRoot's  env for all operations.
      * So, if createSubcontext in the root, use the env of the localContextRoot.
      * If lookup binding in the root, use the env of the localContextRoot.
@@ -113,32 +108,17 @@ public class localContextRoot implements Context
         _env = new Hashtable(env);
     }
 
-    /**
-     *
-     *
-     * @see javax.naming.Context#close()
-     */
     public void close() throws NamingException
     {
 
     }
 
-    /**
-     *
-     *
-     * @see javax.naming.Context#getNameInNamespace()
-     */
     public String getNameInNamespace() throws NamingException
     {
         return "";
     }
 
 
-    /**
-     *
-     *
-     * @see javax.naming.Context#destroySubcontext(javax.naming.Name)
-     */
     public void destroySubcontext(Name name) throws NamingException
     {
         synchronized (__root)
@@ -148,11 +128,6 @@ public class localContextRoot implements Context
     }
 
 
-    /**
-     *
-     *
-     * @see javax.naming.Context#destroySubcontext(java.lang.String)
-     */
     public void destroySubcontext(String name) throws NamingException
     {
         synchronized (__root)
@@ -163,11 +138,6 @@ public class localContextRoot implements Context
     }
 
 
-    /**
-     *
-     *
-     * @see javax.naming.Context#getEnvironment()
-     */
     public Hashtable getEnvironment() throws NamingException
     {
         return _env;
@@ -175,31 +145,30 @@ public class localContextRoot implements Context
 
 
 
-    /**
-     *
-     *
-     * @see javax.naming.Context#unbind(javax.naming.Name)
-     */
     public void unbind(Name name) throws NamingException
     {
         synchronized (__root)
         {
             //__root.unbind(getSuffix(name));
 
-            if (name.size() == 0)
-                return;
+            if (name.size() == 0) {
+				return;
+			}
 
 
-            if (__root.isLocked())
-                throw new NamingException ("This context is immutable");
+            if (__root.isLocked()) {
+				throw new NamingException ("This context is immutable");
+			}
 
             Name cname = __root.toCanonicalName(name);
 
-            if (cname == null)
-                throw new NamingException ("Name is null");
+            if (cname == null) {
+				throw new NamingException ("Name is null");
+			}
 
-            if (cname.size() == 0)
-                throw new NamingException ("Name is empty");
+            if (cname.size() == 0) {
+				throw new NamingException ("Name is empty");
+			}
 
 
             //if no subcontexts, just unbind it
@@ -210,19 +179,22 @@ public class localContextRoot implements Context
             else
             {
                 //walk down the subcontext hierarchy
-                if(__log.isDebugEnabled())__log.debug("Checking for existing binding for name="+cname+" for first element of name="+cname.get(0));
+                if(__log.isDebugEnabled()) {
+					__log.debug("Checking for existing binding for name="+cname+" for first element of name="+cname.get(0));
+				}
 
                 String firstComponent = cname.get(0);
                 Object ctx = null;
 
 
-                if (firstComponent.equals(""))
-                    ctx = this;
-                else
+                if ("".equals(firstComponent)) {
+					ctx = this;
+				} else
                 {
                     Binding  binding = __root.getBinding (name.get(0));
-                    if (binding == null)
-                        throw new NameNotFoundException (name.get(0)+ " is not bound");
+                    if (binding == null) {
+						throw new NameNotFoundException (name.get(0)+ " is not bound");
+					}
 
                     ctx = binding.getObject();
 
@@ -248,9 +220,9 @@ public class localContextRoot implements Context
                 if (ctx instanceof Context)
                 {
                     ((Context)ctx).unbind (cname.getSuffix(1));
-                }
-                else
-                    throw new NotContextException ("Object bound at "+firstComponent +" is not a Context");
+                } else {
+					throw new NotContextException ("Object bound at "+firstComponent +" is not a Context");
+				}
             }
 
 
@@ -258,11 +230,6 @@ public class localContextRoot implements Context
         }
     }
 
-    /**
-     *
-     *
-     * @see javax.naming.Context#unbind(java.lang.String)
-     */
     public void unbind(String name) throws NamingException
     {
         unbind(__root.getNameParser("").parse(getSuffix(name)));
@@ -270,11 +237,6 @@ public class localContextRoot implements Context
 
 
 
-    /**
-     *
-     *
-     * @see javax.naming.Context#lookupLink(java.lang.String)
-     */
     public Object lookupLink(String name) throws NamingException
     {
         synchronized (__root)
@@ -283,11 +245,6 @@ public class localContextRoot implements Context
         }
     }
 
-    /**
-     *
-     *
-     * @see javax.naming.Context#lookupLink(javax.naming.Name)
-     */
     public Object lookupLink(Name name) throws NamingException
     {
         synchronized (__root)
@@ -305,14 +262,16 @@ public class localContextRoot implements Context
                 return ctx;
             }
 
-            if (cname.size() == 0)
-                throw new NamingException ("Name is empty");
+            if (cname.size() == 0) {
+				throw new NamingException ("Name is empty");
+			}
 
             if (cname.size() == 1)
             {
                 Binding binding = __root.getBinding (cname);
-                if (binding == null)
-                    throw new NameNotFoundException();
+                if (binding == null) {
+					throw new NameNotFoundException();
+				}
 
                 Object o = binding.getObject();
 
@@ -347,13 +306,14 @@ public class localContextRoot implements Context
             String firstComponent = cname.get(0);
             Object ctx = null;
 
-            if (firstComponent.equals(""))
-                ctx = this;
-            else
+            if ("".equals(firstComponent)) {
+				ctx = this;
+			} else
             {
                 Binding binding = __root.getBinding (firstComponent);
-                if (binding == null)
-                    throw new NameNotFoundException ();
+                if (binding == null) {
+					throw new NameNotFoundException ();
+				}
 
                 ctx = binding.getObject();
 
@@ -376,8 +336,9 @@ public class localContextRoot implements Context
                 }
             }
 
-            if (!(ctx instanceof Context))
-                throw new NotContextException();
+            if (!(ctx instanceof Context)) {
+				throw new NotContextException();
+			}
 
             return ((Context)ctx).lookup (cname.getSuffix(1));
 
@@ -386,32 +347,24 @@ public class localContextRoot implements Context
     }
 
 
-    /**
-     *
-     *
-     * @see javax.naming.Context#removeFromEnvironment(java.lang.String)
-     */
     public Object removeFromEnvironment(String propName) throws NamingException
     {
         return _env.remove(propName);
     }
 
 
-    /**
-     *
-     *
-     * @see javax.naming.Context#lookup(javax.naming.Name)
-     */
     public Object lookup(Name name) throws NamingException
     {
         synchronized (__root)
         {
             //return __root.lookup(getSuffix(name));
 
-            if(__log.isDebugEnabled())__log.debug("Looking up name=\""+name+"\"");
+            if(__log.isDebugEnabled()) {
+				__log.debug("Looking up name=\""+name+"\"");
+			}
             Name cname = __root.toCanonicalName(name);
 
-            if ((cname == null) || (cname.size() == 0))
+            if (cname == null || cname.size() == 0)
             {
                 __log.debug("Null or empty name, returning copy of this context");
                 NamingContext ctx = new NamingContext (_env, null, null, __root.getNameParser(""));
@@ -439,9 +392,9 @@ public class localContextRoot implements Context
                 {
                     //if link name starts with ./ it is relative to current context
                     String linkName = ((LinkRef)o).getLinkName();
-                    if (linkName.startsWith("./"))
-                        return lookup (linkName.substring(2));
-                    else
+                    if (linkName.startsWith("./")) {
+						return lookup (linkName.substring(2));
+					} else
                     {
                         //link name is absolute
                         InitialContext ictx = new InitialContext();
@@ -466,9 +419,9 @@ public class localContextRoot implements Context
                             { initCause(e);}
                         };
                     }
-                }
-                else
-                    return o;
+                } else {
+					return o;
+				}
             }
 
             //it is a multipart name, get the first subcontext
@@ -476,9 +429,9 @@ public class localContextRoot implements Context
             String firstComponent = cname.get(0);
             Object ctx = null;
 
-            if (firstComponent.equals(""))
-                ctx = this;
-            else
+            if ("".equals(firstComponent)) {
+				ctx = this;
+			} else
             {
 
                 Binding binding = __root.getBinding (firstComponent);
@@ -512,8 +465,9 @@ public class localContextRoot implements Context
                     }
                 }
             }
-            if (!(ctx instanceof Context))
-                throw new NotContextException();
+            if (!(ctx instanceof Context)) {
+				throw new NotContextException();
+			}
 
             return ((Context)ctx).lookup (cname.getSuffix(1));
 
@@ -521,11 +475,6 @@ public class localContextRoot implements Context
     }
 
 
-    /**
-     *
-     *
-     * @see javax.naming.Context#lookup(java.lang.String)
-     */
     public Object lookup(String name) throws NamingException
     {
         synchronized (__root)
@@ -535,11 +484,6 @@ public class localContextRoot implements Context
     }
 
 
-    /**
-     *
-     *
-     * @see javax.naming.Context#bind(java.lang.String, java.lang.Object)
-     */
     public void bind(String name, Object obj) throws NamingException
     {
         synchronized (__root)
@@ -550,11 +494,6 @@ public class localContextRoot implements Context
     }
 
 
-    /**
-     *
-     *
-     * @see javax.naming.Context#bind(javax.naming.Name, java.lang.Object)
-     */
     public void bind(Name name, Object obj) throws NamingException
     {
         synchronized (__root)
@@ -562,16 +501,19 @@ public class localContextRoot implements Context
            // __root.bind(getSuffix(name), obj);
 
 
-            if (__root.isLocked())
-                throw new NamingException ("This context is immutable");
+            if (__root.isLocked()) {
+				throw new NamingException ("This context is immutable");
+			}
 
             Name cname = __root.toCanonicalName(name);
 
-            if (cname == null)
-                throw new NamingException ("Name is null");
+            if (cname == null) {
+				throw new NamingException ("Name is null");
+			}
 
-            if (cname.size() == 0)
-                throw new NamingException ("Name is empty");
+            if (cname.size() == 0) {
+				throw new NamingException ("Name is empty");
+			}
 
 
             //if no subcontexts, just bind it
@@ -590,7 +532,9 @@ public class localContextRoot implements Context
             }
             else
             {
-                if(__log.isDebugEnabled())__log.debug("Checking for existing binding for name="+cname+" for first element of name="+cname.get(0));
+                if(__log.isDebugEnabled()) {
+					__log.debug("Checking for existing binding for name="+cname+" for first element of name="+cname.get(0));
+				}
 
                 //walk down the subcontext hierarchy
                 //need to ignore trailing empty "" name components
@@ -598,14 +542,15 @@ public class localContextRoot implements Context
                 String firstComponent = cname.get(0);
                 Object ctx = null;
 
-                if (firstComponent.equals(""))
-                    ctx = this;
-                else
+                if ("".equals(firstComponent)) {
+					ctx = this;
+				} else
                 {
 
                     Binding  binding = __root.getBinding (firstComponent);
-                    if (binding == null)
-                        throw new NameNotFoundException (firstComponent+ " is not bound");
+                    if (binding == null) {
+						throw new NameNotFoundException (firstComponent+ " is not bound");
+					}
 
                     ctx = binding.getObject();
 
@@ -632,18 +577,13 @@ public class localContextRoot implements Context
                 if (ctx instanceof Context)
                 {
                     ((Context)ctx).bind (cname.getSuffix(1), obj);
-                }
-                else
-                    throw new NotContextException ("Object bound at "+firstComponent +" is not a Context");
+                } else {
+					throw new NotContextException ("Object bound at "+firstComponent +" is not a Context");
+				}
             }
         }
     }
 
-    /**
-     *
-     *
-     * @see javax.naming.Context#rebind(javax.naming.Name, java.lang.Object)
-     */
     public void rebind(Name name, Object obj) throws NamingException
     {
         synchronized (__root)
@@ -651,16 +591,19 @@ public class localContextRoot implements Context
             //__root.rebind(getSuffix(name), obj);
 
 
-            if (__root.isLocked())
-                throw new NamingException ("This context is immutable");
+            if (__root.isLocked()) {
+				throw new NamingException ("This context is immutable");
+			}
 
             Name cname = __root.toCanonicalName(name);
 
-            if (cname == null)
-                throw new NamingException ("Name is null");
+            if (cname == null) {
+				throw new NamingException ("Name is null");
+			}
 
-            if (cname.size() == 0)
-                throw new NamingException ("Name is empty");
+            if (cname.size() == 0) {
+				throw new NamingException ("Name is empty");
+			}
 
 
             //if no subcontexts, just bind it
@@ -679,19 +622,22 @@ public class localContextRoot implements Context
             else
             {
                 //walk down the subcontext hierarchy
-                if(__log.isDebugEnabled())__log.debug("Checking for existing binding for name="+cname+" for first element of name="+cname.get(0));
+                if(__log.isDebugEnabled()) {
+					__log.debug("Checking for existing binding for name="+cname+" for first element of name="+cname.get(0));
+				}
 
                 String firstComponent = cname.get(0);
                 Object ctx = null;
 
 
-                if (firstComponent.equals(""))
-                    ctx = this;
-                else
+                if ("".equals(firstComponent)) {
+					ctx = this;
+				} else
                 {
                     Binding  binding = __root.getBinding (name.get(0));
-                    if (binding == null)
-                        throw new NameNotFoundException (name.get(0)+ " is not bound");
+                    if (binding == null) {
+						throw new NameNotFoundException (name.get(0)+ " is not bound");
+					}
 
                     ctx = binding.getObject();
 
@@ -718,18 +664,13 @@ public class localContextRoot implements Context
                 if (ctx instanceof Context)
                 {
                     ((Context)ctx).rebind (cname.getSuffix(1), obj);
-                }
-                else
-                    throw new NotContextException ("Object bound at "+firstComponent +" is not a Context");
+                } else {
+					throw new NotContextException ("Object bound at "+firstComponent +" is not a Context");
+				}
             }
         }
     }
 
-    /**
-     *
-     *
-     * @see javax.naming.Context#rebind(java.lang.String, java.lang.Object)
-     */
     public void rebind(String name, Object obj) throws NamingException
     {
         synchronized (__root)
@@ -737,11 +678,6 @@ public class localContextRoot implements Context
             rebind(__root.getNameParser("").parse(getSuffix(name)), obj);
         }
     }
-    /**
-     *
-     *
-     * @see javax.naming.Context#rename(javax.naming.Name, javax.naming.Name)
-     */
     public void rename(Name oldName, Name newName) throws NamingException
     {
         synchronized (__root)
@@ -750,11 +686,6 @@ public class localContextRoot implements Context
         }
     }
 
-    /**
-     *
-     *
-     * @see javax.naming.Context#rename(java.lang.String, java.lang.String)
-     */
     public void rename(String oldName, String newName) throws NamingException
     {
         synchronized (__root)
@@ -763,11 +694,6 @@ public class localContextRoot implements Context
         }
     }
 
-    /**
-     *
-     *
-     * @see javax.naming.Context#createSubcontext(java.lang.String)
-     */
     public Context createSubcontext(String name) throws NamingException
     {
         synchronized (__root)
@@ -784,11 +710,6 @@ public class localContextRoot implements Context
         }
     }
 
-    /**
-     *
-     *
-     * @see javax.naming.Context#createSubcontext(javax.naming.Name)
-     */
     public Context createSubcontext(Name name) throws NamingException
     {
         synchronized (__root)
@@ -813,17 +734,20 @@ public class localContextRoot implements Context
 
             Name cname = __root.toCanonicalName (name);
 
-            if (cname == null)
-                throw new NamingException ("Name is null");
-            if (cname.size() == 0)
-                throw new NamingException ("Name is empty");
+            if (cname == null) {
+				throw new NamingException ("Name is null");
+			}
+            if (cname.size() == 0) {
+				throw new NamingException ("Name is empty");
+			}
 
             if (cname.size() == 1)
             {
                 //not permitted to bind if something already bound at that name
                 Binding binding = __root.getBinding (cname);
-                if (binding != null)
-                    throw new NameAlreadyBoundException (cname.toString());
+                if (binding != null) {
+					throw new NameAlreadyBoundException (cname.toString());
+				}
 
                 //make a new naming context with the root as the parent
                 Context ctx = new NamingContext ((Hashtable)_env.clone(), cname.get(0), __root,  __root.getNameParser(""));
@@ -838,20 +762,23 @@ public class localContextRoot implements Context
             String firstComponent = cname.get(0);
             Object ctx = null;
 
-            if (firstComponent.equals(""))
-                ctx = this;
-            else
+            if ("".equals(firstComponent)) {
+				ctx = this;
+			} else
             {
                 Binding binding = __root.getBinding (firstComponent);
-                if (binding == null)
-                    throw new NameNotFoundException (firstComponent + " is not bound");
+                if (binding == null) {
+					throw new NameNotFoundException (firstComponent + " is not bound");
+				}
 
                 ctx = binding.getObject();
 
                 if (ctx instanceof Reference)
                 {
                     //deference the object
-                    if(__log.isDebugEnabled())__log.debug("Object bound at "+firstComponent +" is a Reference");
+                    if(__log.isDebugEnabled()) {
+						__log.debug("Object bound at "+firstComponent +" is a Reference");
+					}
                     try
                     {
                         ctx = NamingManager.getObjectInstance(ctx, getNameParser("").parse(firstComponent), __root, _env);
@@ -871,38 +798,23 @@ public class localContextRoot implements Context
             if (ctx instanceof Context)
             {
                 return ((Context)ctx).createSubcontext (cname.getSuffix(1));
-            }
-            else
-                throw new NotContextException (firstComponent +" is not a Context");
+            } else {
+				throw new NotContextException (firstComponent +" is not a Context");
+			}
         }
     }
 
 
-    /**
-     *
-     *
-     * @see javax.naming.Context#getNameParser(java.lang.String)
-     */
     public NameParser getNameParser(String name) throws NamingException
     {
         return __root.getNameParser(name);
     }
 
-    /**
-     *
-     *
-     * @see javax.naming.Context#getNameParser(javax.naming.Name)
-     */
     public NameParser getNameParser(Name name) throws NamingException
     {
         return __root.getNameParser(name);
     }
 
-    /**
-     *
-     *
-     * @see javax.naming.Context#list(java.lang.String)
-     */
     public NamingEnumeration list(String name) throws NamingException
     {
         synchronized (__root)
@@ -912,11 +824,6 @@ public class localContextRoot implements Context
     }
 
 
-    /**
-     *
-     *
-     * @see javax.naming.Context#list(javax.naming.Name)
-     */
     public NamingEnumeration list(Name name) throws NamingException
     {
         synchronized (__root)
@@ -944,20 +851,23 @@ public class localContextRoot implements Context
             String firstComponent = cname.get(0);
             Object ctx = null;
 
-            if (firstComponent.equals(""))
-                ctx = this;
-            else
+            if ("".equals(firstComponent)) {
+				ctx = this;
+			} else
             {
                 Binding binding = __root.getBinding (firstComponent);
-                if (binding == null)
-                    throw new NameNotFoundException ();
+                if (binding == null) {
+					throw new NameNotFoundException ();
+				}
 
                 ctx = binding.getObject();
 
                 if (ctx instanceof Reference)
                 {
                     //deference the object
-                    if(__log.isDebugEnabled())__log.debug("Dereferencing Reference for "+name.get(0));
+                    if(__log.isDebugEnabled()) {
+						__log.debug("Dereferencing Reference for "+name.get(0));
+					}
                     try
                     {
                         ctx = NamingManager.getObjectInstance(ctx, getNameParser("").parse(firstComponent), __root, _env);
@@ -974,19 +884,15 @@ public class localContextRoot implements Context
                 }
             }
 
-            if (!(ctx instanceof Context))
-                throw new NotContextException();
+            if (!(ctx instanceof Context)) {
+				throw new NotContextException();
+			}
 
             return ((Context)ctx).list (cname.getSuffix(1));
 
         }
     }
 
-    /**
-     *
-     *
-     * @see javax.naming.Context#listBindings(javax.naming.Name)
-     */
     public NamingEnumeration listBindings(Name name) throws NamingException
     {
         synchronized (__root)
@@ -1014,14 +920,15 @@ public class localContextRoot implements Context
 
             //if a name has a leading "/" it is parsed as "" so ignore it by staying
             //at this level in the tree
-            if (firstComponent.equals(""))
-                ctx = this;
-            else
+            if ("".equals(firstComponent)) {
+				ctx = this;
+			} else
             {
                 //it is a non-empty name component
                 Binding binding = __root.getBinding (firstComponent);
-                if (binding == null)
-                    throw new NameNotFoundException ();
+                if (binding == null) {
+					throw new NameNotFoundException ();
+				}
 
                 ctx = binding.getObject();
 
@@ -1044,8 +951,9 @@ public class localContextRoot implements Context
                 }
             }
 
-            if (!(ctx instanceof Context))
-                throw new NotContextException();
+            if (!(ctx instanceof Context)) {
+				throw new NotContextException();
+			}
 
             return ((Context)ctx).listBindings (cname.getSuffix(1));
 
@@ -1053,11 +961,6 @@ public class localContextRoot implements Context
     }
 
 
-    /**
-     *
-     *
-     * @see javax.naming.Context#listBindings(java.lang.String)
-     */
     public NamingEnumeration listBindings(String name) throws NamingException
     {
         synchronized (__root)
@@ -1067,35 +970,18 @@ public class localContextRoot implements Context
     }
 
 
-    /**
-     *
-     *
-     * @see javax.naming.Context#addToEnvironment(java.lang.String,
-     *      java.lang.Object)
-     */
     public Object addToEnvironment(String propName, Object propVal)
             throws NamingException
     {
         return _env.put(propName, propVal);
     }
 
-    /**
-     *
-     *
-     * @see javax.naming.Context#composeName(java.lang.String, java.lang.String)
-     */
     public String composeName(String name, String prefix)
             throws NamingException
     {
         return __root.composeName(name, prefix);
     }
 
-    /**
-     *
-     *
-     * @see javax.naming.Context#composeName(javax.naming.Name,
-     *      javax.naming.Name)
-     */
     public Name composeName(Name name, Name prefix) throws NamingException
     {
         return __root.composeName(name, prefix);

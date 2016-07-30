@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.client;
 
@@ -62,8 +57,9 @@ public class HttpClientChunkedContentTest
     @After
     public void dispose() throws Exception
     {
-        if (client != null)
-            client.stop();
+        if (client != null) {
+			client.stop();
+		}
     }
 
     @Test
@@ -94,18 +90,13 @@ public class HttpClientChunkedContentTest
                 consumeRequestHeaders(socket);
 
                 OutputStream output = socket.getOutputStream();
-                String headers = "" +
-                        "HTTP/1.1 200 OK\r\n" +
-                        "Transfer-Encoding: chunked\r\n" +
-                        "\r\n";
+                String headers = "HTTP/1.1 200 OK\r\n" + "Transfer-Encoding: chunked\r\n" + "\r\n";
                 output.write(headers.getBytes(StandardCharsets.UTF_8));
                 output.flush();
 
                 Thread.sleep(1000);
 
-                String terminal = "" +
-                        "0\r\n" +
-                        "\r\n";
+                String terminal = "0\r\n" + "\r\n";
                 output.write(terminal.getBytes(StandardCharsets.UTF_8));
                 output.flush();
 
@@ -137,10 +128,11 @@ public class HttpClientChunkedContentTest
                         @Override
                         public void onContent(Response response, ByteBuffer content, Callback callback)
                         {
-                            if (callbackRef.compareAndSet(null, callback))
-                                firstContentLatch.countDown();
-                            else
-                                callback.succeeded();
+                            if (callbackRef.compareAndSet(null, callback)) {
+								firstContentLatch.countDown();
+							} else {
+								callback.succeeded();
+							}
                         }
                     })
                     .timeout(5, TimeUnit.SECONDS)
@@ -159,14 +151,7 @@ public class HttpClientChunkedContentTest
                 consumeRequestHeaders(socket);
 
                 OutputStream output = socket.getOutputStream();
-                String response = "" +
-                        "HTTP/1.1 200 OK\r\n" +
-                        "Transfer-Encoding: chunked\r\n" +
-                        "\r\n" +
-                        "8\r\n" +
-                        "01234567\r\n" +
-                        "0\r\n" +
-                        "\r\n";
+                String response = "HTTP/1.1 200 OK\r\n" + "Transfer-Encoding: chunked\r\n" + "\r\n" + "8\r\n" + "01234567\r\n" + "0\r\n" + "\r\n";
                 output.write(response.getBytes(StandardCharsets.UTF_8));
                 output.flush();
 
@@ -205,12 +190,14 @@ public class HttpClientChunkedContentTest
         while (true)
         {
             int read = input.read();
-            if (read == '\r' || read == '\n')
-                ++crlfs;
-            else
-                crlfs = 0;
-            if (crlfs == 4)
-                break;
+            if (read == '\r' || read == '\n') {
+				++crlfs;
+			} else {
+				crlfs = 0;
+			}
+            if (crlfs == 4) {
+				break;
+			}
         }
     }
 }

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.deploy;
 
@@ -83,12 +78,12 @@ public class DeploymentManager extends ContainerLifeCycle
         private App app;
 
         /**
-         * The lifecycle node location of this App
+         * The lifecycle node location of this App.
          */
         private Node lifecyleNode;
 
         /**
-         * Tracking the various AppState timestamps (in system milliseconds)
+         * Tracking the various AppState timestamps (in system milliseconds).
          */
         private Map<Node, Long> stateTimestamps = new HashMap<Node, Long>();
 
@@ -144,7 +139,7 @@ public class DeploymentManager extends ContainerLifeCycle
         if (isRunning() && _defaultLifeCycleGoal != null)
         {
             // Immediately attempt to go to default lifecycle state
-            this.requestAppGoal(entry,_defaultLifeCycleGoal);
+            requestAppGoal(entry,_defaultLifeCycleGoal);
         }
     }
 
@@ -156,14 +151,17 @@ public class DeploymentManager extends ContainerLifeCycle
      */
     public void setAppProviders(Collection<AppProvider> providers)
     {
-        if (isRunning())
-            throw new IllegalStateException();
+        if (isRunning()) {
+			throw new IllegalStateException();
+		}
         
         _providers.clear();
         removeBeans();
-        for (AppProvider provider:providers)
-            if (_providers.add(provider))
-                addBean(provider);
+        for (AppProvider provider:providers) {
+			if (_providers.add(provider)) {
+				addBean(provider);
+			}
+		}
     }
 
     @ManagedAttribute("Application Providers")
@@ -174,20 +172,24 @@ public class DeploymentManager extends ContainerLifeCycle
     
     public void addAppProvider(AppProvider provider)
     {
-        if (isRunning())
-            throw new IllegalStateException();
+        if (isRunning()) {
+			throw new IllegalStateException();
+		}
         _providers.add(provider);
         addBean(provider);        
     }
 
     public void setLifeCycleBindings(Collection<AppLifeCycle.Binding> bindings)
     {
-        if (isRunning())
-            throw new IllegalStateException();
-        for (AppLifeCycle.Binding b : _lifecycle.getBindings())
-            _lifecycle.removeBinding(b);
-        for (AppLifeCycle.Binding b : bindings)
-            _lifecycle.addBinding(b);
+        if (isRunning()) {
+			throw new IllegalStateException();
+		}
+        for (AppLifeCycle.Binding b : _lifecycle.getBindings()) {
+			_lifecycle.removeBinding(b);
+		}
+        for (AppLifeCycle.Binding b : bindings) {
+			_lifecycle.addBinding(b);
+		}
     }
 
     public Collection<AppLifeCycle.Binding> getLifeCycleBindings()
@@ -218,8 +220,9 @@ public class DeploymentManager extends ContainerLifeCycle
     @Override
     protected void doStart() throws Exception
     {
-        if (getContexts()==null)
-            throw new IllegalStateException("No Contexts");
+        if (getContexts()==null) {
+			throw new IllegalStateException("No Contexts");
+		}
         
         if (_useStandardBindings)
         {
@@ -276,11 +279,11 @@ public class DeploymentManager extends ContainerLifeCycle
     public App getAppByOriginId(String originId)
     {
         AppEntry entry = findAppByOriginId(originId);
-        if (entry == null)
+        if (entry != null)
         {
-            return null;
+            return entry.app;
         }
-        return entry.app;
+        return null;
     }
 
     public Collection<AppEntry> getAppEntries()
@@ -385,11 +388,11 @@ public class DeploymentManager extends ContainerLifeCycle
 
     public Server getServer()
     {
-        if (_contexts == null)
+        if (_contexts != null)
         {
-            return null;
+            return _contexts.getServer();
         }
-        return _contexts.getServer();
+        return null;
     }
 
     /**
@@ -406,8 +409,9 @@ public class DeploymentManager extends ContainerLifeCycle
             AppEntry entry = it.next();
             if (entry.app.equals(app))
             {
-                if (! AppLifeCycle.UNDEPLOYED.equals(entry.lifecyleNode.getName()))
-                    requestAppGoal(entry.app,AppLifeCycle.UNDEPLOYED);
+                if (! AppLifeCycle.UNDEPLOYED.equals(entry.lifecyleNode.getName())) {
+					requestAppGoal(entry.app,AppLifeCycle.UNDEPLOYED);
+				}
                 it.remove();
                 LOG.debug("Deployable removed: {}",entry.app);
             }
@@ -416,8 +420,9 @@ public class DeploymentManager extends ContainerLifeCycle
 
     public void removeAppProvider(AppProvider provider)
     {
-        if(_providers.remove(provider))
-            removeBean(provider);
+        if(_providers.remove(provider)) {
+			removeBean(provider);
+		}
         
         try
         {

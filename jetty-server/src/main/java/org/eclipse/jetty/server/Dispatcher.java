@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 
@@ -41,11 +36,11 @@ import org.eclipse.jetty.util.MultiMap;
 
 public class Dispatcher implements RequestDispatcher
 {
-    /** Dispatch include attribute names */
-    public final static String __INCLUDE_PREFIX="javax.servlet.include.";
+    /** Dispatch include attribute names. */
+    public static final String __INCLUDE_PREFIX="javax.servlet.include.";
 
-    /** Dispatch include attribute names */
-    public final static String __FORWARD_PREFIX="javax.servlet.forward.";
+    /** Dispatch include attribute names. */
+    public static final String __FORWARD_PREFIX="javax.servlet.forward.";
 
     private final ContextHandler _contextHandler;
     private final HttpURI _uri;
@@ -84,10 +79,12 @@ public class Dispatcher implements RequestDispatcher
     {
         Request baseRequest=Request.getBaseRequest(request);
 
-        if (!(request instanceof HttpServletRequest))
-            request = new ServletRequestHttpWrapper(request);
-        if (!(response instanceof HttpServletResponse))
-            response = new ServletResponseHttpWrapper(response);
+        if (!(request instanceof HttpServletRequest)) {
+			request = new ServletRequestHttpWrapper(request);
+		}
+        if (!(response instanceof HttpServletResponse)) {
+			response = new ServletResponseHttpWrapper(response);
+		}
 
         final DispatcherType old_type = baseRequest.getDispatcherType();
         final Attributes old_attr=baseRequest.getAttributes();
@@ -110,8 +107,9 @@ public class Dispatcher implements RequestDispatcher
                 attr._pathInfo=_pathInContext;
                 attr._query=_uri.getQuery();
 
-                if (attr._query!=null)
-                    baseRequest.mergeQueryParameters(baseRequest.getQueryString(),attr._query, false);
+                if (attr._query!=null) {
+					baseRequest.mergeQueryParameters(baseRequest.getQueryString(),attr._query, false);
+				}
                 baseRequest.setAttributes(attr);
 
                 _contextHandler.handle(_pathInContext, baseRequest, (HttpServletRequest)request, (HttpServletResponse)response);
@@ -133,10 +131,12 @@ public class Dispatcher implements RequestDispatcher
         Response base_response=baseRequest.getResponse();
         base_response.resetForForward();
 
-        if (!(request instanceof HttpServletRequest))
-            request = new ServletRequestHttpWrapper(request);
-        if (!(response instanceof HttpServletResponse))
-            response = new ServletResponseHttpWrapper(response);
+        if (!(request instanceof HttpServletRequest)) {
+			request = new ServletRequestHttpWrapper(request);
+		}
+        if (!(response instanceof HttpServletResponse)) {
+			response = new ServletResponseHttpWrapper(response);
+		}
 
         final boolean old_handled=baseRequest.isHandled();
 
@@ -191,15 +191,17 @@ public class Dispatcher implements RequestDispatcher
                 baseRequest.setContextPath(_contextHandler.getContextPath());
                 baseRequest.setServletPath(null);
                 baseRequest.setPathInfo(_pathInContext);
-                if (_uri.getQuery()!=null || old_uri.getQuery()!=null)
-                    baseRequest.mergeQueryParameters(old_uri.getQuery(),_uri.getQuery(), true);
+                if (_uri.getQuery()!=null || old_uri.getQuery()!=null) {
+					baseRequest.mergeQueryParameters(old_uri.getQuery(),_uri.getQuery(), true);
+				}
 
                 baseRequest.setAttributes(attr);
 
                 _contextHandler.handle(_pathInContext, baseRequest, (HttpServletRequest)request, (HttpServletResponse)response);
 
-                if (!baseRequest.getHttpChannelState().isAsync())
-                    commitResponse(response,baseRequest);
+                if (!baseRequest.getHttpChannelState().isAsync()) {
+					commitResponse(response,baseRequest);
+				}
             }
         }
         finally
@@ -231,10 +233,11 @@ public class Dispatcher implements RequestDispatcher
         String query=baseRequest.getQueryString();
         if (_uri.hasQuery())
         {
-            if (query==null)
-                query=_uri.getQuery();
-            else
-                query=query+"&"+_uri.getQuery(); // TODO is this correct semantic?
+            if (query!=null) {
+				query=query+"&"+_uri.getQuery(); // TODO is this correct semantic?
+			} else {
+				query=_uri.getQuery();
+			}
         }
 
         HttpURI uri = HttpURI.createHttpURI(request.getScheme(),request.getServerName(),request.getServerPort(),_uri.getPath(),baseRequest.getHttpURI().getParam(),query,null);
@@ -291,26 +294,32 @@ public class Dispatcher implements RequestDispatcher
             _attr=attributes;
         }
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         @Override
         public Object getAttribute(String key)
         {
             if (Dispatcher.this._named==null)
             {
-                if (key.equals(FORWARD_PATH_INFO))
-                    return _pathInfo;
-                if (key.equals(FORWARD_REQUEST_URI))
-                    return _requestURI;
-                if (key.equals(FORWARD_SERVLET_PATH))
-                    return _servletPath;
-                if (key.equals(FORWARD_CONTEXT_PATH))
-                    return _contextPath;
-                if (key.equals(FORWARD_QUERY_STRING))
-                    return _query;
+                if (FORWARD_PATH_INFO.equals(key)) {
+					return _pathInfo;
+				}
+                if (FORWARD_REQUEST_URI.equals(key)) {
+					return _requestURI;
+				}
+                if (FORWARD_SERVLET_PATH.equals(key)) {
+					return _servletPath;
+				}
+                if (FORWARD_CONTEXT_PATH.equals(key)) {
+					return _contextPath;
+				}
+                if (FORWARD_QUERY_STRING.equals(key)) {
+					return _query;
+				}
             }
 
-            if (key.startsWith(__INCLUDE_PREFIX))
-                return null;
+            if (key.startsWith(__INCLUDE_PREFIX)) {
+				return null;
+			}
 
             return _attr.getAttribute(key);
         }
@@ -324,23 +333,26 @@ public class Dispatcher implements RequestDispatcher
             {
                 String name=e.nextElement();
                 if (!name.startsWith(__INCLUDE_PREFIX) &&
-                    !name.startsWith(__FORWARD_PREFIX))
-                    set.add(name);
+                    !name.startsWith(__FORWARD_PREFIX)) {
+					set.add(name);
+				}
             }
 
             if (_named==null)
             {
-                if (_pathInfo!=null)
-                    set.add(FORWARD_PATH_INFO);
-                else
-                    set.remove(FORWARD_PATH_INFO);
+                if (_pathInfo!=null) {
+					set.add(FORWARD_PATH_INFO);
+				} else {
+					set.remove(FORWARD_PATH_INFO);
+				}
                 set.add(FORWARD_REQUEST_URI);
                 set.add(FORWARD_SERVLET_PATH);
                 set.add(FORWARD_CONTEXT_PATH);
-                if (_query!=null)
-                    set.add(FORWARD_QUERY_STRING);
-                else
-                    set.remove(FORWARD_QUERY_STRING);
+                if (_query!=null) {
+					set.add(FORWARD_QUERY_STRING);
+				} else {
+					set.remove(FORWARD_QUERY_STRING);
+				}
             }
 
             return Collections.enumeration(set);
@@ -351,32 +363,33 @@ public class Dispatcher implements RequestDispatcher
         {
             if (_named==null && key.startsWith("javax.servlet."))
             {
-                if (key.equals(FORWARD_PATH_INFO))
-                    _pathInfo=(String)value;
-                else if (key.equals(FORWARD_REQUEST_URI))
-                    _requestURI=(String)value;
-                else if (key.equals(FORWARD_SERVLET_PATH))
-                    _servletPath=(String)value;
-                else if (key.equals(FORWARD_CONTEXT_PATH))
-                    _contextPath=(String)value;
-                else if (key.equals(FORWARD_QUERY_STRING))
-                    _query=(String)value;
-
-                else if (value==null)
-                    _attr.removeAttribute(key);
-                else
-                    _attr.setAttribute(key,value);
+                if (FORWARD_PATH_INFO.equals(key)) {
+					_pathInfo=(String)value;
+				} else if (FORWARD_REQUEST_URI.equals(key)) {
+					_requestURI=(String)value;
+				} else if (FORWARD_SERVLET_PATH.equals(key)) {
+					_servletPath=(String)value;
+				} else if (FORWARD_CONTEXT_PATH.equals(key)) {
+					_contextPath=(String)value;
+				} else if (FORWARD_QUERY_STRING.equals(key)) {
+					_query=(String)value;
+				} else if (value!=null) {
+					_attr.setAttribute(key,value);
+				} else {
+					_attr.removeAttribute(key);
+				}
             }
-            else if (value==null)
-                _attr.removeAttribute(key);
-            else
-                _attr.setAttribute(key,value);
+            else if (value!=null) {
+				_attr.setAttribute(key,value);
+			} else {
+				_attr.removeAttribute(key);
+			}
         }
 
         @Override
         public String toString()
         {
-            return "FORWARD+"+_attr.toString();
+            return "FORWARD+"+_attr;
         }
 
         @Override
@@ -412,14 +425,25 @@ public class Dispatcher implements RequestDispatcher
         {
             if (Dispatcher.this._named==null)
             {
-                if (key.equals(INCLUDE_PATH_INFO))    return _pathInfo;
-                if (key.equals(INCLUDE_SERVLET_PATH)) return _servletPath;
-                if (key.equals(INCLUDE_CONTEXT_PATH)) return _contextPath;
-                if (key.equals(INCLUDE_QUERY_STRING)) return _query;
-                if (key.equals(INCLUDE_REQUEST_URI))  return _requestURI;
+                if (INCLUDE_PATH_INFO.equals(key)) {
+					return _pathInfo;
+				}
+                if (INCLUDE_SERVLET_PATH.equals(key)) {
+					return _servletPath;
+				}
+                if (INCLUDE_CONTEXT_PATH.equals(key)) {
+					return _contextPath;
+				}
+                if (INCLUDE_QUERY_STRING.equals(key)) {
+					return _query;
+				}
+                if (INCLUDE_REQUEST_URI.equals(key)) {
+					return _requestURI;
+				}
             }
-            else if (key.startsWith(__INCLUDE_PREFIX))
-                    return null;
+            else if (key.startsWith(__INCLUDE_PREFIX)) {
+				return null;
+			}
 
 
             return _attr.getAttribute(key);
@@ -433,23 +457,26 @@ public class Dispatcher implements RequestDispatcher
             while(e.hasMoreElements())
             {
                 String name=e.nextElement();
-                if (!name.startsWith(__INCLUDE_PREFIX))
-                    set.add(name);
+                if (!name.startsWith(__INCLUDE_PREFIX)) {
+					set.add(name);
+				}
             }
 
             if (_named==null)
             {
-                if (_pathInfo!=null)
-                    set.add(INCLUDE_PATH_INFO);
-                else
-                    set.remove(INCLUDE_PATH_INFO);
+                if (_pathInfo!=null) {
+					set.add(INCLUDE_PATH_INFO);
+				} else {
+					set.remove(INCLUDE_PATH_INFO);
+				}
                 set.add(INCLUDE_REQUEST_URI);
                 set.add(INCLUDE_SERVLET_PATH);
                 set.add(INCLUDE_CONTEXT_PATH);
-                if (_query!=null)
-                    set.add(INCLUDE_QUERY_STRING);
-                else
-                    set.remove(INCLUDE_QUERY_STRING);
+                if (_query!=null) {
+					set.add(INCLUDE_QUERY_STRING);
+				} else {
+					set.remove(INCLUDE_QUERY_STRING);
+				}
             }
 
             return Collections.enumeration(set);
@@ -460,26 +487,33 @@ public class Dispatcher implements RequestDispatcher
         {
             if (_named==null && key.startsWith("javax.servlet."))
             {
-                if (key.equals(INCLUDE_PATH_INFO))         _pathInfo=(String)value;
-                else if (key.equals(INCLUDE_REQUEST_URI))  _requestURI=(String)value;
-                else if (key.equals(INCLUDE_SERVLET_PATH)) _servletPath=(String)value;
-                else if (key.equals(INCLUDE_CONTEXT_PATH)) _contextPath=(String)value;
-                else if (key.equals(INCLUDE_QUERY_STRING)) _query=(String)value;
-                else if (value==null)
-                    _attr.removeAttribute(key);
-                else
-                    _attr.setAttribute(key,value);
+                if (INCLUDE_PATH_INFO.equals(key)) {
+					_pathInfo=(String)value;
+				} else if (INCLUDE_REQUEST_URI.equals(key)) {
+					_requestURI=(String)value;
+				} else if (INCLUDE_SERVLET_PATH.equals(key)) {
+					_servletPath=(String)value;
+				} else if (INCLUDE_CONTEXT_PATH.equals(key)) {
+					_contextPath=(String)value;
+				} else if (INCLUDE_QUERY_STRING.equals(key)) {
+					_query=(String)value;
+				} else if (value!=null) {
+					_attr.setAttribute(key,value);
+				} else {
+					_attr.removeAttribute(key);
+				}
             }
-            else if (value==null)
-                _attr.removeAttribute(key);
-            else
-                _attr.setAttribute(key,value);
+            else if (value!=null) {
+				_attr.setAttribute(key,value);
+			} else {
+				_attr.removeAttribute(key);
+			}
         }
 
         @Override
         public String toString()
         {
-            return "INCLUDE+"+_attr.toString();
+            return "INCLUDE+"+_attr;
         }
 
         @Override

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.maven.plugin;
 
@@ -95,7 +90,7 @@ public class JettyRunMojo extends AbstractJettyMojo
     protected File classesDirectory;
     
     /**
-     * An optional pattern for includes/excludes of classes in the classesDirectory
+     * An optional pattern for includes/excludes of classes in the classesDirectory.
      * @parameter
      */
     protected ScanPattern scanClassesPattern;
@@ -112,7 +107,7 @@ public class JettyRunMojo extends AbstractJettyMojo
     protected File testClassesDirectory;
     
     /**
-     * An optional pattern for includes/excludes of classes in the testClassesDirectory
+     * An optional pattern for includes/excludes of classes in the testClassesDirectory.
      * @parameter
      */
     protected ScanPattern scanTestClassesPattern;
@@ -145,13 +140,13 @@ public class JettyRunMojo extends AbstractJettyMojo
 
     
     /**
-     * maven-war-plugin reference
+     * Maven-war-plugin reference.
      */
     protected WarPluginInfo warPluginInfo;
     
     
     /**
-     * List of deps that are wars
+     * List of deps that are wars.
      */
     protected List<Artifact> warArtifacts;
     
@@ -160,9 +155,6 @@ public class JettyRunMojo extends AbstractJettyMojo
     
     
     
-    /** 
-     * @see org.eclipse.jetty.maven.plugin.AbstractJettyMojo#execute()
-     */
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException
     {
@@ -183,7 +175,7 @@ public class JettyRunMojo extends AbstractJettyMojo
         // check the location of the static content/jsps etc
         try
         {
-            if ((webAppSourceDirectory == null) || !webAppSourceDirectory.exists())
+            if (webAppSourceDirectory == null || !webAppSourceDirectory.exists())
             {  
                 getLog().info("webAppSourceDirectory"+(webAppSourceDirectory == null ? " not set." : (webAppSourceDirectory.getAbsolutePath()+" does not exist."))+" Trying "+DEFAULT_WEBAPP_SRC);
                 webAppSourceDirectory = new File (project.getBasedir(), DEFAULT_WEBAPP_SRC);             
@@ -194,12 +186,13 @@ public class JettyRunMojo extends AbstractJettyMojo
                     //try last resort of making a fake empty dir
                     File target = new File(project.getBuild().getDirectory());
                     webAppSourceDirectory = new File(target, FAKE_WEBAPP);
-                    if (!webAppSourceDirectory.exists())
-                        webAppSourceDirectory.mkdirs();              
+                    if (!webAppSourceDirectory.exists()) {
+						webAppSourceDirectory.mkdirs();
+					}              
                 }
-            }
-            else
-                getLog().info( "Webapp source directory = " + webAppSourceDirectory.getCanonicalPath());
+            } else {
+				getLog().info( "Webapp source directory = " + webAppSourceDirectory.getCanonicalPath());
+			}
         }
         catch (IOException e)
         {
@@ -223,13 +216,14 @@ public class JettyRunMojo extends AbstractJettyMojo
             //allow a webapp with no classes in it (just jsps/html)
             if (classesDirectory != null)
             {
-                if (!classesDirectory.exists())
-                    getLog().info( "Classes directory "+ classesDirectory.getCanonicalPath()+ " does not exist");
-                else
-                    getLog().info("Classes = " + classesDirectory.getCanonicalPath());
-            }
-            else
-                getLog().info("Classes directory not set");         
+                if (!classesDirectory.exists()) {
+					getLog().info( "Classes directory "+ classesDirectory.getCanonicalPath()+ " does not exist");
+				} else {
+					getLog().info("Classes = " + classesDirectory.getCanonicalPath());
+				}
+            } else {
+				getLog().info("Classes directory not set");
+			}         
         }
         catch (IOException e)
         {
@@ -250,9 +244,6 @@ public class JettyRunMojo extends AbstractJettyMojo
 
 
 
-    /** 
-     * @see org.eclipse.jetty.maven.plugin.AbstractJettyMojo#configureWebApplication()
-     */
     public void configureWebApplication() throws Exception
     {
        super.configureWebApplication();
@@ -263,16 +254,20 @@ public class JettyRunMojo extends AbstractJettyMojo
        //after any unpacking. With this mojo, you are running an unpacked, unassembled webapp,
        //so the two locations should be equal.
        Resource webAppSourceDirectoryResource = Resource.newResource(webAppSourceDirectory.getCanonicalPath());
-       if (webApp.getWar() == null)
-           webApp.setWar(webAppSourceDirectoryResource.toString());
+       if (webApp.getWar() == null) {
+		webApp.setWar(webAppSourceDirectoryResource.toString());
+	}
        
-       if (webApp.getBaseResource() == null)
-               webApp.setBaseResource(webAppSourceDirectoryResource);
+       if (webApp.getBaseResource() == null) {
+		webApp.setBaseResource(webAppSourceDirectoryResource);
+	}
 
-       if (classesDirectory != null)
-           webApp.setClasses (classesDirectory);
-       if (useTestScope && (testClassesDirectory != null))
-           webApp.setTestClasses (testClassesDirectory);
+       if (classesDirectory != null) {
+		webApp.setClasses (classesDirectory);
+	}
+       if (useTestScope && testClassesDirectory != null) {
+		webApp.setTestClasses (testClassesDirectory);
+	}
        
        webApp.setWebInfLib (getDependencyFiles());
 
@@ -286,8 +281,9 @@ public class JettyRunMojo extends AbstractJettyMojo
        for (OverlayConfig config:warPluginInfo.getMavenWarOverlayConfigs())
        {
            //overlays can be individually skipped
-           if (config.isSkip())
-               continue;
+           if (config.isSkip()) {
+			continue;
+		}
 
            //an empty overlay refers to the current project - important for ordering
            if (config.isCurrentProject())
@@ -302,7 +298,7 @@ public class JettyRunMojo extends AbstractJettyMojo
            if (a != null)
            {
                matchedWarArtifacts.add(a);
-               SelectiveJarResource r = new SelectiveJarResource(new URL("jar:"+Resource.toURL(a.getFile()).toString()+"!/"));
+               SelectiveJarResource r = new SelectiveJarResource(new URL("jar:"+Resource.toURL(a.getFile())+"!/"));
                r.setIncludes(config.getIncludes());
                r.setExcludes(config.getExcludes());
                Overlay overlay = new Overlay(config, r);
@@ -315,7 +311,7 @@ public class JettyRunMojo extends AbstractJettyMojo
        {
            if (!matchedWarArtifacts.contains(a))
            {
-               Overlay overlay = new Overlay(null, Resource.newResource(new URL("jar:"+Resource.toURL(a.getFile()).toString()+"!/")));
+               Overlay overlay = new Overlay(null, Resource.newResource(new URL("jar:"+Resource.toURL(a.getFile())+"!/")));
                overlays.add(overlay);
            }
        }
@@ -346,7 +342,7 @@ public class JettyRunMojo extends AbstractJettyMojo
             }
             
             //Still don't have a web.xml file: finally try the configured static resource directory if there is one
-            if (webApp.getDescriptor() == null && (webAppSourceDirectory != null))
+            if (webApp.getDescriptor() == null && webAppSourceDirectory != null)
             {
                 File f = new File (new File (webAppSourceDirectory, "WEB-INF"), "web.xml");
                 if (f.exists() && f.isFile())
@@ -362,9 +358,6 @@ public class JettyRunMojo extends AbstractJettyMojo
     
 
     
-    /** 
-     * @see org.eclipse.jetty.maven.plugin.AbstractJettyMojo#configureScanner()
-     */
     public void configureScanner ()
     throws MojoExecutionException
     {
@@ -417,14 +410,13 @@ public class JettyRunMojo extends AbstractJettyMojo
             scanner.watch(r.getFile().toPath());
         }
         
-        if (webApp.getJettyEnvXml() != null)
-            scanner.watch(new File(webApp.getJettyEnvXml()).toPath());
+        if (webApp.getJettyEnvXml() != null) {
+			scanner.watch(new File(webApp.getJettyEnvXml()).toPath());
+		}
 
-        if (webApp.getDefaultsDescriptor() != null)
-        {
-            if (!WebAppContext.WEB_DEFAULTS_XML.equals(webApp.getDefaultsDescriptor()))
-                scanner.watch(new File(webApp.getDefaultsDescriptor()).toPath());
-        }
+        if (webApp.getDefaultsDescriptor() != null && !WebAppContext.WEB_DEFAULTS_XML.equals(webApp.getDefaultsDescriptor())) {
+			scanner.watch(new File(webApp.getDefaultsDescriptor()).toPath());
+		}
 
         if (webApp.getOverrideDescriptor() != null)
         {
@@ -453,9 +445,9 @@ public class JettyRunMojo extends AbstractJettyMojo
                     PathWatcher.Config config = new PathWatcher.Config(f.toPath());
                     config.setRecurseDepth(PathWatcher.Config.UNLIMITED_DEPTH);
                     scanner.watch(config);
-                }
-                else
-                    scanner.watch(f.toPath());
+                } else {
+					scanner.watch(f.toPath());
+				}
             }
         }
         
@@ -466,10 +458,12 @@ public class JettyRunMojo extends AbstractJettyMojo
             {
                 PathWatcher.Config config = new PathWatcher.Config(p.getDirectory().toPath());
                 config.setRecurseDepth(PathWatcher.Config.UNLIMITED_DEPTH);
-                for (String pattern:p.getExcludes())
-                    config.addExcludeGlobRelative(pattern);
-                for (String pattern:p.getIncludes())
-                    config.addIncludeGlobRelative(pattern);
+                for (String pattern:p.getExcludes()) {
+					config.addExcludeGlobRelative(pattern);
+				}
+                for (String pattern:p.getIncludes()) {
+					config.addIncludeGlobRelative(pattern);
+				}
                 scanner.watch(config);
             }
         }
@@ -483,10 +477,12 @@ public class JettyRunMojo extends AbstractJettyMojo
             config.setRecurseDepth(PathWatcher.Config.UNLIMITED_DEPTH);           
             if (scanTestClassesPattern != null)
             {
-                for (String p:scanTestClassesPattern.getExcludes())
-                    config.addExcludeGlobRelative(p);
-                for (String p:scanTestClassesPattern.getIncludes())
-                    config.addIncludeGlobRelative(p);
+                for (String p:scanTestClassesPattern.getExcludes()) {
+					config.addExcludeGlobRelative(p);
+				}
+                for (String p:scanTestClassesPattern.getIncludes()) {
+					config.addIncludeGlobRelative(p);
+				}
             }
             scanner.watch(config);
         }
@@ -497,11 +493,13 @@ public class JettyRunMojo extends AbstractJettyMojo
             config.setRecurseDepth(PathWatcher.Config.UNLIMITED_DEPTH);
             if (scanClassesPattern != null)
             {
-                for (String p:scanClassesPattern.getExcludes())
-                    config.addExcludeGlobRelative(p);
+                for (String p:scanClassesPattern.getExcludes()) {
+					config.addExcludeGlobRelative(p);
+				}
 
-                for (String p:scanClassesPattern.getIncludes())
-                    config.addIncludeGlobRelative(p);
+                for (String p:scanClassesPattern.getIncludes()) {
+					config.addIncludeGlobRelative(p);
+				}
 
             }
             scanner.watch(config);
@@ -519,9 +517,6 @@ public class JettyRunMojo extends AbstractJettyMojo
     }
 
     
-    /** 
-     * @see org.eclipse.jetty.maven.plugin.AbstractJettyMojo#restartWebApp(boolean)
-     */
     public void restartWebApp(boolean reconfigureScanner) throws Exception 
     {
         getLog().info("restarting "+webApp);
@@ -547,33 +542,34 @@ public class JettyRunMojo extends AbstractJettyMojo
         getLog().debug("Restarting webapp ...");
         webApp.start();
         startScanner();
-        getLog().info("Restart completed at "+new Date().toString());
+        getLog().info("Restart completed at "+new Date());
     }
     
     
     
     
-    /**
-     * @return
-     */
     private List<File> getDependencyFiles ()
     {
         List<File> dependencyFiles = new ArrayList<File>();
         for ( Iterator<Artifact> iter = projectArtifacts.iterator(); iter.hasNext(); )
         {
-            Artifact artifact = (Artifact) iter.next();
+            Artifact artifact = iter.next();
             
             // Include runtime and compile time libraries, and possibly test libs too
-            if(artifact.getType().equals("war"))
+            if("war".equals(artifact.getType()))
             {
                 continue;
             }
 
             if (Artifact.SCOPE_PROVIDED.equals(artifact.getScope()))
-                continue; //never add dependencies of scope=provided to the webapp's classpath (see also <useProvidedScope> param)
+			 {
+				continue; //never add dependencies of scope=provided to the webapp's classpath (see also <useProvidedScope> param)
+			}
 
             if (Artifact.SCOPE_TEST.equals(artifact.getScope()) && !useTestScope)
-                continue; //only add dependencies of scope=test if explicitly required
+			 {
+				continue; //only add dependencies of scope=test if explicitly required
+			}
 
             dependencyFiles.add(artifact.getFile());
             getLog().debug( "Adding artifact " + artifact.getFile().getName() + " with scope "+artifact.getScope()+" for WEB-INF/lib " );   
@@ -585,19 +581,17 @@ public class JettyRunMojo extends AbstractJettyMojo
     
     
     
-    /**
-     * @return
-     */
     private List<Artifact> getWarArtifacts ()
     {
-        if (warArtifacts != null)
-            return warArtifacts;       
+        if (warArtifacts != null) {
+			return warArtifacts;
+		}       
         
         warArtifacts = new ArrayList<Artifact>();
         for ( Iterator<Artifact> iter = projectArtifacts.iterator(); iter.hasNext(); )
         {
-            Artifact artifact = (Artifact) iter.next(); 
-            if (artifact.getType().equals("war") || artifact.getType().equals("zip"))
+            Artifact artifact = iter.next(); 
+            if ("war".equals(artifact.getType()) || "zip".equals(artifact.getType()))
             {
                 try
                 {                  
@@ -615,8 +609,9 @@ public class JettyRunMojo extends AbstractJettyMojo
 
     protected Artifact getArtifactForOverlay (OverlayConfig o, List<Artifact> warArtifacts)
     {
-        if (o == null || warArtifacts == null || warArtifacts.isEmpty())
-            return null;
+        if (o == null || warArtifacts == null || warArtifacts.isEmpty()) {
+			return null;
+		}
         
         for (Artifact a:warArtifacts)
         {

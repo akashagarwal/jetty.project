@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.jsr356.utils;
 
@@ -30,7 +25,7 @@ public class TypeTree
 {
     public static void dumpTree(String indent, Type type)
     {
-        if ((type == null) || (type == Object.class))
+        if (type == null || type == Object.class)
         {
             return;
         }
@@ -51,7 +46,7 @@ public class TypeTree
             dumpTree(indent + ".genericSuperClass()",superType);
 
             Type[] ifaces = ctype.getGenericInterfaces();
-            if ((ifaces != null) && (ifaces.length > 0))
+            if (ifaces != null && ifaces.length > 0)
             {
                 // System.out.printf("%s.genericInterfaces[].length = %d%n",indent,ifaces.length);
                 for (int i = 0; i < ifaces.length; i++)
@@ -62,7 +57,7 @@ public class TypeTree
             }
 
             TypeVariable<?>[] typeParams = ctype.getTypeParameters();
-            if ((typeParams != null) && (typeParams.length > 0))
+            if (typeParams != null && typeParams.length > 0)
             {
                 // System.out.printf("%s.typeParameters[].length = %d%n",indent,typeParams.length);
                 for (int i = 0; i < typeParams.length; i++)

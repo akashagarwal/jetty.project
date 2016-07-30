@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.fcgi.client.http;
 
@@ -58,8 +53,9 @@ public class HttpSenderOverFCGI extends HttpSender
         Request request = exchange.getRequest();
         // Copy the request headers to be able to convert them properly
         HttpFields headers = new HttpFields();
-        for (HttpField field : request.getHeaders())
-            headers.put(field);
+        for (HttpField field : request.getHeaders()) {
+			headers.put(field);
+		}
         HttpFields fcgiHeaders = new HttpFields();
 
         // FastCGI headers based on the URI
@@ -71,8 +67,9 @@ public class HttpSenderOverFCGI extends HttpSender
 
         // FastCGI headers based on HTTP headers
         HttpField httpField = headers.remove(HttpHeader.AUTHORIZATION);
-        if (httpField != null)
-            fcgiHeaders.put(FCGI.Headers.AUTH_TYPE, httpField.getValue());
+        if (httpField != null) {
+			fcgiHeaders.put(FCGI.Headers.AUTH_TYPE, httpField.getValue());
+		}
         httpField = headers.remove(HttpHeader.CONTENT_LENGTH);
         fcgiHeaders.put(FCGI.Headers.CONTENT_LENGTH, httpField == null ? "" : httpField.getValue());
         httpField = headers.remove(HttpHeader.CONTENT_TYPE);

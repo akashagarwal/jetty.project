@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.servlet;
 
@@ -72,7 +67,7 @@ public class ComplianceViolations2616Test
                     int i = 0;
                     for (String violation : violations)
                     {
-                        httpResponse.setHeader("X-Http-Violation-" + (i++), violation);
+                        httpResponse.setHeader("X-Http-Violation-" + i++, violation);
                     }
                 }
             }
@@ -92,8 +87,7 @@ public class ComplianceViolations2616Test
         {
             resp.setContentType("text/plain");
             PrintWriter out = resp.getWriter();
-            List<String> headerNames = new ArrayList<>();
-            headerNames.addAll(Collections.list(req.getHeaderNames()));
+            List<String> headerNames = new ArrayList<String>(Collections.list(req.getHeaderNames()));
             Collections.sort(headerNames);
             for (String name : headerNames)
             {

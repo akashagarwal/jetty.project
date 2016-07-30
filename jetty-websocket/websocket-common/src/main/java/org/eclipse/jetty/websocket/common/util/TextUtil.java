@@ -1,25 +1,20 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.common.util;
 
 /**
- * Collection of utility methods for Text content
+ * Collection of utility methods for Text content.
  */
 public final class TextUtil
 {
@@ -34,11 +29,11 @@ public final class TextUtil
      */
     public static String hint(String text)
     {
-        if (text == null)
+        if (text != null)
         {
-            return "<null>";
+            return '"' + maxStringLength(30,text) + '"';
         }
-        return '"' + maxStringLength(30,text) + '"';
+        return "<null>";
     }
 
     /**
@@ -73,8 +68,8 @@ public final class TextUtil
         }
 
         StringBuilder ret = new StringBuilder();
-        int startLen = (int)Math.round((double)max / (double)3);
-        ret.append(raw.substring(0,startLen));
+        int startLen = (int)Math.round((double)max / 3);
+        ret.append(raw, 0, startLen);
         ret.append("...");
         ret.append(raw.substring(length - (max - startLen - 3)));
 

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.security;
 
@@ -1359,20 +1354,18 @@ public class ConstraintTest
                 response.getWriter().println("URI="+request.getRequestURI());
                 String user = request.getRemoteUser();
                 response.getWriter().println("user="+user);
-                if (request.getParameter("test_parameter")!=null)
-                    response.getWriter().println(request.getParameter("test_parameter"));
-            }
-            else
-                response.sendError(500);
+                if (request.getParameter("test_parameter")!=null) {
+					response.getWriter().println(request.getParameter("test_parameter"));
+				}
+            } else {
+				response.sendError(500);
+			}
         }
     }
 
     private class RoleRefHandler extends HandlerWrapper
     {
-        /* ------------------------------------------------------------ */
-        /**
-         * @see org.eclipse.jetty.server.handler.HandlerWrapper#handle(java.lang.String, Request, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-         */
+        /** ------------------------------------------------------------. */
         @Override
         public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
         {
@@ -1420,10 +1413,11 @@ public class ConstraintTest
         public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response ) throws IOException, ServletException
         {
             ((Request) request).setHandled(true);
-            if (request.getAuthType()==null || "user".equals(request.getRemoteUser()) || request.isUserInRole("untranslated"))
-                response.setStatus(200);
-            else
-                response.sendError(500);
+            if (request.getAuthType()==null || "user".equals(request.getRemoteUser()) || request.isUserInRole("untranslated")) {
+				response.setStatus(200);
+			} else {
+				response.sendError(500);
+			}
         }
     }
 }

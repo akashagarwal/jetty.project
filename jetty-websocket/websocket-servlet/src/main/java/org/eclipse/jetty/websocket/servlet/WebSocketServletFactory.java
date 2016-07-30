@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.servlet;
 
@@ -31,7 +26,7 @@ import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import org.eclipse.jetty.websocket.api.extensions.ExtensionFactory;
 
 /**
- * Basic WebSocketServletFactory for working with Jetty-based WebSocketServlets
+ * Basic WebSocketServletFactory for working with Jetty-based WebSocketServlets.
  */
 public interface WebSocketServletFactory
 {
@@ -72,17 +67,17 @@ public interface WebSocketServletFactory
         }
     }
 
-    public boolean acceptWebSocket(HttpServletRequest request, HttpServletResponse response) throws IOException;
+    boolean acceptWebSocket(HttpServletRequest request, HttpServletResponse response) throws IOException;
 
-    public boolean acceptWebSocket(WebSocketCreator creator, HttpServletRequest request, HttpServletResponse response) throws IOException;
+    boolean acceptWebSocket(WebSocketCreator creator, HttpServletRequest request, HttpServletResponse response) throws IOException;
 
-    public void cleanup();
+    void cleanup();
 
-    public WebSocketServletFactory createFactory(WebSocketPolicy policy);
+    WebSocketServletFactory createFactory(WebSocketPolicy policy);
 
-    public abstract WebSocketCreator getCreator();
+    WebSocketCreator getCreator();
 
-    public abstract ExtensionFactory getExtensionFactory();
+    ExtensionFactory getExtensionFactory();
 
     /**
      * Get the base policy in use for WebSockets.
@@ -91,11 +86,11 @@ public interface WebSocketServletFactory
      * 
      * @return the base policy
      */
-    public WebSocketPolicy getPolicy();
+    WebSocketPolicy getPolicy();
 
-    public void init(ServletContext servletContext) throws Exception;
+    void init(ServletContext servletContext) throws Exception;
 
-    public boolean isUpgradeRequest(HttpServletRequest request, HttpServletResponse response);
+    boolean isUpgradeRequest(HttpServletRequest request, HttpServletResponse response);
 
     /**
      * Register a websocket class pojo with the default {@link WebSocketCreator}.
@@ -105,7 +100,7 @@ public interface WebSocketServletFactory
      * @param websocketPojo
      *            the class to instantiate for each incoming websocket upgrade request.
      */
-    public void register(Class<?> websocketPojo);
+    void register(Class<?> websocketPojo);
 
-    public abstract void setCreator(WebSocketCreator creator);
+    void setCreator(WebSocketCreator creator);
 }

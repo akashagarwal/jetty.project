@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util.log;
 
@@ -63,12 +58,12 @@ import org.eclipse.jetty.util.Loader;
  */
 public class JavaUtilLog extends AbstractLogger
 {
-    private final static String THIS_CLASS= JavaUtilLog.class.getName();
-    private final static boolean __source = 
+    private static final String THIS_CLASS= JavaUtilLog.class.getName();
+    private static final boolean __source = 
             Boolean.parseBoolean(Log.__props.getProperty("org.eclipse.jetty.util.log.SOURCE",
             Log.__props.getProperty("org.eclipse.jetty.util.log.javautil.SOURCE","true")));
     
-    private static boolean _initialized=false;
+    private static boolean _initialized;
     
     private Level configuredLevel;
     private java.util.logging.Logger _logger;
@@ -96,8 +91,9 @@ public class JavaUtilLog extends AbstractLogger
                             try
                             {
                                 URL props = Loader.getResource(JavaUtilLog.class,properties);
-                                if (props != null)
-                                    LogManager.getLogManager().readConfiguration(props.openStream());
+                                if (props != null) {
+									LogManager.getLogManager().readConfiguration(props.openStream());
+								}
                             }
                             catch(Throwable e)
                             {
@@ -147,8 +143,9 @@ public class JavaUtilLog extends AbstractLogger
     protected void log(Level level,String msg,Throwable thrown)
     {
         LogRecord record = new LogRecord(level,msg);
-        if (thrown!=null)
-            record.setThrown(thrown);
+        if (thrown!=null) {
+			record.setThrown(thrown);
+		}
         record.setLoggerName(_logger.getName());
         if (__source)
         {
@@ -169,38 +166,44 @@ public class JavaUtilLog extends AbstractLogger
     
     public void warn(String msg, Object... args)
     {
-        if (_logger.isLoggable(Level.WARNING))
-            log(Level.WARNING,format(msg,args),null);
+        if (_logger.isLoggable(Level.WARNING)) {
+			log(Level.WARNING,format(msg,args),null);
+		}
     }
 
     public void warn(Throwable thrown)
     {
-        if (_logger.isLoggable(Level.WARNING))
-            log(Level.WARNING,"",thrown);
+        if (_logger.isLoggable(Level.WARNING)) {
+			log(Level.WARNING,"",thrown);
+		}
     }
 
     public void warn(String msg, Throwable thrown)
     {
-        if (_logger.isLoggable(Level.WARNING))
-            log(Level.WARNING,msg,thrown);
+        if (_logger.isLoggable(Level.WARNING)) {
+			log(Level.WARNING,msg,thrown);
+		}
     }
 
     public void info(String msg, Object... args)
     {
-        if (_logger.isLoggable(Level.INFO))
-            log(Level.INFO, format(msg, args),null);
+        if (_logger.isLoggable(Level.INFO)) {
+			log(Level.INFO, format(msg, args),null);
+		}
     }
 
     public void info(Throwable thrown)
     {
-        if (_logger.isLoggable(Level.INFO))
-            log(Level.INFO, "",thrown);
+        if (_logger.isLoggable(Level.INFO)) {
+			log(Level.INFO, "",thrown);
+		}
     }
 
     public void info(String msg, Throwable thrown)
     {
-        if (_logger.isLoggable(Level.INFO))
-            log(Level.INFO,msg,thrown);
+        if (_logger.isLoggable(Level.INFO)) {
+			log(Level.INFO,msg,thrown);
+		}
     }
 
     public boolean isDebugEnabled()
@@ -223,26 +226,30 @@ public class JavaUtilLog extends AbstractLogger
 
     public void debug(String msg, Object... args)
     {
-        if (_logger.isLoggable(Level.FINE))
-            log(Level.FINE,format(msg, args),null);
+        if (_logger.isLoggable(Level.FINE)) {
+			log(Level.FINE,format(msg, args),null);
+		}
     }
 
     public void debug(String msg, long arg)
     {
-        if (_logger.isLoggable(Level.FINE))
-            log(Level.FINE,format(msg, arg),null);
+        if (_logger.isLoggable(Level.FINE)) {
+			log(Level.FINE,format(msg, arg),null);
+		}
     }
 
     public void debug(Throwable thrown)
     {
-        if (_logger.isLoggable(Level.FINE))
-            log(Level.FINE,"",thrown);
+        if (_logger.isLoggable(Level.FINE)) {
+			log(Level.FINE,"",thrown);
+		}
     }
 
     public void debug(String msg, Throwable thrown)
     {
-        if (_logger.isLoggable(Level.FINE))
-            log(Level.FINE,msg,thrown);
+        if (_logger.isLoggable(Level.FINE)) {
+			log(Level.FINE,msg,thrown);
+		}
     }
 
     /**
@@ -255,13 +262,14 @@ public class JavaUtilLog extends AbstractLogger
 
     public void ignore(Throwable ignored)
     {
-        if (_logger.isLoggable(Level.FINEST))
-            log(Level.FINEST,Log.IGNORED,ignored);
+        if (_logger.isLoggable(Level.FINEST)) {
+			log(Level.FINEST,Log.IGNORED,ignored);
+		}
     }
 
     private String format(String msg, Object... args)
     {
-        msg = String.valueOf(msg); // Avoids NPE
+        msg = msg; // Avoids NPE
         String braces = "{}";
         StringBuilder builder = new StringBuilder();
         int start = 0;
@@ -277,8 +285,8 @@ public class JavaUtilLog extends AbstractLogger
             }
             else
             {
-                builder.append(msg.substring(start, bracesIndex));
-                builder.append(String.valueOf(arg));
+                builder.append(msg, start, bracesIndex);
+                builder.append(arg);
                 start = bracesIndex + braces.length();
             }
         }

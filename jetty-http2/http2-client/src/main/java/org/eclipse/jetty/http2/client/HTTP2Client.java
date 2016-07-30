@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http2.client;
 
@@ -127,20 +122,23 @@ public class HTTP2Client extends ContainerLifeCycle
     private List<String> protocols = Arrays.asList("h2", "h2-17", "h2-16", "h2-15", "h2-14");
     private int initialSessionRecvWindow = FlowControlStrategy.DEFAULT_WINDOW_SIZE;
     private int initialStreamRecvWindow = FlowControlStrategy.DEFAULT_WINDOW_SIZE;
-    private FlowControlStrategy.Factory flowControlStrategyFactory = () -> new BufferingFlowControlStrategy(0.5F);
+    private FlowControlStrategy.Factory flowControlStrategyFactory;
     private ExecutionStrategy.Factory executionStrategyFactory = new ProduceConsume.Factory();
 
     @Override
     protected void doStart() throws Exception
     {
-        if (executor == null)
-            setExecutor(new QueuedThreadPool());
+        if (executor == null) {
+			setExecutor(new QueuedThreadPool());
+		}
 
-        if (scheduler == null)
-            setScheduler(new ScheduledExecutorScheduler());
+        if (scheduler == null) {
+			setScheduler(new ScheduledExecutorScheduler());
+		}
 
-        if (bufferPool == null)
-            setByteBufferPool(new MappedByteBufferPool());
+        if (bufferPool == null) {
+			setByteBufferPool(new MappedByteBufferPool());
+		}
 
         if (connectionFactory == null)
         {
@@ -180,7 +178,7 @@ public class HTTP2Client extends ContainerLifeCycle
 
     public void setExecutor(Executor executor)
     {
-        this.updateBean(this.executor, executor);
+        updateBean(this.executor, executor);
         this.executor = executor;
     }
 
@@ -191,7 +189,7 @@ public class HTTP2Client extends ContainerLifeCycle
 
     public void setScheduler(Scheduler scheduler)
     {
-        this.updateBean(this.scheduler, scheduler);
+        updateBean(this.scheduler, scheduler);
         this.scheduler = scheduler;
     }
 
@@ -202,7 +200,7 @@ public class HTTP2Client extends ContainerLifeCycle
 
     public void setByteBufferPool(ByteBufferPool bufferPool)
     {
-        this.updateBean(this.bufferPool, bufferPool);
+        updateBean(this.bufferPool, bufferPool);
         this.bufferPool = bufferPool;
     }
 
@@ -213,7 +211,7 @@ public class HTTP2Client extends ContainerLifeCycle
 
     public void setClientConnectionFactory(ClientConnectionFactory connectionFactory)
     {
-        this.updateBean(this.connectionFactory, connectionFactory);
+        updateBean(this.connectionFactory, connectionFactory);
         this.connectionFactory = connectionFactory;
     }
 
@@ -269,8 +267,9 @@ public class HTTP2Client extends ContainerLifeCycle
     {
         this.connectTimeout = connectTimeout;
         SelectorManager selector = this.selector;
-        if (selector != null)
-            selector.setConnectTimeout(connectTimeout);
+        if (selector != null) {
+			selector.setConnectTimeout(connectTimeout);
+		}
     }
 
     @ManagedAttribute("The size of the buffer used to read from the network")
@@ -335,10 +334,11 @@ public class HTTP2Client extends ContainerLifeCycle
             configure(channel);
             channel.configureBlocking(false);
             context = contextFrom(sslContextFactory, address, listener, promise, context);
-            if (channel.connect(address))
-                selector.accept(channel, context);
-            else
-                selector.connect(channel, context);
+            if (channel.connect(address)) {
+				selector.accept(channel, context);
+			} else {
+				selector.connect(channel, context);
+			}
         }
         catch (Throwable x)
         {
@@ -350,8 +350,9 @@ public class HTTP2Client extends ContainerLifeCycle
     {
         try
         {
-            if (!channel.isConnected())
-                throw new IllegalStateException("SocketChannel must be connected");
+            if (!channel.isConnected()) {
+				throw new IllegalStateException("SocketChannel must be connected");
+			}
             channel.configureBlocking(false);
             Map<String, Object> context = contextFrom(sslContextFactory, (InetSocketAddress)channel.getRemoteAddress(), listener, promise, null);
             selector.accept(channel, context);
@@ -364,13 +365,15 @@ public class HTTP2Client extends ContainerLifeCycle
 
     private Map<String, Object> contextFrom(SslContextFactory sslContextFactory, InetSocketAddress address, Session.Listener listener, Promise<Session> promise, Map<String, Object> context)
     {
-        if (context == null)
-            context = new HashMap<>();
+        if (context == null) {
+			context = new HashMap<>();
+		}
         context.put(HTTP2ClientConnectionFactory.CLIENT_CONTEXT_KEY, this);
         context.put(HTTP2ClientConnectionFactory.SESSION_LISTENER_CONTEXT_KEY, listener);
         context.put(HTTP2ClientConnectionFactory.SESSION_PROMISE_CONTEXT_KEY, promise);
-        if (sslContextFactory != null)
-            context.put(SslClientConnectionFactory.SSL_CONTEXT_FACTORY_CONTEXT_KEY, sslContextFactory);
+        if (sslContextFactory != null) {
+			context.put(SslClientConnectionFactory.SSL_CONTEXT_FACTORY_CONTEXT_KEY, sslContextFactory);
+		}
         context.put(SslClientConnectionFactory.SSL_PEER_HOST_CONTEXT_KEY, address.getHostString());
         context.put(SslClientConnectionFactory.SSL_PEER_PORT_CONTEXT_KEY, address.getPort());
         context.putIfAbsent(ClientConnectionFactory.CONNECTOR_CONTEXT_KEY, this);

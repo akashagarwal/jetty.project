@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http2.server;
 
@@ -47,8 +42,8 @@ public abstract class AbstractHTTP2ServerConnectionFactory extends AbstractConne
     private int initialStreamRecvWindow = FlowControlStrategy.DEFAULT_WINDOW_SIZE;
     private int initialSessionRecvWindow = FlowControlStrategy.DEFAULT_WINDOW_SIZE;
     private int maxConcurrentStreams = -1;
-    private int maxHeaderBlockFragment = 0;
-    private FlowControlStrategy.Factory flowControlStrategyFactory = () -> new BufferingFlowControlStrategy(0.5F);
+    private int maxHeaderBlockFragment;
+    private FlowControlStrategy.Factory flowControlStrategyFactory;
     private ExecutionStrategy.Factory executionStrategyFactory = new ProduceExecuteConsume.Factory();
 
     public AbstractHTTP2ServerConnectionFactory(@Name("config") HttpConfiguration httpConfiguration)
@@ -169,8 +164,9 @@ public abstract class AbstractHTTP2ServerConnectionFactory extends AbstractConne
 
         Generator generator = new Generator(connector.getByteBufferPool(), getMaxDynamicTableSize(), getMaxHeaderBlockFragment());
         FlowControlStrategy flowControl = newFlowControlStrategy();
-        if (flowControl == null)
-            flowControl = getFlowControlStrategyFactory().newFlowControlStrategy();
+        if (flowControl == null) {
+			flowControl = getFlowControlStrategyFactory().newFlowControlStrategy();
+		}
         HTTP2ServerSession session = new HTTP2ServerSession(connector.getScheduler(), endPoint, generator, listener, flowControl);
         session.setMaxLocalStreams(getMaxConcurrentStreams());
         session.setMaxRemoteStreams(getMaxConcurrentStreams());

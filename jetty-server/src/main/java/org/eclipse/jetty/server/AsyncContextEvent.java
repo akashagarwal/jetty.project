@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 
@@ -31,8 +26,8 @@ import org.eclipse.jetty.util.thread.Scheduler;
 
 public class AsyncContextEvent extends AsyncEvent implements Runnable
 {
-    final private Context _context;
-    final private AsyncContextState _asyncContext;
+    private final Context _context;
+    private final AsyncContextState _asyncContext;
     private volatile HttpChannelState _state;
     private ServletContext _dispatchContext;
     private String _dispatchPath;
@@ -110,8 +105,9 @@ public class AsyncContextEvent extends AsyncEvent implements Runnable
     {
         Scheduler.Task task=_timeoutTask;
         _timeoutTask=null;
-        if (task!=null)
-            task.cancel();
+        if (task!=null) {
+			task.cancel();
+		}
     }
 
     @Override
@@ -126,10 +122,13 @@ public class AsyncContextEvent extends AsyncEvent implements Runnable
         return _throwable;
     }
 
-//    public void setThrowable(Throwable throwable)
-//    {
-//        _throwable=throwable;
-//    }
+/**
+
+ *    Public void setThrowable(Throwable throwable)
+ *    {
+ *        _throwable=throwable;
+ *    }.
+*/
 
     public void setDispatchContext(ServletContext context)
     {
@@ -157,16 +156,18 @@ public class AsyncContextEvent extends AsyncEvent implements Runnable
     {
         Scheduler.Task task=_timeoutTask;
         _timeoutTask=null;
-        if (task!=null)
-            _state.onTimeout();
+        if (task!=null) {
+			_state.onTimeout();
+		}
     }
 
     public void addThrowable(Throwable e)
     {
-        if (_throwable==null)
-            _throwable=e;
-        else
-            _throwable.addSuppressed(e);
+        if (_throwable!=null) {
+			_throwable.addSuppressed(e);
+		} else {
+			_throwable=e;
+		}
     }
 
 }

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.server.ab;
 
@@ -35,7 +30,7 @@ import org.junit.Test;
 public class TestABCase1 extends AbstractABCase
 {
     /**
-     * Echo 0 byte TEXT message
+     * Echo 0 byte TEXT message.
      * @throws Exception on test failure
      */
     @Test
@@ -59,7 +54,7 @@ public class TestABCase1 extends AbstractABCase
     }
 
     /**
-     * Echo 125 byte TEXT message (uses small 7-bit payload length)
+     * Echo 125 byte TEXT message (uses small 7-bit payload length).
      * @throws Exception on test failure
      */
     @Test
@@ -87,7 +82,7 @@ public class TestABCase1 extends AbstractABCase
     }
 
     /**
-     * Echo 126 byte TEXT message (uses medium 2 byte payload length)
+     * Echo 126 byte TEXT message (uses medium 2 byte payload length).
      * @throws Exception on test failure
      */
     @Test
@@ -115,7 +110,7 @@ public class TestABCase1 extends AbstractABCase
     }
 
     /**
-     * Echo 127 byte TEXT message (uses medium 2 byte payload length)
+     * Echo 127 byte TEXT message (uses medium 2 byte payload length).
      * @throws Exception on test failure
      */
     @Test
@@ -143,7 +138,7 @@ public class TestABCase1 extends AbstractABCase
     }
 
     /**
-     * Echo 128 byte TEXT message (uses medium 2 byte payload length)
+     * Echo 128 byte TEXT message (uses medium 2 byte payload length).
      * @throws Exception on test failure
      */
     @Test
@@ -171,7 +166,7 @@ public class TestABCase1 extends AbstractABCase
     }
 
     /**
-     * Echo 65535 byte TEXT message (uses medium 2 byte payload length)
+     * Echo 65535 byte TEXT message (uses medium 2 byte payload length).
      * @throws Exception on test failure
      */
     @Test
@@ -199,7 +194,7 @@ public class TestABCase1 extends AbstractABCase
     }
 
     /**
-     * Echo 65536 byte TEXT message (uses large 8 byte payload length)
+     * Echo 65536 byte TEXT message (uses large 8 byte payload length).
      * @throws Exception on test failure
      */
     @Test
@@ -261,7 +256,7 @@ public class TestABCase1 extends AbstractABCase
     }
 
     /**
-     * Echo 0 byte BINARY message
+     * Echo 0 byte BINARY message.
      * @throws Exception on test failure
      */
     @Test
@@ -285,7 +280,7 @@ public class TestABCase1 extends AbstractABCase
     }
 
     /**
-     * Echo 125 byte BINARY message (uses small 7-bit payload length)
+     * Echo 125 byte BINARY message (uses small 7-bit payload length).
      * @throws Exception on test failure
      */
     @Test
@@ -313,7 +308,7 @@ public class TestABCase1 extends AbstractABCase
     }
 
     /**
-     * Echo 126 byte BINARY message (uses medium 2 byte payload length)
+     * Echo 126 byte BINARY message (uses medium 2 byte payload length).
      * @throws Exception on test failure
      */
     @Test
@@ -341,7 +336,7 @@ public class TestABCase1 extends AbstractABCase
     }
 
     /**
-     * Echo 127 byte BINARY message (uses medium 2 byte payload length)
+     * Echo 127 byte BINARY message (uses medium 2 byte payload length).
      * @throws Exception on test failure
      */
     @Test
@@ -369,7 +364,7 @@ public class TestABCase1 extends AbstractABCase
     }
 
     /**
-     * Echo 128 byte BINARY message (uses medium 2 byte payload length)
+     * Echo 128 byte BINARY message (uses medium 2 byte payload length).
      * @throws Exception on test failure
      */
     @Test
@@ -397,7 +392,7 @@ public class TestABCase1 extends AbstractABCase
     }
 
     /**
-     * Echo 65535 byte BINARY message (uses medium 2 byte payload length)
+     * Echo 65535 byte BINARY message (uses medium 2 byte payload length).
      * @throws Exception on test failure
      */
     @Test
@@ -425,7 +420,7 @@ public class TestABCase1 extends AbstractABCase
     }
 
     /**
-     * Echo 65536 byte BINARY message (uses large 8 byte payload length)
+     * Echo 65536 byte BINARY message (uses large 8 byte payload length).
      * @throws Exception on test failure
      */
     @Test

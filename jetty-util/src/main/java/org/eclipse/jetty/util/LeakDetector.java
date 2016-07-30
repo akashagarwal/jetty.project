@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util;
 
@@ -77,13 +72,7 @@ public class LeakDetector<T> extends AbstractLifeCycle implements Runnable
     {
         String id = id(resource);
         LeakInfo info = resources.putIfAbsent(id, new LeakInfo(resource,id));
-        if (info != null)
-        {
-            // Leak detected, prior acquire exists (not released) or id clash.
-            return false;
-        }
-        // Normal behavior.
-        return true;
+        return info == null;
     }
 
     /**
@@ -98,14 +87,7 @@ public class LeakDetector<T> extends AbstractLifeCycle implements Runnable
     {
         String id = id(resource);
         LeakInfo info = resources.remove(id);
-        if (info != null)
-        {
-            // Normal behavior.
-            return true;
-        }
-
-        // Leak detected (released without acquire).
-        return false;
+        return info != null;
     }
 
     /**
@@ -144,10 +126,12 @@ public class LeakDetector<T> extends AbstractLifeCycle implements Runnable
             {
                 @SuppressWarnings("unchecked")
                 LeakInfo leakInfo = (LeakInfo)queue.remove();
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Resource GC'ed: {}",leakInfo);
-                if (resources.remove(leakInfo.id) != null)
-                    leaked(leakInfo);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("Resource GC'ed: {}",leakInfo);
+				}
+                if (resources.remove(leakInfo.id) != null) {
+					leaked(leakInfo);
+				}
             }
         }
         catch (InterruptedException x)

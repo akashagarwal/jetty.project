@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.annotations;
 
@@ -45,7 +40,7 @@ import org.junit.Test;
 
 public class TestSecurityAnnotationConversions
 {
-    @ServletSecurity(value=@HttpConstraint(value=EmptyRoleSemantic.DENY))
+    @ServletSecurity(@HttpConstraint(EmptyRoleSemantic.DENY))
     public static class DenyServlet extends HttpServlet
     {}
 
@@ -53,12 +48,12 @@ public class TestSecurityAnnotationConversions
     public static class PermitServlet extends HttpServlet
     {}
 
-    @ServletSecurity(value=@HttpConstraint(value=EmptyRoleSemantic.PERMIT, transportGuarantee=TransportGuarantee.CONFIDENTIAL, rolesAllowed={"tom", "dick", "harry"}))
+    @ServletSecurity(@HttpConstraint(value=EmptyRoleSemantic.PERMIT, transportGuarantee=TransportGuarantee.CONFIDENTIAL, rolesAllowed={"tom", "dick", "harry"}))
     public static class RolesServlet extends HttpServlet
     {}
 
     @ServletSecurity(value=@HttpConstraint(value=EmptyRoleSemantic.PERMIT, transportGuarantee=TransportGuarantee.CONFIDENTIAL, rolesAllowed={"tom", "dick", "harry"}),
-                     httpMethodConstraints={@HttpMethodConstraint(value="GET")})
+                     httpMethodConstraints={@HttpMethodConstraint("GET")})
     public static class Method1Servlet extends HttpServlet
     {}
 
@@ -265,37 +260,34 @@ public class TestSecurityAnnotationConversions
             for (int i=0; i< expectedMappings.length && !matched; i++)
             {
                 ConstraintMapping em = expectedMappings[i];
-                if (em.getPathSpec().equals(am.getPathSpec()))
-                {
-                    if ((em.getMethod()==null && am.getMethod() == null) || em.getMethod() != null && em.getMethod().equals(am.getMethod()))
-                    {
-                        matched = true;
+                if (em.getPathSpec().equals(am.getPathSpec()) && ((em.getMethod()==null && am.getMethod() == null) || (em.getMethod() != null && em.getMethod().equals(am.getMethod())))) {
+				    matched = true;
 
-                        assertEquals(em.getConstraint().getAuthenticate(), am.getConstraint().getAuthenticate());
-                        assertEquals(em.getConstraint().getDataConstraint(), am.getConstraint().getDataConstraint());
-                        if (em.getMethodOmissions() == null)
-                        {
-                            assertNull(am.getMethodOmissions());
-                        }
-                        else
-                        {
-                            assertTrue(Arrays.equals(am.getMethodOmissions(), em.getMethodOmissions()));
-                        }
+				    assertEquals(em.getConstraint().getAuthenticate(), am.getConstraint().getAuthenticate());
+				    assertEquals(em.getConstraint().getDataConstraint(), am.getConstraint().getDataConstraint());
+				    if (em.getMethodOmissions() != null)
+				    {
+				        assertTrue(Arrays.equals(am.getMethodOmissions(), em.getMethodOmissions()));
+				    }
+				    else
+				    {
+				        assertNull(am.getMethodOmissions());
+				    }
 
-                        if (em.getConstraint().getRoles() == null)
-                        {
-                            assertNull(am.getConstraint().getRoles());
-                        }
-                        else
-                        {
-                            assertTrue(Arrays.equals(em.getConstraint().getRoles(), am.getConstraint().getRoles()));
-                        }
-                    }
-                }
+				    if (em.getConstraint().getRoles() != null)
+				    {
+				        assertTrue(Arrays.equals(em.getConstraint().getRoles(), am.getConstraint().getRoles()));
+				    }
+				    else
+				    {
+				        assertNull(am.getConstraint().getRoles());
+				    }
+				}
             }
 
-            if (!matched)
-                fail("No expected ConstraintMapping matching method:"+am.getMethod()+" pathSpec: "+am.getPathSpec());
+            if (!matched) {
+				fail("No expected ConstraintMapping matching method:"+am.getMethod()+" pathSpec: "+am.getPathSpec());
+			}
         }
     }
 

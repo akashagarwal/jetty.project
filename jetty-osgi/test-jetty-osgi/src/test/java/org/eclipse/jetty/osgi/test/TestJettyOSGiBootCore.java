@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.osgi.test;
  
@@ -40,14 +35,14 @@ import static org.ops4j.pax.exam.CoreOptions.systemProperty;
 
 
 /**
- * Default OSGi setup integration test
+ * Default OSGi setup integration test.
  */
 @RunWith( PaxExam.class )
 public class TestJettyOSGiBootCore
 {
     private static final String LOG_LEVEL = "WARN";
     
-    // TODO these should be dynamic
+    /** TODO these should be dynamic. */
     public static final int DEFAULT_HTTP_PORT = 9876;
     public static final int DEFAULT_SSL_PORT = 9877;
 
@@ -58,8 +53,7 @@ public class TestJettyOSGiBootCore
     public Option[] config()
     {
         VersionResolver resolver = MavenUtils.asInProject();
-        ArrayList<Option> options = new ArrayList<Option>();
-        options.addAll(provisionCoreJetty());
+        ArrayList<Option> options = new ArrayList<Option>(provisionCoreJetty());
         options.add(CoreOptions.junitBundles());
         options.addAll(httpServiceJetty());
         options.addAll(Arrays.asList(options(systemProperty("pax.exam.logging").value("none"))));
@@ -168,7 +162,7 @@ public class TestJettyOSGiBootCore
      
     /**
      * You will get a list of bundles installed by default
-     * plus your testcase, wrapped into a bundle called pax-exam-probe
+     * plus your testcase, wrapped into a bundle called pax-exam-probe.
      */
     @Test
     public void testHttpService() throws Exception

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.osgi.boot;
 
@@ -49,29 +44,23 @@ public class BundleWebAppProvider extends AbstractWebAppProvider implements Bund
     private ServiceRegistration _serviceRegForBundles;
     
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public BundleWebAppProvider (ServerInstanceWrapper wrapper)
     {
         super(wrapper);
     }
     
-    /* ------------------------------------------------------------ */
-    /** 
-     * @see org.eclipse.jetty.util.component.AbstractLifeCycle#doStart()
-     */
+    /** ------------------------------------------------------------. */
     protected void doStart() throws Exception
     {
         //register as an osgi service for deploying bundles, advertising the name of the jetty Server instance we are related to
         Dictionary<String,String> properties = new Hashtable<String,String>();
         properties.put(OSGiServerConstants.MANAGED_JETTY_SERVER_NAME, getServerInstanceWrapper().getManagedServerName());
-        _serviceRegForBundles = FrameworkUtil.getBundle(this.getClass()).getBundleContext().registerService(BundleProvider.class.getName(), this, properties);
+        _serviceRegForBundles = FrameworkUtil.getBundle(getClass()).getBundleContext().registerService(BundleProvider.class.getName(), this, properties);
         super.doStart();
     }
 
-    /* ------------------------------------------------------------ */
-    /** 
-     * @see org.eclipse.jetty.util.component.AbstractLifeCycle#doStop()
-     */
+    /** ------------------------------------------------------------. */
     @Override
     protected void doStop() throws Exception
     {
@@ -98,13 +87,14 @@ public class BundleWebAppProvider extends AbstractWebAppProvider implements Bund
     
     /* ------------------------------------------------------------ */
     /**
-     * A bundle has been added that could be a webapp 
+     * A bundle has been added that could be a webapp .
      * @param bundle the bundle
      */
     public boolean bundleAdded (Bundle bundle) throws Exception
     {
-        if (bundle == null)
-            return false;
+        if (bundle == null) {
+			return false;
+		}
 
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(getServerInstanceWrapper().getParentClassLoaderForWebapps());
@@ -200,7 +190,7 @@ public class BundleWebAppProvider extends AbstractWebAppProvider implements Bund
 
     
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     private static String getContextPath(Bundle bundle)
     {
         Dictionary<?, ?> headers = bundle.getHeaders();
@@ -216,11 +206,13 @@ public class BundleWebAppProvider extends AbstractWebAppProvider implements Bund
             contextPath = toks[toks.length - 1];
             // remove .jar, .war etc:
             int lastDot = contextPath.lastIndexOf('.');
-            if (lastDot != -1)
-                contextPath = contextPath.substring(0, lastDot);
+            if (lastDot != -1) {
+				contextPath = contextPath.substring(0, lastDot);
+			}
         }
-        if (!contextPath.startsWith("/"))
-            contextPath = "/" + contextPath;
+        if (!contextPath.startsWith("/")) {
+			contextPath = "/" + contextPath;
+		}
  
         return contextPath;
     }

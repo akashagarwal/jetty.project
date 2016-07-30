@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.start;
 
@@ -37,11 +32,11 @@ import org.eclipse.jetty.start.config.CommandLineConfigSource;
  */
 public class StartLog
 {
-    private final static PrintStream stdout = System.out;
-    private final static PrintStream stderr = System.err;
+    private static final PrintStream stdout = System.out;
+    private static final PrintStream stderr = System.err;
     private static volatile PrintStream out = System.out;
     private static volatile PrintStream err = System.err;
-    private final static StartLog INSTANCE = new StartLog();
+    private static final StartLog INSTANCE = new StartLog();
 
     public static void debug(String format, Object... args)
     {
@@ -102,8 +97,8 @@ public class StartLog
         return INSTANCE.debug;
     }
 
-    private boolean trace = false;
-    private boolean debug = false;
+    private boolean trace;
+    private boolean debug;
 
     public void initialize(BaseHome baseHome, CommandLineConfigSource cmdLineSource) throws IOException
     {

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util;
 
@@ -47,7 +42,7 @@ public interface SocketAddressResolver
      * @param port the port of the resulting socket address
      * @param promise the callback invoked when the resolution succeeds or fails
      */
-    public void resolve(String host, int port, Promise<List<InetSocketAddress>> promise);
+    void resolve(String host, int port, Promise<List<InetSocketAddress>> promise);
 
     /**
      * <p>Creates {@link SocketAddress} instances synchronously in the caller thread.</p>
@@ -63,13 +58,15 @@ public interface SocketAddressResolver
                 InetAddress[] addresses = InetAddress.getAllByName(host);
 
                 List<InetSocketAddress> result = new ArrayList<>(addresses.length);
-                for (InetAddress address : addresses)
-                    result.add(new InetSocketAddress(address, port));
+                for (InetAddress address : addresses) {
+					result.add(new InetSocketAddress(address, port));
+				}
 
-                if (result.isEmpty())
-                    promise.failed(new UnknownHostException());
-                else
-                    promise.succeeded(result);
+                if (result.isEmpty()) {
+					promise.failed(new UnknownHostException());
+				} else {
+					promise.succeeded(result);
+				}
             }
             catch (Throwable x)
             {

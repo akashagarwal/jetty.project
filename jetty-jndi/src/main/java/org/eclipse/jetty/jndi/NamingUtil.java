@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.jndi;
 
@@ -33,16 +28,16 @@ import org.eclipse.jetty.util.log.Logger;
 
 
 /**
- * Naming Utility Methods
+ * Naming Utility Methods.
  */
 public class NamingUtil
 {
-    public final static Logger __log=org.eclipse.jetty.util.log.Log.getLogger("jndi");
+    public static final Logger __log=org.eclipse.jetty.util.log.Log.getLogger("jndi");
 
     /* ------------------------------------------------------------ */
     /**
      * Bind an object to a context ensuring all sub-contexts
-     * are created if necessary
+     * are created if necessary.
      *
      * @param ctx the context into which to bind
      * @param nameStr the name relative to context to bind
@@ -56,8 +51,9 @@ public class NamingUtil
         Name name = ctx.getNameParser("").parse(nameStr);
 
         //no name, nothing to do
-        if (name.size() == 0)
-            return null;
+        if (name.size() == 0) {
+			return null;
+		}
 
         Context subCtx = ctx;
 
@@ -67,20 +63,23 @@ public class NamingUtil
             try
             {
                 subCtx = (Context)subCtx.lookup (name.get(i));
-                if(__log.isDebugEnabled())
-                    __log.debug("Subcontext "+name.get(i)+" already exists");
+                if(__log.isDebugEnabled()) {
+					__log.debug("Subcontext "+name.get(i)+" already exists");
+				}
             }
             catch (NameNotFoundException e)
             {
                 subCtx = subCtx.createSubcontext(name.get(i));
-                if(__log.isDebugEnabled())
-                    __log.debug("Subcontext "+name.get(i)+" created");
+                if(__log.isDebugEnabled()) {
+					__log.debug("Subcontext "+name.get(i)+" created");
+				}
             }
         }
 
         subCtx.rebind (name.get(name.size() - 1), obj);
-        if(__log.isDebugEnabled())
-            __log.debug("Bound object to "+name.get(name.size() - 1));
+        if(__log.isDebugEnabled()) {
+			__log.debug("Bound object to "+name.get(name.size() - 1));
+		}
         return subCtx;
     }
 
@@ -96,9 +95,9 @@ public class NamingUtil
             if (b.getObject() instanceof Context)
             {
                 unbind((Context)b.getObject());
-            }
-            else
-                ctx.unbind(b.getName());
+            } else {
+				ctx.unbind(b.getName());
+			}
         }
     }
 

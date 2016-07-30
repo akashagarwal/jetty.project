@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.test.jsp;
 
@@ -146,9 +141,9 @@ public class JspAndDefaultWithAliasesTest
         // the default servlet to return the jsp source
         String body = getResponseBody(conn);
 
-        if (knownBypass && body.indexOf("<%@")>=0)
-            LOG.info("Known bypass of mapping by "+path);
-        else
+        if (knownBypass && body.contains("<%@")) {
+			LOG.info("Known bypass of mapping by "+path);
+		} else
         {
             Assert.assertThat("Body",body,not(containsString("<%@")));
             Assert.assertThat("Body",body,not(containsString("<jsp:")));
@@ -164,8 +159,9 @@ public class JspAndDefaultWithAliasesTest
             return;
         }
 
-        if (conn.getResponseCode()!=404)
-            System.err.println(conn.getResponseMessage());
+        if (conn.getResponseCode()!=404) {
+			System.err.println(conn.getResponseMessage());
+		}
 
         // Of other possible paths, only 404 Not Found is expected
         Assert.assertThat("Response Code",conn.getResponseCode(),is(404));

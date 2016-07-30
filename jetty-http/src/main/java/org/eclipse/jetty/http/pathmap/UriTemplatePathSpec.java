@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http.pathmap;
 
@@ -43,10 +38,10 @@ public class UriTemplatePathSpec extends RegexPathSpec
     private static final Logger LOG = Log.getLogger(UriTemplatePathSpec.class);
     
     private static final Pattern VARIABLE_PATTERN = Pattern.compile("\\{(.*)\\}");
-    /** Reserved Symbols in URI Template variable */
+    /** Reserved Symbols in URI Template variable. */
     private static final String VARIABLE_RESERVED = ":/?#[]@" + // gen-delims
                                                     "!$&'()*+,;="; // sub-delims
-    /** Allowed Symbols in a URI Template variable */
+    /** Allowed Symbols in a URI Template variable. */
     private static final String VARIABLE_SYMBOLS="-._";
     private static final Set<String> FORBIDDEN_SEGMENTS;
 
@@ -147,7 +142,7 @@ public class UriTemplatePathSpec extends RegexPathSpec
                 err.append(rawSpec);
                 throw new IllegalArgumentException(err.toString());
             }
-            else if ((segment.indexOf('{') >= 0) || (segment.indexOf('}') >= 0))
+            else if (segment.indexOf('{') >= 0 || segment.indexOf('}') >= 0)
             {
                 // variable is split with a path separator
                 StringBuilder err = new StringBuilder();
@@ -176,7 +171,7 @@ public class UriTemplatePathSpec extends RegexPathSpec
                 // escape regex special characters
                 for (char c : segment.toCharArray())
                 {
-                    if ((c == '.') || (c == '[') || (c == ']') || (c == '\\'))
+                    if (c == '.' || c == '[' || c == ']' || c == '\\')
                     {
                         regex.append('\\');
                     }
@@ -230,7 +225,7 @@ public class UriTemplatePathSpec extends RegexPathSpec
         
         int i = 0;
         int codepoint;
-        boolean valid = (len > 0); // must not be zero length
+        boolean valid = len > 0; // must not be zero length
         
         while (valid && i < len)
         {

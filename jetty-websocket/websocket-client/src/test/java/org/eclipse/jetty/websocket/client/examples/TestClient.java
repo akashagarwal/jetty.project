@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.client.examples;
 
@@ -59,7 +54,7 @@ public class TestClient
         {
             if (_verbose)
             {
-                System.err.printf("%s#onWebSocketConnect %s %s\n",this.getClass().getSimpleName(),session,session.getClass().getSimpleName());
+                System.err.printf("%s#onWebSocketConnect %s %s\n",getClass().getSimpleName(),session,session.getClass().getSimpleName());
             }
         }
 
@@ -69,7 +64,7 @@ public class TestClient
 
             int off = 0;
             int len = data.length;
-            if ((maxFragmentLength > 0) && (len > maxFragmentLength))
+            if (maxFragmentLength > 0 && len > maxFragmentLength)
             {
                 len = maxFragmentLength;
             }
@@ -79,11 +74,11 @@ public class TestClient
                 __framesSent++;
 
                 off += len;
-                if ((data.length - off) > len)
+                if (data.length - off > len)
                 {
                     len = data.length - off;
                 }
-                if ((maxFragmentLength > 0) && (len > maxFragmentLength))
+                if (maxFragmentLength > 0 && len > maxFragmentLength)
                 {
                     len = maxFragmentLength;
                 }
@@ -92,7 +87,7 @@ public class TestClient
 
     }
 
-    private static boolean _verbose = false;
+    private static boolean _verbose;
 
     private static final Random __random = new Random();
 
@@ -246,7 +241,7 @@ public class TestClient
             long duration = System.currentTimeMillis() - __start;
             System.out.println("--- " + host + " websocket ping statistics using " + clients + " connection" + (clients > 1?"s":"") + " ---");
             System.out.printf("%d/%d frames sent/recv, %d/%d mesg sent/recv, time %dms %dm/s %.2fbps%n",__framesSent,__framesReceived.get(),__messagesSent,
-                    __messagesReceived.get(),duration,((1000L * __messagesReceived.get()) / duration),(1000.0D * __messagesReceived.get() * 8 * size)
+                    __messagesReceived.get(),duration,(1000L * __messagesReceived.get()) / duration,(1000.0D * __messagesReceived.get() * 8 * size)
                             / duration / 1024 / 1024);
             System.out.printf("rtt min/ave/max = %.3f/%.3f/%.3f ms\n",__minDuration.get() / 1000000.0,__messagesReceived.get() == 0?0.0:(__totalTime.get()
                     / __messagesReceived.get() / 1000000.0),__maxDuration.get() / 1000000.0);
@@ -292,7 +287,6 @@ public class TestClient
 
     private void disconnect()
     {
-        // TODO Auto-generated method stub
     }
 
     private void open() throws Exception

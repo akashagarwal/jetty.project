@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.example.asyncrest;
 
@@ -52,9 +47,9 @@ import org.eclipse.jetty.util.ajax.JSON;
  */
 public class AsyncRestServlet extends AbstractRestServlet
 {
-    final static String RESULTS_ATTR = "org.eclipse.jetty.demo.client";
-    final static String DURATION_ATTR = "org.eclipse.jetty.demo.duration";
-    final static String START_ATTR = "org.eclispe.jetty.demo.start";
+    static final String RESULTS_ATTR = "org.eclipse.jetty.demo.client";
+    static final String DURATION_ATTR = "org.eclipse.jetty.demo.duration";
+    static final String START_ATTR = "org.eclispe.jetty.demo.start";
 
     HttpClient _client;
 
@@ -114,8 +109,9 @@ public class AsyncRestServlet extends AbstractRestServlet
                         @Override
                         void onComplete()
                         {
-                            if (outstanding.decrementAndGet()<=0)
-                                async.dispatch();
+                            if (outstanding.decrementAndGet()<=0) {
+								async.dispatch();
+							}
                         }
                     });
             }
@@ -186,8 +182,9 @@ public class AsyncRestServlet extends AbstractRestServlet
             Object[] auctions = (Object[]) query.get("Item");
             if (auctions != null)
             {
-                for (Object o : auctions)
-                    onAuctionFound((Map<String,String>)o);
+                for (Object o : auctions) {
+					onAuctionFound((Map<String,String>)o);
+				}
             }
             onComplete();
 

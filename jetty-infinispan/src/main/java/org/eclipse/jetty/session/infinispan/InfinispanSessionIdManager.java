@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.session.infinispan;
 
@@ -66,8 +61,8 @@ import org.infinispan.commons.api.BasicCache;
  */
 public class InfinispanSessionIdManager extends AbstractSessionIdManager
 {
-    private  final static Logger LOG = Log.getLogger("org.eclipse.jetty.server.session");
-    public final static String ID_KEY = "__o.e.j.s.infinispanIdMgr__";
+    private static final Logger LOG = Log.getLogger("org.eclipse.jetty.server.session");
+    public static final String ID_KEY = "__o.e.j.s.infinispanIdMgr__";
     public static final int DEFAULT_IDLE_EXPIRY_MULTIPLE = 2;
     protected BasicCache<String,Object> _cache;
     private Server _server;
@@ -128,8 +123,9 @@ public class InfinispanSessionIdManager extends AbstractSessionIdManager
     @Override
     public boolean idInUse(String id)
     {
-        if (id == null)
-            return false;
+        if (id == null) {
+			return false;
+		}
         
         String clusterId = getClusterId(id);
         
@@ -157,17 +153,19 @@ public class InfinispanSessionIdManager extends AbstractSessionIdManager
     @Override
     public void addSession(HttpSession session)
     {
-        if (session == null)
-            return;
+        if (session == null) {
+			return;
+		}
 
         //insert into the cache and set an idle expiry on the entry that
         //is based off the max idle time configured for the session. If the
         //session is immortal, then there is no idle expiry on the corresponding
         //session id
-        if (session.getMaxInactiveInterval() == 0)
-            insert (((AbstractSession)session).getClusterId());
-        else
-            insert (((AbstractSession)session).getClusterId(), session.getMaxInactiveInterval() * getIdleExpiryMultiple());
+        if (session.getMaxInactiveInterval() == 0) {
+			insert (((AbstractSession)session).getClusterId());
+		} else {
+			insert (((AbstractSession)session).getClusterId(), session.getMaxInactiveInterval() * getIdleExpiryMultiple());
+		}
     }
     
     
@@ -196,8 +194,9 @@ public class InfinispanSessionIdManager extends AbstractSessionIdManager
     @Override
     public void removeSession(HttpSession session)
     {
-        if (session == null)
-            return;
+        if (session == null) {
+			return;
+		}
 
         //delete from the cache
         delete (((AbstractSession)session).getClusterId());
@@ -226,7 +225,7 @@ public class InfinispanSessionIdManager extends AbstractSessionIdManager
             {
                 SessionManager manager = sessionHandler.getSessionManager();
 
-                if (manager != null && manager instanceof InfinispanSessionManager)
+                if (manager instanceof InfinispanSessionManager)
                 {
                     ((InfinispanSessionManager)manager).invalidateSession(id);
                 }
@@ -261,7 +260,7 @@ public class InfinispanSessionIdManager extends AbstractSessionIdManager
             {
                 SessionManager manager = sessionHandler.getSessionManager();
 
-                if (manager != null && manager instanceof InfinispanSessionManager)
+                if (manager instanceof InfinispanSessionManager)
                 {
                     ((InfinispanSessionManager)manager).renewSessionId(oldClusterId, oldNodeId, newClusterId, getNodeId(newClusterId, request));
                 }
@@ -292,7 +291,7 @@ public class InfinispanSessionIdManager extends AbstractSessionIdManager
     
     /**
      * Do any operation to the session id in the cache to
-     * ensure its idle expiry time moves forward
+     * ensure its idle expiry time moves forward.
      * @param id the session id
      */
     public void touch (String id)
@@ -310,8 +309,9 @@ public class InfinispanSessionIdManager extends AbstractSessionIdManager
      */
     protected boolean exists (String id)
     {
-        if (_cache == null)
-            throw new IllegalStateException ("No cache");
+        if (_cache == null) {
+			throw new IllegalStateException ("No cache");
+		}
         
         return _cache.containsKey(makeKey(id));
     }
@@ -324,8 +324,9 @@ public class InfinispanSessionIdManager extends AbstractSessionIdManager
      */
     protected void insert (String id)
     {        
-        if (_cache == null)
-            throw new IllegalStateException ("No cache");
+        if (_cache == null) {
+			throw new IllegalStateException ("No cache");
+		}
         
         _cache.putIfAbsent(makeKey(id), id);
     }
@@ -339,8 +340,9 @@ public class InfinispanSessionIdManager extends AbstractSessionIdManager
      */
     protected void insert (String id, long idleTimeOutSec)
     {
-        if (_cache == null)
-            throw new IllegalStateException ("No cache");
+        if (_cache == null) {
+			throw new IllegalStateException ("No cache");
+		}
         
         _cache.putIfAbsent(makeKey(id),id,-1L, TimeUnit.SECONDS, idleTimeOutSec, TimeUnit.SECONDS);
     }
@@ -353,8 +355,9 @@ public class InfinispanSessionIdManager extends AbstractSessionIdManager
      */
     protected void delete (String id)
     {
-        if (_cache == null)
-            throw new IllegalStateException ("No cache");
+        if (_cache == null) {
+			throw new IllegalStateException ("No cache");
+		}
         
         _cache.remove(makeKey(id));
     }

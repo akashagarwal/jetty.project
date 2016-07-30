@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.client.http;
 
@@ -59,8 +54,9 @@ public class HttpSenderOverHTTP extends HttpSender
         }
         catch (Throwable x)
         {
-            if (LOG.isDebugEnabled())
-                LOG.debug(x);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug(x);
+			}
             callback.failed(x);
         }
     }
@@ -78,10 +74,11 @@ public class HttpSenderOverHTTP extends HttpSender
                 ByteBuffer contentBuffer = content.getByteBuffer();
                 boolean lastContent = content.isLast();
                 HttpGenerator.Result result = generator.generateRequest(null, null, chunk, contentBuffer, lastContent);
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Generated content ({} bytes) - {}/{}",
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("Generated content ({} bytes) - {}/{}",
                             contentBuffer == null ? -1 : contentBuffer.remaining(),
                             result, generator);
+				}
                 switch (result)
                 {
                     case NEED_CHUNK:
@@ -92,10 +89,11 @@ public class HttpSenderOverHTTP extends HttpSender
                     case FLUSH:
                     {
                         EndPoint endPoint = getHttpChannel().getHttpConnection().getEndPoint();
-                        if (chunk != null)
-                            endPoint.write(new ByteBufferRecyclerCallback(callback, bufferPool, chunk), chunk, contentBuffer);
-                        else
-                            endPoint.write(callback, contentBuffer);
+                        if (chunk != null) {
+							endPoint.write(new ByteBufferRecyclerCallback(callback, bufferPool, chunk), chunk, contentBuffer);
+						} else {
+							endPoint.write(callback, contentBuffer);
+						}
                         return;
                     }
                     case SHUTDOWN_OUT:
@@ -105,8 +103,9 @@ public class HttpSenderOverHTTP extends HttpSender
                     }
                     case CONTINUE:
                     {
-                        if (lastContent)
-                            break;
+                        if (lastContent) {
+							break;
+						}
                         callback.succeeded();
                         return;
                     }
@@ -124,8 +123,9 @@ public class HttpSenderOverHTTP extends HttpSender
         }
         catch (Throwable x)
         {
-            if (LOG.isDebugEnabled())
-                LOG.debug(x);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug(x);
+			}
             callback.failed(x);
         }
     }
@@ -147,8 +147,9 @@ public class HttpSenderOverHTTP extends HttpSender
 
     private void shutdownOutput()
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("Request shutdown output {}", getHttpExchange().getRequest());
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Request shutdown output {}", getHttpExchange().getRequest());
+		}
         getHttpChannel().getHttpConnection().getEndPoint().shutdownOutput();
     }
 
@@ -180,8 +181,9 @@ public class HttpSenderOverHTTP extends HttpSender
             long contentLength = requestContent == null ? -1 : requestContent.getLength();
             String path = request.getPath();
             String query = request.getQuery();
-            if (query != null)
-                path += "?" + query;
+            if (query != null) {
+				path += "?" + query;
+			}
             metaData = new MetaData.Request(request.getMethod(), new HttpURI(path), request.getVersion(), request.getHeaders(), contentLength);
 
             if (!expects100Continue(request))
@@ -201,12 +203,13 @@ public class HttpSenderOverHTTP extends HttpSender
             while (true)
             {
                 HttpGenerator.Result result = generator.generateRequest(metaData, headerBuffer, chunkBuffer, contentBuffer, lastContent);
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Generated headers ({} bytes), chunk ({} bytes), content ({} bytes) - {}/{}",
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("Generated headers ({} bytes), chunk ({} bytes), content ({} bytes) - {}/{}",
                             headerBuffer == null ? -1 : headerBuffer.remaining(),
                             chunkBuffer == null ? -1 : chunkBuffer.remaining(),
                             contentBuffer == null ? -1 : contentBuffer.remaining(),
                             result, generator);
+				}
                 switch (result)
                 {
                     case NEED_HEADER:
@@ -224,18 +227,16 @@ public class HttpSenderOverHTTP extends HttpSender
                         EndPoint endPoint = getHttpChannel().getHttpConnection().getEndPoint();
                         if (chunkBuffer == null)
                         {
-                            if (contentBuffer == null)
-                                endPoint.write(this, headerBuffer);
-                            else
-                                endPoint.write(this, headerBuffer, contentBuffer);
-                        }
-                        else
-                        {
-                            if (contentBuffer == null)
-                                endPoint.write(this, headerBuffer, chunkBuffer);
-                            else
-                                endPoint.write(this, headerBuffer, chunkBuffer, contentBuffer);
-                        }
+                            if (contentBuffer != null) {
+								endPoint.write(this, headerBuffer, contentBuffer);
+							} else {
+								endPoint.write(this, headerBuffer);
+							}
+                        } else if (contentBuffer != null) {
+							endPoint.write(this, headerBuffer, chunkBuffer, contentBuffer);
+						} else {
+							endPoint.write(this, headerBuffer, chunkBuffer);
+						}
                         generated = true;
                         return Action.SCHEDULED;
                     }
@@ -246,14 +247,16 @@ public class HttpSenderOverHTTP extends HttpSender
                     }
                     case CONTINUE:
                     {
-                        if (generated)
-                            return Action.SUCCEEDED;
+                        if (generated) {
+							return Action.SUCCEEDED;
+						}
                         break;
                     }
                     case DONE:
                     {
-                        if (generated)
-                            return Action.SUCCEEDED;
+                        if (generated) {
+							return Action.SUCCEEDED;
+						}
                         // The headers have already been generated by some
                         // other thread, perhaps by a concurrent abort().
                         throw new HttpRequestException("Could not generate headers", exchange.getRequest());
@@ -294,8 +297,9 @@ public class HttpSenderOverHTTP extends HttpSender
             ByteBufferPool bufferPool = client.getByteBufferPool();
             bufferPool.release(headerBuffer);
             headerBuffer = null;
-            if (chunkBuffer != null)
-                bufferPool.release(chunkBuffer);
+            if (chunkBuffer != null) {
+				bufferPool.release(chunkBuffer);
+			}
             chunkBuffer = null;
         }
     }
@@ -326,8 +330,9 @@ public class HttpSenderOverHTTP extends HttpSender
         @Override
         public void failed(Throwable x)
         {
-            for (ByteBuffer buffer : buffers)
-                pool.release(buffer);
+            for (ByteBuffer buffer : buffers) {
+				pool.release(buffer);
+			}
             super.failed(x);
         }
     }

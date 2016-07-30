@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.jsr356.endpoints;
 
@@ -83,9 +78,9 @@ public class ClientAnnotatedEndpointScanner_InvalidSignaturesTest
         return data;
     }
 
-    // The pojo to test
+    /** The pojo to test. */
     private Class<?> pojo;
-    // The annotation class expected to be mentioned in the error message
+    /** The annotation class expected to be mentioned in the error message. */
     private Class<? extends Annotation> expectedAnnoClass;
 
     public ClientAnnotatedEndpointScanner_InvalidSignaturesTest(Class<?> pojo, Class<? extends Annotation> expectedAnnotation)
@@ -106,8 +101,9 @@ public class ClientAnnotatedEndpointScanner_InvalidSignaturesTest
         }
         catch (InvalidSignatureException e)
         {
-            if (LOG.isDebugEnabled())
-                LOG.debug("{}:{}",e.getClass(),e.getMessage());
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("{}:{}",e.getClass(),e.getMessage());
+			}
             Assert.assertThat("Message",e.getMessage(),containsString(expectedAnnoClass.getSimpleName()));
         }
     }

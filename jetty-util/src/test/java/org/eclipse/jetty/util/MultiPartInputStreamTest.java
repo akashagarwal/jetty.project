@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util;
 
@@ -48,7 +43,7 @@ import org.junit.Test;
 /**
  * MultiPartInputStreamTest
  *
- *
+ *.
  */
 public class MultiPartInputStreamTest
 {
@@ -848,8 +843,9 @@ public class MultiPartInputStreamTest
         mpis.setDeleteOnExit(true);
         Collection<Part> parts = mpis.getParts();
         assertEquals(2, parts.size());
-        for (Part p:parts)
-            assertEquals("stuff", p.getName());
+        for (Part p:parts) {
+			assertEquals("stuff", p.getName());
+		}
 
         //if they all have the name name, then only retrieve the first one
         Part p = mpis.getPart("stuff");
@@ -953,8 +949,9 @@ public class MultiPartInputStreamTest
     {
         int length = filename.length();
         String name = filename;
-        if (length > 10)
-            name = filename.substring(0,10);
+        if (length > 10) {
+			name = filename.substring(0,10);
+		}
         StringBuffer filler = new StringBuffer();
         int i = name.length();
         while (i < 51)
@@ -971,7 +968,7 @@ public class MultiPartInputStreamTest
         "content-disposition: form-data; name=\"stuff\"; filename=\"" + filename + "\"\r\n"+
         "Content-Type: text/plain\r\n"+
         "\r\n"+name+
-        filler.toString()+"\r\n" +
+        filler+"\r\n" +
         "--AaB03x--\r\n";
     }
 }

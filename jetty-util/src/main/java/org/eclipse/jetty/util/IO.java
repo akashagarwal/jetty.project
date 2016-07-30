@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util;
 
@@ -47,18 +42,18 @@ public class IO
 {
     private static final Logger LOG = Log.getLogger(IO.class);
 
-    /* ------------------------------------------------------------------- */
-    public final static String
+    /** -------------------------------------------------------------------. */
+    public static final String
         CRLF      = "\015\012";
 
-    /* ------------------------------------------------------------------- */
-    public final static byte[]
+    /** -------------------------------------------------------------------. */
+    public static final byte[]
         CRLF_BYTES    = {(byte)'\015',(byte)'\012'};
 
-    /* ------------------------------------------------------------------- */
+    /** -------------------------------------------------------------------. */
     public static final int bufferSize = 64*1024;
 
-    /* ------------------------------------------------------------------- */
+    /** -------------------------------------------------------------------. */
     static class Job implements Runnable
     {
         InputStream in;
@@ -81,26 +76,26 @@ public class IO
             this.write=write;
         }
 
-        /* ------------------------------------------------------------ */
-        /*
-         * @see java.lang.Runnable#run()
-         */
+        /** ------------------------------------------------------------. */
         public void run()
         {
             try {
-                if (in!=null)
-                    copy(in,out,-1);
-                else
-                    copy(read,write,-1);
+                if (in!=null) {
+					copy(in,out,-1);
+				} else {
+					copy(read,write,-1);
+				}
             }
             catch(IOException e)
             {
                 LOG.ignore(e);
                 try{
-                    if (out!=null)
-                        out.close();
-                    if (write!=null)
-                        write.close();
+                    if (out!=null) {
+						out.close();
+					}
+                    if (write!=null) {
+						write.close();
+					}
                 }
                 catch(IOException e2)
                 {
@@ -156,8 +151,9 @@ public class IO
                 int max = byteCount<bufferSize?(int)byteCount:bufferSize;
                 len=in.read(buffer,0,max);
 
-                if (len==-1)
-                    break;
+                if (len==-1) {
+					break;
+				}
 
                 byteCount -= len;
                 out.write(buffer,0,len);
@@ -168,8 +164,9 @@ public class IO
             while (true)
             {
                 len=in.read(buffer,0,bufferSize);
-                if (len<0 )
-                    break;
+                if (len<0 ) {
+					break;
+				}
                 out.write(buffer,0,len);
             }
         }
@@ -194,13 +191,15 @@ public class IO
         {
             while (byteCount>0)
             {
-                if (byteCount<bufferSize)
-                    len=in.read(buffer,0,(int)byteCount);
-                else
-                    len=in.read(buffer,0,bufferSize);
+                if (byteCount<bufferSize) {
+					len=in.read(buffer,0,(int)byteCount);
+				} else {
+					len=in.read(buffer,0,bufferSize);
+				}
 
-                if (len==-1)
-                    break;
+                if (len==-1) {
+					break;
+				}
 
                 byteCount -= len;
                 out.write(buffer,0,len);
@@ -212,8 +211,9 @@ public class IO
             while (!pout.checkError())
             {
                 len=in.read(buffer,0,bufferSize);
-                if (len==-1)
-                    break;
+                if (len==-1) {
+					break;
+				}
                 out.write(buffer,0,len);
             }
         }
@@ -222,37 +222,40 @@ public class IO
             while (true)
             {
                 len=in.read(buffer,0,bufferSize);
-                if (len==-1)
-                    break;
+                if (len==-1) {
+					break;
+				}
                 out.write(buffer,0,len);
             }
         }
     }
 
     /* ------------------------------------------------------------ */
-    /** Copy files or directories
+    /** Copy files or directories.
      * @param from the file to copy
      * @param to the destination to copy to
      * @throws IOException if unable to copy
      */
     public static void copy(File from,File to) throws IOException
     {
-        if (from.isDirectory())
-            copyDir(from,to);
-        else
-            copyFile(from,to);
+        if (from.isDirectory()) {
+			copyDir(from,to);
+		} else {
+			copyFile(from,to);
+		}
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public static void copyDir(File from,File to) throws IOException
     {
         if (to.exists())
         {
-            if (!to.isDirectory())
-                throw new IllegalArgumentException(to.toString());
-        }
-        else
-            to.mkdirs();
+            if (!to.isDirectory()) {
+				throw new IllegalArgumentException(to.toString());
+			}
+        } else {
+			to.mkdirs();
+		}
 
         File[] files = from.listFiles();
         if (files!=null)
@@ -260,14 +263,15 @@ public class IO
             for (int i=0;i<files.length;i++)
             {
                 String name = files[i].getName();
-                if (".".equals(name) || "..".equals(name))
-                    continue;
+                if (".".equals(name) || "..".equals(name)) {
+					continue;
+				}
                 copy(files[i],new File(to,name));
             }
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public static void copyFile(File from,File to) throws IOException
     {
         try (InputStream in=new FileInputStream(from);
@@ -341,19 +345,21 @@ public class IO
      */
     public static boolean delete(File file)
     {
-        if (!file.exists())
-            return false;
+        if (!file.exists()) {
+			return false;
+		}
         if (file.isDirectory())
         {
             File[] files = file.listFiles();
-            for (int i=0;files!=null && i<files.length;i++)
-                delete(files[i]);
+            for (int i=0;files!=null && i<files.length;i++) {
+				delete(files[i]);
+			}
         }
         return file.delete();
     }
 
     /**
-     * Closes an arbitrary closable, and logs exceptions at ignore level
+     * Closes an arbitrary closable, and logs exceptions at ignore level.
      *
      * @param closeable the closeable to close
      */
@@ -361,8 +367,9 @@ public class IO
     {
         try
         {
-            if (closeable != null)
-                closeable.close();
+            if (closeable != null) {
+				closeable.close();
+			}
         }
         catch (IOException ignore)
         {
@@ -371,7 +378,7 @@ public class IO
     }
 
     /**
-     * closes an input stream, and logs exceptions
+     * Closes an input stream, and logs exceptions.
      *
      * @param is the input stream to close
      */
@@ -381,7 +388,7 @@ public class IO
     }
 
     /**
-     * closes an output stream, and logs exceptions
+     * Closes an output stream, and logs exceptions.
      *
      * @param os the output stream to close
      */
@@ -391,7 +398,7 @@ public class IO
     }
 
     /**
-     * closes a reader, and logs exceptions
+     * Closes a reader, and logs exceptions.
      *
      * @param reader the reader to close
      */
@@ -401,7 +408,7 @@ public class IO
     }
 
     /**
-     * closes a writer, and logs exceptions
+     * Closes a writer, and logs exceptions.
      *
      * @param writer the writer to close
      */
@@ -410,7 +417,7 @@ public class IO
         close((Closeable)writer);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public static byte[] readBytes(InputStream in)
         throws IOException
     {
@@ -448,8 +455,9 @@ public class IO
             long wrote=out.write(buffers,offset,length);
 
             // If we can't write any more, give up
-            if (wrote==0)
-                break;
+            if (wrote==0) {
+				break;
+			}
 
             // count the total
             total+=wrote;
@@ -490,7 +498,7 @@ public class IO
     }
 
     /* ------------------------------------------------------------ */
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     private static class NullOS extends OutputStream
     {
         @Override
@@ -508,7 +516,7 @@ public class IO
 
 
     /* ------------------------------------------------------------ */
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     private static class ClosedIS extends InputStream
     {
         @Override
@@ -538,7 +546,7 @@ public class IO
     }
 
     /* ------------------------------------------------------------ */
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     private static class NullWrite extends Writer
     {
         @Override

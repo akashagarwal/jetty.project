@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.servlet;
 
@@ -90,8 +85,9 @@ public class ServletUpgradeRequest extends UpgradeRequest
         if (requestParams != null)
         {
             Map<String, List<String>> params = new HashMap<>(requestParams.size());
-            for (Map.Entry<String, String[]> entry : requestParams.entrySet())
-                params.put(entry.getKey(), Arrays.asList(entry.getValue()));
+            for (Map.Entry<String, String[]> entry : requestParams.entrySet()) {
+				params.put(entry.getKey(), Arrays.asList(entry.getValue()));
+			}
             setParameterMap(params);
         }
 
@@ -120,7 +116,7 @@ public class ServletUpgradeRequest extends UpgradeRequest
     }
 
     /**
-     * Equivalent to {@link HttpServletRequest#getLocalAddr()}
+     * Equivalent to {@link HttpServletRequest#getLocalAddr()}.
      *
      * @return the local address
      */
@@ -130,7 +126,7 @@ public class ServletUpgradeRequest extends UpgradeRequest
     }
 
     /**
-     * Equivalent to {@link HttpServletRequest#getLocalName()}
+     * Equivalent to {@link HttpServletRequest#getLocalName()}.
      *
      * @return the local host name
      */
@@ -140,7 +136,7 @@ public class ServletUpgradeRequest extends UpgradeRequest
     }
 
     /**
-     * Equivalent to {@link HttpServletRequest#getLocalPort()}
+     * Equivalent to {@link HttpServletRequest#getLocalPort()}.
      *
      * @return the local port
      */
@@ -162,7 +158,7 @@ public class ServletUpgradeRequest extends UpgradeRequest
     }
 
     /**
-     * Equivalent to {@link HttpServletRequest#getLocale()}
+     * Equivalent to {@link HttpServletRequest#getLocale()}.
      *
      * @return the preferred <code>Locale</code> for the client
      */
@@ -172,7 +168,7 @@ public class ServletUpgradeRequest extends UpgradeRequest
     }
 
     /**
-     * Equivalent to {@link HttpServletRequest#getLocales()}
+     * Equivalent to {@link HttpServletRequest#getLocales()}.
      *
      * @return an Enumeration of preferred Locale objects
      */
@@ -192,7 +188,7 @@ public class ServletUpgradeRequest extends UpgradeRequest
     }
 
     /**
-     * Equivalent to {@link HttpServletRequest#getUserPrincipal()}
+     * Equivalent to {@link HttpServletRequest#getUserPrincipal()}.
      */
     public Principal getUserPrincipal()
     {
@@ -200,7 +196,7 @@ public class ServletUpgradeRequest extends UpgradeRequest
     }
 
     /**
-     * Equivalent to {@link HttpServletRequest#getRemoteAddr()}
+     * Equivalent to {@link HttpServletRequest#getRemoteAddr()}.
      *
      * @return the remote address
      */
@@ -210,7 +206,7 @@ public class ServletUpgradeRequest extends UpgradeRequest
     }
 
     /**
-     * Equivalent to {@link HttpServletRequest#getRemoteHost()}
+     * Equivalent to {@link HttpServletRequest#getRemoteHost()}.
      *
      * @return the remote host name
      */
@@ -220,7 +216,7 @@ public class ServletUpgradeRequest extends UpgradeRequest
     }
 
     /**
-     * Equivalent to {@link HttpServletRequest#getRemotePort()}
+     * Equivalent to {@link HttpServletRequest#getRemotePort()}.
      *
      * @return the remote port
      */
@@ -283,18 +279,21 @@ public class ServletUpgradeRequest extends UpgradeRequest
         // Since this can be called from a filter, we need to be smart about determining the target request path.
         String contextPath = request.getContextPath();
         String requestPath = request.getRequestURI();
-        if (requestPath.startsWith(contextPath))
-            requestPath = requestPath.substring(contextPath.length());
+        if (requestPath.startsWith(contextPath)) {
+			requestPath = requestPath.substring(contextPath.length());
+		}
         return requestPath;
     }
 
     private String[] parseProtocols(String protocol)
     {
-        if (protocol == null)
-            return new String[0];
+        if (protocol == null) {
+			return new String[0];
+		}
         protocol = protocol.trim();
-        if (protocol.length() == 0)
-            return new String[0];
+        if (protocol.length() == 0) {
+			return new String[0];
+		}
         return protocol.split("\\s*,\\s*");
     }
 

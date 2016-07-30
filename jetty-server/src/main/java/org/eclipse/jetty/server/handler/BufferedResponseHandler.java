@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server.handler;
 
@@ -71,7 +66,7 @@ public class BufferedResponseHandler extends HandlerWrapper
     private final IncludeExclude<String> _paths = new IncludeExclude<>(PathSpecSet.class);
     private final IncludeExclude<String> _mimeTypes = new IncludeExclude<>();
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public BufferedResponseHandler()
     {
         // include only GET requests
@@ -82,34 +77,32 @@ public class BufferedResponseHandler extends HandlerWrapper
         {
             if (type.startsWith("image/")||
                 type.startsWith("audio/")||
-                type.startsWith("video/"))
-                _mimeTypes.exclude(type);
+                type.startsWith("video/")) {
+				_mimeTypes.exclude(type);
+			}
         }
         LOG.debug("{} mime types {}",this,_mimeTypes);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public IncludeExclude<String> getMethodIncludeExclude()
     {
         return _methods;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public IncludeExclude<String> getPathIncludeExclude()
     {
         return _paths;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public IncludeExclude<String> getMimeIncludeExclude()
     {
         return _mimeTypes;
     }
     
-    /* ------------------------------------------------------------ */
-    /**
-     * @see org.eclipse.jetty.server.handler.HandlerWrapper#handle(java.lang.String, org.eclipse.jetty.server.Request, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-     */
+    /** ------------------------------------------------------------. */
     @Override
     public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
     {
@@ -166,28 +159,26 @@ public class BufferedResponseHandler extends HandlerWrapper
         // install interceptor and handle
         out.setInterceptor(new BufferedInterceptor(baseRequest.getHttpChannel(),out.getInterceptor()));
 
-        if (_handler!=null)
-            _handler.handle(target,baseRequest, request, response);
+        if (_handler!=null) {
+			_handler.handle(target,baseRequest, request, response);
+		}
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected boolean isMimeTypeBufferable(String mimetype)
     {
         return _mimeTypes.matches(mimetype);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected boolean isPathBufferable(String requestURI)
     {
-        if (requestURI == null)
-            return true;
-
-        return _paths.matches(requestURI);
+        return requestURI == null || _paths.matches(requestURI);
     }
 
     /* ------------------------------------------------------------ */
     /* ------------------------------------------------------------ */
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     private class BufferedInterceptor implements HttpOutput.Interceptor
     {
         final Interceptor _next;
@@ -205,21 +196,22 @@ public class BufferedResponseHandler extends HandlerWrapper
         @Override
         public void write(ByteBuffer content, boolean last, Callback callback)
         {
-            if (LOG.isDebugEnabled())
-                LOG.debug("{} write last={} {}",this,last,BufferUtil.toDetailString(content));
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("{} write last={} {}",this,last,BufferUtil.toDetailString(content));
+			}
             // if we are not committed, have to decide if we should aggregate or not
             if (_aggregating==null)
             {
                 Response response = _channel.getResponse();
                 int sc = response.getStatus();
-                if (sc>0 && (sc<200 || sc==204 || sc==205 || sc>=300))
-                    _aggregating=Boolean.FALSE;  // No body
-                else
+                if (sc>0 && (sc<200 || sc==204 || sc==205 || sc>=300)) {
+					_aggregating=Boolean.FALSE;  // No body
+				} else
                 {
                     String ct = response.getContentType();
-                    if (ct==null)
-                        _aggregating=Boolean.TRUE;
-                    else
+                    if (ct==null) {
+						_aggregating=Boolean.TRUE;
+					} else
                     {
                         ct=MimeTypes.getContentTypeWithoutCharset(ct);
                         _aggregating=isMimeTypeBufferable(StringUtil.asciiToLowerCase(ct));
@@ -238,17 +230,20 @@ public class BufferedResponseHandler extends HandlerWrapper
             if (last)
             {
                 // Add the current content to the buffer list without a copy
-                if (BufferUtil.length(content)>0)
-                    _buffers.add(content);
+                if (BufferUtil.length(content)>0) {
+					_buffers.add(content);
+				}
 
-                if (LOG.isDebugEnabled())
-                    LOG.debug("{} committing {}",this,_buffers.size());
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("{} committing {}",this,_buffers.size());
+				}
                 commit(_buffers,callback);
             }
             else
             {
-                if (LOG.isDebugEnabled())
-                    LOG.debug("{} aggregating",this);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("{} aggregating",this);
+				}
                 
                 // Aggregate the content into buffer chain
                 while (BufferUtil.hasContent(content))
@@ -282,10 +277,10 @@ public class BufferedResponseHandler extends HandlerWrapper
         protected void commit(Queue<ByteBuffer> buffers, Callback callback)
         {
             // If only 1 buffer
-            if (_buffers.size()==1)
-                // just flush it with the last callback
+            if (_buffers.size()==1) {
+				// just flush it with the last callback
                 getNextInterceptor().write(_buffers.remove(),true,callback);
-            else
+			} else
             {
                 // Create an iterating callback to do the writing
                 IteratingCallback icb = new IteratingCallback()
@@ -294,8 +289,9 @@ public class BufferedResponseHandler extends HandlerWrapper
                     protected Action process() throws Exception
                     {
                         ByteBuffer buffer = _buffers.poll();
-                        if (buffer==null)
-                            return Action.SUCCEEDED;
+                        if (buffer==null) {
+							return Action.SUCCEEDED;
+						}
 
                         getNextInterceptor().write(buffer,_buffers.isEmpty(),this);
                         return Action.SCHEDULED;

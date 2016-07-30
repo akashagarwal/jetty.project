@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util.resource;
 
@@ -171,13 +166,13 @@ public class FileSystemResourceTest
             {
                 final Resource ritem = (Resource)item;
                 final URI alias = ritem.getAlias();
-                if (alias == null)
+                if (alias != null)
                 {
-                    return ritem == null;
+                    return alias.equals(resource.getURI());
                 }
                 else
                 {
-                    return alias.equals(resource.getURI());
+                    return ritem == null;
                 }
             }
 
@@ -562,8 +557,9 @@ public class FileSystemResourceTest
             List<String> actual = Arrays.asList(list);
             
             assertEquals(expected.size(),actual.size());
-            for (String s : expected)
-                assertEquals(true,actual.contains(s));
+            for (String s : expected) {
+				assertEquals(true,actual.contains(s));
+			}
             
         }
     }
@@ -590,9 +586,10 @@ public class FileSystemResourceTest
         
         try (Resource base = newResource(dir.toFile()))
         {
-            if (OS.IS_WINDOWS && base instanceof FileResource)
-                // FileResource doesn't handle symlinks of Windows
+            if (OS.IS_WINDOWS && base instanceof FileResource) {
+				// FileResource doesn't handle symlinks of Windows
                 return;
+			}
                 
             Resource resFoo = base.addPath("foo");
             Resource resBar = base.addPath("bar");
@@ -1048,7 +1045,7 @@ public class FileSystemResourceTest
     }
 
     /**
-     * The most basic access example
+     * The most basic access example.
      * @throws Exception failed test
      */
     @Test

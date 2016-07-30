@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 
 package org.eclipse.jetty;
@@ -51,7 +46,7 @@ import org.junit.Test;
 /**
  * DataSourceLoginServiceTest
  *
- *
+ *.
  */
 public class DataSourceLoginServiceTest
 {
@@ -125,8 +120,9 @@ public class DataSourceLoginServiceTest
          loginService.setJndiName("dstest");
          loginService.setName(__realm);
          loginService.setCacheMs(__cacheInterval);
-         if (_testServer != null)
-             loginService.setServer(_testServer.getServer());
+         if (_testServer != null) {
+			loginService.setServer(_testServer.getServer());
+		}
          
          //create a datasource
          EmbeddedDataSource ds = new EmbeddedDataSource();
@@ -172,7 +168,7 @@ public class DataSourceLoginServiceTest
      
      protected void changePassword (String user, String newpwd) throws Exception
      {
-         Loader.loadClass(this.getClass(), "org.apache.derby.jdbc.EmbeddedDriver").newInstance();
+         Loader.loadClass(getClass(), "org.apache.derby.jdbc.EmbeddedDriver").newInstance();
          try (Connection connection = DriverManager.getConnection(DatabaseLoginServiceTestServer.__dbURL, "", "");
               Statement stmt = connection.createStatement())
          {

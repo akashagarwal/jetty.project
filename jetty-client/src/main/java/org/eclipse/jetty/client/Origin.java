@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.client;
 
@@ -58,8 +53,12 @@ public class Origin
     @Override
     public boolean equals(Object obj)
     {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
+        if (this == obj) {
+			return true;
+		}
+        if (obj == null || getClass() != obj.getClass()) {
+			return false;
+		}
         Origin that = (Origin)obj;
         return scheme.equals(that.scheme) && address.equals(that.address);
     }
@@ -68,8 +67,7 @@ public class Origin
     public int hashCode()
     {
         int result = scheme.hashCode();
-        result = 31 * result + address.hashCode();
-        return result;
+        return 31 * result + address.hashCode();
     }
 
     public static class Address
@@ -96,8 +94,12 @@ public class Origin
         @Override
         public boolean equals(Object obj)
         {
-            if (this == obj) return true;
-            if (obj == null || getClass() != obj.getClass()) return false;
+            if (this == obj) {
+				return true;
+			}
+            if (obj == null || getClass() != obj.getClass()) {
+				return false;
+			}
             Address that = (Address)obj;
             return host.equals(that.host) && port == that.port;
         }
@@ -106,8 +108,7 @@ public class Origin
         public int hashCode()
         {
             int result = host.hashCode();
-            result = 31 * result + port;
-            return result;
+            return 31 * result + port;
         }
 
         public String asString()

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server.handler;
 
@@ -45,7 +40,7 @@ import org.eclipse.jetty.server.Request;
 public class IdleTimeoutHandler extends HandlerWrapper
 {
     private long _idleTimeoutMs = 1000;
-    private boolean _applyToAsync = false;
+    private boolean _applyToAsync;
     
     public boolean isApplyToAsync()
     {
@@ -53,7 +48,7 @@ public class IdleTimeoutHandler extends HandlerWrapper
     }
 
     /**
-     * Should the adjusted idle time be maintained for asynchronous requests
+     * Should the adjusted idle time be maintained for asynchronous requests.
      * @param applyToAsync true if alternate idle timeout is applied to asynchronous requests
      */
     public void setApplyToAsync(boolean applyToAsync)
@@ -114,9 +109,9 @@ public class IdleTimeoutHandler extends HandlerWrapper
                         channel.setIdleTimeout(idle_timeout);
                     }
                 });
-            }
-            else 
-                channel.setIdleTimeout(idle_timeout);
+            } else {
+				channel.setIdleTimeout(idle_timeout);
+			}
         }
     }
 }

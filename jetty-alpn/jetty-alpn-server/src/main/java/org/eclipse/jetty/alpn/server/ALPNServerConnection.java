@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.alpn.server;
 
@@ -65,8 +60,9 @@ public class ALPNServerConnection extends NegotiatingServerConnection implements
                 ConnectionFactory factory = getConnector().getConnectionFactory(serverProtocol);
                 if (factory instanceof CipherDiscriminator && !((CipherDiscriminator)factory).isAcceptable(serverProtocol, tlsProtocol, tlsCipher))
                 {
-                    if (LOG.isDebugEnabled())
-                        LOG.debug("{} protocol {} not acceptable to {} for {}/{}", this, serverProtocol, factory, tlsProtocol, tlsCipher);
+                    if (LOG.isDebugEnabled()) {
+						LOG.debug("{} protocol {} not acceptable to {} for {}/{}", this, serverProtocol, factory, tlsProtocol, tlsCipher);
+					}
                     continue;
                 }
 
@@ -82,13 +78,15 @@ public class ALPNServerConnection extends NegotiatingServerConnection implements
             }
             else
             {
-                if (LOG.isDebugEnabled())
-                    LOG.debug("{} could not negotiate protocol: C{} | S{}", this, clientProtocols, serverProtocols);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("{} could not negotiate protocol: C{} | S{}", this, clientProtocols, serverProtocols);
+				}
                 throw new IllegalStateException();
             }
         }
-        if (LOG.isDebugEnabled())
-            LOG.debug("{} protocol selected {}", this, negotiated);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("{} protocol selected {}", this, negotiated);
+		}
         setProtocol(negotiated);
         ALPN.remove(sslEngine);
         return negotiated;

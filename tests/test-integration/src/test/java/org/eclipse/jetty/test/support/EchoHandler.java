@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.test.support;
 
@@ -35,12 +30,14 @@ public class EchoHandler extends AbstractHandler
     {
         baseRequest.setHandled(true);
 
-        if (request.getContentType() != null)
-            response.setContentType(request.getContentType());
-        if (request.getParameter("charset") != null)
-            response.setCharacterEncoding(request.getParameter("charset"));
-        else if (request.getCharacterEncoding() != null)
-            response.setCharacterEncoding(request.getCharacterEncoding());
+        if (request.getContentType() != null) {
+			response.setContentType(request.getContentType());
+		}
+        if (request.getParameter("charset") != null) {
+			response.setCharacterEncoding(request.getParameter("charset"));
+		} else if (request.getCharacterEncoding() != null) {
+			response.setCharacterEncoding(request.getCharacterEncoding());
+		}
 
         PrintWriter writer = response.getWriter();
         BufferedReader reader = request.getReader();
@@ -58,7 +55,8 @@ public class EchoHandler extends AbstractHandler
         reader.close();
         writer.close();
 
-        if (reader.read() >= 0)
-            throw new IllegalStateException("Not closed");
+        if (reader.read() >= 0) {
+			throw new IllegalStateException("Not closed");
+		}
     }
 }

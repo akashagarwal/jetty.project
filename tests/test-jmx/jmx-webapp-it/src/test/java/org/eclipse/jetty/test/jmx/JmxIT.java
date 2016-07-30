@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.test.jmx;
 
@@ -116,8 +111,9 @@ public class JmxIT
     
     public static void stopJetty () throws Exception
     {
-        if (__server != null)
-            __server.stop();
+        if (__server != null) {
+			__server.stop();
+		}
     }
 
     private String getStringAttribute(ObjectName objName, String attrName) throws Exception
@@ -139,7 +135,7 @@ public class JmxIT
     @Test
     public void testBasic() throws Exception
     {
-        URI serverURI = new URI("http://localhost:"+String.valueOf(__port)+"/jmx-webapp/");
+        URI serverURI = new URI("http://localhost:"+__port+"/jmx-webapp/");
         SimpleRequest req = new SimpleRequest(serverURI);
         assertThat(req.getString("ping"),startsWith("Servlet Pong at "));
     }
@@ -165,7 +161,7 @@ public class JmxIT
     }
 
     /**
-     * Test for directly annotated POJOs in the JMX tree
+     * Test for directly annotated POJOs in the JMX tree.
      */
     @Test
     public void testAccessToCommonComponent() throws Exception

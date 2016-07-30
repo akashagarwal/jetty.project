@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 
 package org.eclipse.jetty;
@@ -58,7 +53,7 @@ import org.eclipse.jetty.util.security.Constraint;
 
 
 /**
- * DatabaseLoginServiceTestServer
+ * DatabaseLoginServiceTestServer.
  */
 public class DatabaseLoginServiceTestServer
 {
@@ -121,7 +116,7 @@ public class DatabaseLoginServiceTestServer
 
             OutputStream out = null;
 
-            if (baseRequest.getMethod().equals("PUT"))
+            if ("PUT".equals(baseRequest.getMethod()))
             {
                 baseRequest.setHandled(true);
 
@@ -133,7 +128,7 @@ public class DatabaseLoginServiceTestServer
                 response.setStatus(HttpServletResponse.SC_CREATED);
             }
 
-            if (baseRequest.getMethod().equals("POST"))
+            if ("POST".equals(baseRequest.getMethod()))
             {
                 baseRequest.setHandled(true);
                 out = new ByteArrayOutputStream();
@@ -152,8 +147,9 @@ public class DatabaseLoginServiceTestServer
                     out.close();
                 }
 
-                if (!(out instanceof FileOutputStream))
-                    _requestContent = out.toString();
+                if (!(out instanceof FileOutputStream)) {
+					_requestContent = out.toString();
+				}
             }
         }
         

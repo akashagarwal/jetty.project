@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 
@@ -119,7 +114,7 @@ public class LowResourcesMonitorTest
     @Test
     public void testLowOnMemory() throws Exception
     {
-        _lowResourcesMonitor.setMaxMemory(Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory()+(100*1024*1024));
+        _lowResourcesMonitor.setMaxMemory(Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory()+100*1024*1024);
         Thread.sleep(1200);
         Assert.assertFalse(_lowResourcesMonitor.isLowOnResources());
 
@@ -146,8 +141,9 @@ public class LowResourcesMonitorTest
         Assert.assertFalse(_lowResourcesMonitor.isLowOnResources());
 
         Socket[] socket = new Socket[_lowResourcesMonitor.getMaxConnections()+1];
-        for (int i=0;i<socket.length;i++)
-            socket[i]=new Socket("localhost",_connector.getLocalPort());
+        for (int i=0;i<socket.length;i++) {
+			socket[i]=new Socket("localhost",_connector.getLocalPort());
+		}
         
         Thread.sleep(1200);
         Assert.assertTrue(_lowResourcesMonitor.isLowOnResources());
@@ -158,8 +154,9 @@ public class LowResourcesMonitorTest
         Thread.sleep(1200);
         Assert.assertFalse(_lowResourcesMonitor.isLowOnResources());   
 
-        for (int i=0;i<socket.length;i++)
-            Assert.assertEquals(-1,socket[i].getInputStream().read());
+        for (int i=0;i<socket.length;i++) {
+			Assert.assertEquals(-1,socket[i].getInputStream().read());
+		}
         
         newSocket.getOutputStream().write("GET / HTTP/1.0\r\n\r\n".getBytes(StandardCharsets.UTF_8));
         Assert.assertEquals('H',newSocket.getInputStream().read());

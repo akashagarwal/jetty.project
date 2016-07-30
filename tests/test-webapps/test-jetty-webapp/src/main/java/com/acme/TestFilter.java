@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package com.acme;
 
@@ -53,10 +48,7 @@ public class TestFilter implements Filter
     private ServletContext _context;
     private final Set<String> _allowed = new HashSet<String>();
 
-    /* ------------------------------------------------------------ */
-    /*
-     * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
-     */
+    /** ------------------------------------------------------------. */
     @Override
     public void init(FilterConfig filterConfig) throws ServletException
     {
@@ -69,10 +61,7 @@ public class TestFilter implements Filter
         LOG.debug("TestFilter#remote="+_remote);
     }
 
-    /* ------------------------------------------------------------ */
-    /*
-     * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse, javax.servlet.FilterChain)
-     */
+    /** ------------------------------------------------------------. */
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException
@@ -89,19 +78,20 @@ public class TestFilter implements Filter
 
         Integer old_value=null;
         ServletRequest r = request;
-        while (r instanceof ServletRequestWrapper)
-            r=((ServletRequestWrapper)r).getRequest();
+        while (r instanceof ServletRequestWrapper) {
+			r=((ServletRequestWrapper)r).getRequest();
+		}
 
         try
         {
             old_value=(Integer)request.getAttribute("testFilter");
 
-            Integer value=(old_value==null)?new Integer(1):new Integer(old_value.intValue()+1);
+            Integer value=(old_value==null)?Integer.valueOf(1):Integer.valueOf(old_value.intValue()+1);
 
             request.setAttribute("testFilter", value);
 
             String qString = ((HttpServletRequest)request).getQueryString();
-            if (qString != null && qString.indexOf("wrap")>=0)
+            if (qString != null && qString.contains("wrap"))
             {
                 request=new HttpServletRequestWrapper((HttpServletRequest)request);
             }
@@ -116,10 +106,7 @@ public class TestFilter implements Filter
         }
     }
 
-    /* ------------------------------------------------------------ */
-    /*
-     * @see javax.servlet.Filter#destroy()
-     */
+    /** ------------------------------------------------------------. */
     @Override
     public void destroy()
     {

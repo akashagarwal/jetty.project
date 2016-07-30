@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.monitor.jmx;
 
@@ -29,7 +24,7 @@ import java.util.Set;
 /**
  * NotifierGroup
  * 
- * This class allows for grouping of the event notifiers 
+ * This class allows for grouping of the event notifiers. 
  */
 public class NotifierGroup implements EventNotifier
 {
@@ -37,7 +32,7 @@ public class NotifierGroup implements EventNotifier
 
     /* ------------------------------------------------------------ */
     /**
-     * Create a notifier group
+     * Create a notifier group.
      */
     public NotifierGroup()
     {
@@ -46,7 +41,7 @@ public class NotifierGroup implements EventNotifier
     
     /* ------------------------------------------------------------ */
     /**
-     * Retrieve all event notifier associated with this group
+     * Retrieve all event notifier associated with this group.
      * 
      * @return collection of event notifiers
      */    
@@ -57,7 +52,7 @@ public class NotifierGroup implements EventNotifier
 
     /* ------------------------------------------------------------ */
     /**
-     * Add specified event notifier to event notifier group
+     * Add specified event notifier to event notifier group.
      * 
      * @param notifier event notifier to be added
      * @return true if successful
@@ -69,7 +64,7 @@ public class NotifierGroup implements EventNotifier
     
     /* ------------------------------------------------------------ */
     /**
-     * Add a collection of event notifiers to event notifier group
+     * Add a collection of event notifiers to event notifier group.
      * 
      * @param notifiers collection of event notifiers to be added
      * @return true if successful
@@ -81,7 +76,7 @@ public class NotifierGroup implements EventNotifier
     
     /* ------------------------------------------------------------ */
     /**
-     * Remove event notifier from event notifier group
+     * Remove event notifier from event notifier group.
      * 
      * @param notifier event notifier to be removed
      * @return true if successful
@@ -93,7 +88,7 @@ public class NotifierGroup implements EventNotifier
  
     /* ------------------------------------------------------------ */
     /**
-     * Remove a collection of event notifiers from event notifier group
+     * Remove a collection of event notifiers from event notifier group.
      * 
      * @param notifiers collection of event notifiers to be removed
      * @return true if successful

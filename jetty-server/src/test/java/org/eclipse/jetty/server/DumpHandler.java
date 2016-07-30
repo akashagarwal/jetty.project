@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 
@@ -61,18 +56,17 @@ public class DumpHandler extends AbstractHandler
         this.label=label;
     }
 
-    /* ------------------------------------------------------------ */
-    /*
-     * @see org.eclipse.jetty.server.server.Handler#handle(java.lang.String, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, int)
-     */
+    /** ------------------------------------------------------------. */
     @Override
     public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
     {
-        if (!isStarted())
-            return;
+        if (!isStarted()) {
+			return;
+		}
 
-        if (Boolean.valueOf(request.getParameter("flush")))
-            response.flushBuffer();
+        if (Boolean.valueOf(request.getParameter("flush"))) {
+			response.flushBuffer();
+		}
         
         if (Boolean.valueOf(request.getParameter("empty")))
         {
@@ -87,12 +81,14 @@ public class DumpHandler extends AbstractHandler
             read=new StringBuilder();
             int len=Integer.parseInt(request.getParameter("read"));
             Reader in = request.getReader();
-            for (int i=len;i-->0;)
-                read.append((char)in.read());
+            for (int i=len;i-->0;) {
+				read.append((char)in.read());
+			}
         }
 
-        if (request.getParameter("date")!=null)
-            response.setHeader("Date",request.getParameter("date"));
+        if (request.getParameter("date")!=null) {
+			response.setHeader("Date",request.getParameter("date"));
+		}
         
         if (request.getParameter("ISE")!=null)
         {
@@ -168,8 +164,9 @@ public class DumpHandler extends AbstractHandler
                 val=val.replaceAll("[ \n\r=<>]","?");
                 Cookie cookie=
                     new Cookie(cookie_name.trim(),val);
-                if ("Clear Cookie".equals(cookie_action))
-                    cookie.setMaxAge(0);
+                if ("Clear Cookie".equals(cookie_action)) {
+					cookie.setMaxAge(0);
+				}
                 response.addCookie(cookie);
             }
             catch(IllegalArgumentException e)
@@ -199,7 +196,7 @@ public class DumpHandler extends AbstractHandler
         {
             while(attributes.hasMoreElements())
             {
-                String attr=attributes.nextElement().toString();
+                String attr=attributes.nextElement();
                 writer.write(attr);
                 writer.write("=");
                 writer.write(request.getAttribute(attr).toString());
@@ -219,8 +216,9 @@ public class DumpHandler extends AbstractHandler
             int len;
             try{
                 Reader in=request.getReader();
-                while((len=in.read(content))>=0)
-                    writer.write(new String(content,0,len));
+                while((len=in.read(content))>=0) {
+					writer.write(new String(content,0,len));
+				}
             }
             catch(IOException e)
             {
@@ -234,8 +232,9 @@ public class DumpHandler extends AbstractHandler
         writer.flush();
 
         // commit now
-        if (!Boolean.valueOf(request.getParameter("no-content-length")))
-            response.setContentLength(buf.size()+1000);
+        if (!Boolean.valueOf(request.getParameter("no-content-length"))) {
+			response.setContentLength(buf.size()+1000);
+		}
         response.addHeader("Before-Flush",response.isCommitted()?"Committed???":"Not Committed");
         buf.writeTo(out);
         out.flush();
@@ -247,8 +246,9 @@ public class DumpHandler extends AbstractHandler
         {
             buf.reset();
             writer.flush();
-            for (int pad=998;pad-->0;)
-                writer.write(" ");
+            for (int pad=998;pad-->0;) {
+				writer.write(" ");
+			}
             writer.write("\r\n");
             writer.flush();
             buf.writeTo(out);

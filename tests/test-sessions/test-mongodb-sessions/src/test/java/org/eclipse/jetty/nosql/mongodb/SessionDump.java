@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.nosql.mongodb;
 
@@ -41,11 +36,11 @@ import javax.servlet.http.HttpSession;
 public class SessionDump extends HttpServlet
 {
 
-    int redirectCount=0;
-    /* ------------------------------------------------------------ */
+    int redirectCount;
+    /** ------------------------------------------------------------. */
     String pageType;
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void init(ServletConfig config)
          throws ServletException
@@ -53,7 +48,7 @@ public class SessionDump extends HttpServlet
         super.init(config);        
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected void handleForm(HttpServletRequest request,
                           HttpServletResponse response) 
     {
@@ -64,24 +59,25 @@ public class SessionDump extends HttpServlet
 
         if (action!=null)
         {
-            if(action.equals("New Session"))
+            if("New Session".equals(action))
             {   
                 session = request.getSession(true);
                 session.setAttribute("test","value");
             }
             else if (session!=null)
             {
-                if (action.equals("Invalidate"))
-                    session.invalidate();
-                else if (action.equals("Set") && name!=null && name.length()>0)
-                    session.setAttribute(name,value);
-                else if (action.equals("Remove"))
-                    session.removeAttribute(name);
+                if ("Invalidate".equals(action)) {
+					session.invalidate();
+				} else if ("Set".equals(action) && name!=null && name.length()>0) {
+					session.setAttribute(name,value);
+				} else if ("Remove".equals(action)) {
+					session.removeAttribute(name);
+				}
             }       
         }
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void doPost(HttpServletRequest request,
                        HttpServletResponse response) 
@@ -93,7 +89,7 @@ public class SessionDump extends HttpServlet
         response.sendRedirect(encodedUrl);
     }
         
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void doGet(HttpServletRequest request,
                       HttpServletResponse response) 
@@ -106,8 +102,9 @@ public class SessionDump extends HttpServlet
         HttpSession session = request.getSession(getURI(request).indexOf("new")>0);
         try
         {
-            if (session!=null) 
-                session.isNew();
+            if (session!=null) {
+				session.isNew();
+			}
         }
         catch(IllegalStateException e)
         {
@@ -154,11 +151,13 @@ public class SessionDump extends HttpServlet
                 
                 out.println("</form><br/>");
                 
-                if (request.isRequestedSessionIdFromCookie())
-                    out.println("<P>Turn off cookies in your browser to try url encoding<BR>");
+                if (request.isRequestedSessionIdFromCookie()) {
+					out.println("<P>Turn off cookies in your browser to try url encoding<BR>");
+				}
                 
-                if (request.isRequestedSessionIdFromURL())
-                    out.println("<P>Turn on cookies in your browser to try cookie encoding<BR>");
+                if (request.isRequestedSessionIdFromURL()) {
+					out.println("<P>Turn on cookies in your browser to try cookie encoding<BR>");
+				}
                 out.println("<a href=\""+response.encodeURL(request.getRequestURI()+"?q=0")+"\">Encoded Link</a><BR>");
                 
             }
@@ -170,18 +169,19 @@ public class SessionDump extends HttpServlet
 
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public String getServletInfo() {
         return "Session Dump Servlet";
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     private String getURI(HttpServletRequest request)
     {
         String uri=(String)request.getAttribute(RequestDispatcher.FORWARD_REQUEST_URI);
-        if (uri==null)
-            uri=request.getRequestURI();
+        if (uri==null) {
+			uri=request.getRequestURI();
+		}
         return uri;
     }
     

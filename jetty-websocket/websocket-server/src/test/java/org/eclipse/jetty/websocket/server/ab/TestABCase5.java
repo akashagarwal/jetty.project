@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.server.ab;
 
@@ -38,13 +33,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
- * Fragmentation Tests
+ * Fragmentation Tests.
  */
 @RunWith(AdvancedRunner.class)
 public class TestABCase5 extends AbstractABCase
 {
     /**
-     * Send ping fragmented in 2 packets
+     * Send ping fragmented in 2 packets.
      * @throws Exception on test failure
      */
     @Test
@@ -68,7 +63,7 @@ public class TestABCase5 extends AbstractABCase
             }
 
     /**
-     * Send continuation+fin, then text+fin (framewise)
+     * Send continuation+fin, then text+fin (framewise).
      * @throws Exception on test failure
      */
     @Test
@@ -92,7 +87,7 @@ public class TestABCase5 extends AbstractABCase
     }
 
     /**
-     * Send continuation+fin, then text+fin (slowly)
+     * Send continuation+fin, then text+fin (slowly).
      * @throws Exception on test failure
      */
     @Test
@@ -273,7 +268,7 @@ public class TestABCase5 extends AbstractABCase
     }
 
     /**
-     * text message fragmented in 2 frames, both frames as opcode=TEXT
+     * Text message fragmented in 2 frames, both frames as opcode=TEXT.
      * @throws Exception on test failure
      */
     @Test
@@ -297,7 +292,7 @@ public class TestABCase5 extends AbstractABCase
     }
 
     /**
-     * send text message fragmented in 5 frames, with 2 pings and wait between.
+     * Send text message fragmented in 5 frames, with 2 pings and wait between.
      * @throws Exception on test failure
      */
     @Test
@@ -345,7 +340,7 @@ public class TestABCase5 extends AbstractABCase
     }
 
     /**
-     * Send pong fragmented in 2 packets
+     * Send pong fragmented in 2 packets.
      * @throws Exception on test failure
      */
     @Test
@@ -369,7 +364,7 @@ public class TestABCase5 extends AbstractABCase
     }
 
     /**
-     * send text message fragmented in 5 frames, with 2 pings and wait between. (framewise)
+     * Send text message fragmented in 5 frames, with 2 pings and wait between. (framewise)
      * @throws Exception on test failure
      */
     @Test
@@ -411,7 +406,7 @@ public class TestABCase5 extends AbstractABCase
     }
 
     /**
-     * send text message fragmented in 5 frames, with 2 pings and wait between. (framewise)
+     * Send text message fragmented in 5 frames, with 2 pings and wait between. (framewise)
      * @throws Exception on test failure
      */
     @Test
@@ -454,7 +449,7 @@ public class TestABCase5 extends AbstractABCase
     }
 
     /**
-     * Send text fragmented in 2 packets
+     * Send text fragmented in 2 packets.
      * @throws Exception on test failure
      */
     @Test
@@ -479,7 +474,7 @@ public class TestABCase5 extends AbstractABCase
     }
 
     /**
-     * Send text fragmented in 2 packets (framewise)
+     * Send text fragmented in 2 packets (framewise).
      * @throws Exception on test failure
      */
     @Test
@@ -504,7 +499,7 @@ public class TestABCase5 extends AbstractABCase
     }
 
     /**
-     * Send text fragmented in 2 packets (slowly)
+     * Send text fragmented in 2 packets (slowly).
      * @throws Exception on test failure
      */
     @Test
@@ -530,7 +525,7 @@ public class TestABCase5 extends AbstractABCase
     }
 
     /**
-     * Send text fragmented in 2 packets, with ping between them
+     * Send text fragmented in 2 packets, with ping between them.
      * @throws Exception on test failure
      */
     @Test
@@ -557,7 +552,7 @@ public class TestABCase5 extends AbstractABCase
     }
 
     /**
-     * Send text fragmented in 2 packets, with ping between them (framewise)
+     * Send text fragmented in 2 packets, with ping between them (framewise).
      * @throws Exception on test failure
      */
     @Test
@@ -584,7 +579,7 @@ public class TestABCase5 extends AbstractABCase
     }
 
     /**
-     * Send text fragmented in 2 packets, with ping between them (slowly)
+     * Send text fragmented in 2 packets, with ping between them (slowly).
      * @throws Exception on test failure
      */
     @Test
@@ -612,7 +607,7 @@ public class TestABCase5 extends AbstractABCase
     }
 
     /**
-     * Send continuation+fin, then text+fin
+     * Send continuation+fin, then text+fin.
      * @throws Exception on test failure
      */
     @Test

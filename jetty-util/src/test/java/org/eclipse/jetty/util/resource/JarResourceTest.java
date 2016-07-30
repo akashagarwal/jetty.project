@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util.resource;
 
@@ -52,8 +47,9 @@ public class JarResourceTest
         assertTrue(entries.contains("subsubdir/"));
 
         File extract = File.createTempFile("extract", null);
-        if (extract.exists())
-            extract.delete();
+        if (extract.exists()) {
+			extract.delete();
+		}
         extract.mkdir();
         extract.deleteOnExit();
 
@@ -77,8 +73,9 @@ public class JarResourceTest
         assertTrue(entries.contains("numbers"));
 
         extract = File.createTempFile("extract", null);
-        if (extract.exists())
-            extract.delete();
+        if (extract.exists()) {
+			extract.delete();
+		}
         extract.mkdir();
         extract.deleteOnExit();
 
@@ -94,7 +91,7 @@ public class JarResourceTest
 
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Test
     public void testJarFileGetAllResoures()
     throws Exception
@@ -123,7 +120,7 @@ public class JarResourceTest
         assertFalse(jarFileResource.isContainedIn(container));
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Test
     public void testJarFileLastModified ()
     throws Exception
@@ -139,7 +136,7 @@ public class JarResourceTest
         }
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Test
     public void testJarFileCopyToDirectoryTraversal () throws Exception
     {
@@ -150,14 +147,16 @@ public class JarResourceTest
         JarResource jarResource = (JarResource)r;
 
         File destParent = File.createTempFile("copyjar", null);
-        if (destParent.exists())
-            destParent.delete();
+        if (destParent.exists()) {
+			destParent.delete();
+		}
         destParent.mkdir();
         destParent.deleteOnExit();
 
         File dest = new File(destParent.getCanonicalPath()+"/extract");
-        if(dest.exists())
-            dest.delete();
+        if(dest.exists()) {
+			dest.delete();
+		}
         dest.mkdir();
         dest.deleteOnExit();
 
@@ -171,7 +170,7 @@ public class JarResourceTest
             @Override
             public boolean accept(File directory, String name)
             {
-                return name.equals("dotdot.txt");
+                return "dotdot.txt".equals(name);
             }
         };
         assertEquals(0, dest.listFiles(dotdotFilenameFilter).length);
@@ -181,7 +180,7 @@ public class JarResourceTest
             @Override
             public boolean accept(File directory, String name)
             {
-                return name.equals("extract-filenotdir");
+                return "extract-filenotdir".equals(name);
             }
         };
         assertEquals(0, dest.listFiles(extractfileFilenameFilter).length);
@@ -191,7 +190,7 @@ public class JarResourceTest
             @Override
             public boolean accept(File directory, String name)
             {
-                return name.equals("current.txt");
+                return "current.txt".equals(name);
             }
         };
         assertEquals(1, dest.listFiles(currentDirectoryFilenameFilter).length);

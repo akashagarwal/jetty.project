@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server.handler;
 
@@ -39,14 +34,15 @@ import org.eclipse.jetty.server.Request;
  */
 public class AsyncDelayHandler extends HandlerWrapper
 {
-    public final static String AHW_ATTR = "o.e.j.s.h.AsyncHandlerWrapper";
+    public static final String AHW_ATTR = "o.e.j.s.h.AsyncHandlerWrapper";
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
     {
-        if (!isStarted() || _handler==null)
-            return;
+        if (!isStarted() || _handler==null) {
+			return;
+		}
         
         // Get the dispatcher types
         DispatcherType ctype = baseRequest.getDispatcherType();
@@ -114,7 +110,7 @@ public class AsyncDelayHandler extends HandlerWrapper
     }
     
     /* ------------------------------------------------------------ */
-    /** Called to indicate that a request has been presented for handling
+    /** Called to indicate that a request has been presented for handling.
      * @param request The request to handle
      * @param restart True if this request is being restarted after a delay
      * @return True if the request should be handled now

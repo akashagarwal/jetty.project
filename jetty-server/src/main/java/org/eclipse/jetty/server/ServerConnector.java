@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 
@@ -79,9 +74,9 @@ public class ServerConnector extends AbstractNetworkConnector
 {
     private final SelectorManager _manager;
     private volatile ServerSocketChannel _acceptChannel;
-    private volatile boolean _inheritChannel = false;
+    private volatile boolean _inheritChannel;
     private volatile int _localPort = -1;
-    private volatile int _acceptQueueSize = 0;
+    private volatile int _acceptQueueSize;
     private volatile boolean _reuseAddress = true;
     private volatile int _lingerTime = -1;
 
@@ -302,10 +297,11 @@ public class ServerConnector extends AbstractNetworkConnector
             if (isInheritChannel())
             {
                 Channel channel = System.inheritedChannel();
-                if (channel instanceof ServerSocketChannel)
-                    serverChannel = (ServerSocketChannel)channel;
-                else
-                    LOG.warn("Unable to use System.inheritedChannel() [{}]. Trying a new ServerSocketChannel at {}:{}", channel, getHost(), getPort());
+                if (channel instanceof ServerSocketChannel) {
+					serverChannel = (ServerSocketChannel)channel;
+				} else {
+					LOG.warn("Unable to use System.inheritedChannel() [{}]. Trying a new ServerSocketChannel at {}:{}", channel, getHost(), getPort());
+				}
             }
 
             if (serverChannel == null)
@@ -317,8 +313,9 @@ public class ServerConnector extends AbstractNetworkConnector
                 serverChannel.socket().bind(bindAddress, getAcceptQueueSize());
 
                 _localPort = serverChannel.socket().getLocalPort();
-                if (_localPort <= 0)
-                    throw new IOException("Server channel not bound");
+                if (_localPort <= 0) {
+					throw new IOException("Server channel not bound");
+				}
 
                 addBean(serverChannel);
             }
@@ -388,10 +385,11 @@ public class ServerConnector extends AbstractNetworkConnector
         try
         {
             socket.setTcpNoDelay(true);
-            if (_lingerTime >= 0)
-                socket.setSoLinger(true, _lingerTime / 1000);
-            else
-                socket.setSoLinger(false, 0);
+            if (_lingerTime >= 0) {
+				socket.setSoLinger(true, _lingerTime / 1000);
+			} else {
+				socket.setSoLinger(false, 0);
+			}
         }
         catch (SocketException e)
         {

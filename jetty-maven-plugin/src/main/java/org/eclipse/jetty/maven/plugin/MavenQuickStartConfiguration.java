@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 
 package org.eclipse.jetty.maven.plugin;
@@ -34,7 +29,7 @@ import org.eclipse.jetty.webapp.WebAppContext;
 /**
  * MavenQuickStartConfiguration
  *
- *
+ *.
  */
 public class MavenQuickStartConfiguration extends QuickStartConfiguration
 {
@@ -60,8 +55,9 @@ public class MavenQuickStartConfiguration extends QuickStartConfiguration
     public void preConfigure(WebAppContext context) throws Exception
     {
         //check that webapp is suitable for quick start 
-        if (context.getBaseResource() == null)
-            throw new IllegalStateException ("No location for webapp");  
+        if (context.getBaseResource() == null) {
+			throw new IllegalStateException ("No location for webapp");
+		}  
 
         
         //look for quickstart-web.xml in WEB-INF of webapp
@@ -81,10 +77,13 @@ public class MavenQuickStartConfiguration extends QuickStartConfiguration
         //put the classes dir and all dependencies into the classpath
         if (jwac.getClassPathFiles() != null)
         {
-            if (LOG.isDebugEnabled()) LOG.debug("Setting up classpath ...");
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Setting up classpath ...");
+			}
             Iterator itor = jwac.getClassPathFiles().iterator();
-            while (itor.hasNext())
-                ((WebAppClassLoader)context.getClassLoader()).addClassPath(((File)itor.next()).getCanonicalPath());
+            while (itor.hasNext()) {
+				((WebAppClassLoader)context.getClassLoader()).addClassPath(((File)itor.next()).getCanonicalPath());
+			}
         }
         
         //Set up the quickstart environment for the context
@@ -99,8 +98,9 @@ public class MavenQuickStartConfiguration extends QuickStartConfiguration
         if (LOG.isDebugEnabled())
         {
             LOG.debug("Server classes:");
-            for (int i=0;i<newServerClasses.length;i++)
-                LOG.debug(newServerClasses[i]);
+            for (int i=0;i<newServerClasses.length;i++) {
+				LOG.debug(newServerClasses[i]);
+			}
         }
         context.setServerClasses( newServerClasses ); 
     }
@@ -121,8 +121,9 @@ public class MavenQuickStartConfiguration extends QuickStartConfiguration
             {
                 for (Resource r:((ResourceCollection)res).getResources())
                 {
-                    if (originalBaseStr.contains(r.toString()))
-                        continue;
+                    if (originalBaseStr.contains(r.toString())) {
+						continue;
+					}
                     IO.delete(r.getFile());
                 }
             }

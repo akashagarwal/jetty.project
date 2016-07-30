@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.start;
 
@@ -52,7 +47,7 @@ public class BaseBuilder
          *         (because that module already exists)
          * @throws IOException if unable to add the module
          */
-        public boolean addModule(Module module) throws IOException;
+        boolean addModule(Module module) throws IOException;
     }
 
     private static final String EXITING_LICENSE_NOT_ACKNOWLEDGED = "Exiting: license not acknowledged!";
@@ -142,11 +137,8 @@ public class BaseBuilder
         Selection startDirSelection = new Selection(dirCriteria);
         Selection startIniSelection = new Selection(iniCriteria);
         
-        List<String> startDNames = new ArrayList<>();
-        startDNames.addAll(startArgs.getAddToStartdIni());
-        List<String> startIniNames = new ArrayList<>();
-        startIniNames.addAll(startArgs.getAddToStartIni());
-
+        List<String> startDNames = new ArrayList<String>(startArgs.getAddToStartdIni());
+        List<String> startIniNames = new ArrayList<String>(startArgs.getAddToStartIni());
         int count = 0;
         count += modules.selectNodes(startDNames,startDirSelection);
         count += modules.selectNodes(startIniNames,startIniSelection);
@@ -264,7 +256,7 @@ public class BaseBuilder
      */
     private boolean processFileResource(FileArg arg, Path file) throws IOException
     {
-        if (startArgs.isDownload() && (arg.uri != null))
+        if (startArgs.isDownload() && arg.uri != null)
         {
             // now on copy/download paths (be safe above all else)
             if (!file.startsWith(baseHome.getBasePath()))
@@ -307,14 +299,10 @@ public class BaseBuilder
                     {
                         throw new IOException("Unable to read directory: " + file);
                     }
-                }
-                else
-                {
-                    if (!FS.canReadFile(file))
-                    {
-                        throw new IOException("Unable to read file: " + file);
-                    }
-                }
+                } else if (!FS.canReadFile(file))
+				{
+				    throw new IOException("Unable to read file: " + file);
+				}
 
                 return false;
             }
@@ -358,7 +346,7 @@ public class BaseBuilder
      */
     private boolean processFileResources(List<FileArg> files) throws IOException
     {
-        if ((files == null) || (files.isEmpty()))
+        if (files == null || files.isEmpty())
         {
             return false;
         }

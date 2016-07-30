@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http;
 
@@ -37,21 +32,22 @@ public class QuotedCSV implements Iterable<String>
     private final List<String> _values = new ArrayList<>();
     private final boolean _keepQuotes;
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public QuotedCSV(String... values)
     {
         this(true,values);
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public QuotedCSV(boolean keepQuotes,String... values)
     {
         _keepQuotes=keepQuotes;
-        for (String v:values)
-            addValue(v);
+        for (String v:values) {
+			addValue(v);
+		}
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void addValue(String value)
     {
         StringBuffer buffer = new StringBuffer();
@@ -69,21 +65,23 @@ public class QuotedCSV implements Iterable<String>
             // Handle quoting https://tools.ietf.org/html/rfc7230#section-3.2.6
             if (quoted && c!=0)
             {
-                if (sloshed)
-                    sloshed=false;
-                else
+                if (sloshed) {
+					sloshed=false;
+				} else
                 {
                     switch(c)
                     {
                         case '\\':
                             sloshed=true;
-                            if (!_keepQuotes)
-                                continue;
+                            if (!_keepQuotes) {
+								continue;
+							}
                             break;
                         case '"':
                             quoted=false;
-                            if (!_keepQuotes)
-                                continue;
+                            if (!_keepQuotes) {
+								continue;
+							}
                             break;
                     }
                 }
@@ -98,14 +96,16 @@ public class QuotedCSV implements Iterable<String>
             {
                 case ' ':
                 case '\t':
-                    if (buffer.length()>last_length) // not leading OWS
-                        buffer.append(c);
+                    if (buffer.length()>last_length) {
+						buffer.append(c);
+					}
                     continue;
 
                 case '"':
                     quoted=true;
-                    if (_keepQuotes)
-                        buffer.append(c);
+                    if (_keepQuotes) {
+						buffer.append(c);
+					}
                     nws_length=buffer.length();
                     continue;
                     
@@ -183,19 +183,22 @@ public class QuotedCSV implements Iterable<String>
     {
         // handle trivial cases
         int l=s.length();
-        if (s==null || l==0)
-            return s;
+        if (s==null || l==0) {
+			return s;
+		}
         
         // Look for any quotes
         int i=0;
         for (;i<l;i++)
         {
             char c=s.charAt(i);
-            if (c=='"')
-                break;
+            if (c=='"') {
+				break;
+			}
         }
-        if (i==l)
-            return s;
+        if (i==l) {
+			return s;
+		}
 
         boolean quoted=true;
         boolean sloshed=false;
@@ -212,17 +215,19 @@ public class QuotedCSV implements Iterable<String>
                     buffer.append(c);
                     sloshed=false;
                 }
-                else if (c=='"')
-                    quoted=false;
-                else if (c=='\\')
-                    sloshed=true;
-                else
-                    buffer.append(c);
+                else if (c=='"') {
+					quoted=false;
+				} else if (c=='\\') {
+					sloshed=true;
+				} else {
+					buffer.append(c);
+				}
             }
-            else if (c=='"')
-                quoted=true;
-            else
-                buffer.append(c);
+            else if (c=='"') {
+				quoted=true;
+			} else {
+				buffer.append(c);
+			}
         }
         return buffer.toString();
     }

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.tests.ws;
 
@@ -28,7 +23,7 @@ import javax.websocket.server.ServerEndpoint;
 
 import org.eclipse.jetty.tests.logging.JULog;
 
-@ServerEndpoint(value = "/sessioninfo")
+@ServerEndpoint("/sessioninfo")
 public class SessionInfoSocket
 {
     @Inject
@@ -80,19 +75,19 @@ public class SessionInfoSocket
 
     private String asClassId(Object obj)
     {
-        if (obj == null)
+        if (obj != null)
         {
-            return "<null>";
+            return String.format("%s@%X",obj.getClass().getName(),obj.hashCode());
         }
-        return String.format("%s@%X",obj.getClass().getName(),obj.hashCode());
+        return "<null>";
     }
 
     private String quoted(String str)
     {
-        if (str == null)
+        if (str != null)
         {
-            return "<null>";
+            return '"' + str + '"';
         }
-        return '"' + str + '"';
+        return "<null>";
     }
 }

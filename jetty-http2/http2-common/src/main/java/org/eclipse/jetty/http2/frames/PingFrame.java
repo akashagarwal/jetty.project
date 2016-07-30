@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http2.frames;
 
@@ -59,8 +54,9 @@ public class PingFrame extends Frame
     {
         super(FrameType.PING);
         this.payload = Objects.requireNonNull(payload);
-        if (payload.length != PING_LENGTH)
-            throw new IllegalArgumentException("PING payload must be 8 bytes");
+        if (payload.length != PING_LENGTH) {
+			throw new IllegalArgumentException("PING payload must be 8 bytes");
+		}
         this.reply = reply;
     }
 
@@ -96,7 +92,7 @@ public class PingFrame extends Frame
         for (int i = 0; i < 8; ++i)
         {
             result <<= 8;
-            result |= (payload[i] & 0xFF);
+            result |= payload[i] & 0xFF;
         }
         return result;
     }

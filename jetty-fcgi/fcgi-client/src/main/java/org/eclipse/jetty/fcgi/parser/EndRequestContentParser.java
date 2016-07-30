@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.fcgi.parser;
 
@@ -69,8 +64,9 @@ public class EndRequestContentParser extends ContentParser
                 {
                     int quarterInt = buffer.get() & 0xFF;
                     application = (application << 8) + quarterInt;
-                    if (++cursor == 4)
-                        state = State.PROTOCOL;
+                    if (++cursor == 4) {
+						state = State.PROTOCOL;
+					}
                     break;
                 }
                 case PROTOCOL:
@@ -117,12 +113,13 @@ public class EndRequestContentParser extends ContentParser
 
     private void onEnd()
     {
-        if (application != 0)
-            listener.onFailure(getRequest(), new Exception("FastCGI application returned code " + application));
-        else if (protocol != 0)
-            listener.onFailure(getRequest(), new Exception("FastCGI server returned code " + protocol));
-        else
-            listener.onEnd(getRequest());
+        if (application != 0) {
+			listener.onFailure(getRequest(), new Exception("FastCGI application returned code " + application));
+		} else if (protocol != 0) {
+			listener.onFailure(getRequest(), new Exception("FastCGI server returned code " + protocol));
+		} else {
+			listener.onEnd(getRequest());
+		}
     }
 
     private void reset()

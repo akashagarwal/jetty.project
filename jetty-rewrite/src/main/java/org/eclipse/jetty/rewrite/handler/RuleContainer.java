@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.rewrite.handler;
 
@@ -67,7 +62,7 @@ public class RuleContainer extends Rule
 
     /* ------------------------------------------------------------ */
     /**
-     * Add a Rule
+     * Add a Rule.
      * @param rule The rule to add to the end of the rules array
      */
     public void addRule(Rule rule)
@@ -138,7 +133,7 @@ public class RuleContainer extends Rule
     }
     
     /**
-     * Process the contained rules
+     * Process the contained rules.
      * @param target target field to pass on to the contained rules
      * @param request request object to pass on to the contained rules
      * @param response response object to pass on to the contained rules
@@ -150,7 +145,7 @@ public class RuleContainer extends Rule
     }
 
     /**
-     * Process the contained rules (called by matchAndApply) 
+     * Process the contained rules (called by matchAndApply) .
      * @param target target field to pass on to the contained rules
      * @param request request object to pass on to the contained rules
      * @param response response object to pass on to the contained rules
@@ -161,8 +156,9 @@ public class RuleContainer extends Rule
     {
         boolean original_set=_originalPathAttribute==null;
         
-        if (_rules==null)
-            return target;
+        if (_rules==null) {
+			return target;
+		}
         
         for (Rule rule : _rules)
         {
@@ -177,21 +173,24 @@ public class RuleContainer extends Rule
                     request.setAttribute(_originalPathAttribute, target);
                     
                     String query = request.getQueryString();
-                    if (query != null)
-                        request.setAttribute(_originalQueryStringAttribute,query);
+                    if (query != null) {
+						request.setAttribute(_originalQueryStringAttribute,query);
+					}
                 }     
 
                 if (_rewriteRequestURI)
                 {
                     String encoded=URIUtil.encodePath(applied);
-                    if (rule instanceof Rule.ApplyURI)
-                        ((Rule.ApplyURI)rule).applyURI((Request)request,((Request)request).getRequestURI(), encoded);
-                    else
-                        ((Request)request).setURIPathQuery(encoded);
+                    if (rule instanceof Rule.ApplyURI) {
+						((Rule.ApplyURI)rule).applyURI((Request)request,((Request)request).getRequestURI(), encoded);
+					} else {
+						((Request)request).setURIPathQuery(encoded);
+					}
                 }
 
-                if (_rewritePathInfo)
-                    ((Request)request).setPathInfo(applied);
+                if (_rewritePathInfo) {
+					((Request)request).setPathInfo(applied);
+				}
 
                 target=applied;
                 

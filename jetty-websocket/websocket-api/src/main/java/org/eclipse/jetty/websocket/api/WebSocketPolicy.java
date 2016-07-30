@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.api;
 
@@ -93,7 +88,7 @@ public class WebSocketPolicy
     private int inputBufferSize = 4 * KB;
 
     /**
-     * Behavior of the websockets
+     * Behavior of the websockets.
      */
     private final WebSocketBehavior behavior;
 
@@ -120,26 +115,16 @@ public class WebSocketPolicy
 
     public void assertValidBinaryMessageSize(int requestedSize)
     {
-        if (maxBinaryMessageSize > 0)
-        {
-            // validate it
-            if (requestedSize > maxBinaryMessageSize)
-            {
-                throw new MessageTooLargeException("Binary message size [" + requestedSize + "] exceeds maximum size [" + maxBinaryMessageSize + "]");
-            }
-        }
+        if (maxBinaryMessageSize > 0 && requestedSize > maxBinaryMessageSize) {
+		    throw new MessageTooLargeException("Binary message size [" + requestedSize + "] exceeds maximum size [" + maxBinaryMessageSize + "]");
+		}
     }
 
     public void assertValidTextMessageSize(int requestedSize)
     {
-        if (maxTextMessageSize > 0)
-        {
-            // validate it
-            if (requestedSize > maxTextMessageSize)
-            {
-                throw new MessageTooLargeException("Text message size [" + requestedSize + "] exceeds maximum size [" + maxTextMessageSize + "]");
-            }
-        }
+        if (maxTextMessageSize > 0 && requestedSize > maxTextMessageSize) {
+		    throw new MessageTooLargeException("Text message size [" + requestedSize + "] exceeds maximum size [" + maxTextMessageSize + "]");
+		}
     }
 
     public WebSocketPolicy clonePolicy()
@@ -195,7 +180,7 @@ public class WebSocketPolicy
     }
 
     /**
-     * Get the maximum size of a binary message buffer (for streaming writing)
+     * Get the maximum size of a binary message buffer (for streaming writing).
      * 
      * @return the maximum size of a binary message buffer
      */
@@ -217,7 +202,7 @@ public class WebSocketPolicy
     }
 
     /**
-     * Get the maximum size of a text message buffer (for streaming writing)
+     * Get the maximum size of a text message buffer (for streaming writing).
      * 
      * @return the maximum size of a text message buffer
      */

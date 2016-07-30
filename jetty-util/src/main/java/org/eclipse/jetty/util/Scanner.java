@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 
 package org.eclipse.jetty.util;
@@ -49,20 +44,20 @@ import org.eclipse.jetty.util.log.Logger;
 public class Scanner extends AbstractLifeCycle
 {
     private static final Logger LOG = Log.getLogger(Scanner.class);
-    private static int __scannerId=0;
+    private static int __scannerId;
     private int _scanInterval;
-    private int _scanCount = 0;
+    private int _scanCount;
     private final List<Listener> _listeners = new ArrayList<Listener>();
     private final Map<String,TimeNSize> _prevScan = new HashMap<String,TimeNSize> ();
     private final Map<String,TimeNSize> _currentScan = new HashMap<String,TimeNSize> ();
     private FilenameFilter _filter;
     private final List<File> _scanDirs = new ArrayList<File>();
-    private volatile boolean _running = false;
+    private volatile boolean _running;
     private boolean _reportExisting = true;
     private boolean _reportDirs = true;
     private Timer _timer;
     private TimerTask _task;
-    private int _scanDepth=0;
+    private int _scanDepth;
     
     public enum Notification { ADDED, CHANGED, REMOVED };
     private final Map<String,Notification> _notifications = new HashMap<String,Notification>();
@@ -113,20 +108,20 @@ public class Scanner extends AbstractLifeCycle
 
     public interface ScanListener extends Listener
     {
-        public void scan();
+        void scan();
     }
     
     public interface DiscreteListener extends Listener
     {
-        public void fileChanged (String filename) throws Exception;
-        public void fileAdded (String filename) throws Exception;
-        public void fileRemoved (String filename) throws Exception;
+        void fileChanged (String filename) throws Exception;
+        void fileAdded (String filename) throws Exception;
+        void fileRemoved (String filename) throws Exception;
     }
     
     
     public interface BulkListener extends Listener
     {
-        public void filesChanged (List<String> filenames) throws Exception;
+        void filesChanged (List<String> filenames) throws Exception;
     }
 
     /**
@@ -134,19 +129,16 @@ public class Scanner extends AbstractLifeCycle
      */
     public interface ScanCycleListener extends Listener
     {
-        public void scanStarted(int cycle) throws Exception;
-        public void scanEnded(int cycle) throws Exception;
+        void scanStarted(int cycle) throws Exception;
+        void scanEnded(int cycle) throws Exception;
     }
 
-    /**
-     * 
-     */
     public Scanner ()
     {       
     }
 
     /**
-     * Get the scan interval
+     * Get the scan interval.
      * @return interval between scans in seconds
      */
     public synchronized int getScanInterval()
@@ -249,7 +241,7 @@ public class Scanner extends AbstractLifeCycle
         _reportExisting = reportExisting;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public boolean getReportExistingFilesOnStartup()
     {
         return _reportExisting;
@@ -264,7 +256,7 @@ public class Scanner extends AbstractLifeCycle
         _reportDirs=dirs;
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public boolean getReportDirs()
     {
         return _reportDirs;
@@ -272,25 +264,27 @@ public class Scanner extends AbstractLifeCycle
     
     /* ------------------------------------------------------------ */
     /**
-     * Add an added/removed/changed listener
+     * Add an added/removed/changed listener.
      * @param listener the listener to add
      */
     public synchronized void addListener (Listener listener)
     {
-        if (listener == null)
-            return;
+        if (listener == null) {
+			return;
+		}
         _listeners.add(listener);   
     }
 
     /* ------------------------------------------------------------ */
     /**
-     * Remove a registered listener
+     * Remove a registered listener.
      * @param listener the Listener to be removed
      */
     public synchronized void removeListener (Listener listener)
     {
-        if (listener == null)
-            return;
+        if (listener == null) {
+			return;
+		}
         _listeners.remove(listener);    
     }
 
@@ -301,8 +295,9 @@ public class Scanner extends AbstractLifeCycle
     @Override
     public synchronized void doStart()
     {
-        if (_running)
-            return;
+        if (_running) {
+			return;
+		}
 
         _running = true;
 
@@ -339,10 +334,12 @@ public class Scanner extends AbstractLifeCycle
     {  
         if (_running)
         {
-            if (_timer!=null)
-                _timer.cancel();
-            if (_task!=null)
-                _task.cancel();
+            if (_timer!=null) {
+				_timer.cancel();
+			}
+            if (_task!=null) {
+				_task.cancel();
+			}
             if (getScanInterval() > 0)
             {
                 _timer = newTimer();
@@ -360,10 +357,12 @@ public class Scanner extends AbstractLifeCycle
         if (_running)
         {
             _running = false; 
-            if (_timer!=null)
-                _timer.cancel();
-            if (_task!=null)
-                _task.cancel();
+            if (_timer!=null) {
+				_timer.cancel();
+			}
+            if (_task!=null) {
+				_task.cancel();
+			}
             _task=null;
             _timer=null;
         }
@@ -375,15 +374,17 @@ public class Scanner extends AbstractLifeCycle
      */
     public boolean exists(String path)
     {
-        for (File dir : _scanDirs)
-            if (new File(dir,path).exists())
-                return true;
+        for (File dir : _scanDirs) {
+			if (new File(dir,path).exists()) {
+				return true;
+			}
+		}
         return false;
     }
     
     
     /**
-     * Perform a pass of the scanner and report changes
+     * Perform a pass of the scanner and report changes.
      */
     public synchronized void scan ()
     {
@@ -398,8 +399,9 @@ public class Scanner extends AbstractLifeCycle
         {
             try
             {
-                if (l instanceof ScanListener)
-                    ((ScanListener)l).scan();
+                if (l instanceof ScanListener) {
+					((ScanListener)l).scan();
+				}
             }
             catch (Exception e)
             {
@@ -417,8 +419,9 @@ public class Scanner extends AbstractLifeCycle
      */
     public synchronized void scanFiles ()
     {
-        if (_scanDirs==null)
-            return;
+        if (_scanDirs==null) {
+			return;
+		}
         
         _currentScan.clear();
         Iterator<File> itor = _scanDirs.iterator();
@@ -426,8 +429,8 @@ public class Scanner extends AbstractLifeCycle
         {
             File dir = itor.next();
             
-            if ((dir != null) && (dir.exists()))
-                try
+            if (dir != null && dir.exists()) {
+				try
                 {
                     scanFile(dir.getCanonicalFile(), _currentScan,0);
                 }
@@ -435,12 +438,13 @@ public class Scanner extends AbstractLifeCycle
                 {
                     LOG.warn("Error scanning files.", e);
                 }
+			}
         }
     }
 
 
     /**
-     * Report the adds/changes/removes to the registered listeners
+     * Report the adds/changes/removes to the registered listeners.
      * 
      * @param currentScan the info from the most recent pass
      * @param oldScan info from the previous pass
@@ -499,8 +503,9 @@ public class Scanner extends AbstractLifeCycle
             }
         }
         
-        if (LOG.isDebugEnabled())
-            LOG.debug("scanned "+_scanDirs+": "+_notifications);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("scanned "+_scanDirs+": "+_notifications);
+		}
                 
         // Process notifications
         // Only process notifications that are for stable files (ie same in old and current scan).
@@ -513,11 +518,13 @@ public class Scanner extends AbstractLifeCycle
             // Is the file stable?
             if (oldScan.containsKey(file))
             {
-                if (!oldScan.get(file).equals(currentScan.get(file)))
-                    continue;
+                if (!oldScan.get(file).equals(currentScan.get(file))) {
+					continue;
+				}
             }
-            else if (currentScan.containsKey(file))
-                continue;
+            else if (currentScan.containsKey(file)) {
+				continue;
+			}
                             
             // File is stable so notify
             Notification notification=entry.getValue();
@@ -536,8 +543,9 @@ public class Scanner extends AbstractLifeCycle
                     break;
             }
         }
-        if (!bulkChanges.isEmpty())
-            reportBulkChanges(bulkChanges);
+        if (!bulkChanges.isEmpty()) {
+			reportBulkChanges(bulkChanges);
+		}
     }
 
 
@@ -551,23 +559,22 @@ public class Scanner extends AbstractLifeCycle
     {
         try
         {
-            if (!f.exists())
-                return;
+            if (!f.exists()) {
+				return;
+			}
 
-            if (f.isFile() || depth>0&& _reportDirs && f.isDirectory())
+            if (f.isFile() || (depth>0&& _reportDirs && f.isDirectory()))
             {
-                if ((_filter == null) || ((_filter != null) && _filter.accept(f.getParentFile(), f.getName())))
+                if (_filter == null || (_filter != null && _filter.accept(f.getParentFile(), f.getName())))
                 {
-                    if (LOG.isDebugEnabled())
-                        LOG.debug("scan accepted {}",f);
+                    if (LOG.isDebugEnabled()) {
+						LOG.debug("scan accepted {}",f);
+					}
                     String name = f.getCanonicalPath();
                     scanInfoMap.put(name, new TimeNSize(f.lastModified(),f.isDirectory()?0:f.length()));
-                }
-                else
-                {
-                    if (LOG.isDebugEnabled())
-                        LOG.debug("scan rejected {}",f);
-                }
+                } else if (LOG.isDebugEnabled()) {
+					LOG.debug("scan rejected {}",f);
+				}
             }
             
             // If it is a directory, scan if it is a known directory or the depth is OK.
@@ -576,11 +583,12 @@ public class Scanner extends AbstractLifeCycle
                 File[] files = f.listFiles();
                 if (files != null)
                 {
-                    for (int i=0;i<files.length;i++)
-                        scanFile(files[i], scanInfoMap,depth+1);
-                }
-                else
-                    LOG.warn("Error listing files in directory {}", f);
+                    for (int i=0;i<files.length;i++) {
+						scanFile(files[i], scanInfoMap,depth+1);
+					}
+                } else {
+					LOG.warn("Error listing files in directory {}", f);
+				}
             }
         }
         catch (IOException e)
@@ -595,7 +603,7 @@ public class Scanner extends AbstractLifeCycle
     }
 
     /**
-     * Report a file addition to the registered FileAddedListeners
+     * Report a file addition to the registered FileAddedListeners.
      * @param filename the filename
      */
     private void reportAddition (String filename)
@@ -606,8 +614,9 @@ public class Scanner extends AbstractLifeCycle
             Listener l = itor.next();
             try
             {
-                if (l instanceof DiscreteListener)
-                    ((DiscreteListener)l).fileAdded(filename);
+                if (l instanceof DiscreteListener) {
+					((DiscreteListener)l).fileAdded(filename);
+				}
             }
             catch (Exception e)
             {
@@ -622,7 +631,7 @@ public class Scanner extends AbstractLifeCycle
 
 
     /**
-     * Report a file removal to the FileRemovedListeners
+     * Report a file removal to the FileRemovedListeners.
      * @param filename the filename
      */
     private void reportRemoval (String filename)
@@ -633,8 +642,9 @@ public class Scanner extends AbstractLifeCycle
             Object l = itor.next();
             try
             {
-                if (l instanceof DiscreteListener)
-                    ((DiscreteListener)l).fileRemoved(filename);
+                if (l instanceof DiscreteListener) {
+					((DiscreteListener)l).fileRemoved(filename);
+				}
             }
             catch (Exception e)
             {
@@ -649,7 +659,7 @@ public class Scanner extends AbstractLifeCycle
 
 
     /**
-     * Report a file change to the FileChangedListeners
+     * Report a file change to the FileChangedListeners.
      * @param filename the filename
      */
     private void reportChange (String filename)
@@ -660,8 +670,9 @@ public class Scanner extends AbstractLifeCycle
             Listener l = itor.next();
             try
             {
-                if (l instanceof DiscreteListener)
-                    ((DiscreteListener)l).fileChanged(filename);
+                if (l instanceof DiscreteListener) {
+					((DiscreteListener)l).fileChanged(filename);
+				}
             }
             catch (Exception e)
             {
@@ -682,8 +693,9 @@ public class Scanner extends AbstractLifeCycle
             Listener l = itor.next();
             try
             {
-                if (l instanceof BulkListener)
-                    ((BulkListener)l).filesChanged(filenames);
+                if (l instanceof BulkListener) {
+					((BulkListener)l).filesChanged(filenames);
+				}
             }
             catch (Exception e)
             {
@@ -697,7 +709,7 @@ public class Scanner extends AbstractLifeCycle
     }
     
     /**
-     * signal any scan cycle listeners that a scan has started
+     * Signal any scan cycle listeners that a scan has started.
      */
     private void reportScanStart(int cycle)
     {
@@ -718,7 +730,7 @@ public class Scanner extends AbstractLifeCycle
     }
 
     /**
-     * sign
+     * Sign.
      */
     private void reportScanEnd(int cycle)
     {

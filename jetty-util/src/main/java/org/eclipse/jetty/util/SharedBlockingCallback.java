@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util;
 
@@ -92,14 +87,15 @@ public class SharedBlockingCallback
         {
             while (_blocker._state != IDLE)
             {
-                if (idle>0 && (idle < Long.MAX_VALUE/2))
+                if (idle>0 && idle < Long.MAX_VALUE/2)
                 {
                     // Wait a little bit longer than the blocker might block
-                    if (!_idle.await(idle*2,TimeUnit.MILLISECONDS))
-                        throw new IOException(new TimeoutException());
-                }
-                else
-                    _idle.await();
+                    if (!_idle.await(idle*2,TimeUnit.MILLISECONDS)) {
+						throw new IOException(new TimeoutException());
+					}
+                } else {
+					_idle.await();
+				}
             }
             _blocker._state = null;
         }
@@ -117,8 +113,9 @@ public class SharedBlockingCallback
     protected void notComplete(Blocker blocker)
     {
         LOG.warn("Blocker not complete {}",blocker);
-        if (LOG.isDebugEnabled())
-            LOG.debug(new Throwable());
+        if (LOG.isDebugEnabled()) {
+			LOG.debug(new Throwable());
+		}
     }
     
     /**
@@ -146,9 +143,9 @@ public class SharedBlockingCallback
                 {
                     _state = SUCCEEDED;
                     _complete.signalAll();
-                }
-                else
-                    throw new IllegalStateException(_state);
+                } else {
+					throw new IllegalStateException(_state);
+				}
             }
             finally
             {
@@ -164,17 +161,18 @@ public class SharedBlockingCallback
             {
                 if (_state == null)
                 {
-                    if (cause==null)
-                        _state=FAILED;
-                    else if (cause instanceof BlockerTimeoutException)
-                        // Not this blockers timeout
+                    if (cause==null) {
+						_state=FAILED;
+					} else if (cause instanceof BlockerTimeoutException) {
+						// Not this blockers timeout
                         _state=new IOException(cause);
-                    else 
-                        _state=cause;
+					} else {
+						_state=cause;
+					}
                     _complete.signalAll();
-                }
-                else 
-                    throw new IllegalStateException(_state);
+                } else {
+					throw new IllegalStateException(_state);
+				}
             }
             finally
             {
@@ -197,13 +195,14 @@ public class SharedBlockingCallback
             {
                 while (_state == null)
                 {
-                    if (idle>0 && (idle < Long.MAX_VALUE/2))
+                    if (idle>0 && idle < Long.MAX_VALUE/2)
                     {
                         // Wait a little bit longer than expected callback idle timeout
-                        if (!_complete.await(idle+idle/2,TimeUnit.MILLISECONDS))
-                            // The callback has not arrived in sufficient time.
+                        if (!_complete.await(idle+idle/2,TimeUnit.MILLISECONDS)) {
+							// The callback has not arrived in sufficient time.
                             // We will synthesize a TimeoutException 
                             _state=new BlockerTimeoutException();
+						}
                     }
                     else
                     {
@@ -211,18 +210,24 @@ public class SharedBlockingCallback
                     }
                 }
 
-                if (_state == SUCCEEDED)
-                    return;
-                if (_state == IDLE)
-                    throw new IllegalStateException("IDLE");
-                if (_state instanceof IOException)
-                    throw (IOException)_state;
-                if (_state instanceof CancellationException)
-                    throw (CancellationException)_state;
-                if (_state instanceof RuntimeException)
-                    throw (RuntimeException)_state;
-                if (_state instanceof Error)
-                    throw (Error)_state;
+                if (_state == SUCCEEDED) {
+					return;
+				}
+                if (_state == IDLE) {
+					throw new IllegalStateException("IDLE");
+				}
+                if (_state instanceof IOException) {
+					throw (IOException)_state;
+				}
+                if (_state instanceof CancellationException) {
+					throw (CancellationException)_state;
+				}
+                if (_state instanceof RuntimeException) {
+					throw (RuntimeException)_state;
+				}
+                if (_state instanceof Error) {
+					throw (Error)_state;
+				}
                 throw new IOException(_state);
             }
             catch (final InterruptedException e)
@@ -244,22 +249,25 @@ public class SharedBlockingCallback
             _lock.lock();
             try
             {
-                if (_state == IDLE)
-                    throw new IllegalStateException("IDLE");
-                if (_state == null)
-                    notComplete(this);
+                if (_state == IDLE) {
+					throw new IllegalStateException("IDLE");
+				}
+                if (_state == null) {
+					notComplete(this);
+				}
             }
             finally
             {
                 try 
                 {
                     // If the blocker timed itself out, remember the state
-                    if (_state instanceof BlockerTimeoutException)
-                        // and create a new Blocker
+                    if (_state instanceof BlockerTimeoutException) {
+						// and create a new Blocker
                         _blocker=new Blocker();
-                    else
-                        // else reuse Blocker
+					} else {
+						// else reuse Blocker
                         _state = IDLE;
+					}
                     _idle.signalAll();
                     _complete.signalAll();
                 } 

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 
@@ -32,15 +27,13 @@ import org.eclipse.jetty.server.session.SessionHandler;
 import org.eclipse.jetty.util.component.LifeCycle;
 
 /* --------------------------------------------------------------------- */
-/**
+/*
  * Session Manager.
  * The API required to manage sessions for a servlet context.
  *
  */
 
-/* ------------------------------------------------------------ */
-/**
- */
+/** ------------------------------------------------------------. */
 public interface SessionManager extends LifeCycle
 {
     /* ------------------------------------------------------------ */
@@ -49,8 +42,8 @@ public interface SessionManager extends LifeCycle
      * Defaults to <code>JSESSIONID</code>, but can be set with the
      * <code>org.eclipse.jetty.servlet.SessionCookie</code> context init parameter.
      */
-    public final static String __SessionCookieProperty = "org.eclipse.jetty.servlet.SessionCookie";
-    public final static String __DefaultSessionCookie = "JSESSIONID";
+    String __SessionCookieProperty = "org.eclipse.jetty.servlet.SessionCookie";
+    String __DefaultSessionCookie = "JSESSIONID";
 
 
     /* ------------------------------------------------------------ */
@@ -60,9 +53,9 @@ public interface SessionManager extends LifeCycle
      * <code>org.eclipse.jetty.servlet.SessionIdPathParameterName</code> context init parameter.
      * If set to null or "none" no URL rewriting will be done.
      */
-    public final static String __SessionIdPathParameterNameProperty = "org.eclipse.jetty.servlet.SessionIdPathParameterName";
-    public final static String __DefaultSessionIdPathParameterName = "jsessionid";
-    public final static String __CheckRemoteSessionEncoding = "org.eclipse.jetty.servlet.CheckingRemoteSessionIdEncoding";
+    String __SessionIdPathParameterNameProperty = "org.eclipse.jetty.servlet.SessionIdPathParameterName";
+    String __DefaultSessionIdPathParameterName = "jsessionid";
+    String __CheckRemoteSessionEncoding = "org.eclipse.jetty.servlet.CheckingRemoteSessionIdEncoding";
 
 
     /* ------------------------------------------------------------ */
@@ -72,8 +65,8 @@ public interface SessionManager extends LifeCycle
      * used as the domain for session cookies. If it is not set, then
      * no domain is specified for the session cookie.
      */
-    public final static String __SessionDomainProperty = "org.eclipse.jetty.servlet.SessionDomain";
-    public final static String __DefaultSessionDomain = null;
+    String __SessionDomainProperty = "org.eclipse.jetty.servlet.SessionDomain";
+    String __DefaultSessionDomain = null;
 
 
     /* ------------------------------------------------------------ */
@@ -83,7 +76,7 @@ public interface SessionManager extends LifeCycle
      * used as the path for the session cookie.  If it is not set, then
      * the context path is used as the path for the cookie.
      */
-    public final static String __SessionPathProperty = "org.eclipse.jetty.servlet.SessionPath";
+    String __SessionPathProperty = "org.eclipse.jetty.servlet.SessionPath";
 
     /* ------------------------------------------------------------ */
     /**
@@ -92,16 +85,16 @@ public interface SessionManager extends LifeCycle
      * used as the max age for the session cookie.  If it is not set, then
      * a max age of -1 is used.
      */
-    public final static String __MaxAgeProperty = "org.eclipse.jetty.servlet.MaxAge";
+    String __MaxAgeProperty = "org.eclipse.jetty.servlet.MaxAge";
 
     /* ------------------------------------------------------------ */
     /**
-     * Returns the <code>HttpSession</code> with the given session id
+     * Returns the <code>HttpSession</code> with the given session id.
      *
      * @param id the session id
      * @return the <code>HttpSession</code> with the corresponding id or null if no session with the given id exists
      */
-    public HttpSession getHttpSession(String id);
+    HttpSession getHttpSession(String id);
 
     /* ------------------------------------------------------------ */
     /**
@@ -110,7 +103,7 @@ public interface SessionManager extends LifeCycle
      * @param request the HttpServletRequest containing the requested session id
      * @return the new <code>HttpSession</code>
      */
-    public HttpSession newHttpSession(HttpServletRequest request);
+    HttpSession newHttpSession(HttpServletRequest request);
 
 
     /* ------------------------------------------------------------ */
@@ -118,14 +111,14 @@ public interface SessionManager extends LifeCycle
      * @return true if session cookies should be HTTP-only (Microsoft extension)
      * @see org.eclipse.jetty.http.HttpCookie#isHttpOnly()
      */
-    public boolean getHttpOnly();
+    boolean getHttpOnly();
 
     /* ------------------------------------------------------------ */
     /**
      * @return the max period of inactivity, after which the session is invalidated, in seconds.
      * @see #setMaxInactiveInterval(int)
      */
-    public int getMaxInactiveInterval();
+    int getMaxInactiveInterval();
 
     /* ------------------------------------------------------------ */
     /**
@@ -134,7 +127,7 @@ public interface SessionManager extends LifeCycle
      * @param seconds the max inactivity period, in seconds.
      * @see #getMaxInactiveInterval()
      */
-    public void setMaxInactiveInterval(int seconds);
+    void setMaxInactiveInterval(int seconds);
 
     /* ------------------------------------------------------------ */
     /**
@@ -142,7 +135,7 @@ public interface SessionManager extends LifeCycle
      *
      * @param handler the <code>SessionHandler</code> object
      */
-    public void setSessionHandler(SessionHandler handler);
+    void setSessionHandler(SessionHandler handler);
 
     /* ------------------------------------------------------------ */
     /**
@@ -154,7 +147,7 @@ public interface SessionManager extends LifeCycle
      *                 HttpSessionAttributeListener, HttpSessionBindingListener and HttpSessionListener.
      * @see #removeEventListener(EventListener)
      */
-    public void addEventListener(EventListener listener);
+    void addEventListener(EventListener listener);
 
     /* ------------------------------------------------------------ */
     /**
@@ -163,7 +156,7 @@ public interface SessionManager extends LifeCycle
      * @param listener the session event listener to remove
      * @see #addEventListener(EventListener)
      */
-    public void removeEventListener(EventListener listener);
+    void removeEventListener(EventListener listener);
 
     /* ------------------------------------------------------------ */
     /**
@@ -171,7 +164,7 @@ public interface SessionManager extends LifeCycle
      *
      * @see #removeEventListener(EventListener)
      */
-    public void clearEventListeners();
+    void clearEventListeners();
 
     /* ------------------------------------------------------------ */
     /**
@@ -185,22 +178,21 @@ public interface SessionManager extends LifeCycle
      *         {@link Cookie cookie object} that should be set on the client in order to link future HTTP requests
      *         with the <code>session</code>. If cookies are not in use, this method returns <code>null</code>.
      */
-    public HttpCookie getSessionCookie(HttpSession session, String contextPath, boolean requestIsSecure);
+    HttpCookie getSessionCookie(HttpSession session, String contextPath, boolean requestIsSecure);
 
     /* ------------------------------------------------------------ */
     /**
      * @return the cross context session id manager.
      * @see #setSessionIdManager(SessionIdManager)
      */
-    public SessionIdManager getSessionIdManager();
+    SessionIdManager getSessionIdManager();
 
     /* ------------------------------------------------------------ */
     /**
      * @return the cross context session id manager.
      * @deprecated use {@link #getSessionIdManager()}
      */
-    @Deprecated
-    public SessionIdManager getMetaManager();
+    @Deprecated SessionIdManager getMetaManager();
 
     /* ------------------------------------------------------------ */
     /**
@@ -209,14 +201,14 @@ public interface SessionManager extends LifeCycle
      * @param idManager the cross context session id manager.
      * @see #getSessionIdManager()
      */
-    public void setSessionIdManager(SessionIdManager idManager);
+    void setSessionIdManager(SessionIdManager idManager);
 
     /* ------------------------------------------------------------ */
     /**
      * @param session the session to test for validity
      * @return whether the given session is valid, that is, it has not been invalidated.
      */
-    public boolean isValid(HttpSession session);
+    boolean isValid(HttpSession session);
 
     /* ------------------------------------------------------------ */
     /**
@@ -224,7 +216,7 @@ public interface SessionManager extends LifeCycle
      * @return the unique id of the session within the cluster, extended with an optional node id.
      * @see #getClusterId(HttpSession)
      */
-    public String getNodeId(HttpSession session);
+    String getNodeId(HttpSession session);
 
     /* ------------------------------------------------------------ */
     /**
@@ -232,7 +224,7 @@ public interface SessionManager extends LifeCycle
      * @return the unique id of the session within the cluster (without a node id extension)
      * @see #getNodeId(HttpSession)
      */
-    public String getClusterId(HttpSession session);
+    String getClusterId(HttpSession session);
 
     /* ------------------------------------------------------------ */
     /**
@@ -244,7 +236,7 @@ public interface SessionManager extends LifeCycle
      *         the session or to refresh a session cookie that may expire.
      * @see #complete(HttpSession)
      */
-    public HttpCookie access(HttpSession session, boolean secure);
+    HttpCookie access(HttpSession session, boolean secure);
 
     /* ------------------------------------------------------------ */
     /**
@@ -253,7 +245,7 @@ public interface SessionManager extends LifeCycle
      * @param session the session object
      * @see #access(HttpSession, boolean)
      */
-    public void complete(HttpSession session);
+    void complete(HttpSession session);
 
     /**
      * Sets the session id URL path parameter name.
@@ -262,48 +254,48 @@ public interface SessionManager extends LifeCycle
      * @see #getSessionIdPathParameterName()
      * @see #getSessionIdPathParameterNamePrefix()
      */
-    public void setSessionIdPathParameterName(String parameterName);
+    void setSessionIdPathParameterName(String parameterName);
 
     /**
      * @return the URL path parameter name for session id URL rewriting, by default "jsessionid".
      * @see #setSessionIdPathParameterName(String)
      */
-    public String getSessionIdPathParameterName();
+    String getSessionIdPathParameterName();
 
     /**
      * @return a formatted version of {@link #getSessionIdPathParameterName()}, by default
      *         ";" + sessionIdParameterName + "=", for easier lookup in URL strings.
      * @see #getSessionIdPathParameterName()
      */
-    public String getSessionIdPathParameterNamePrefix();
+    String getSessionIdPathParameterNamePrefix();
 
     /**
      * @return whether the session management is handled via cookies.
      */
-    public boolean isUsingCookies();
+    boolean isUsingCookies();
 
     /**
      * @return whether the session management is handled via URLs.
      */
-    public boolean isUsingURLs();
+    boolean isUsingURLs();
 
-    public Set<SessionTrackingMode> getDefaultSessionTrackingModes();
+    Set<SessionTrackingMode> getDefaultSessionTrackingModes();
 
-    public Set<SessionTrackingMode> getEffectiveSessionTrackingModes();
+    Set<SessionTrackingMode> getEffectiveSessionTrackingModes();
 
-    public void setSessionTrackingModes(Set<SessionTrackingMode> sessionTrackingModes);
+    void setSessionTrackingModes(Set<SessionTrackingMode> sessionTrackingModes);
 
-    public SessionCookieConfig getSessionCookieConfig();
+    SessionCookieConfig getSessionCookieConfig();
 
     /**
      * @return True if absolute URLs are check for remoteness before being session encoded.
      */
-    public boolean isCheckingRemoteSessionIdEncoding();
+    boolean isCheckingRemoteSessionIdEncoding();
 
     /**
      * @param remote True if absolute URLs are check for remoteness before being session encoded.
      */
-    public void setCheckingRemoteSessionIdEncoding(boolean remote);
+    void setCheckingRemoteSessionIdEncoding(boolean remote);
     
     /* ------------------------------------------------------------ */
     /** Change the existing session id.
@@ -313,5 +305,5 @@ public interface SessionManager extends LifeCycle
     * @param newClusterId the new cluster id
     * @param newNodeId the new node id
     */
-    public void renewSessionId(String oldClusterId, String oldNodeId, String newClusterId, String newNodeId);  
+    void renewSessionId(String oldClusterId, String oldNodeId, String newClusterId, String newNodeId);  
 }

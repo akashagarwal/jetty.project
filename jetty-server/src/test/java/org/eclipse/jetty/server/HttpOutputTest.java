@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 
@@ -51,9 +46,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- *
- */
 public class HttpOutputTest
 {
     private Server _server;
@@ -118,10 +110,12 @@ public class HttpOutputTest
         assertThat(response,containsString("HTTP/1.1 200 OK"));
         assertThat(response,containsString("\r\nXXXXXXXXXXXXXXXXXXXXXXXXXXX"));
         
-        for (int i=0;i<4*1024;i++)
-            assertEquals("i="+i,(byte)0x99,buffer[i]);
-        for (int i=12*1024;i<16*1024;i++)
-            assertEquals("i="+i,(byte)0x66,buffer[i]);
+        for (int i=0;i<4*1024;i++) {
+			assertEquals("i="+i,(byte)0x99,buffer[i]);
+		}
+        for (int i=12*1024;i<16*1024;i++) {
+			assertEquals("i="+i,(byte)0x66,buffer[i]);
+		}
     }
     
     @Test
@@ -153,8 +147,7 @@ public class HttpOutputTest
             @Override
             public int read(byte[] b, int off, int len) throws IOException
             {
-                int filled= super.read(b,off,len>2000?2000:len);
-                return filled;
+                return super.read(b,off,len>2000?2000:len);
             }
         };
         String response=_connector.getResponses(
@@ -242,9 +235,9 @@ public class HttpOutputTest
                     dst.limit(2000);
                     filled=channel.read(dst);
                     dst.limit(limit);
-                }
-                else 
-                    filled=channel.read(dst);
+                } else {
+					filled=channel.read(dst);
+				}
                 return filled;
             }
         };
@@ -379,8 +372,9 @@ public class HttpOutputTest
         _handler._writeLengthIfKnown=true;
         _handler._content=BufferUtil.allocate(4*1024*1024);
         _handler._content.limit(_handler._content.capacity());
-        for (int i=_handler._content.capacity();i-->0;)
-            _handler._content.put(i,(byte)'x');
+        for (int i=_handler._content.capacity();i-->0;) {
+			_handler._content.put(i,(byte)'x');
+		}
         _handler._arrayBuffer=new byte[8192];
         
         String response=_connector.getResponses("GET / HTTP/1.0\nHost: localhost:80\n\n");
@@ -499,8 +493,9 @@ public class HttpOutputTest
         _handler._writeLengthIfKnown=true;
         _handler._content=BufferUtil.allocate(4*1024*1024);
         _handler._content.limit(_handler._content.capacity());
-        for (int i=_handler._content.capacity();i-->0;)
-            _handler._content.put(i,(byte)'x');
+        for (int i=_handler._content.capacity();i-->0;) {
+			_handler._content.put(i,(byte)'x');
+		}
         _handler._arrayBuffer=new byte[8192];
         _handler._async=true;
         
@@ -698,8 +693,9 @@ public class HttpOutputTest
                 return;
             }
             
-            if (_content!=null && _writeLengthIfKnown)
-                response.setContentLength(_content.remaining());
+            if (_content!=null && _writeLengthIfKnown) {
+				response.setContentLength(_content.remaining());
+			}
             
             if (_arrayBuffer!=null)
             {
@@ -717,8 +713,9 @@ public class HttpOutputTest
                             {
                                 Assert.assertTrue(out.isReady());
                                 int len=_content.remaining();
-                                if (len>_arrayBuffer.length)
-                                    len=_arrayBuffer.length;
+                                if (len>_arrayBuffer.length) {
+									len=_arrayBuffer.length;
+								}
                                 if (len==0)
                                 {
                                     async.complete();
@@ -726,10 +723,11 @@ public class HttpOutputTest
                                 }
                                 
                                 _content.get(_arrayBuffer,0,len);
-                                if (len==1)
-                                    out.write(_arrayBuffer[0]);
-                                else
-                                    out.write(_arrayBuffer,0,len);
+                                if (len==1) {
+									out.write(_arrayBuffer[0]);
+								} else {
+									out.write(_arrayBuffer,0,len);
+								}
                             }
                             // Assert.assertFalse(out.isReady());
                         }
@@ -748,13 +746,15 @@ public class HttpOutputTest
                 while(BufferUtil.hasContent(_content))
                 {
                     int len=_content.remaining();
-                    if (len>_arrayBuffer.length)
-                        len=_arrayBuffer.length;
+                    if (len>_arrayBuffer.length) {
+						len=_arrayBuffer.length;
+					}
                     _content.get(_arrayBuffer,0,len);
-                    if (len==1)
-                        out.write(_arrayBuffer[0]);
-                    else
-                        out.write(_arrayBuffer,0,len);
+                    if (len==1) {
+						out.write(_arrayBuffer[0]);
+					} else {
+						out.write(_arrayBuffer,0,len);
+					}
                 }
                 
                 return;
@@ -812,10 +812,11 @@ public class HttpOutputTest
             
             if (_content!=null)
             {
-                if (_content.hasArray())
-                    out.write(_content.array(),_content.arrayOffset()+_content.position(),_content.remaining());
-                else
-                    out.sendContent(_content);
+                if (_content.hasArray()) {
+					out.write(_content.array(),_content.arrayOffset()+_content.position(),_content.remaining());
+				} else {
+					out.sendContent(_content);
+				}
                 _content=null;
                 return;
             }

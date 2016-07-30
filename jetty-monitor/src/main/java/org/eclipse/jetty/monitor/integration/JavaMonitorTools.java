@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.monitor.integration;
 
@@ -41,7 +36,7 @@ public class JavaMonitorTools
 {
     private static final ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
 
-    private static Method findDeadlockMethod = null;
+    private static Method findDeadlockMethod;
 
     static
     {
@@ -78,8 +73,7 @@ public class JavaMonitorTools
             return null;
         }
 
-        final ThreadInfo[] threads = threadMXBean.getThreadInfo(threadIds,Integer.MAX_VALUE);
-        return threads;
+        return threadMXBean.getThreadInfo(threadIds,Integer.MAX_VALUE);
     }
     @ManagedOperation(value="Detailed report on the deadlocked threads.", impact="ACTION_INFO")
     public String getDeadlockStacktraces()
@@ -87,13 +81,13 @@ public class JavaMonitorTools
         try
         {
             final ThreadInfo[] threads = findDeadlock();
-            if (threads == null)
+            if (threads != null)
             {
-                // no deadlock, we're done
-                return null;
+                return stacktraces(threads,0);
             }
 
-            return stacktraces(threads,0);
+            // no deadlock, we're done
+			return null;
         }
         catch (Exception e)
         {
@@ -133,11 +127,11 @@ public class JavaMonitorTools
      * It is a crude optimization to avoid having to query for the
      * threads states very often.
      */
-    private long lastSampled = 0L;
+    private long lastSampled;
 
     private final Map<Thread.State, Integer> states = new HashMap<Thread.State, Integer>();
 
-    @ManagedOperation(value="Number of Blocked Threads")
+    @ManagedOperation("Number of Blocked Threads")
     public int getThreadsBlocked()
     {
         sampleThreads();
@@ -161,7 +155,7 @@ public class JavaMonitorTools
         return states.get(Thread.State.TERMINATED);
     }
 
-    @ManagedOperation(value="Number of Sleeping and Waiting threads")
+    @ManagedOperation("Number of Sleeping and Waiting threads")
     public int getThreadsTimedWaiting()
     {
         sampleThreads();
@@ -187,7 +181,7 @@ public class JavaMonitorTools
 
     private synchronized void sampleThreads()
     {
-        if ((lastSampled + 50L) < System.currentTimeMillis())
+        if (lastSampled + 50L < System.currentTimeMillis())
         {
             lastSampled = System.currentTimeMillis();
             for (final Thread.State state : Thread.State.values())
@@ -212,7 +206,7 @@ public class JavaMonitorTools
 
     private static final String POLICY = "sun.net.InetAddressCachePolicy";
 
-    @ManagedOperation(value="Amount of time successful DNS queries are cached for.")
+    @ManagedOperation("Amount of time successful DNS queries are cached for.")
     public int getCacheSeconds() throws ClassNotFoundException,
             IllegalAccessException, InvocationTargetException,
             NoSuchMethodException {
@@ -224,7 +218,7 @@ public class JavaMonitorTools
         return seconds.intValue();
     }
 
-    @ManagedOperation(value="Amount of time failed DNS queries are cached for")
+    @ManagedOperation("Amount of time failed DNS queries are cached for")
     public int getCacheNegativeSeconds() throws ClassNotFoundException,
             IllegalAccessException, InvocationTargetException,
             NoSuchMethodException {
@@ -252,7 +246,7 @@ public class JavaMonitorTools
 
     private static final String SYSTEM_NEGATIVE_TTL = "sun.net.inetaddr.negative.ttl";
 
-    @ManagedOperation(value="Cache policy for successful DNS lookups was changed from the hard-coded default")
+    @ManagedOperation("Cache policy for successful DNS lookups was changed from the hard-coded default")
     public String getCacheTweakedFrom() {
         if (Security.getProperty(SECURITY_TTL) != null) {
             if (System.getProperty(SYSTEM_TTL) != null) {
@@ -269,7 +263,7 @@ public class JavaMonitorTools
         return DEFAULT;
     }
 
-    @ManagedOperation(value="Cache policy for failed DNS lookups was changed from the hard-coded default")
+    @ManagedOperation("Cache policy for failed DNS lookups was changed from the hard-coded default")
     public String getCacheNegativeTweakedFrom() {
         if (Security.getProperty(SECURITY_NEGATIVE_TTL) != null) {
             if (System.getProperty(SYSTEM_NEGATIVE_TTL) != null) {

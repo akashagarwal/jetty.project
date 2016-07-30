@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.annotations;
 
@@ -39,7 +34,7 @@ import org.eclipse.jetty.webapp.Origin;
 import org.eclipse.jetty.webapp.WebAppContext;
 
 /**
- * WebListenerAnnotation
+ * WebListenerAnnotation.
  */
 public class WebListenerAnnotation extends DiscoveredAnnotation
 {
@@ -55,9 +50,6 @@ public class WebListenerAnnotation extends DiscoveredAnnotation
         super(context, className, resource);
     }
 
-    /**
-     * @see DiscoveredAnnotation#apply()
-     */
     public void apply()
     {
         Class<? extends java.util.EventListener> clazz = (Class<? extends EventListener>)getTargetClass();
@@ -78,7 +70,7 @@ public class WebListenerAnnotation extends DiscoveredAnnotation
                     HttpSessionAttributeListener.class.isAssignableFrom(clazz) ||
                     HttpSessionIdListener.class.isAssignableFrom(clazz))
             {
-                java.util.EventListener listener = (java.util.EventListener)_context.getServletContext().createInstance(clazz);      
+                java.util.EventListener listener = _context.getServletContext().createInstance(clazz);      
                 MetaData metaData = _context.getMetaData();
                 if (metaData.getOrigin(clazz.getName()+".listener") == Origin.NotSet)
                 {
@@ -87,9 +79,9 @@ public class WebListenerAnnotation extends DiscoveredAnnotation
                     _context.getServletHandler().addListener(h);
                     _context.addEventListener(listener);
                 }
-            }
-            else
-                LOG.warn(clazz.getName()+" does not implement one of the servlet listener interfaces");
+            } else {
+				LOG.warn(clazz.getName()+" does not implement one of the servlet listener interfaces");
+			}
         }
         catch (Exception e)
         {

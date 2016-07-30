@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util;
 
@@ -70,7 +65,7 @@ public class BlockingArrayQueue<E> extends AbstractList<E> implements BlockingQu
     private final int _maxCapacity;
     private final int _growCapacity;
     /**
-     * Array that holds the head and tail indexes, separated by a cache line to avoid false sharing
+     * Array that holds the head and tail indexes, separated by a cache line to avoid false sharing.
      */
     private final int[] _indexes = new int[TAIL_OFFSET + 1];
     private final Lock _tailLock = new ReentrantLock();
@@ -132,8 +127,9 @@ public class BlockingArrayQueue<E> extends AbstractList<E> implements BlockingQu
      */
     public BlockingArrayQueue(int capacity, int growBy, int maxCapacity)
     {
-        if (capacity > maxCapacity)
-            throw new IllegalArgumentException();
+        if (capacity > maxCapacity) {
+			throw new IllegalArgumentException();
+		}
         _elements = new Object[capacity];
         _growCapacity = growBy;
         _maxCapacity = maxCapacity;
@@ -141,7 +137,7 @@ public class BlockingArrayQueue<E> extends AbstractList<E> implements BlockingQu
 
     /*----------------------------------------------------------------------------*/
     /* Collection methods */
-    /*----------------------------------------------------------------------------*/
+    /**----------------------------------------------------------------------------.*/
 
     @Override
     public void clear()
@@ -183,14 +179,15 @@ public class BlockingArrayQueue<E> extends AbstractList<E> implements BlockingQu
 
     /*----------------------------------------------------------------------------*/
     /* Queue methods */
-    /*----------------------------------------------------------------------------*/
+    /**----------------------------------------------------------------------------.*/
 
     @SuppressWarnings("unchecked")
     @Override
     public E poll()
     {
-        if (_size.get() == 0)
-            return null;
+        if (_size.get() == 0) {
+			return null;
+		}
 
         E e = null;
 
@@ -203,8 +200,9 @@ public class BlockingArrayQueue<E> extends AbstractList<E> implements BlockingQu
                 e = (E)_elements[head];
                 _elements[head] = null;
                 _indexes[HEAD_OFFSET] = (head + 1) % _elements.length;
-                if (_size.decrementAndGet() > 0)
-                    _notEmpty.signal();
+                if (_size.decrementAndGet() > 0) {
+					_notEmpty.signal();
+				}
             }
         }
         finally
@@ -218,16 +216,18 @@ public class BlockingArrayQueue<E> extends AbstractList<E> implements BlockingQu
     @Override
     public E peek()
     {
-        if (_size.get() == 0)
-            return null;
+        if (_size.get() == 0) {
+			return null;
+		}
 
         E e = null;
 
         _headLock.lock(); // Size cannot shrink
         try
         {
-            if (_size.get() > 0)
-                e = (E)_elements[_indexes[HEAD_OFFSET]];
+            if (_size.get() > 0) {
+				e = (E)_elements[_indexes[HEAD_OFFSET]];
+			}
         }
         finally
         {
@@ -240,8 +240,9 @@ public class BlockingArrayQueue<E> extends AbstractList<E> implements BlockingQu
     public E remove()
     {
         E e = poll();
-        if (e == null)
-            throw new NoSuchElementException();
+        if (e == null) {
+			throw new NoSuchElementException();
+		}
         return e;
     }
 
@@ -249,14 +250,15 @@ public class BlockingArrayQueue<E> extends AbstractList<E> implements BlockingQu
     public E element()
     {
         E e = peek();
-        if (e == null)
-            throw new NoSuchElementException();
+        if (e == null) {
+			throw new NoSuchElementException();
+		}
         return e;
     }
 
     /*----------------------------------------------------------------------------*/
     /* BlockingQueue methods */
-    /*----------------------------------------------------------------------------*/
+    /**----------------------------------------------------------------------------.*/
 
     @Override
     public boolean offer(E e)
@@ -268,8 +270,9 @@ public class BlockingArrayQueue<E> extends AbstractList<E> implements BlockingQu
         try
         {
             int size = _size.get();
-            if (size >= _maxCapacity)
-                return false;
+            if (size >= _maxCapacity) {
+				return false;
+			}
 
             // Should we expand array?
             if (size == _elements.length)
@@ -277,8 +280,9 @@ public class BlockingArrayQueue<E> extends AbstractList<E> implements BlockingQu
                 _headLock.lock();
                 try
                 {
-                    if (!grow())
-                        return false;
+                    if (!grow()) {
+						return false;
+					}
                 }
                 finally
                 {
@@ -316,10 +320,11 @@ public class BlockingArrayQueue<E> extends AbstractList<E> implements BlockingQu
     @Override
     public boolean add(E e)
     {
-        if (offer(e))
-            return true;
-        else
-            throw new IllegalStateException();
+        if (offer(e)) {
+			return true;
+		} else {
+			throw new IllegalStateException();
+		}
     }
 
     @Override
@@ -363,8 +368,9 @@ public class BlockingArrayQueue<E> extends AbstractList<E> implements BlockingQu
             _elements[head] = null;
             _indexes[HEAD_OFFSET] = (head + 1) % _elements.length;
 
-            if (_size.decrementAndGet() > 0)
-                _notEmpty.signal();
+            if (_size.decrementAndGet() > 0) {
+				_notEmpty.signal();
+			}
         }
         finally
         {
@@ -387,8 +393,9 @@ public class BlockingArrayQueue<E> extends AbstractList<E> implements BlockingQu
             {
                 while (_size.get() == 0)
                 {
-                    if (nanos <= 0)
-                        return null;
+                    if (nanos <= 0) {
+						return null;
+					}
                     nanos = _notEmpty.awaitNanos(nanos);
                 }
             }
@@ -403,8 +410,9 @@ public class BlockingArrayQueue<E> extends AbstractList<E> implements BlockingQu
             _elements[head] = null;
             _indexes[HEAD_OFFSET] = (head + 1) % _elements.length;
 
-            if (_size.decrementAndGet() > 0)
-                _notEmpty.signal();
+            if (_size.decrementAndGet() > 0) {
+				_notEmpty.signal();
+			}
         }
         finally
         {
@@ -424,8 +432,9 @@ public class BlockingArrayQueue<E> extends AbstractList<E> implements BlockingQu
             _headLock.lock();
             try
             {
-                if (isEmpty())
-                    return false;
+                if (isEmpty()) {
+					return false;
+				}
 
                 final int head = _indexes[HEAD_OFFSET];
                 final int tail = _indexes[TAIL_OFFSET];
@@ -440,10 +449,12 @@ public class BlockingArrayQueue<E> extends AbstractList<E> implements BlockingQu
                         return true;
                     }
                     ++i;
-                    if (i == capacity)
-                        i = 0;
-                    if (i == tail)
-                        return false;
+                    if (i == capacity) {
+						i = 0;
+					}
+                    if (i == tail) {
+						return false;
+					}
                 }
             }
             finally
@@ -495,7 +506,7 @@ public class BlockingArrayQueue<E> extends AbstractList<E> implements BlockingQu
 
     /*----------------------------------------------------------------------------*/
     /* List methods */
-    /*----------------------------------------------------------------------------*/
+    /**----------------------------------------------------------------------------.*/
 
     @SuppressWarnings("unchecked")
     @Override
@@ -509,12 +520,14 @@ public class BlockingArrayQueue<E> extends AbstractList<E> implements BlockingQu
             _headLock.lock();
             try
             {
-                if (index < 0 || index >= _size.get())
-                    throw new IndexOutOfBoundsException("!(" + 0 + "<" + index + "<=" + _size + ")");
+                if (index < 0 || index >= _size.get()) {
+					throw new IndexOutOfBoundsException("!(" + 0 + "<" + index + "<=" + _size + ")");
+				}
                 int i = _indexes[HEAD_OFFSET] + index;
                 int capacity = _elements.length;
-                if (i >= capacity)
-                    i -= capacity;
+                if (i >= capacity) {
+					i -= capacity;
+				}
                 return (E)_elements[i];
             }
             finally
@@ -531,8 +544,9 @@ public class BlockingArrayQueue<E> extends AbstractList<E> implements BlockingQu
     @Override
     public void add(int index, E e)
     {
-        if (e == null)
-            throw new NullPointerException();
+        if (e == null) {
+			throw new NullPointerException();
+		}
 
         _tailLock.lock();
         try
@@ -543,8 +557,9 @@ public class BlockingArrayQueue<E> extends AbstractList<E> implements BlockingQu
             {
                 final int size = _size.get();
 
-                if (index < 0 || index > size)
-                    throw new IndexOutOfBoundsException("!(" + 0 + "<" + index + "<=" + _size + ")");
+                if (index < 0 || index > size) {
+					throw new IndexOutOfBoundsException("!(" + 0 + "<" + index + "<=" + _size + ")");
+				}
 
                 if (index == size)
                 {
@@ -552,16 +567,17 @@ public class BlockingArrayQueue<E> extends AbstractList<E> implements BlockingQu
                 }
                 else
                 {
-                    if (_indexes[TAIL_OFFSET] == _indexes[HEAD_OFFSET])
-                        if (!grow())
-                            throw new IllegalStateException("full");
+                    if (_indexes[TAIL_OFFSET] == _indexes[HEAD_OFFSET] && !grow()) {
+						throw new IllegalStateException("full");
+					}
 
                     // Re-read head and tail after a possible grow
                     int i = _indexes[HEAD_OFFSET] + index;
                     int capacity = _elements.length;
 
-                    if (i >= capacity)
-                        i -= capacity;
+                    if (i >= capacity) {
+						i -= capacity;
+					}
 
                     _size.incrementAndGet();
                     int tail = _indexes[TAIL_OFFSET];
@@ -570,7 +586,6 @@ public class BlockingArrayQueue<E> extends AbstractList<E> implements BlockingQu
                     if (i < tail)
                     {
                         System.arraycopy(_elements,i,_elements,i + 1,tail - i);
-                        _elements[i] = e;
                     }
                     else
                     {
@@ -581,8 +596,8 @@ public class BlockingArrayQueue<E> extends AbstractList<E> implements BlockingQu
                         }
 
                         System.arraycopy(_elements,i,_elements,i + 1,capacity - i - 1);
-                        _elements[i] = e;
                     }
+					_elements[i] = e;
                 }
             }
             finally
@@ -609,13 +624,15 @@ public class BlockingArrayQueue<E> extends AbstractList<E> implements BlockingQu
             _headLock.lock();
             try
             {
-                if (index < 0 || index >= _size.get())
-                    throw new IndexOutOfBoundsException("!(" + 0 + "<" + index + "<=" + _size + ")");
+                if (index < 0 || index >= _size.get()) {
+					throw new IndexOutOfBoundsException("!(" + 0 + "<" + index + "<=" + _size + ")");
+				}
 
                 int i = _indexes[HEAD_OFFSET] + index;
                 int capacity = _elements.length;
-                if (i >= capacity)
-                    i -= capacity;
+                if (i >= capacity) {
+					i -= capacity;
+				}
                 E old = (E)_elements[i];
                 _elements[i] = e;
                 return old;
@@ -643,13 +660,15 @@ public class BlockingArrayQueue<E> extends AbstractList<E> implements BlockingQu
             _headLock.lock();
             try
             {
-                if (index < 0 || index >= _size.get())
-                    throw new IndexOutOfBoundsException("!(" + 0 + "<" + index + "<=" + _size + ")");
+                if (index < 0 || index >= _size.get()) {
+					throw new IndexOutOfBoundsException("!(" + 0 + "<" + index + "<=" + _size + ")");
+				}
 
                 int i = _indexes[HEAD_OFFSET] + index;
                 int capacity = _elements.length;
-                if (i >= capacity)
-                    i -= capacity;
+                if (i >= capacity) {
+					i -= capacity;
+				}
                 E old = (E)_elements[i];
 
                 int tail = _indexes[TAIL_OFFSET];
@@ -759,12 +778,13 @@ public class BlockingArrayQueue<E> extends AbstractList<E> implements BlockingQu
 
     /*----------------------------------------------------------------------------*/
     /* Implementation methods */
-    /*----------------------------------------------------------------------------*/
+    /**----------------------------------------------------------------------------.*/
 
     private boolean grow()
     {
-        if (_growCapacity <= 0)
-            return false;
+        if (_growCapacity <= 0) {
+			return false;
+		}
 
         _tailLock.lock();
         try

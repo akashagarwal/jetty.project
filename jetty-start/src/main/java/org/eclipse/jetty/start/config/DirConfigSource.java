@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.start.config;
 
@@ -225,11 +220,11 @@ public class DirConfigSource implements ConfigSource
     public String getProperty(String key)
     {
         Prop prop = props.getProp(key,false);
-        if (prop == null)
+        if (prop != null)
         {
-            return null;
+            return prop.value;
         }
-        return prop.value;
+        return null;
     }
 
     @Override
@@ -249,8 +244,7 @@ public class DirConfigSource implements ConfigSource
     {
         final int prime = 31;
         int result = 1;
-        result = (prime * result) + ((dir == null)?0:dir.hashCode());
-        return result;
+        return prime * result + ((dir == null)?0:dir.hashCode());
     }
 
     public boolean isPropertyBased()
@@ -261,6 +255,6 @@ public class DirConfigSource implements ConfigSource
     @Override
     public String toString()
     {
-        return String.format("%s[%s,%s,args.length=%d]",this.getClass().getSimpleName(),id,dir,getArgs().size());
+        return String.format("%s[%s,%s,args.length=%d]",getClass().getSimpleName(),id,dir,getArgs().size());
     }
 }

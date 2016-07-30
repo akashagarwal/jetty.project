@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.api.util;
 
@@ -50,8 +45,8 @@ public class QuoteUtil
         private final String input;
         private final String delims;
         private StringBuilder token;
-        private boolean hasToken = false;
-        private int i = 0;
+        private boolean hasToken;
+        private int i;
 
         public DeQuotingStringIterator(String input, String delims)
         {
@@ -66,19 +61,15 @@ public class QuoteUtil
             if (hasToken)
             {
                 token.append(c);
-            }
-            else
-            {
-                if (Character.isWhitespace(c))
-                {
-                    return; // skip whitespace at start of token.
-                }
-                else
-                {
-                    token.append(c);
-                    hasToken = true;
-                }
-            }
+            } else if (Character.isWhitespace(c))
+			{
+			    return; // skip whitespace at start of token.
+			}
+			else
+			{
+			    token.append(c);
+			    hasToken = true;
+			}
         }
 
         @Override
@@ -229,17 +220,17 @@ public class QuoteUtil
 
     private static int dehex(byte b)
     {
-        if ((b >= '0') && (b <= '9'))
+        if (b >= '0' && b <= '9')
         {
-            return (byte)(b - '0');
+            return b - '0';
         }
-        if ((b >= 'a') && (b <= 'f'))
+        if (b >= 'a' && b <= 'f')
         {
-            return (byte)((b - 'a') + 10);
+            return (b - 'a') + 10;
         }
-        if ((b >= 'A') && (b <= 'F'))
+        if (b >= 'A' && b <= 'F')
         {
-            return (byte)((b - 'A') + 10);
+            return (b - 'A') + 10;
         }
         throw new IllegalArgumentException("!hex:" + Integer.toHexString(0xff & b));
     }
@@ -254,7 +245,7 @@ public class QuoteUtil
     public static String dequote(String str)
     {
         char start = str.charAt(0);
-        if ((start == '\'') || (start == '\"'))
+        if (start == '\'' || start == '\"')
         {
             // possibly quoted
             char end = str.charAt(str.length() - 1);
@@ -274,7 +265,7 @@ public class QuoteUtil
             if (c >= 32)
             {
                 // non special character
-                if ((c == '"') || (c == '\\'))
+                if (c == '"' || c == '\\')
                 {
                     buf.append('\\');
                 }
@@ -425,8 +416,8 @@ public class QuoteUtil
                         ret.append('"');
                         break;
                     case 'u':
-                        ret.append((char)((dehex((byte)str.charAt(i++)) << 24) + (dehex((byte)str.charAt(i++)) << 16) + (dehex((byte)str.charAt(i++)) << 8) + (dehex((byte)str
-                                .charAt(i++)))));
+                        ret.append((char)((dehex((byte)str.charAt(i++)) << 24) + (dehex((byte)str.charAt(i++)) << 16) + (dehex((byte)str.charAt(i++)) << 8) + dehex((byte)str
+                                .charAt(i++))));
                         break;
                     default:
                         ret.append(c);

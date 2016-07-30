@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.client;
 
@@ -140,10 +135,10 @@ public class HttpClient extends ContainerLifeCycle
     private volatile long addressResolutionTimeout = 15000;
     private volatile long idleTimeout;
     private volatile boolean tcpNoDelay = true;
-    private volatile boolean strictEventOrdering = false;
+    private volatile boolean strictEventOrdering;
     private volatile HttpField encodingField;
-    private volatile boolean removeIdleDestinations = false;
-    private volatile boolean connectBlocking = false;
+    private volatile boolean removeIdleDestinations;
+    private volatile boolean connectBlocking;
 
     /**
      * Creates a {@link HttpClient} instance that can perform requests to non-TLS destinations only
@@ -191,8 +186,9 @@ public class HttpClient extends ContainerLifeCycle
     @Override
     protected void doStart() throws Exception
     {
-        if (sslContextFactory != null)
-            addBean(sslContextFactory);
+        if (sslContextFactory != null) {
+			addBean(sslContextFactory);
+		}
 
         String name = HttpClient.class.getSimpleName() + "@" + hashCode();
 
@@ -204,19 +200,22 @@ public class HttpClient extends ContainerLifeCycle
         }
         addBean(executor);
 
-        if (byteBufferPool == null)
-            byteBufferPool = new MappedByteBufferPool();
+        if (byteBufferPool == null) {
+			byteBufferPool = new MappedByteBufferPool();
+		}
         addBean(byteBufferPool);
 
-        if (scheduler == null)
-            scheduler = new ScheduledExecutorScheduler(name + "-scheduler", false);
+        if (scheduler == null) {
+			scheduler = new ScheduledExecutorScheduler(name + "-scheduler", false);
+		}
         addBean(scheduler);
 
         transport.setHttpClient(this);
         addBean(transport);
 
-        if (resolver == null)
-            resolver = new SocketAddressResolver.Async(executor, scheduler, getAddressResolutionTimeout());
+        if (resolver == null) {
+			resolver = new SocketAddressResolver.Async(executor, scheduler, getAddressResolutionTimeout());
+		}
         addBean(resolver);
 
         handlers.put(new ContinueProtocolHandler());
@@ -244,8 +243,9 @@ public class HttpClient extends ContainerLifeCycle
         decoderFactories.clear();
         handlers.clear();
 
-        for (HttpDestination destination : destinations.values())
-            destination.close();
+        for (HttpDestination destination : destinations.values()) {
+			destination.close();
+		}
         destinations.clear();
 
         requestListeners.clear();
@@ -397,7 +397,7 @@ public class HttpClient extends ContainerLifeCycle
     }
 
     /**
-     * Creates a new request with the "http" scheme and the specified host and port
+     * Creates a new request with the "http" scheme and the specified host and port.
      *
      * @param host the request host
      * @param port the request port
@@ -443,25 +443,30 @@ public class HttpClient extends ContainerLifeCycle
         {
             HttpHeader header = field.getHeader();
             // We have a new URI, so skip the host header if present.
-            if (HttpHeader.HOST == header)
-                continue;
+            if (HttpHeader.HOST == header) {
+				continue;
+			}
 
             // Remove expectation headers.
-            if (HttpHeader.EXPECT == header)
-                continue;
+            if (HttpHeader.EXPECT == header) {
+				continue;
+			}
 
             // Remove cookies.
-            if (HttpHeader.COOKIE == header)
-                continue;
+            if (HttpHeader.COOKIE == header) {
+				continue;
+			}
 
             // Remove authorization headers.
             if (HttpHeader.AUTHORIZATION == header ||
-                    HttpHeader.PROXY_AUTHORIZATION == header)
-                continue;
+                    HttpHeader.PROXY_AUTHORIZATION == header) {
+				continue;
+			}
 
             String value = field.getValue();
-            if (!newRequest.getHeaders().contains(header, value))
-                newRequest.header(field.getName(), value);
+            if (!newRequest.getHeaders().contains(header, value)) {
+				newRequest.header(field.getName(), value);
+			}
         }
         return newRequest;
     }
@@ -491,8 +496,9 @@ public class HttpClient extends ContainerLifeCycle
 
     protected HttpDestination destinationFor(String scheme, String host, int port)
     {
-        if (!HttpScheme.HTTP.is(scheme) && !HttpScheme.HTTPS.is(scheme))
-            throw new IllegalArgumentException("Invalid protocol " + scheme);
+        if (!HttpScheme.HTTP.is(scheme) && !HttpScheme.HTTPS.is(scheme)) {
+			throw new IllegalArgumentException("Invalid protocol " + scheme);
+		}
 
         scheme = scheme.toLowerCase(Locale.ENGLISH);
         host = host.toLowerCase(Locale.ENGLISH);
@@ -509,12 +515,9 @@ public class HttpClient extends ContainerLifeCycle
             {
                 removeBean(destination);
                 destination = existing;
-            }
-            else
-            {
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Created {}", destination);
-            }
+            } else if (LOG.isDebugEnabled()) {
+				LOG.debug("Created {}", destination);
+			}
         }
         return destination;
     }
@@ -573,10 +576,11 @@ public class HttpClient extends ContainerLifeCycle
                     public void failed(Throwable x)
                     {
                         int nextIndex = index + 1;
-                        if (nextIndex == socketAddresses.size())
-                            getPromise().failed(x);
-                        else
-                            connect(socketAddresses, nextIndex, context);
+                        if (nextIndex == socketAddresses.size()) {
+							getPromise().failed(x);
+						} else {
+							connect(socketAddresses, nextIndex, context);
+						}
                     }
                 });
                 transport.connect(socketAddresses.get(index), context);
@@ -705,8 +709,9 @@ public class HttpClient extends ContainerLifeCycle
      */
     public void setUserAgentField(HttpField agent)
     {
-        if (agent.getHeader() != HttpHeader.USER_AGENT)
-            throw new IllegalArgumentException();
+        if (agent.getHeader() != HttpHeader.USER_AGENT) {
+			throw new IllegalArgumentException();
+		}
         this.agentField = agent;
     }
 
@@ -1035,8 +1040,9 @@ public class HttpClient extends ContainerLifeCycle
 
     protected String normalizeHost(String host)
     {
-        if (host != null && host.matches("\\[.*\\]"))
-            return host.substring(1, host.length() - 1);
+        if (host != null && host.matches("\\[.*\\]")) {
+			return host.substring(1, host.length() - 1);
+		}
         return host;
     }
 
@@ -1177,8 +1183,9 @@ public class HttpClient extends ContainerLifeCycle
                 {
                     ContentDecoder.Factory decoderFactory = iterator.next();
                     value.append(decoderFactory.getEncoding());
-                    if (iterator.hasNext())
-                        value.append(",");
+                    if (iterator.hasNext()) {
+						value.append(",");
+					}
                 }
                 encodingField = new HttpField(HttpHeader.ACCEPT_ENCODING, value.toString());
             }

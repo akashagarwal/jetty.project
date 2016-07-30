@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util;
 
@@ -39,8 +34,9 @@ public class AttributesMap implements Attributes
     public AttributesMap(AttributesMap attributes)
     {
         ConcurrentMap<String, Object> map = attributes.map();
-        if (map != null)
-            _map.set(new ConcurrentHashMap<>(map));
+        if (map != null) {
+			_map.set(new ConcurrentHashMap<>(map));
+		}
     }
 
     private ConcurrentMap<String, Object> map()
@@ -53,11 +49,13 @@ public class AttributesMap implements Attributes
         while (true)
         {
             ConcurrentMap<String, Object> map = map();
-            if (map != null)
-                return map;
+            if (map != null) {
+				return map;
+			}
             map = new ConcurrentHashMap<>();
-            if (_map.compareAndSet(null, map))
-                return map;
+            if (_map.compareAndSet(null, map)) {
+				return map;
+			}
         }
     }
 
@@ -65,17 +63,19 @@ public class AttributesMap implements Attributes
     public void removeAttribute(String name)
     {
         Map<String, Object> map = map();
-        if (map != null)
-            map.remove(name);
+        if (map != null) {
+			map.remove(name);
+		}
     }
 
     @Override
     public void setAttribute(String name, Object attribute)
     {
-        if (attribute == null)
-            removeAttribute(name);
-        else
-            ensureMap().put(name, attribute);
+        if (attribute != null) {
+			ensureMap().put(name, attribute);
+		} else {
+			removeAttribute(name);
+		}
     }
 
     @Override
@@ -104,11 +104,11 @@ public class AttributesMap implements Attributes
 
     public static Enumeration<String> getAttributeNamesCopy(Attributes attrs)
     {
-        if (attrs instanceof AttributesMap)
-            return Collections.enumeration(((AttributesMap)attrs).keySet());
+        if (attrs instanceof AttributesMap) {
+			return Collections.enumeration(((AttributesMap)attrs).keySet());
+		}
 
-        List<String> names = new ArrayList<>();
-        names.addAll(Collections.list(attrs.getAttributeNames()));
+        List<String> names = new ArrayList<String>(Collections.list(attrs.getAttributeNames()));
         return Collections.enumeration(names);
     }
 
@@ -116,8 +116,9 @@ public class AttributesMap implements Attributes
     public void clearAttributes()
     {
         Map<String, Object> map = map();
-        if (map != null)
-            map.clear();
+        if (map != null) {
+			map.clear();
+		}
     }
 
     public int size()

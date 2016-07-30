@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.webapp;
 
@@ -37,7 +32,8 @@ public abstract class DiscoveredAnnotation
     protected WebAppContext _context;
     protected String _className;
     protected Class<?> _clazz;
-    protected Resource _resource; //resource it was discovered on, can be null (eg from WEB-INF/classes)
+    /** Resource it was discovered on, can be null (eg from WEB-INF/classes). */
+    protected Resource _resource;
     
     public abstract void apply();
     
@@ -61,8 +57,9 @@ public abstract class DiscoveredAnnotation
     
     public Class<?> getTargetClass()
     {
-        if (_clazz != null)
-            return _clazz;
+        if (_clazz != null) {
+			return _clazz;
+		}
         
         loadClass();
         
@@ -71,11 +68,13 @@ public abstract class DiscoveredAnnotation
     
     private void loadClass ()
     {
-        if (_clazz != null)
-            return;
+        if (_clazz != null) {
+			return;
+		}
         
-        if (_className == null)
-            return;
+        if (_className == null) {
+			return;
+		}
         
         try
         {

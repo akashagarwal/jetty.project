@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.plus.jndi;
 
@@ -42,11 +37,15 @@ import org.eclipse.jetty.util.log.Logger;
 public abstract class NamingEntry
 {
     private static Logger __log = NamingUtil.__log;
-    public static final String __contextName = "__"; //all NamingEntries stored in context called "__"
+    /** All NamingEntries stored in context called "__". */
+    public static final String __contextName = "__";
     protected final Object _scope;
-    protected final String _jndiName;  //the name representing the object associated with the NamingEntry
-    protected String _namingEntryNameString; //the name of the NamingEntry relative to the context it is stored in
-    protected String _objectNameString; //the name of the object relative to the context it is stored in
+    /** The name representing the object associated with the NamingEntry. */
+    protected final String _jndiName;
+    /** The name of the NamingEntry relative to the context it is stored in. */
+    protected String _namingEntryNameString;
+    /** The name of the object relative to the context it is stored in. */
+    protected String _objectNameString;
    
    
     public String toString()
@@ -117,7 +116,7 @@ public abstract class NamingEntry
     }
     
     /**
-     * Unbind this NamingEntry entirely
+     * Unbind this NamingEntry entirely.
      */
     public void release ()
     {
@@ -137,7 +136,7 @@ public abstract class NamingEntry
     
     /**
      * Get the unique name of the object
-     * relative to the scope
+     * relative to the scope.
      * @return the unique jndi name of the object
      */
     public String getJndiName ()
@@ -147,7 +146,7 @@ public abstract class NamingEntry
 
     /**
      * Get the name of the object, fully
-     * qualified with the scope
+     * qualified with the scope.
      * @return the name of the object, fully qualified with the scope
      */
     public String getJndiNameInScope ()

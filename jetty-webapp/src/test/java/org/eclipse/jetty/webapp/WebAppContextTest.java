@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.webapp;
 
@@ -127,7 +122,7 @@ public class WebAppContextTest
     }
 
     /**
-     * tests that the servlet context white list works
+     * Tests that the servlet context white list works.
      *
      * @throws Exception on test failure
      */
@@ -217,7 +212,7 @@ public class WebAppContextTest
         try
         {
             String response = connector.getResponses("GET http://localhost:8080 HTTP/1.1\r\nHost: localhost:8080\r\nConnection: close\r\n\r\n");
-            Assert.assertTrue(response.indexOf("200 OK")>=0);
+            Assert.assertTrue(response.contains("200 OK"));
         }
         finally
         {
@@ -231,7 +226,7 @@ public class WebAppContextTest
         @Override
         public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException
         {
-            this.getServletContext().getContext("/A/s");
+            getServletContext().getContext("/A/s");
         }
     }
 
@@ -240,7 +235,7 @@ public class WebAppContextTest
         @Override
         public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException
         {
-            this.getServletContext().getContext("/B/s");
+            getServletContext().getContext("/B/s");
         }
     }
     

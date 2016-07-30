@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util.thread.strategy;
 
@@ -111,8 +106,9 @@ public class ExecuteProduceConsumeTest
         _produce.add(NULLTASK);
         _ewyk.execute();
 
-        for (Task task : tasks)
-            Assert.assertThat(task.hasRun(), Matchers.equalTo(true));
+        for (Task task : tasks) {
+			Assert.assertThat(task.hasRun(), Matchers.equalTo(true));
+		}
         Assert.assertEquals(_ewyk,_executions.poll());
     }
 
@@ -208,8 +204,9 @@ public class ExecuteProduceConsumeTest
         thread1.start();
 
         // Spin
-        while(_producer==null)
-            Thread.yield();
+        while(_producer==null) {
+			Thread.yield();
+		}
 
         // thread1 is blocked in producing
         Assert.assertEquals(thread1,_producer);
@@ -235,8 +232,9 @@ public class ExecuteProduceConsumeTest
         t1.unblock();
 
         // Now thread1 is producing again
-        while(_producer==null)
-            Thread.yield();
+        while(_producer==null) {
+			Thread.yield();
+		}
         Assert.assertEquals(thread1,_producer);
 
         // If we unblock t0, it will decide it is not needed
@@ -286,8 +284,9 @@ public class ExecuteProduceConsumeTest
         t0.unblock();
 
         // but because there was a pending execute it will try producing again
-        while(_producer==null)
-            Thread.yield();
+        while(_producer==null) {
+			Thread.yield();
+		}
         Assert.assertEquals(thread0,_producer);
 
         // and will see new tasks
@@ -322,8 +321,9 @@ public class ExecuteProduceConsumeTest
 
         public Task(boolean block)
         {
-            if (!block)
-                _block.countDown();
+            if (!block) {
+				_block.countDown();
+			}
         }
 
         @Override

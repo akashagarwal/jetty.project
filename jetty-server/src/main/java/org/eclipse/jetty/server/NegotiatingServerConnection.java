@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 
@@ -44,7 +39,8 @@ public abstract class NegotiatingServerConnection extends AbstractConnection
     private final SSLEngine engine;
     private final List<String> protocols;
     private final String defaultProtocol;
-    private String protocol; // No need to be volatile: it is modified and read by the same thread
+    /** No need to be volatile: it is modified and read by the same thread */
+    private String protocol;
 
     protected NegotiatingServerConnection(Connector connector, EndPoint endPoint, SSLEngine engine, List<String> protocols, String defaultProtocol)
     {
@@ -104,8 +100,9 @@ public abstract class NegotiatingServerConnection extends AbstractConnection
                 if (engine.getHandshakeStatus() == SSLEngineResult.HandshakeStatus.NOT_HANDSHAKING)
                 {
                     // Here the SSL handshake is finished, but the protocol has not been negotiated.
-                    if (LOG.isDebugEnabled())
-                        LOG.debug("{} could not negotiate protocol, SSLEngine: {}", this, engine);
+                    if (LOG.isDebugEnabled()) {
+						LOG.debug("{} could not negotiate protocol, SSLEngine: {}", this, engine);
+					}
                     close();
                 }
                 else
@@ -135,8 +132,9 @@ public abstract class NegotiatingServerConnection extends AbstractConnection
         else if (filled < 0)
         {
             // Something went bad, we need to close.
-            if (LOG.isDebugEnabled())
-                LOG.debug("{} detected close on client side", this);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("{} detected close on client side", this);
+			}
             close();
         }
         else

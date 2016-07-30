@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.test.support;
 
@@ -48,7 +43,7 @@ public class StringUtil
         for (int i = 0; i < str.length(); i++)
         {
             c = str.charAt(i);
-            if (Character.isWhitespace(c) == false)
+            if (!Character.isWhitespace(c))
             {
                 return false;
             }
@@ -81,7 +76,7 @@ public class StringUtil
         int idx;
 
         // Calculate entry length to not waste memory.
-        while ((idx = s.indexOf(delim,offset)) != (-1))
+        while ((idx = s.indexOf(delim,offset)) != -1)
         {
             if (idx > offset)
             {
@@ -98,7 +93,7 @@ public class StringUtil
         offset = 0;
         ret = new String[count];
         int retIdx = 0;
-        while ((idx = s.indexOf(delim,offset)) != (-1))
+        while ((idx = s.indexOf(delim,offset)) != -1)
         {
             if (idx > offset)
             {

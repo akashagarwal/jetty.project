@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.proxy;
 
@@ -139,8 +134,9 @@ public class AsyncProxyServletLoadTest
             @Override
             protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
             {
-                if (req.getHeader("Via") != null)
-                    resp.addHeader(PROXIED_HEADER, "true");
+                if (req.getHeader("Via") != null) {
+					resp.addHeader(PROXIED_HEADER, "true");
+				}
                 IO.copy(req.getInputStream(), resp.getOutputStream());
             }
         });
@@ -214,12 +210,9 @@ public class AsyncProxyServletLoadTest
                         LOG.warn("Got response <{}>, expecting <{}>", response.getStatus(), 200);
                         // allow all ClientLoops to finish
                         success.set(false);
-                    }
-                    else
-                    {
-                        if (iterations == 0)
-                            break;
-                    }
+                    } else if (iterations == 0) {
+						break;
+					}
                 }
             }
             catch (Throwable x)

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.proxy;
 
@@ -197,10 +192,11 @@ public abstract class AfterContentTransformer implements AsyncMiddleManServlet.C
         {
             Source source = new Source();
             Sink sink = new Sink();
-            if (transform(source, sink))
-                sink.drainTo(output);
-            else
-                source.drainTo(output);
+            if (transform(source, sink)) {
+				sink.drainTo(output);
+			} else {
+				source.drainTo(output);
+			}
         }
     }
 
@@ -285,8 +281,9 @@ public abstract class AfterContentTransformer implements AsyncMiddleManServlet.C
     {
         try
         {
-            if (closeable != null)
-                closeable.close();
+            if (closeable != null) {
+				closeable.close();
+			}
         }
         catch (IOException x)
         {
@@ -372,13 +369,16 @@ public abstract class AfterContentTransformer implements AsyncMiddleManServlet.C
         @Override
         public int read(byte[] b, int off, int len) throws IOException
         {
-            if (len == 0)
-                return 0;
-            if (index == sourceBuffers.size())
-                return -1;
+            if (len == 0) {
+				return 0;
+			}
+            if (index == sourceBuffers.size()) {
+				return -1;
+			}
 
-            if (slice == null)
-                slice = sourceBuffers.get(index).slice();
+            if (slice == null) {
+				slice = sourceBuffers.get(index).slice();
+			}
 
             int size = Math.min(len, slice.remaining());
             slice.get(b, off, size);
@@ -465,8 +465,9 @@ public abstract class AfterContentTransformer implements AsyncMiddleManServlet.C
             @Override
             public void write(byte[] b, int off, int len) throws IOException
             {
-                if (len <= 0)
-                    return;
+                if (len <= 0) {
+					return;
+				}
 
                 outputBufferSize += len;
                 long max = getMaxOutputBufferSize();

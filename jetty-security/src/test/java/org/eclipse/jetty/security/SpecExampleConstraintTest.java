@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.security;
 
@@ -344,8 +339,9 @@ public class SpecExampleConstraintTest
             response.getWriter().println("URI="+request.getRequestURI());
             String user = request.getRemoteUser();
             response.getWriter().println("user="+user);
-            if (request.getParameter("test_parameter")!=null)
-                response.getWriter().println(request.getParameter("test_parameter"));
+            if (request.getParameter("test_parameter")!=null) {
+				response.getWriter().println(request.getParameter("test_parameter"));
+			}
         }
     }
 

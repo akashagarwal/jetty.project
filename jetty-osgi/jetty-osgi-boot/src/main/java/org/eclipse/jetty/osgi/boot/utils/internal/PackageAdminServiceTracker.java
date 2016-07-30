@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.osgi.boot.utils.internal;
 
@@ -49,15 +44,17 @@ public class PackageAdminServiceTracker implements ServiceListener
 
     private List<BundleActivator> _activatedFragments = new ArrayList<BundleActivator>();
 
-    private boolean _fragmentsWereActivated = false;
+    private boolean _fragmentsWereActivated;
 
-    // Use the deprecated StartLevel to stay compatible with older versions of
-    // OSGi.
+    /**
+     * Use the deprecated StartLevel to stay compatible with older versions of
+     * OSGi.
+     */
     private StartLevel _startLevel;
 
     private int _maxStartLevel = 6;
 
-    public static PackageAdminServiceTracker INSTANCE = null;
+    public static PackageAdminServiceTracker INSTANCE;
 
     public PackageAdminServiceTracker(BundleContext context)
     {
@@ -83,7 +80,9 @@ public class PackageAdminServiceTracker implements ServiceListener
     {
         ServiceReference sr = _context.getServiceReference(PackageAdmin.class.getName());
         _fragmentsWereActivated = sr != null;
-        if (sr != null) invokeFragmentActivators(sr);
+        if (sr != null) {
+			invokeFragmentActivators(sr);
+		}
 
         sr = _context.getServiceReference(StartLevel.class.getName());
         if (sr != null)
@@ -235,7 +234,7 @@ public class PackageAdminServiceTracker implements ServiceListener
                         versionRange = next.substring("bundle-version=".length());
                     }
                 }
-                else if (next.equals("visibility:=reexport"))
+                else if ("visibility:=reexport".equals(next))
                 {
                     reexport = true;
                 }

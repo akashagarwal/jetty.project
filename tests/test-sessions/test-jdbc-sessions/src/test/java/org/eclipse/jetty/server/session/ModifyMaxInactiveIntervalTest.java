@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server.session;
 
@@ -40,7 +35,7 @@ import org.junit.Test;
  * ModifyMaxInactiveIntervalTest
  *
  *
- *
+ *.
  */
 public class ModifyMaxInactiveIntervalTest
 {
@@ -119,23 +114,26 @@ public class ModifyMaxInactiveIntervalTest
             if ("change".equals(action))
             {
                 HttpSession session = request.getSession(false);
-                if (session == null)
-                    throw new ServletException("Session is null for action=change");
+                if (session == null) {
+					throw new ServletException("Session is null for action=change");
+				}
 
                 String tmp = request.getParameter("val");
                 int interval = -1;
-                interval = (tmp==null?-1:Integer.parseInt(tmp));
+                interval = tmp==null?-1:Integer.parseInt(tmp);
      
-                if (interval > 0)
-                    session.setMaxInactiveInterval(interval);
+                if (interval > 0) {
+					session.setMaxInactiveInterval(interval);
+				}
                 return;
             }
             
             if ("test".equals(action))
             {
                 HttpSession session = request.getSession(false);
-                if (session == null)
-                    throw new ServletException("Session does not exist");
+                if (session == null) {
+					throw new ServletException("Session does not exist");
+				}
                 assertEquals(ModifyMaxInactiveIntervalTest.newMaxInactive, session.getMaxInactiveInterval());
                 return;
             }

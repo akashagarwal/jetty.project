@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util;
 
@@ -32,50 +27,52 @@ public class MultiException extends Exception
 {
     private List<Throwable> nested;
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public MultiException()
     {
         super("Multiple exceptions");
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void add(Throwable e)
     {
-        if (e==null)
-            throw new IllegalArgumentException();
+        if (e==null) {
+			throw new IllegalArgumentException();
+		}
 
         if(nested == null)
         {
             initCause(e);
             nested = new ArrayList<>();
-        }
-        else
-            addSuppressed(e);
+        } else {
+			addSuppressed(e);
+		}
         
         if (e instanceof MultiException)
         {
             MultiException me = (MultiException)e;
             nested.addAll(me.nested);
-        }
-        else
-            nested.add(e);
+        } else {
+			nested.add(e);
+		}
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public int size()
     {
         return (nested ==null)?0:nested.size();
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public List<Throwable> getThrowables()
     {
-        if(nested == null)
-            return Collections.emptyList();
-        return nested;
+        if(nested != null) {
+			return nested;
+		}
+        return Collections.emptyList();
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public Throwable getThrowable(int i)
     {
         return nested.get(i);
@@ -91,8 +88,9 @@ public class MultiException extends Exception
     public void ifExceptionThrow()
         throws Exception
     {
-        if(nested == null)
-            return;
+        if(nested == null) {
+			return;
+		}
         
         switch (nested.size())
         {
@@ -100,10 +98,12 @@ public class MultiException extends Exception
               break;
           case 1:
               Throwable th=nested.get(0);
-              if (th instanceof Error)
-                  throw (Error)th;
-              if (th instanceof Exception)
-                  throw (Exception)th;
+              if (th instanceof Error) {
+				throw (Error)th;
+			}
+              if (th instanceof Exception) {
+				throw (Exception)th;
+			}
           default:
               throw this;
         }
@@ -121,8 +121,9 @@ public class MultiException extends Exception
     public void ifExceptionThrowRuntime()
         throws Error
     {
-        if(nested == null)
-            return;
+        if(nested == null) {
+			return;
+		}
         
         switch (nested.size())
         {
@@ -130,12 +131,13 @@ public class MultiException extends Exception
               break;
           case 1:
               Throwable th=nested.get(0);
-              if (th instanceof Error)
-                  throw (Error)th;
-              else if (th instanceof RuntimeException)
-                  throw (RuntimeException)th;
-              else
-                  throw new RuntimeException(th);
+              if (th instanceof Error) {
+				throw (Error)th;
+			} else if (th instanceof RuntimeException) {
+				throw (RuntimeException)th;
+			} else {
+				throw new RuntimeException(th);
+			}
           default:
               throw new RuntimeException(this);
         }
@@ -151,20 +153,22 @@ public class MultiException extends Exception
     public void ifExceptionThrowMulti()
         throws MultiException
     {
-        if(nested == null)
-            return;
+        if(nested == null) {
+			return;
+		}
         
-        if (nested.size()>0)
-            throw this;
+        if (nested.size()>0) {
+			throw this;
+		}
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public String toString()
     {
         StringBuilder str = new StringBuilder();
         str.append(MultiException.class.getSimpleName());
-        if((nested == null) || (nested.size()<=0)) {
+        if(nested == null || nested.size()<=0) {
             str.append("[]");
         } else {
             str.append(nested);

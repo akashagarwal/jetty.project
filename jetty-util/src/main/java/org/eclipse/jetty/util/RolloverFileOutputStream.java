@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util; 
 
@@ -45,10 +40,10 @@ public class RolloverFileOutputStream extends FilterOutputStream
 {
     private static Timer __rollover;
     
-    final static String YYYY_MM_DD="yyyy_mm_dd";
-    final static String ROLLOVER_FILE_DATE_FORMAT = "yyyy_MM_dd";
-    final static String ROLLOVER_FILE_BACKUP_FORMAT = "HHmmssSSS";
-    final static int ROLLOVER_FILE_RETAIN_DAYS = 31;
+    static final String YYYY_MM_DD="yyyy_mm_dd";
+    static final String ROLLOVER_FILE_DATE_FORMAT = "yyyy_MM_dd";
+    static final String ROLLOVER_FILE_BACKUP_FORMAT = "HHmmssSSS";
+    static final int ROLLOVER_FILE_RETAIN_DAYS = 31;
 
     private RollTask _rollTask;
     private SimpleDateFormat _fileBackupFormat;
@@ -140,12 +135,14 @@ public class RolloverFileOutputStream extends FilterOutputStream
     {
         super(null);
 
-        if (dateFormat==null)
-            dateFormat=ROLLOVER_FILE_DATE_FORMAT;
+        if (dateFormat==null) {
+			dateFormat=ROLLOVER_FILE_DATE_FORMAT;
+		}
         _fileDateFormat = new SimpleDateFormat(dateFormat);
         
-        if (backupFormat==null)
-            backupFormat=ROLLOVER_FILE_BACKUP_FORMAT;
+        if (backupFormat==null) {
+			backupFormat=ROLLOVER_FILE_BACKUP_FORMAT;
+		}
         _fileBackupFormat = new SimpleDateFormat(backupFormat);
         
         _fileBackupFormat.setTimeZone(zone);
@@ -154,11 +151,13 @@ public class RolloverFileOutputStream extends FilterOutputStream
         if (filename!=null)
         {
             filename=filename.trim();
-            if (filename.length()==0)
-                filename=null;
+            if (filename.length()==0) {
+				filename=null;
+			}
         }
-        if (filename==null)
-            throw new IllegalArgumentException("Invalid filename");
+        if (filename==null) {
+			throw new IllegalArgumentException("Invalid filename");
+		}
 
         _filename=filename;
         _append=append;
@@ -167,8 +166,9 @@ public class RolloverFileOutputStream extends FilterOutputStream
         
         synchronized(RolloverFileOutputStream.class)
         {
-            if (__rollover==null)
-                __rollover=new Timer(RolloverFileOutputStream.class.getName(),true);
+            if (__rollover==null) {
+				__rollover=new Timer(RolloverFileOutputStream.class.getName(),true);
+			}
             
             _rollTask=new RollTask();
 
@@ -186,27 +186,28 @@ public class RolloverFileOutputStream extends FilterOutputStream
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public String getFilename()
     {
         return _filename;
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public String getDatedFilename()
     {
-        if (_file==null)
-            return null;
-        return _file.toString();
+        if (_file!=null) {
+			return _file.toString();
+		}
+        return null;
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public int getRetainDays()
     {
         return _retainDays;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     private synchronized void setFile()
         throws IOException
     {
@@ -215,8 +216,9 @@ public class RolloverFileOutputStream extends FilterOutputStream
         _filename=file.getCanonicalPath();
         file=new File(_filename);
         File dir= new File(file.getParent());
-        if (!dir.isDirectory() || !dir.canWrite())
-            throw new IOException("Cannot write log directory "+dir);
+        if (!dir.isDirectory() || !dir.canWrite()) {
+			throw new IOException("Cannot write log directory "+dir);
+		}
             
         Date now=new Date();
         
@@ -231,25 +233,29 @@ public class RolloverFileOutputStream extends FilterOutputStream
                           filename.substring(i+YYYY_MM_DD.length()));
         }
             
-        if (file.exists()&&!file.canWrite())
-            throw new IOException("Cannot write log file "+file);
+        if (file.exists()&&!file.canWrite()) {
+			throw new IOException("Cannot write log file "+file);
+		}
 
         // Do we need to change the output stream?
         if (out==null || !file.equals(_file))
         {
             // Yep
             _file=file;
-            if (!_append && file.exists())
-                file.renameTo(new File(file.toString()+"."+_fileBackupFormat.format(now)));
+            if (!_append && file.exists()) {
+				file.renameTo(new File(file+"."+_fileBackupFormat.format(now)));
+			}
             OutputStream oldOut=out;
             out=new FileOutputStream(file.toString(),_append);
             if (oldOut!=null)
-                oldOut.close();
+			 {
+				oldOut.close();
             //if(log.isDebugEnabled())log.debug("Opened "+_file);
+			}
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     private void removeOldFiles()
     {
         if (_retainDays>0)
@@ -260,8 +266,9 @@ public class RolloverFileOutputStream extends FilterOutputStream
             File dir = new File(file.getParent());
             String fn=file.getName();
             int s=fn.toLowerCase(Locale.ENGLISH).indexOf(YYYY_MM_DD);
-            if (s<0)
-                return;
+            if (s<0) {
+				return;
+			}
             String prefix=fn.substring(0,s);
             String suffix=fn.substring(s+YYYY_MM_DD.length());
 
@@ -273,14 +280,15 @@ public class RolloverFileOutputStream extends FilterOutputStream
                 {        
                     File f = new File(dir,fn);
                     long date = f.lastModified();
-                    if ( ((now-date)/(1000*60*60*24))>_retainDays)
-                        f.delete();   
+                    if ( (now-date)/(1000*60*60*24)>_retainDays) {
+						f.delete();
+					}   
                 }
             }
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void write (byte[] buf)
             throws IOException
@@ -288,7 +296,7 @@ public class RolloverFileOutputStream extends FilterOutputStream
             out.write (buf);
      }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void write (byte[] buf, int off, int len)
             throws IOException
@@ -296,9 +304,7 @@ public class RolloverFileOutputStream extends FilterOutputStream
             out.write (buf, off, len);
      }
     
-    /* ------------------------------------------------------------ */
-    /** 
-     */
+    /** ------------------------------------------------------------. */
     @Override
     public void close()
         throws IOException
@@ -318,7 +324,7 @@ public class RolloverFileOutputStream extends FilterOutputStream
     
     /* ------------------------------------------------------------ */
     /* ------------------------------------------------------------ */
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     private class RollTask extends TimerTask
     {
         @Override

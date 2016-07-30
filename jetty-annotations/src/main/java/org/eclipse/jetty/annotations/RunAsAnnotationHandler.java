@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.annotations;
 
@@ -46,8 +41,9 @@ public class RunAsAnnotationHandler extends AbstractIntrospectableAnnotationHand
 
     public void doHandle (Class clazz)
     {
-        if (!Servlet.class.isAssignableFrom(clazz))
-            return;
+        if (!Servlet.class.isAssignableFrom(clazz)) {
+			return;
+		}
 
         javax.annotation.security.RunAs runAs = (javax.annotation.security.RunAs)clazz.getAnnotation(javax.annotation.security.RunAs.class);
         if (runAs != null)
@@ -77,9 +73,9 @@ public class RunAsAnnotationHandler extends AbstractIntrospectableAnnotationHand
                         raCollection.add(ra);
                     }
                 }
-            }
-            else
-                LOG.warn("Bad value for @RunAs annotation on class "+clazz.getName());
+            } else {
+				LOG.warn("Bad value for @RunAs annotation on class "+clazz.getName());
+			}
         }
 
     }

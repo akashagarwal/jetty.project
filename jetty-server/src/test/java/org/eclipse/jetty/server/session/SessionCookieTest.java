@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server.session;
 
@@ -33,7 +28,7 @@ import org.eclipse.jetty.http.HttpCookie;
 import org.junit.Test;
 
 /**
- * SessionCookieTest
+ * SessionCookieTest.
  */
 public class SessionCookieTest
 {
@@ -44,18 +39,12 @@ public class SessionCookieTest
             super(abstractSessionManager, created, accessed, clusterId);
         }
 
-        /** 
-         * @see javax.servlet.http.HttpSession#getAttribute(java.lang.String)
-         */
         @Override
         public Object getAttribute(String name)
         {
             return null;
         }
 
-        /** 
-         * @see javax.servlet.http.HttpSession#getAttributeNames()
-         */
         @Override
         public Enumeration<String> getAttributeNames()
         {
@@ -68,63 +57,42 @@ public class SessionCookieTest
             return null;
         }
 
-        /** 
-         * @see org.eclipse.jetty.server.session.AbstractSession#getAttributeMap()
-         */
         @Override
         public Map<String, Object> getAttributeMap()
         {
             return null;
         }
 
-        /** 
-         * @see org.eclipse.jetty.server.session.AbstractSession#getAttributes()
-         */
         @Override
         public int getAttributes()
         {
             return 0;
         }
 
-        /** 
-         * @see org.eclipse.jetty.server.session.AbstractSession#getNames()
-         */
         @Override
         public Set<String> getNames()
         {
             return null;
         }
 
-        /** 
-         * @see org.eclipse.jetty.server.session.AbstractSession#clearAttributes()
-         */
         @Override
         public void clearAttributes()
         {
             
         }
 
-        /** 
-         * @see org.eclipse.jetty.server.session.AbstractSession#doPutOrRemove(java.lang.String, java.lang.Object)
-         */
         @Override
         public Object doPutOrRemove(String name, Object value)
         {
             return null;
         }
 
-        /** 
-         * @see org.eclipse.jetty.server.session.AbstractSession#doGet(java.lang.String)
-         */
         @Override
         public Object doGet(String name)
         {
             return null;
         }
 
-        /** 
-         * @see org.eclipse.jetty.server.session.AbstractSession#doGetAttributeNames()
-         */
         @Override
         public Enumeration<String> doGetAttributeNames()
         {
@@ -136,36 +104,24 @@ public class SessionCookieTest
     public class MockSessionIdManager extends AbstractSessionIdManager
     {
 
-        /**
-         * @see org.eclipse.jetty.server.SessionIdManager#idInUse(java.lang.String)
-         */
         @Override
         public boolean idInUse(String id)
         {
             return false;
         }
 
-        /**
-         * @see org.eclipse.jetty.server.SessionIdManager#addSession(javax.servlet.http.HttpSession)
-         */
         @Override
         public void addSession(HttpSession session)
         {
 
         }
 
-        /**
-         * @see org.eclipse.jetty.server.SessionIdManager#removeSession(javax.servlet.http.HttpSession)
-         */
         @Override
         public void removeSession(HttpSession session)
         {
 
         }
 
-        /**
-         * @see org.eclipse.jetty.server.SessionIdManager#invalidateAll(java.lang.String)
-         */
         @Override
         public void invalidateAll(String id)
         {
@@ -175,7 +131,6 @@ public class SessionCookieTest
         @Override
         public void renewSessionId(String oldClusterId, String oldNodeId, HttpServletRequest request)
         {
-            // TODO Auto-generated method stub
             
         }
 
@@ -184,45 +139,30 @@ public class SessionCookieTest
     public class MockSessionManager extends AbstractSessionManager
     {
 
-        /**
-         * @see org.eclipse.jetty.server.session.AbstractSessionManager#addSession(org.eclipse.jetty.server.session.AbstractSession)
-         */
         @Override
         protected void addSession(AbstractSession session)
         {
 
         }
 
-        /**
-         * @see org.eclipse.jetty.server.session.AbstractSessionManager#getSession(java.lang.String)
-         */
         @Override
         public AbstractSession getSession(String idInCluster)
         {
             return null;
         }
 
-        /**
-         * @see org.eclipse.jetty.server.session.AbstractSessionManager#shutdownSessions()
-         */
         @Override
         protected void shutdownSessions() throws Exception
         {
 
         }
 
-        /**
-         * @see org.eclipse.jetty.server.session.AbstractSessionManager#newSession(javax.servlet.http.HttpServletRequest)
-         */
         @Override
         protected AbstractSession newSession(HttpServletRequest request)
         {
             return null;
         }
 
-        /**
-         * @see org.eclipse.jetty.server.session.AbstractSessionManager#removeSession(java.lang.String)
-         */
         @Override
         protected boolean removeSession(String idInCluster)
         {
@@ -232,7 +172,6 @@ public class SessionCookieTest
         @Override
         public void renewSessionId(String oldClusterId, String oldNodeId, String newClusterId, String newNodeId)
         {
-            // TODO Auto-generated method stub
             
         }
 

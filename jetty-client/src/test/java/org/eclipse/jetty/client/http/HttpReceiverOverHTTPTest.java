@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.client.http;
 
@@ -86,10 +81,7 @@ public class HttpReceiverOverHTTPTest
     @Test
     public void test_Receive_NoResponseContent() throws Exception
     {
-        endPoint.addInput("" +
-                "HTTP/1.1 200 OK\r\n" +
-                "Content-length: 0\r\n" +
-                "\r\n");
+        endPoint.addInput("HTTP/1.1 200 OK\r\n" + "Content-length: 0\r\n" + "\r\n");
         HttpExchange exchange = newExchange();
         FutureResponseListener listener = (FutureResponseListener)exchange.getResponseListeners().get(0);
         connection.getHttpChannel().receive();
@@ -109,11 +101,7 @@ public class HttpReceiverOverHTTPTest
     public void test_Receive_ResponseContent() throws Exception
     {
         String content = "0123456789ABCDEF";
-        endPoint.addInput("" +
-                "HTTP/1.1 200 OK\r\n" +
-                "Content-length: " + content.length() + "\r\n" +
-                "\r\n" +
-                content);
+        endPoint.addInput("HTTP/1.1 200 OK\r\n" + "Content-length: " + content.length() + "\r\n" + "\r\n" + content);
         HttpExchange exchange = newExchange();
         FutureResponseListener listener = (FutureResponseListener)exchange.getResponseListeners().get(0);
         connection.getHttpChannel().receive();
@@ -136,11 +124,7 @@ public class HttpReceiverOverHTTPTest
     {
         String content1 = "0123456789";
         String content2 = "ABCDEF";
-        endPoint.addInput("" +
-                "HTTP/1.1 200 OK\r\n" +
-                "Content-length: " + (content1.length() + content2.length()) + "\r\n" +
-                "\r\n" +
-                content1);
+        endPoint.addInput("HTTP/1.1 200 OK\r\n" + "Content-length: " + (content1.length() + content2.length()) + "\r\n" + "\r\n" + content1);
         HttpExchange exchange = newExchange();
         FutureResponseListener listener = (FutureResponseListener)exchange.getResponseListeners().get(0);
         connection.getHttpChannel().receive();
@@ -161,10 +145,7 @@ public class HttpReceiverOverHTTPTest
     @Test
     public void test_Receive_ResponseContent_IdleTimeout() throws Exception
     {
-        endPoint.addInput("" +
-                "HTTP/1.1 200 OK\r\n" +
-                "Content-length: 1\r\n" +
-                "\r\n");
+        endPoint.addInput("HTTP/1.1 200 OK\r\n" + "Content-length: 1\r\n" + "\r\n");
         HttpExchange exchange = newExchange();
         FutureResponseListener listener = (FutureResponseListener)exchange.getResponseListeners().get(0);
         connection.getHttpChannel().receive();
@@ -187,10 +168,7 @@ public class HttpReceiverOverHTTPTest
     @Test
     public void test_Receive_BadResponse() throws Exception
     {
-        endPoint.addInput("" +
-                "HTTP/1.1 200 OK\r\n" +
-                "Content-length: A\r\n" +
-                "\r\n");
+        endPoint.addInput("HTTP/1.1 200 OK\r\n" + "Content-length: A\r\n" + "\r\n");
         HttpExchange exchange = newExchange();
         FutureResponseListener listener = (FutureResponseListener)exchange.getResponseListeners().get(0);
         connection.getHttpChannel().receive();
@@ -239,10 +217,7 @@ public class HttpReceiverOverHTTPTest
         endPoint.setConnection(connection);
 
         // Partial response to trigger the call to fillInterested().
-        endPoint.addInput("" +
-                "HTTP/1.1 200 OK\r\n" +
-                "Content-Length: 1\r\n" +
-                "\r\n");
+        endPoint.addInput("HTTP/1.1 200 OK\r\n" + "Content-Length: 1\r\n" + "\r\n");
 
         HttpExchange exchange = newExchange();
         FutureResponseListener listener = (FutureResponseListener)exchange.getResponseListeners().get(0);

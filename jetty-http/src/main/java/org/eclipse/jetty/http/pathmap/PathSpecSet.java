@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http.pathmap;
 
@@ -71,11 +66,11 @@ public class PathSpecSet implements Set<String>, Predicate<String>
             public String next()
             {
                 PathSpec spec = iter.next();
-                if (spec == null)
+                if (spec != null)
                 {
-                    return null;
+                    return spec.getDeclaration();
                 }
-                return spec.getDeclaration();
+                return null;
             }
 
             @Override
@@ -99,11 +94,7 @@ public class PathSpecSet implements Set<String>, Predicate<String>
         {
             return specs.contains(o);
         }
-        if (o instanceof String)
-        {
-            return specs.contains(toPathSpec((String)o));
-        }
-        return false;
+        return o instanceof String && specs.contains(toPathSpec((String)o));
     }
 
     private PathSpec asPathSpec(Object o)
@@ -125,7 +116,7 @@ public class PathSpecSet implements Set<String>, Predicate<String>
 
     private PathSpec toPathSpec(String rawSpec)
     {
-        if ((rawSpec == null) || (rawSpec.length() < 1))
+        if (rawSpec == null || rawSpec.length() < 1)
         {
             throw new RuntimeException("Path Spec String must start with '^', '/', or '*.': got [" + rawSpec + "]");
         }
@@ -173,8 +164,9 @@ public class PathSpecSet implements Set<String>, Predicate<String>
     {
         for (Object o : coll)
         {
-            if (!specs.contains(asPathSpec(o)))
-                return false;
+            if (!specs.contains(asPathSpec(o))) {
+				return false;
+			}
         }
         return true;
     }

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.security;
 
@@ -68,16 +63,18 @@ public class PropertyUserStore extends AbstractLifeCycle implements PathWatcher.
     private Resource _configResource;
     
     private PathWatcher pathWatcher;
-    private boolean hotReload = false; // default is not to reload
+    /** Default is not to reload. */
+    private boolean hotReload;
 
     private IdentityService _identityService = new DefaultIdentityService();
-    private boolean _firstLoad = true; // true if first load, false from that point on
+    /** True if first load, false from that point on. */
+    private boolean _firstLoad = true;
     private final List<String> _knownUsers = new ArrayList<String>();
     private final Map<String, UserIdentity> _knownUserIdentities = new HashMap<String, UserIdentity>();
     private List<UserListener> _listeners;
 
     /**
-     * Get the config (as a string)
+     * Get the config (as a string).
      * @return the config path as a string
      * @deprecated use {@link #getConfigPath()} instead
      */
@@ -88,7 +85,7 @@ public class PropertyUserStore extends AbstractLifeCycle implements PathWatcher.
     }
 
     /**
-     * Set the Config Path from a String reference to a file
+     * Set the Config Path from a String reference to a file.
      * @param configFile the config file
      * @deprecated use {@link #setConfigPath(String)} instead
      */
@@ -108,23 +105,23 @@ public class PropertyUserStore extends AbstractLifeCycle implements PathWatcher.
     }
 
     /**
-     * Set the Config Path from a String reference to a file
+     * Set the Config Path from a String reference to a file.
      * @param configFile the config file
      */
     public void setConfigPath(String configFile)
     {
-        if (configFile == null)
+        if (configFile != null)
         {
-            _configPath = null;
+            _configPath = new File(configFile).toPath();
         }
         else
         {
-            _configPath = new File(configFile).toPath();
+            _configPath = null;
         }
     }
 
     /**
-     * Set the Config Path from a {@link File} reference
+     * Set the Config Path from a {@link File} reference.
      * @param configFile the config file
      */
     public void setConfigPath(File configFile)
@@ -133,7 +130,7 @@ public class PropertyUserStore extends AbstractLifeCycle implements PathWatcher.
     }
 
     /**
-     * Set the Config Path
+     * Set the Config Path.
      * @param configPath the config path
      */
     public void setConfigPath(Path configPath)
@@ -141,7 +138,7 @@ public class PropertyUserStore extends AbstractLifeCycle implements PathWatcher.
         _configPath = configPath;
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public UserIdentity getUserIdentity(String userName)
     {
         return _knownUserIdentities.get(userName);
@@ -163,7 +160,7 @@ public class PropertyUserStore extends AbstractLifeCycle implements PathWatcher.
     }
     
     /**
-     * Is hot reload enabled on this user store
+     * Is hot reload enabled on this user store.
      * 
      * @return true if hot reload was enabled before startup
      */
@@ -173,7 +170,7 @@ public class PropertyUserStore extends AbstractLifeCycle implements PathWatcher.
     }
 
     /**
-     * Enable Hot Reload of the Property File
+     * Enable Hot Reload of the Property File.
      * 
      * @param enable true to enable, false to disable
      */
@@ -188,7 +185,7 @@ public class PropertyUserStore extends AbstractLifeCycle implements PathWatcher.
 
     /* ------------------------------------------------------------ */
     /**
-     * sets the refresh interval (in seconds)
+     * Sets the refresh interval (in seconds).
      * @param sec the refresh interval
      * @deprecated use {@link #setHotReload(boolean)} instead
      */
@@ -205,14 +202,14 @@ public class PropertyUserStore extends AbstractLifeCycle implements PathWatcher.
     @Deprecated
     public int getRefreshInterval()
     {
-        return (hotReload)?1:0;
+        return hotReload?1:0;
     }
     
     @Override
     public String toString()
     {
         StringBuilder s = new StringBuilder();
-        s.append(this.getClass().getName());
+        s.append(getClass().getName());
         s.append("[");
         s.append("users.count=").append(this._knownUsers.size());
         s.append("identityService=").append(this._identityService);
@@ -220,11 +217,12 @@ public class PropertyUserStore extends AbstractLifeCycle implements PathWatcher.
         return s.toString();
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     private void loadUsers() throws IOException
     {
-        if (_configPath == null)
-            return;
+        if (_configPath == null) {
+			return;
+		}
 
         if (LOG.isDebugEnabled())
         {
@@ -232,8 +230,9 @@ public class PropertyUserStore extends AbstractLifeCycle implements PathWatcher.
         }
         
         Properties properties = new Properties();
-        if (getConfigResource().exists())
-            properties.load(getConfigResource().getInputStream());
+        if (getConfigResource().exists()) {
+			properties.load(getConfigResource().getInputStream());
+		}
         
         Set<String> known = new HashSet<String>();
 
@@ -331,7 +330,7 @@ public class PropertyUserStore extends AbstractLifeCycle implements PathWatcher.
         super.doStart();
 
         loadUsers();
-        if ( isHotReload() && (_configPath != null) )
+        if ( isHotReload() && _configPath != null )
         {
             this.pathWatcher = new PathWatcher();
             this.pathWatcher.watch(_configPath);
@@ -355,20 +354,18 @@ public class PropertyUserStore extends AbstractLifeCycle implements PathWatcher.
         }
     }
 
-    /* ------------------------------------------------------------ */
-    /**
-     * @see org.eclipse.jetty.util.component.AbstractLifeCycle#doStop()
-     */
+    /** ------------------------------------------------------------. */
     protected void doStop() throws Exception
     {
         super.doStop();
-        if (this.pathWatcher != null)
-            this.pathWatcher.stop();
+        if (this.pathWatcher != null) {
+			this.pathWatcher.stop();
+		}
         this.pathWatcher = null;
     }
 
     /**
-     * Notifies the registered listeners of potential updates to a user
+     * Notifies the registered listeners of potential updates to a user.
      *
      * @param username
      * @param credential
@@ -386,7 +383,7 @@ public class PropertyUserStore extends AbstractLifeCycle implements PathWatcher.
     }
 
     /**
-     * notifies the registered listeners that a user has been removed.
+     * Notifies the registered listeners that a user has been removed.
      *
      * @param username
      */
@@ -402,7 +399,7 @@ public class PropertyUserStore extends AbstractLifeCycle implements PathWatcher.
     }
 
     /**
-     * registers a listener to be notified of the contents of the property file
+     * Registers a listener to be notified of the contents of the property file.
      * @param listener the user listener
      */
     public void registerUserListener(UserListener listener)
@@ -415,12 +412,12 @@ public class PropertyUserStore extends AbstractLifeCycle implements PathWatcher.
     }
 
     /**
-     * UserListener
+     * UserListener.
      */
     public interface UserListener
     {
-        public void update(String username, Credential credential, String[] roleArray);
+        void update(String username, Credential credential, String[] roleArray);
 
-        public void remove(String username);
+        void remove(String username);
     }
 }

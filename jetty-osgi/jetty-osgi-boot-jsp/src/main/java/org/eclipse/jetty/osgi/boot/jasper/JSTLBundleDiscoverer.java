@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.osgi.boot.jasper;
 
@@ -156,7 +151,7 @@ public class JSTLBundleDiscoverer implements TldBundleDiscoverer
                     {
                         urls.add(f.toURI().toURL());
                     }
-                    else if (f.isDirectory() && f.getName().equals("lib"))
+                    else if (f.isDirectory() && "lib".equals(f.getName()))
                     {
                         for (File f2 : tldBundleLocation.listFiles())
                         {
@@ -174,7 +169,7 @@ public class JSTLBundleDiscoverer implements TldBundleDiscoverer
                 urls.add(tldBundleLocation.toURI().toURL());
               
                 String pattern = (String)deployer.getContextAttribute("org.eclipse.jetty.server.webapp.containerIncludeBundlePattern");
-                pattern = (pattern==null?"":pattern);
+                pattern = pattern==null?"":pattern;
                 if (!pattern.contains(tldBundle.getSymbolicName()))
                 {
                     pattern += "|"+tldBundle.getSymbolicName();

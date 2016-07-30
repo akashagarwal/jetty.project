@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.webapp;
 
@@ -36,10 +31,7 @@ public class WebXmlConfiguration extends AbstractConfiguration
     private static final Logger LOG = Log.getLogger(WebXmlConfiguration.class);
 
     
-    /* ------------------------------------------------------------------------------- */
-    /**
-     * 
-     */
+    /** -------------------------------------------------------------------------------. */
     @Override
     public void preConfigure (WebAppContext context) throws Exception
     {
@@ -48,8 +40,9 @@ public class WebXmlConfiguration extends AbstractConfiguration
         if (defaultsDescriptor != null && defaultsDescriptor.length() > 0)
         {
             Resource dftResource = Resource.newSystemResource(defaultsDescriptor);
-            if (dftResource == null) 
-                dftResource = context.newResource(defaultsDescriptor);
+            if (dftResource == null) {
+				dftResource = context.newResource(defaultsDescriptor);
+			}
             context.getMetaData().setDefaults (dftResource);
         }
         
@@ -68,8 +61,9 @@ public class WebXmlConfiguration extends AbstractConfiguration
             if (overrideDescriptor != null && overrideDescriptor.length() > 0)
             {
                 Resource orideResource = Resource.newSystemResource(overrideDescriptor);
-                if (orideResource == null) 
-                    orideResource = context.newResource(overrideDescriptor);
+                if (orideResource == null) {
+					orideResource = context.newResource(overrideDescriptor);
+				}
                 context.getMetaData().addOverride(orideResource);
             }
         }
@@ -93,14 +87,16 @@ public class WebXmlConfiguration extends AbstractConfiguration
         context.getMetaData().addDescriptorProcessor(new StandardDescriptorProcessor());
     }
     
-    /* ------------------------------------------------------------------------------- */
+    /** -------------------------------------------------------------------------------. */
     protected Resource findWebXml(WebAppContext context) throws IOException, MalformedURLException
     {
         String descriptor = context.getDescriptor();
         if (descriptor != null)
         {
             Resource web = context.newResource(descriptor);
-            if (web.exists() && !web.isDirectory()) return web;
+            if (web.exists() && !web.isDirectory()) {
+				return web;
+			}
         }
 
         Resource web_inf = context.getWebInf();
@@ -108,23 +104,27 @@ public class WebXmlConfiguration extends AbstractConfiguration
         {
             // do web.xml file
             Resource web = web_inf.addPath("web.xml");
-            if (web.exists()) return web;
-            if (LOG.isDebugEnabled())
-                LOG.debug("No WEB-INF/web.xml in " + context.getWar() + ". Serving files and default/dynamic servlets only");
+            if (web.exists()) {
+				return web;
+			}
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("No WEB-INF/web.xml in " + context.getWar() + ". Serving files and default/dynamic servlets only");
+			}
         }
         return null;
     }
 
 
-    /* ------------------------------------------------------------------------------- */
+    /** -------------------------------------------------------------------------------. */
     @Override
     public void deconfigure (WebAppContext context) throws Exception
     {      
         context.setWelcomeFiles(null);
 
-        if (context.getErrorHandler() instanceof ErrorPageErrorHandler)
-            ((ErrorPageErrorHandler) 
+        if (context.getErrorHandler() instanceof ErrorPageErrorHandler) {
+			((ErrorPageErrorHandler) 
                     context.getErrorHandler()).setErrorPages(null);
+		}
 
         // TODO remove classpaths from classloader
     }

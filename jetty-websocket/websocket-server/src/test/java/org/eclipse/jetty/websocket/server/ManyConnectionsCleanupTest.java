@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.server;
 
@@ -55,7 +50,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * Tests various close scenarios that should result in Open Session cleanup
+ * Tests various close scenarios that should result in Open Session cleanup.
  */
 @Ignore
 public class ManyConnectionsCleanupTest
@@ -63,7 +58,7 @@ public class ManyConnectionsCleanupTest
     static class AbstractCloseSocket extends WebSocketAdapter
     {
         public CountDownLatch closeLatch = new CountDownLatch(1);
-        public String closeReason = null;
+        public String closeReason;
         public int closeStatusCode = -1;
         public List<Throwable> errors = new ArrayList<>();
 
@@ -124,7 +119,7 @@ public class ManyConnectionsCleanupTest
     }
 
     /**
-     * On Message, return container information
+     * On Message, return container information.
      */
     public static class ContainerSocket extends AbstractCloseSocket
     {
@@ -144,7 +139,7 @@ public class ManyConnectionsCleanupTest
         {
             LOG.debug("onWebSocketText({})",message);
             calls.incrementAndGet();
-            if (message.equalsIgnoreCase("openSessions"))
+            if ("openSessions".equalsIgnoreCase(message))
             {
                 Collection<WebSocketSession> sessions = container.getOpenSessions();
 
@@ -153,11 +148,11 @@ public class ManyConnectionsCleanupTest
                 int idx = 0;
                 for (WebSocketSession sess : sessions)
                 {
-                    ret.append('[').append(idx++).append("] ").append(sess.toString()).append('\n');
+                    ret.append('[').append(idx++).append("] ").append(sess).append('\n');
                 }
                 session.getRemote().sendStringByFuture(ret.toString());
                 session.close(StatusCode.NORMAL,"ContainerSocket");
-            } else if(message.equalsIgnoreCase("calls"))
+            } else if("calls".equalsIgnoreCase(message))
             {
                 session.getRemote().sendStringByFuture(String.format("calls=%,d",calls.get()));
             }
@@ -172,7 +167,7 @@ public class ManyConnectionsCleanupTest
     }
 
     /**
-     * On Connect, close socket
+     * On Connect, close socket.
      */
     public static class FastCloseSocket extends AbstractCloseSocket
     {
@@ -194,7 +189,7 @@ public class ManyConnectionsCleanupTest
     }
 
     /**
-     * On Connect, throw unhandled exception
+     * On Connect, throw unhandled exception.
      */
     public static class FastFailSocket extends AbstractCloseSocket
     {
@@ -236,7 +231,7 @@ public class ManyConnectionsCleanupTest
     }
 
     /**
-     * Test session open session cleanup (bug #474936)
+     * Test session open session cleanup (bug #474936).
      * 
      * @throws Exception
      *             on test failure
@@ -279,7 +274,7 @@ public class ManyConnectionsCleanupTest
             frame = frames.poll();
             assertThat("frames[0].opcode",frame.getOpCode(),is(OpCode.TEXT));
             resp = frame.getPayloadAsUTF8();
-            assertThat("Should only have 1 open session",resp,containsString("calls=" + ((iterationCount * 2) + 1)));
+            assertThat("Should only have 1 open session",resp,containsString("calls=" + (iterationCount * 2 + 1)));
 
             frame = frames.poll();
             assertThat("frames[1].opcode",frame.getOpCode(),is(OpCode.TEXT));

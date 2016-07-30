@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.deploy;
 
@@ -46,7 +41,7 @@ public class JmxServiceConnection
     private MBeanServerConnection serviceConnection;
 
     /**
-     * Construct a loopback connection to an internal server
+     * Construct a loopback connection to an internal server.
      */
     public JmxServiceConnection()
     {
@@ -54,7 +49,7 @@ public class JmxServiceConnection
     }
 
     /**
-     * Construct a connection to specified server
+     * Construct a connection to specified server.
      * 
      * @param url
      *            URL of JMX server
@@ -65,7 +60,7 @@ public class JmxServiceConnection
     }
 
     /**
-     * Retrieve an external URL for the JMX server
+     * Retrieve an external URL for the JMX server.
      * 
      * @return service URL
      */
@@ -76,7 +71,7 @@ public class JmxServiceConnection
 
     /* ------------------------------------------------------------ */
     /**
-     * Retrieve a connection to MBean server
+     * Retrieve a connection to MBean server.
      * 
      * @return connection to MBean server
      */
@@ -89,19 +84,19 @@ public class JmxServiceConnection
     {
         if (serviceConnection == null)
         {
-            if (serviceUrl == null)
+            if (serviceUrl != null)
             {
-                openLoopbackConnection();
+                openServerConnection(serviceUrl);
             }
             else
             {
-                openServerConnection(serviceUrl);
+                openLoopbackConnection();
             }
         }
     }
 
     /**
-     * Open a loopback connection to local JMX server
+     * Open a loopback connection to local JMX server.
      * 
      * @throws IOException
      */
@@ -120,7 +115,7 @@ public class JmxServiceConnection
     }
 
     /**
-     * Open a connection to remote JMX server
+     * Open a connection to remote JMX server.
      * 
      * @param url
      * @throws IOException
@@ -133,7 +128,7 @@ public class JmxServiceConnection
     }
 
     /**
-     * Close the connections
+     * Close the connections.
      */
     public void disconnect()
     {

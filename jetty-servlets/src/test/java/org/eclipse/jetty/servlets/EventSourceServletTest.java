@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.servlets;
 
@@ -60,8 +55,9 @@ public class EventSourceServletTest
     @After
     public void stopServer() throws Exception
     {
-        if (server != null)
-            server.stop();
+        if (server != null) {
+			server.stop();
+		}
     }
 
     @Test
@@ -113,8 +109,9 @@ public class EventSourceServletTest
         while (line != null)
         {
             received += line;
-            if (line.length() == 0)
-                break;
+            if (line.length() == 0) {
+				break;
+			}
             line = reader.readLine();
         }
 
@@ -168,8 +165,9 @@ public class EventSourceServletTest
         while (line != null)
         {
             received += line;
-            if (line.length() == 0)
-                break;
+            if (line.length() == 0) {
+				break;
+			}
             line = reader.readLine();
         }
 
@@ -219,8 +217,9 @@ public class EventSourceServletTest
         while (line != null)
         {
             received += line;
-            if (line.length() == 0)
-                break;
+            if (line.length() == 0) {
+				break;
+			}
             line = reader.readLine();
         }
 
@@ -340,8 +339,9 @@ public class EventSourceServletTest
         String line = reader.readLine();
         while (line != null)
         {
-            if (line.length() == 0)
-                break;
+            if (line.length() == 0) {
+				break;
+			}
             line = reader.readLine();
         }
         // Now we can parse the event-source stream

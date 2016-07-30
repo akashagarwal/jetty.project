@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.servlet;
 
@@ -64,12 +59,13 @@ public class DispatcherForwardTest
     @After
     public void dispose() throws Throwable
     {
-        for (Throwable failure : failures)
-            throw failure;
+        for (Throwable failure : failures) {
+			throw failure;
+		}
         server.stop();
     }
 
-    // Replacement for Assert that allows to check failures after the response has been sent.
+    /** Replacement for Assert that allows to check failures after the response has been sent. */
     private <S> void checkThat(S item, Matcher<S> matcher)
     {
         try
@@ -118,11 +114,7 @@ public class DispatcherForwardTest
 
         prepare();
 
-        String request = "" +
-                "GET /one?" + query1 + " HTTP/1.1\r\n" +
-                "Host: localhost\r\n" +
-                "Connection: close\r\n" +
-                "\r\n";
+        String request = "GET /one?" + query1 + " HTTP/1.1\r\n" + "Host: localhost\r\n" + "Connection: close\r\n" + "\r\n";
         String response = connector.getResponses(request);
         Assert.assertTrue(latch.await(5, TimeUnit.SECONDS));
         Assert.assertTrue(response, response.startsWith("HTTP/1.1 200"));
@@ -168,11 +160,7 @@ public class DispatcherForwardTest
 
         prepare();
 
-        String request = "" +
-                "GET /one?" + query1 + " HTTP/1.1\r\n" +
-                "Host: localhost\r\n" +
-                "Connection: close\r\n" +
-                "\r\n";
+        String request = "GET /one?" + query1 + " HTTP/1.1\r\n" + "Host: localhost\r\n" + "Connection: close\r\n" + "\r\n";
         String response = connector.getResponses(request);
         Assert.assertTrue(latch.await(5, TimeUnit.SECONDS));
         Assert.assertTrue(response, response.startsWith("HTTP/1.1 200"));
@@ -217,11 +205,7 @@ public class DispatcherForwardTest
 
         prepare();
 
-        String request = "" +
-                "GET /one?" + query1 + " HTTP/1.1\r\n" +
-                "Host: localhost\r\n" +
-                "Connection: close\r\n" +
-                "\r\n";
+        String request = "GET /one?" + query1 + " HTTP/1.1\r\n" + "Host: localhost\r\n" + "Connection: close\r\n" + "\r\n";
         String response = connector.getResponses(request);
         Assert.assertTrue(latch.await(5, TimeUnit.SECONDS));
         Assert.assertTrue(response, response.startsWith("HTTP/1.1 200"));
@@ -270,14 +254,7 @@ public class DispatcherForwardTest
 
         prepare();
 
-        String request = "" +
-                "POST /one?" + query1 + " HTTP/1.1\r\n" +
-                "Host: localhost\r\n" +
-                "Content-Type: application/x-www-form-urlencoded\r\n" +
-                "Content-Length: " + form.length() + "\r\n" +
-                "Connection: close\r\n" +
-                "\r\n" +
-                form;
+        String request = "POST /one?" + query1 + " HTTP/1.1\r\n" + "Host: localhost\r\n" + "Content-Type: application/x-www-form-urlencoded\r\n" + "Content-Length: " + form.length() + "\r\n" + "Connection: close\r\n" + "\r\n" + form;
         String response = connector.getResponses(request);
         Assert.assertTrue(latch.await(5, TimeUnit.SECONDS));
         Assert.assertTrue(response, response.startsWith("HTTP/1.1 200"));
@@ -327,14 +304,7 @@ public class DispatcherForwardTest
 
         prepare();
 
-        String request = "" +
-                "POST /one?" + query1 + " HTTP/1.1\r\n" +
-                "Host: localhost\r\n" +
-                "Content-Type: application/x-www-form-urlencoded\r\n" +
-                "Content-Length: " + form.length() + "\r\n" +
-                "Connection: close\r\n" +
-                "\r\n" +
-                form;
+        String request = "POST /one?" + query1 + " HTTP/1.1\r\n" + "Host: localhost\r\n" + "Content-Type: application/x-www-form-urlencoded\r\n" + "Content-Length: " + form.length() + "\r\n" + "Connection: close\r\n" + "\r\n" + form;
         String response = connector.getResponses(request);
         Assert.assertTrue(latch.await(5, TimeUnit.SECONDS));
         Assert.assertTrue(response, response.startsWith("HTTP/1.1 200"));
@@ -383,14 +353,7 @@ public class DispatcherForwardTest
 
         prepare();
 
-        String request = "" +
-                "POST /one?" + query1 + " HTTP/1.1\r\n" +
-                "Host: localhost\r\n" +
-                "Content-Type: application/x-www-form-urlencoded\r\n" +
-                "Content-Length: " + form.length() + "\r\n" +
-                "Connection: close\r\n" +
-                "\r\n" +
-                form;
+        String request = "POST /one?" + query1 + " HTTP/1.1\r\n" + "Host: localhost\r\n" + "Content-Type: application/x-www-form-urlencoded\r\n" + "Content-Length: " + form.length() + "\r\n" + "Connection: close\r\n" + "\r\n" + form;
         String response = connector.getResponses(request);
         Assert.assertTrue(latch.await(5, TimeUnit.SECONDS));
         Assert.assertTrue(response, response.startsWith("HTTP/1.1 200"));
@@ -442,14 +405,7 @@ public class DispatcherForwardTest
 
         prepare();
 
-        String request = "" +
-                "POST /one?" + query1 + " HTTP/1.1\r\n" +
-                "Host: localhost\r\n" +
-                "Content-Type: application/x-www-form-urlencoded\r\n" +
-                "Content-Length: " + form.length() + "\r\n" +
-                "Connection: close\r\n" +
-                "\r\n" +
-                form;
+        String request = "POST /one?" + query1 + " HTTP/1.1\r\n" + "Host: localhost\r\n" + "Content-Type: application/x-www-form-urlencoded\r\n" + "Content-Length: " + form.length() + "\r\n" + "Connection: close\r\n" + "\r\n" + form;
         String response = connector.getResponses(request);
         Assert.assertTrue(latch.await(5, TimeUnit.SECONDS));
         Assert.assertTrue(response, response.startsWith("HTTP/1.1 200"));
@@ -482,21 +438,15 @@ public class DispatcherForwardTest
             {
                 checkThat(req.getQueryString(),Matchers.equalTo(query1));
                 ServletInputStream input = req.getInputStream();
-                for (int i = 0; i < form.length(); ++i)
-                    checkThat(form.charAt(i) & 0xFFFF, Matchers.equalTo(input.read()));
+                for (int i = 0; i < form.length(); ++i) {
+					checkThat(form.charAt(i) & 0xFFFF, Matchers.equalTo(input.read()));
+				}
             }
         };
 
         prepare();
 
-        String request = "" +
-                "POST /one?" + query1 + " HTTP/1.1\r\n" +
-                "Host: localhost\r\n" +
-                "Content-Type: application/x-www-form-urlencoded\r\n" +
-                "Content-Length: " + form.length() + "\r\n" +
-                "Connection: close\r\n" +
-                "\r\n" +
-                form;
+        String request = "POST /one?" + query1 + " HTTP/1.1\r\n" + "Host: localhost\r\n" + "Content-Type: application/x-www-form-urlencoded\r\n" + "Content-Length: " + form.length() + "\r\n" + "Connection: close\r\n" + "\r\n" + form;
         String response = connector.getResponses(request);
         Assert.assertTrue(latch.await(5, TimeUnit.SECONDS));
         Assert.assertTrue(response, response.startsWith("HTTP/1.1 200"));
@@ -531,22 +481,16 @@ public class DispatcherForwardTest
             {
                 checkThat(req.getQueryString(),Matchers.equalTo(query3));
                 ServletInputStream input = req.getInputStream();
-                for (int i = 0; i < form.length(); ++i)
-                    checkThat(form.charAt(i) & 0xFFFF, Matchers.equalTo(input.read()));
+                for (int i = 0; i < form.length(); ++i) {
+					checkThat(form.charAt(i) & 0xFFFF, Matchers.equalTo(input.read()));
+				}
                 checkThat(-1, Matchers.equalTo(input.read()));
             }
         };
 
         prepare();
 
-        String request = "" +
-                "POST /one?" + query1 + " HTTP/1.1\r\n" +
-                "Host: localhost\r\n" +
-                "Content-Type: application/x-www-form-urlencoded\r\n" +
-                "Content-Length: " + form.length() + "\r\n" +
-                "Connection: close\r\n" +
-                "\r\n" +
-                form;
+        String request = "POST /one?" + query1 + " HTTP/1.1\r\n" + "Host: localhost\r\n" + "Content-Type: application/x-www-form-urlencoded\r\n" + "Content-Length: " + form.length() + "\r\n" + "Connection: close\r\n" + "\r\n" + form;
         String response = connector.getResponses(request);
         Assert.assertTrue(latch.await(5, TimeUnit.SECONDS));
         Assert.assertTrue(response, response.startsWith("HTTP/1.1 200"));

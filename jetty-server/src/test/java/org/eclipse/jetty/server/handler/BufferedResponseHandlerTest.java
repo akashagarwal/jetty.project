@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server.handler;
 
@@ -217,21 +212,25 @@ public class BufferedResponseHandlerTest
         public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
         {
             baseRequest.setHandled(true);
-            if (_bufferSize>0)
-                response.setBufferSize(_bufferSize);
-            if (_mimeType!=null)
-                response.setContentType(_mimeType);
+            if (_bufferSize>0) {
+				response.setBufferSize(_bufferSize);
+			}
+            if (_mimeType!=null) {
+				response.setContentType(_mimeType);
+			}
             
             for (int i=0;i<_writes;i++)
             {
                 response.addHeader("Write",Integer.toString(i));
                 response.getOutputStream().write(_content);
-                if (_flush)
-                    response.getOutputStream().flush();
+                if (_flush) {
+					response.getOutputStream().flush();
+				}
             }
 
-            if (_close)
-                response.getOutputStream().close();
+            if (_close) {
+				response.getOutputStream().close();
+			}
             response.addHeader("Written","true");
         }
         

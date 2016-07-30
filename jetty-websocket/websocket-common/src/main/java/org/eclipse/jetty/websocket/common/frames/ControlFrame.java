@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.common.frames;
 
@@ -26,7 +21,7 @@ import org.eclipse.jetty.websocket.common.WebSocketFrame;
 
 public abstract class ControlFrame extends WebSocketFrame
 {
-    /** Maximum size of Control frame, per RFC 6455 */
+    /** Maximum size of Control frame, per RFC 6455. */
     public static final int MAX_CONTROL_PAYLOAD = 125;
 
     public ControlFrame(byte opcode)
@@ -93,19 +88,7 @@ public abstract class ControlFrame extends WebSocketFrame
         {
             return false;
         }
-        if (finRsvOp != other.finRsvOp)
-        {
-            return false;
-        }
-        if (!Arrays.equals(mask,other.mask))
-        {
-            return false;
-        }
-        if (masked != other.masked)
-        {
-            return false;
-        }
-        return true;
+        return finRsvOp == other.finRsvOp && Arrays.equals(mask,other.mask) && !masked == !other.masked;
     }
 
     public boolean isControlFrame()

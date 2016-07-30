@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.proxy;
 
@@ -166,8 +161,9 @@ public class ForwardProxyServerTest
                             // When using TLS, multiple reads are required.
                             ByteBuffer buffer = BufferUtil.allocate(1024);
                             int filled = 0;
-                            while (filled == 0)
-                                filled = getEndPoint().fill(buffer);
+                            while (filled == 0) {
+								filled = getEndPoint().fill(buffer);
+							}
                             Utf8StringBuilder builder = new Utf8StringBuilder();
                             builder.append(buffer);
                             String request = builder.toString();
@@ -177,15 +173,13 @@ public class ForwardProxyServerTest
                             // The ConnectHandler won't modify what the client
                             // sent, which must be a relative URI.
                             Assert.assertThat(request.length(), Matchers.greaterThan(0));
-                            if (serverSslContextFactory == null)
-                                Assert.assertFalse(request.contains("http://"));
-                            else
-                                Assert.assertFalse(request.contains("https://"));
+                            if (serverSslContextFactory != null) {
+								Assert.assertFalse(request.contains("https://"));
+							} else {
+								Assert.assertFalse(request.contains("http://"));
+							}
 
-                            String response = "" +
-                                    "HTTP/1.1 200 OK\r\n" +
-                                    "Content-Length: 0\r\n" +
-                                    "\r\n";
+                            String response = "HTTP/1.1 200 OK\r\n" + "Content-Length: 0\r\n" + "\r\n";
                             getEndPoint().write(Callback.NOOP, ByteBuffer.wrap(response.getBytes(StandardCharsets.UTF_8)));
                         }
                         catch (Throwable x)

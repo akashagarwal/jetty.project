@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.server;
 
@@ -44,7 +39,7 @@ public class SimpleServletServer
     private ServerConnector connector;
     private URI serverUri;
     private HttpServlet servlet;
-    private boolean ssl = false;
+    private boolean ssl;
     private SslContextFactory sslContextFactory;
 
     public SimpleServletServer(HttpServlet servlet)
@@ -102,14 +97,13 @@ public class SimpleServletServer
 
             // SSL Connector
             connector = new ServerConnector(server,new SslConnectionFactory(sslContextFactory,HttpVersion.HTTP_1_1.asString()),new HttpConnectionFactory(https_config));
-            connector.setPort(0);
         }
         else
         {
             // Basic HTTP connector
             connector = new ServerConnector(server);
-            connector.setPort(0);
         }
+		connector.setPort(0);
         server.addConnector(connector);
 
         ServletContextHandler context = new ServletContextHandler();

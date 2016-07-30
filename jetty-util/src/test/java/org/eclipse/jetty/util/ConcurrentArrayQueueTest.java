@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util;
 
@@ -37,8 +32,9 @@ public class ConcurrentArrayQueueTest
         int blockSize = 2;
         ConcurrentArrayQueue<Integer> queue = newConcurrentArrayQueue(blockSize);
         int blocks = 3;
-        for (int i = 0; i < blocks * blockSize + 1; ++i)
-            queue.offer(i);
+        for (int i = 0; i < blocks * blockSize + 1; ++i) {
+			queue.offer(i);
+		}
         Assert.assertEquals(blocks + 1, queue.getBlockCount());
     }
 
@@ -56,8 +52,9 @@ public class ConcurrentArrayQueueTest
 
         int blocks = 3;
         int size = blocks * blockSize + 1;
-        for (int i = 0; i < size; ++i)
-            queue.offer(i);
+        for (int i = 0; i < size; ++i) {
+			queue.offer(i);
+		}
         for (int i = 0; i < size; ++i)
         {
             Assert.assertEquals(i, (int)queue.peek());
@@ -119,10 +116,12 @@ public class ConcurrentArrayQueueTest
         Assert.assertEquals(1, queue.size());
 
         queue = newConcurrentArrayQueue(blockSize);
-        for (int i = 0; i < 2 * blockSize; ++i)
-            queue.offer(i);
-        for (int i = 0; i < blockSize; ++i)
-            queue.poll();
+        for (int i = 0; i < 2 * blockSize; ++i) {
+			queue.offer(i);
+		}
+        for (int i = 0; i < blockSize; ++i) {
+			queue.poll();
+		}
         Assert.assertEquals(blockSize, queue.size());
     }
 
@@ -148,8 +147,9 @@ public class ConcurrentArrayQueueTest
 
         // Test block edge
         queue = newConcurrentArrayQueue(blockSize);
-        for (int i = 0; i < blockSize * 2; ++i)
-            queue.offer(i);
+        for (int i = 0; i < blockSize * 2; ++i) {
+			queue.offer(i);
+		}
         queue.poll();
         iterator = queue.iterator();
         Assert.assertTrue(iterator.hasNext());

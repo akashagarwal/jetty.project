@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.deploy.graph;
 
@@ -23,7 +18,7 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * Basic directed graph implementation
+ * Basic directed graph implementation.
  */
 public class Graph
 {
@@ -33,15 +28,18 @@ public class Graph
     public void addEdge(Edge edge)
     {
         Node fromNode = getNodeByName(edge.getFrom().getName());
-        if (fromNode==null)
-            addNode(fromNode=edge.getFrom());
+        if (fromNode==null) {
+			addNode(fromNode=edge.getFrom());
+		}
         Node toNode = getNodeByName(edge.getTo().getName());
-        if (toNode==null)
-            addNode(toNode=edge.getTo());
+        if (toNode==null) {
+			addNode(toNode=edge.getTo());
+		}
         
         // replace edge with normalized edge
-        if (edge.getFrom()!=fromNode || edge.getTo()!=toNode)
-            edge=new Edge(fromNode,toNode);
+        if (edge.getFrom()!=fromNode || edge.getTo()!=toNode) {
+			edge=new Edge(fromNode,toNode);
+		}
         
         this._edges.add(edge);
     }
@@ -77,7 +75,7 @@ public class Graph
     }
 
     /**
-     * Convenience method for {@link #insertNode(Edge, Node)}
+     * Convenience method for {@link #insertNode(Edge, Node)}.
      * 
      * @param edge
      *            the edge to split and insert a node into
@@ -129,7 +127,7 @@ public class Graph
 
         for (Edge edge : this._edges)
         {
-            if ((edge.getFrom() == node) || (edge.getTo() == node))
+            if (edge.getFrom() == node || edge.getTo() == node)
             {
                 fromedges.add(edge);
             }
@@ -197,9 +195,7 @@ public class Graph
             return new Path();
         }
 
-        // Perform a Breadth First Search (BFS) of the tree.
-        Path path = breadthFirst(from,to,new CopyOnWriteArrayList<Path>(),new HashSet<Edge>());
-        return path;
+        return breadthFirst(from,to,new CopyOnWriteArrayList<Path>(),new HashSet<Edge>());
     }
     
 
@@ -207,40 +203,47 @@ public class Graph
     {
         // Add next unseen segments to paths.
         boolean edgesAdded = false;
-        if (paths.size()==0)
-            paths.add(new Path());
+        if (paths.size()==0) {
+			paths.add(new Path());
+		}
 
         for (Path path : paths)
         {
             Set<Edge> next = findEdgesFrom(path.nodes()==0?from:path.lastNode());
             if (next.size() == 0)
-                continue; // no new edges
+			 {
+				continue; // no new edges
+			}
 
             // Split path for other edges
             int splits=0;
             for (Edge edge:next)
             {
-                if (seen.contains(edge))
-                    continue;
+                if (seen.contains(edge)) {
+					continue;
+				}
                 seen.add(edge);
                 Path nextPath = (++splits==next.size())?path:path.forkPath();
                 // Add segment to split'd path
                 nextPath.add(edge);
                 
                 // Are we there yet?
-                if (destination.equals(edge.getTo()))
-                    return nextPath;
+                if (destination.equals(edge.getTo())) {
+					return nextPath;
+				}
 
                 edgesAdded = true;
                 
                 // Add to extra paths
-                if (nextPath!=path)
-                    paths.add(nextPath);
+                if (nextPath!=path) {
+					paths.add(nextPath);
+				}
             }
         }
 
-        if (edgesAdded)
-            return breadthFirst(from,destination,paths,seen);
+        if (edgesAdded) {
+			return breadthFirst(from,destination,paths,seen);
+		}
         return null;
     }
 

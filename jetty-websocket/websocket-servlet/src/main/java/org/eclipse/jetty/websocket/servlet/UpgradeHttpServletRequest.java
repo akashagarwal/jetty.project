@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.servlet;
 
@@ -151,8 +146,9 @@ public class UpgradeHttpServletRequest implements HttpServletRequest
     public String getHeader(String name)
     {
         List<String> values = headers.get(name);
-        if (values == null || values.isEmpty())
-            return null;
+        if (values == null || values.isEmpty()) {
+			return null;
+		}
         return values.get(0);
     }
 
@@ -160,9 +156,10 @@ public class UpgradeHttpServletRequest implements HttpServletRequest
     public Enumeration<String> getHeaders(String name)
     {
         List<String> values = headers.get(name);
-        if (values == null)
-            return Collections.emptyEnumeration();
-        return Collections.enumeration(values);
+        if (values != null) {
+			return Collections.enumeration(values);
+		}
+        return Collections.emptyEnumeration();
     }
 
     @Override
@@ -230,8 +227,9 @@ public class UpgradeHttpServletRequest implements HttpServletRequest
     public boolean isUserInRole(String role)
     {
         HttpServletRequest request = getHttpServletRequest();
-        if (request != null)
-            return request.isUserInRole(role);
+        if (request != null) {
+			return request.isUserInRole(role);
+		}
         throw new UnsupportedOperationException(UNSUPPORTED_WITH_WEBSOCKET_UPGRADE);
     }
 
@@ -263,8 +261,9 @@ public class UpgradeHttpServletRequest implements HttpServletRequest
     public HttpSession getSession(boolean create)
     {
         HttpServletRequest request = getHttpServletRequest();
-        if (request != null)
-            return session = request.getSession(create);
+        if (request != null) {
+			return session = request.getSession(create);
+		}
         return session;
     }
 
@@ -325,8 +324,9 @@ public class UpgradeHttpServletRequest implements HttpServletRequest
     public String getParameter(String name)
     {
         String[] values = parameters.get(name);
-        if (values == null || values.length == 0)
-            return null;
+        if (values == null || values.length == 0) {
+			return null;
+		}
         return values[0];
     }
 
@@ -394,8 +394,9 @@ public class UpgradeHttpServletRequest implements HttpServletRequest
     public void setAttribute(String name, Object value)
     {
         HttpServletRequest request = getHttpServletRequest();
-        if (request != null)
-            request.setAttribute(name, value);
+        if (request != null) {
+			request.setAttribute(name, value);
+		}
         attributes.put(name, value);
     }
 
@@ -403,16 +404,18 @@ public class UpgradeHttpServletRequest implements HttpServletRequest
     public void removeAttribute(String name)
     {
         HttpServletRequest request = getHttpServletRequest();
-        if (request != null)
-            request.removeAttribute(name);
+        if (request != null) {
+			request.removeAttribute(name);
+		}
         attributes.remove(name);
     }
 
     @Override
     public Locale getLocale()
     {
-        if (locales.isEmpty())
-            return Locale.getDefault();
+        if (locales.isEmpty()) {
+			return Locale.getDefault();
+		}
         return locales.get(0);
     }
 

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.start;
 
@@ -41,8 +36,8 @@ public class Modules extends Graph<Module>
     {
         this.baseHome = basehome;
         this.args = args;
-        this.setSelectionTerm("enable");
-        this.setNodeTerm("module");
+        setSelectionTerm("enable");
+        setNodeTerm("module");
         
         String java_version = System.getProperty("java.version");
         if (java_version!=null)
@@ -53,8 +48,7 @@ public class Modules extends Graph<Module>
 
     public void dump()
     {
-        List<Module> ordered = new ArrayList<>();
-        ordered.addAll(getNodes());
+        List<Module> ordered = new ArrayList<Module>(getNodes());
         Collections.sort(ordered,new Module.NameComparator());
 
         List<Module> active = getSelected();

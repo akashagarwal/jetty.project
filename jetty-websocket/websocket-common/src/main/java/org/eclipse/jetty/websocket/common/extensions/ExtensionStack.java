@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.common.extensions;
 
@@ -80,7 +75,7 @@ public class ExtensionStack extends ContainerLifeCycle implements IncomingFrames
         super.doStart();
 
         // Wire up Extensions
-        if ((extensions != null) && (extensions.size() > 0))
+        if (extensions != null && extensions.size() > 0)
         {
             ListIterator<Extension> exts = extensions.listIterator();
 
@@ -116,12 +111,12 @@ public class ExtensionStack extends ContainerLifeCycle implements IncomingFrames
         OutgoingFrames network = getLastOutgoing();
 
         out.append(indent).append(" +- Stack").append(System.lineSeparator());
-        out.append(indent).append("     +- Network  : ").append(network.toString()).append(System.lineSeparator());
+        out.append(indent).append("     +- Network  : ").append(network).append(System.lineSeparator());
         for (Extension ext : extensions)
         {
-            out.append(indent).append("     +- Extension: ").append(ext.toString()).append(System.lineSeparator());
+            out.append(indent).append("     +- Extension: ").append(ext).append(System.lineSeparator());
         }
-        out.append(indent).append("     +- Websocket: ").append(websocket.toString()).append(System.lineSeparator());
+        out.append(indent).append("     +- Websocket: ").append(websocket).append(System.lineSeparator());
     }
 
     @ManagedAttribute(name = "Extension List", readonly = true)
@@ -167,7 +162,7 @@ public class ExtensionStack extends ContainerLifeCycle implements IncomingFrames
     }
 
     /**
-     * Get the list of negotiated extensions, each entry being a full "name; params" extension configuration
+     * Get the list of negotiated extensions, each entry being a full "name; params" extension configuration.
      * 
      * @return list of negotiated extensions
      */
@@ -205,7 +200,7 @@ public class ExtensionStack extends ContainerLifeCycle implements IncomingFrames
 
     public boolean hasNegotiatedExtensions()
     {
-        return (this.extensions != null) && (this.extensions.size() > 0);
+        return this.extensions != null && this.extensions.size() > 0;
     }
 
     @Override
@@ -230,8 +225,9 @@ public class ExtensionStack extends ContainerLifeCycle implements IncomingFrames
      */
     public void negotiate(List<ExtensionConfig> configs)
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("Extension Configs={}",configs);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Extension Configs={}",configs);
+		}
 
         this.extensions = new ArrayList<>();
 
@@ -247,17 +243,17 @@ public class ExtensionStack extends ContainerLifeCycle implements IncomingFrames
             }
 
             // Check RSV
-            if (ext.isRsv1User() && (rsvClaims[0] != null))
+            if (ext.isRsv1User() && rsvClaims[0] != null)
             {
                 LOG.debug("Not adding extension {}. Extension {} already claimed RSV1",config,rsvClaims[0]);
                 continue;
             }
-            if (ext.isRsv2User() && (rsvClaims[1] != null))
+            if (ext.isRsv2User() && rsvClaims[1] != null)
             {
                 LOG.debug("Not adding extension {}. Extension {} already claimed RSV2",config,rsvClaims[1]);
                 continue;
             }
-            if (ext.isRsv3User() && (rsvClaims[2] != null))
+            if (ext.isRsv3User() && rsvClaims[2] != null)
             {
                 LOG.debug("Not adding extension {}. Extension {} already claimed RSV3",config,rsvClaims[2]);
                 continue;
@@ -267,8 +263,9 @@ public class ExtensionStack extends ContainerLifeCycle implements IncomingFrames
             extensions.add(ext);
             addBean(ext);
 
-            if (LOG.isDebugEnabled())
-                LOG.debug("Adding Extension: {}",config);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Adding Extension: {}",config);
+			}
 
             // Record RSV Claims
             if (ext.isRsv1User())
@@ -290,8 +287,9 @@ public class ExtensionStack extends ContainerLifeCycle implements IncomingFrames
     public void outgoingFrame(Frame frame, WriteCallback callback, BatchMode batchMode)
     {
         FrameEntry entry = new FrameEntry(frame,callback,batchMode);
-        if (LOG.isDebugEnabled())
-            LOG.debug("Queuing {}",entry);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Queuing {}",entry);
+		}
         entries.offer(entry);
         flusher.iterate();
     }
@@ -338,13 +336,13 @@ public class ExtensionStack extends ContainerLifeCycle implements IncomingFrames
                 {
                     s.append(',');
                 }
-                if (ext == null)
+                if (ext != null)
                 {
-                    s.append("<null>");
+                    s.append(ext.getName());
                 }
                 else
                 {
-                    s.append(ext.getName());
+                    s.append("<null>");
                 }
                 delim = true;
             }
@@ -386,12 +384,14 @@ public class ExtensionStack extends ContainerLifeCycle implements IncomingFrames
             current = entries.poll();
             if (current == null)
             {
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Entering IDLE");
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("Entering IDLE");
+				}
                 return Action.IDLE;
             }
-            if (LOG.isDebugEnabled())
-                LOG.debug("Processing {}",current);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Processing {}",current);
+			}
             nextOutgoing.outgoingFrame(current.frame,this,current.batchMode);
             return Action.SCHEDULED;
         }
@@ -435,8 +435,9 @@ public class ExtensionStack extends ContainerLifeCycle implements IncomingFrames
         {
             try
             {
-                if (callback != null)
-                    callback.writeSuccess();
+                if (callback != null) {
+					callback.writeSuccess();
+				}
             }
             catch (Throwable x)
             {
@@ -448,8 +449,9 @@ public class ExtensionStack extends ContainerLifeCycle implements IncomingFrames
         {
             try
             {
-                if (callback != null)
-                    callback.writeFailed(failure);
+                if (callback != null) {
+					callback.writeFailed(failure);
+				}
             }
             catch (Throwable x)
             {

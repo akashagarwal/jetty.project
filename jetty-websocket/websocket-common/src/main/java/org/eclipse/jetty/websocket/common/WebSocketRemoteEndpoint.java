@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.common;
 
@@ -71,11 +66,11 @@ public class WebSocketRemoteEndpoint implements RemoteEndpoint
 
     private static final Logger LOG = Log.getLogger(WebSocketRemoteEndpoint.class);
 
-    private final static int ASYNC_MASK = 0x0000FFFF;
-    private final static int BLOCK_MASK = 0x00010000;
-    private final static int STREAM_MASK = 0x00020000;
-    private final static int PARTIAL_TEXT_MASK = 0x00040000;
-    private final static int PARTIAL_BINARY_MASK = 0x00080000;
+    private static final int ASYNC_MASK = 0x0000FFFF;
+    private static final int BLOCK_MASK = 0x00010000;
+    private static final int STREAM_MASK = 0x00020000;
+    private static final int PARTIAL_TEXT_MASK = 0x00040000;
+    private static final int PARTIAL_BINARY_MASK = 0x00080000;
 
     private final LogicalConnection connection;
     private final OutgoingFrames outgoing;
@@ -124,50 +119,57 @@ public class WebSocketRemoteEndpoint implements RemoteEndpoint
             switch (type)
             {
                 case BLOCKING:
-                    if ((state & (PARTIAL_BINARY_MASK + PARTIAL_TEXT_MASK)) != 0)
-                        throw new IllegalStateException(String.format("Partial message pending %x for %s", state, type));
-                    if ((state & BLOCK_MASK) != 0)
-                        throw new IllegalStateException(String.format("Blocking message pending %x for %s", state, type));
-                    if (msgState.compareAndSet(state, state | BLOCK_MASK))
-                        return state == 0;
+                    if ((state & PARTIAL_BINARY_MASK + PARTIAL_TEXT_MASK) != 0) {
+						throw new IllegalStateException(String.format("Partial message pending %x for %s", state, type));
+					}
+                    if ((state & BLOCK_MASK) != 0) {
+						throw new IllegalStateException(String.format("Blocking message pending %x for %s", state, type));
+					}
+                    if (msgState.compareAndSet(state, state | BLOCK_MASK)) {
+						return state == 0;
+					}
                     break;
 
                 case ASYNC:
-                    if ((state & (PARTIAL_BINARY_MASK + PARTIAL_TEXT_MASK)) != 0)
-                        throw new IllegalStateException(String.format("Partial message pending %x for %s", state, type));
-                    if ((state & ASYNC_MASK) == ASYNC_MASK)
-                        throw new IllegalStateException(String.format("Too many async sends: %x", state));
-                    if (msgState.compareAndSet(state, state + 1))
-                        return state == 0;
+                    if ((state & PARTIAL_BINARY_MASK + PARTIAL_TEXT_MASK) != 0) {
+						throw new IllegalStateException(String.format("Partial message pending %x for %s", state, type));
+					}
+                    if ((state & ASYNC_MASK) == ASYNC_MASK) {
+						throw new IllegalStateException(String.format("Too many async sends: %x", state));
+					}
+                    if (msgState.compareAndSet(state, state + 1)) {
+						return state == 0;
+					}
                     break;
 
                 case STREAMING:
-                    if ((state & (PARTIAL_BINARY_MASK + PARTIAL_TEXT_MASK)) != 0)
-                        throw new IllegalStateException(String.format("Partial message pending %x for %s", state, type));
-                    if ((state & STREAM_MASK) != 0)
-                        throw new IllegalStateException(String.format("Already streaming %x for %s", state, type));
-                    if (msgState.compareAndSet(state, state | STREAM_MASK))
-                        return state == 0;
+                    if ((state & PARTIAL_BINARY_MASK + PARTIAL_TEXT_MASK) != 0) {
+						throw new IllegalStateException(String.format("Partial message pending %x for %s", state, type));
+					}
+                    if ((state & STREAM_MASK) != 0) {
+						throw new IllegalStateException(String.format("Already streaming %x for %s", state, type));
+					}
+                    if (msgState.compareAndSet(state, state | STREAM_MASK)) {
+						return state == 0;
+					}
                     break;
 
                 case PARTIAL_BINARY:
-                    if (state == PARTIAL_BINARY_MASK)
-                        return false;
-                    if (state == 0)
-                    {
-                        if (msgState.compareAndSet(0, state | PARTIAL_BINARY_MASK))
-                            return true;
-                    }
+                    if (state == PARTIAL_BINARY_MASK) {
+						return false;
+					}
+                    if (state == 0 && msgState.compareAndSet(0, state | PARTIAL_BINARY_MASK)) {
+						return true;
+					}
                     throw new IllegalStateException(String.format("Cannot send %s in state %x", type, state));
 
                 case PARTIAL_TEXT:
-                    if (state == PARTIAL_TEXT_MASK)
-                        return false;
-                    if (state == 0)
-                    {
-                        if (msgState.compareAndSet(0, state | PARTIAL_TEXT_MASK))
-                            return true;
-                    }
+                    if (state == PARTIAL_TEXT_MASK) {
+						return false;
+					}
+                    if (state == 0 && msgState.compareAndSet(0, state | PARTIAL_TEXT_MASK)) {
+						return true;
+					}
                     throw new IllegalStateException(String.format("Cannot send %s in state %x", type, state));
             }
         }
@@ -182,34 +184,42 @@ public class WebSocketRemoteEndpoint implements RemoteEndpoint
             switch (type)
             {
                 case BLOCKING:
-                    if ((state & BLOCK_MASK) == 0)
-                        throw new IllegalStateException(String.format("Not Blocking in state %x", state));
-                    if (msgState.compareAndSet(state, state & ~BLOCK_MASK))
-                        return;
+                    if ((state & BLOCK_MASK) == 0) {
+						throw new IllegalStateException(String.format("Not Blocking in state %x", state));
+					}
+                    if (msgState.compareAndSet(state, state & ~BLOCK_MASK)) {
+						return;
+					}
                     break;
 
                 case ASYNC:
-                    if ((state & ASYNC_MASK) == 0)
-                        throw new IllegalStateException(String.format("Not Async in %x", state));
-                    if (msgState.compareAndSet(state, state - 1))
-                        return;
+                    if ((state & ASYNC_MASK) == 0) {
+						throw new IllegalStateException(String.format("Not Async in %x", state));
+					}
+                    if (msgState.compareAndSet(state, state - 1)) {
+						return;
+					}
                     break;
 
                 case STREAMING:
-                    if ((state & STREAM_MASK) == 0)
-                        throw new IllegalStateException(String.format("Not Streaming in state %x", state));
-                    if (msgState.compareAndSet(state, state & ~STREAM_MASK))
-                        return;
+                    if ((state & STREAM_MASK) == 0) {
+						throw new IllegalStateException(String.format("Not Streaming in state %x", state));
+					}
+                    if (msgState.compareAndSet(state, state & ~STREAM_MASK)) {
+						return;
+					}
                     break;
 
                 case PARTIAL_BINARY:
-                    if (msgState.compareAndSet(PARTIAL_BINARY_MASK, 0))
-                        return;
+                    if (msgState.compareAndSet(PARTIAL_BINARY_MASK, 0)) {
+						return;
+					}
                     throw new IllegalStateException(String.format("Not Partial Binary in state %x", state));
 
                 case PARTIAL_TEXT:
-                    if (msgState.compareAndSet(PARTIAL_TEXT_MASK, 0))
-                        return;
+                    if (msgState.compareAndSet(PARTIAL_TEXT_MASK, 0)) {
+						return;
+					}
                     throw new IllegalStateException(String.format("Not Partial Text in state %x", state));
 
             }
@@ -223,13 +233,14 @@ public class WebSocketRemoteEndpoint implements RemoteEndpoint
      */
     public InetSocketAddress getInetSocketAddress()
     {
-        if(connection == null)
-            return null;
-        return connection.getRemoteAddress();
+        if(connection != null) {
+			return connection.getRemoteAddress();
+		}
+        return null;
     }
 
     /**
-     * Internal
+     * Internal.
      *
      * @param frame the frame to write
      * @return the future for the network write of the frame
@@ -304,8 +315,9 @@ public class WebSocketRemoteEndpoint implements RemoteEndpoint
         try
         {
             BatchMode batchMode = BatchMode.OFF;
-            if (frame.isDataFrame())
-                batchMode = getBatchMode();
+            if (frame.isDataFrame()) {
+				batchMode = getBatchMode();
+			}
             connection.getIOState().assertOutputOpen();
             outgoing.outgoingFrame(frame, callback, batchMode);
         }
@@ -332,8 +344,9 @@ public class WebSocketRemoteEndpoint implements RemoteEndpoint
         }
         finally
         {
-            if (isLast)
-                unlockMsg(MsgType.PARTIAL_BINARY);
+            if (isLast) {
+				unlockMsg(MsgType.PARTIAL_BINARY);
+			}
         }
     }
 
@@ -354,8 +367,9 @@ public class WebSocketRemoteEndpoint implements RemoteEndpoint
         }
         finally
         {
-            if (isLast)
-                unlockMsg(MsgType.PARTIAL_TEXT);
+            if (isLast) {
+				unlockMsg(MsgType.PARTIAL_TEXT);
+			}
         }
     }
 

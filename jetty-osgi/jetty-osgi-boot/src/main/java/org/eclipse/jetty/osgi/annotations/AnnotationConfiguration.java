@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.osgi.annotations;
 
@@ -55,11 +50,13 @@ public class AnnotationConfiguration extends org.eclipse.jetty.annotations.Annot
             {
                 org.eclipse.jetty.osgi.annotations.AnnotationParser osgiAnnotationParser = (org.eclipse.jetty.osgi.annotations.AnnotationParser)_parser;
                 Bundle bundle = osgiAnnotationParser.getBundle(_resource);
-                if (_stat != null)
-                    _stat.start();
+                if (_stat != null) {
+					_stat.start();
+				}
                 osgiAnnotationParser.parse(_handlers, bundle,  _resolver); 
-                if (_stat != null)
-                    _stat.end();
+                if (_stat != null) {
+					_stat.end();
+				}
             }
             return null;
         }
@@ -103,8 +100,9 @@ public class AnnotationConfiguration extends org.eclipse.jetty.annotations.Annot
             for (Bundle bundle : fragAndRequiredBundles)
             {
                 //skip bundles that have been uninstalled since we discovered them
-                if (bundle.getState() == Bundle.UNINSTALLED)
-                    continue;
+                if (bundle.getState() == Bundle.UNINSTALLED) {
+					continue;
+				}
                 
                 Resource bundleRes = oparser.indexBundle(bundle);
                 if (!context.getMetaData().getWebInfJars().contains(bundleRes))
@@ -131,8 +129,9 @@ public class AnnotationConfiguration extends org.eclipse.jetty.annotations.Annot
             for (Bundle requiredBundle : fragAndRequiredBundles)
             {
                 //skip bundles that have been uninstalled since we discovered them
-                if (requiredBundle.getState() == Bundle.UNINSTALLED)
-                    continue;
+                if (requiredBundle.getState() == Bundle.UNINSTALLED) {
+					continue;
+				}
                 
                 if (requiredBundle.getHeaders().get(Constants.FRAGMENT_HOST) == null)
                 {
@@ -144,7 +143,7 @@ public class AnnotationConfiguration extends org.eclipse.jetty.annotations.Annot
     }
     
     /**
-     * Scan a fragment bundle for servlet annotations
+     * Scan a fragment bundle for servlet annotations.
      * @param context The webapp context
      * @param parser The parser
      * @param webbundle The current webbundle
@@ -158,7 +157,7 @@ public class AnnotationConfiguration extends org.eclipse.jetty.annotations.Annot
     }
     
     /**
-     * Scan a bundle required by the webbundle for servlet annotations
+     * Scan a bundle required by the webbundle for servlet annotations.
      * @param context The webapp context
      * @param parser The parser
      * @param webbundle The current webbundle
@@ -171,7 +170,7 @@ public class AnnotationConfiguration extends org.eclipse.jetty.annotations.Annot
     }
     
     /**
-     * Scan a bundle required by the webbundle for servlet annotations
+     * Scan a bundle required by the webbundle for servlet annotations.
      * @param context The webapp context
      * @param parser The parser
      * @param webbundle The current webbundle
@@ -189,10 +188,10 @@ public class AnnotationConfiguration extends org.eclipse.jetty.annotations.Annot
                                {
 
         Resource bundleRes = parser.getResource(bundle);  
-        Set<Handler> handlers = new HashSet<Handler>();
-        handlers.addAll(_discoverableAnnotationHandlers);
-        if (_classInheritanceHandler != null)
-            handlers.add(_classInheritanceHandler);
+        Set<Handler> handlers = new HashSet<Handler>(_discoverableAnnotationHandlers);
+        if (_classInheritanceHandler != null) {
+			handlers.add(_classInheritanceHandler);
+		}
         handlers.addAll(_containerInitializerAnnotationHandlers);
 
         ClassNameResolver classNameResolver = createClassNameResolver(context);
@@ -200,13 +199,14 @@ public class AnnotationConfiguration extends org.eclipse.jetty.annotations.Annot
         {
             BundleParserTask task = new BundleParserTask(parser, handlers, bundleRes, classNameResolver);
             _parserTasks.add(task);
-            if (LOG.isDebugEnabled())
-                task.setStatistic(new TimeStatistic());
+            if (LOG.isDebugEnabled()) {
+				task.setStatistic(new TimeStatistic());
+			}
         }
     }
     
     /**
-     * Returns the same classname resolver than for the webInfjar scanner
+     * Returns the same classname resolver than for the webInfjar scanner.
      * @param context the web app context
      * @return the class name resolver
      */
@@ -223,16 +223,21 @@ public class AnnotationConfiguration extends org.eclipse.jetty.annotations.Annot
         {
             public boolean isExcluded (String name)
             {
-                if (context.isSystemClass(name)) return excludeSysClass;
-                if (context.isServerClass(name)) return excludeServerClass;
+                if (context.isSystemClass(name)) {
+					return excludeSysClass;
+				}
+                if (context.isServerClass(name)) {
+					return excludeServerClass;
+				}
                 return excludeEverythingElse;
             }
 
             public boolean shouldOverride (String name)
             { 
                 //looking at system classpath
-                if (context.isParentLoaderPriority())
-                    return overrideIsParenLoaderIsPriority;
+                if (context.isParentLoaderPriority()) {
+					return overrideIsParenLoaderIsPriority;
+				}
                 return !overrideIsParenLoaderIsPriority;
             }
         };

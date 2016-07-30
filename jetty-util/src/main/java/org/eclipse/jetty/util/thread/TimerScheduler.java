@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util.thread;
 
@@ -29,13 +24,13 @@ import org.eclipse.jetty.util.log.Logger;
 
 
 /* ------------------------------------------------------------ */
-/** A scheduler based on the the JVM Timer class
+/** A scheduler based on the the JVM Timer class.
  */
 public class TimerScheduler extends AbstractLifeCycle implements Scheduler, Runnable
 {
     private static final Logger LOG = Log.getLogger(TimerScheduler.class);
 
-    /*
+    /**
      * This class uses the Timer class rather than an ScheduledExecutionService because
      * it uses the same algorithm internally and the signature is cheaper to use as there are no
      * Futures involved (which we do not need).
@@ -77,8 +72,9 @@ public class TimerScheduler extends AbstractLifeCycle implements Scheduler, Runn
     public Task schedule(final Runnable task, final long delay, final TimeUnit units)
     {
         Timer timer = _timer;
-        if (timer == null)
-            throw new RejectedExecutionException("STOPPED: " + this);
+        if (timer == null) {
+			throw new RejectedExecutionException("STOPPED: " + this);
+		}
         SimpleTask t = new SimpleTask(task);
         timer.schedule(t, units.toMillis(delay));
         return t;

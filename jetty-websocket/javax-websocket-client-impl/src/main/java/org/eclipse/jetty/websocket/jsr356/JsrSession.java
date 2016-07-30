@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.jsr356;
 
@@ -63,9 +58,9 @@ public class JsrSession extends WebSocketSession implements javax.websocket.Sess
     private final EndpointMetadata metadata;
     private final DecoderFactory decoderFactory;
     private final EncoderFactory encoderFactory;
-    /** Factory for MessageHandlers */
+    /** Factory for MessageHandlers. */
     private final MessageHandlerFactory messageHandlerFactory;
-    /** Array of MessageHandlerWrappers, indexed by {@link MessageType#ordinal()} */
+    /** Array of MessageHandlerWrappers, indexed by {@link MessageType#ordinal()}. */
     private final MessageHandlerWrapper wrappers[];
     private Set<MessageHandler> messageHandlerSet;
     private List<Extension> negotiatedExtensions;
@@ -256,11 +251,11 @@ public class JsrSession extends WebSocketSession implements javax.websocket.Sess
     public String getNegotiatedSubprotocol()
     {
         String acceptedSubProtocol = getUpgradeResponse().getAcceptedSubProtocol();
-        if (acceptedSubProtocol == null)
+        if (acceptedSubProtocol != null)
         {
-            return "";
+            return acceptedSubProtocol;
         }
-        return acceptedSubProtocol;
+        return "";
     }
 
     @Override

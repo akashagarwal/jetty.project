@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http2.server;
 
@@ -66,9 +61,10 @@ public class HTTP2ServerConnectionFactory extends AbstractHTTP2ServerConnectionF
     {
         // TODO remove this draft 14 protection
         // Implement 9.2.2
-        boolean acceptable = "h2-14".equals(protocol) || !(HTTP2Cipher.isBlackListProtocol(tlsProtocol) && HTTP2Cipher.isBlackListCipher(tlsCipher));
-        if (LOG.isDebugEnabled())
-            LOG.debug("proto={} tls={} cipher={} 9.2.2-acceptable={}",protocol,tlsProtocol,tlsCipher,acceptable);
+        boolean acceptable = "h2-14".equals(protocol) || !HTTP2Cipher.isBlackListProtocol(tlsProtocol) || !HTTP2Cipher.isBlackListCipher(tlsCipher);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("proto={} tls={} cipher={} 9.2.2-acceptable={}",protocol,tlsProtocol,tlsCipher,acceptable);
+		}
         return acceptable;
     }
 
@@ -95,8 +91,9 @@ public class HTTP2ServerConnectionFactory extends AbstractHTTP2ServerConnectionF
             settings.put(SettingsFrame.HEADER_TABLE_SIZE, getMaxDynamicTableSize());
             settings.put(SettingsFrame.INITIAL_WINDOW_SIZE, getInitialStreamRecvWindow());
             int maxConcurrentStreams = getMaxConcurrentStreams();
-            if (maxConcurrentStreams >= 0)
-                settings.put(SettingsFrame.MAX_CONCURRENT_STREAMS, maxConcurrentStreams);
+            if (maxConcurrentStreams >= 0) {
+				settings.put(SettingsFrame.MAX_CONCURRENT_STREAMS, maxConcurrentStreams);
+			}
             settings.put(SettingsFrame.MAX_HEADER_LIST_SIZE, getHttpConfiguration().getRequestHeaderSize());
             return settings;
         }

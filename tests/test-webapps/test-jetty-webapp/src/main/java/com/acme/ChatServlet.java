@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package com.acme;
 
@@ -36,9 +31,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.log.Logger;
 
-// Simple asynchronous Chat room.
-// This does not handle duplicate usernames or multiple frames/tabs from the same browser
-// Some code is duplicated for clarity.
+/**
+
+ * Simple asynchronous Chat room.
+ * This does not handle duplicate usernames or multiple frames/tabs from the same browser
+ * Some code is duplicated for clarity.
+*/
 @SuppressWarnings("serial")
 public class ChatServlet extends HttpServlet
 {
@@ -49,11 +47,12 @@ public class ChatServlet extends HttpServlet
     public void init()
     {
         String parameter = getServletConfig().getInitParameter("asyncTimeout");
-        if (parameter != null)
-            asyncTimeout = Long.parseLong(parameter);
+        if (parameter != null) {
+			asyncTimeout = Long.parseLong(parameter);
+		}
     }
 
-    // inner class to hold message queue for each chat room member
+    /** Inner class to hold message queue for each chat room member. */
     class Member implements AsyncListener
     {
         final String _name;
@@ -99,7 +98,7 @@ public class ChatServlet extends HttpServlet
     Map<String, Map<String, Member>> _rooms = new HashMap<>();
 
 
-    // Handle Ajax calls from browser
+    /** Handle Ajax calls from browser. */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
@@ -218,15 +217,18 @@ public class ChatServlet extends HttpServlet
         }
     }
 
-    // Serve the HTML with embedded CSS and Javascript.
-    // This should be static content and should use real JS libraries.
+    /**
+     * Serve the HTML with embedded CSS and Javascript.
+     * This should be static content and should use real JS libraries.
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
-        if (request.getParameter("action") != null)
-            doPost(request, response);
-        else
-            getServletContext().getNamedDispatcher("default").forward(request, response);
+        if (request.getParameter("action") != null) {
+			doPost(request, response);
+		} else {
+			getServletContext().getNamedDispatcher("default").forward(request, response);
+		}
     }
 
 }

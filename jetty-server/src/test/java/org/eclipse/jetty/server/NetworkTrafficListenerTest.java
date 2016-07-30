@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 
@@ -93,8 +88,9 @@ public class NetworkTrafficListenerTest
             @Override
             public void closed(Socket socket)
             {
-                if (this.socket == socket)
-                    closedLatch.countDown();
+                if (this.socket == socket) {
+					closedLatch.countDown();
+				}
             }
         });
         int port = connector.getLocalPort();
@@ -141,15 +137,8 @@ public class NetworkTrafficListenerTest
         });
         int port = connector.getLocalPort();
 
-        String request = "" +
-                "GET / HTTP/1.1\r\n" +
-                "Host: localhost:" + port + "\r\n" +
-                "Connection: close\r\n" +
-                "\r\n";
-        String expectedResponse = "" +
-                "HTTP/1.1 200 OK\r\n" +
-                "Connection: close\r\n" +
-                "\r\n";
+        String request = "GET / HTTP/1.1\r\n" + "Host: localhost:" + port + "\r\n" + "Connection: close\r\n" + "\r\n";
+        String expectedResponse = "HTTP/1.1 200 OK\r\n" + "Connection: close\r\n" + "\r\n";
 
         Socket socket = new Socket("localhost", port);
         OutputStream output = socket.getOutputStream();
@@ -207,15 +196,8 @@ public class NetworkTrafficListenerTest
         });
         int port = connector.getLocalPort();
 
-        String request = "" +
-                "GET / HTTP/1.1\r\n" +
-                "Host: localhost:" + port + "\r\n" +
-                "\r\n";
-        String expectedResponse = "" +
-                "HTTP/1.1 200 OK\r\n" +
-                "Content-Length: " + (responseContent.length() + 1) + "\r\n" +
-                "\r\n" +
-                "" + responseContent + (char)END_OF_CONTENT;
+        String request = "GET / HTTP/1.1\r\n" + "Host: localhost:" + port + "\r\n" + "\r\n";
+        String expectedResponse = "HTTP/1.1 200 OK\r\n" + "Content-Length: " + (responseContent.length() + 1) + "\r\n" + "\r\n" + responseContent + END_OF_CONTENT;
 
         Socket socket = new Socket("localhost", port);
         OutputStream output = socket.getOutputStream();
@@ -272,26 +254,15 @@ public class NetworkTrafficListenerTest
             public void outgoing(Socket socket, ByteBuffer bytes)
             {
                 outgoingData.set(outgoingData.get() + BufferUtil.toString(bytes,StandardCharsets.UTF_8));                
-                if (outgoingData.get().endsWith("\r\n0\r\n\r\n"))
-                    outgoingLatch.countDown();
+                if (outgoingData.get().endsWith("\r\n0\r\n\r\n")) {
+					outgoingLatch.countDown();
+				}
             }
         });
         int port = connector.getLocalPort();
 
-        String request = "" +
-                "GET / HTTP/1.1\r\n" +
-                "Host: localhost:" + port + "\r\n" +
-                "\r\n";
-        String expectedResponse = "" +
-                "HTTP/1.1 200 OK\r\n" +
-                "Transfer-Encoding: chunked\r\n" +
-                "\r\n" +
-                responseChunk1.length() + "\r\n" +
-                responseChunk1 + "\r\n" +
-                responseChunk2.length() + "\r\n" +
-                responseChunk2 + "\r\n" +
-                "0\r\n" +
-                "\r\n";
+        String request = "GET / HTTP/1.1\r\n" + "Host: localhost:" + port + "\r\n" + "\r\n";
+        String expectedResponse = "HTTP/1.1 200 OK\r\n" + "Transfer-Encoding: chunked\r\n" + "\r\n" + responseChunk1.length() + "\r\n" + responseChunk1 + "\r\n" + responseChunk2.length() + "\r\n" + responseChunk2 + "\r\n" + "0\r\n" + "\r\n";
 
         Socket socket = new Socket("localhost", port);
         OutputStream output = socket.getOutputStream();
@@ -348,18 +319,8 @@ public class NetworkTrafficListenerTest
         int port = connector.getLocalPort();
 
         String requestContent = "a=1&b=2";
-        String request = "" +
-                "POST / HTTP/1.1\r\n" +
-                "Host: localhost:" + port + "\r\n" +
-                "Content-Type: application/x-www-form-urlencoded\r\n" +
-                "Content-Length: " + requestContent.length() + "\r\n" +
-                "\r\n" +
-                requestContent;
-        String expectedResponse = "" +
-                "HTTP/1.1 302 Found\r\n" +
-                "Location: http://localhost:" + port + location + "\r\n" +
-                "Content-Length: 0\r\n" +
-                "\r\n";
+        String request = "POST / HTTP/1.1\r\n" + "Host: localhost:" + port + "\r\n" + "Content-Type: application/x-www-form-urlencoded\r\n" + "Content-Length: " + requestContent.length() + "\r\n" + "\r\n" + requestContent;
+        String expectedResponse = "HTTP/1.1 302 Found\r\n" + "Location: http://localhost:" + port + location + "\r\n" + "Content-Length: 0\r\n" + "\r\n";
 
         Socket socket = new Socket("localhost", port);
         OutputStream output = socket.getOutputStream();
@@ -395,8 +356,9 @@ public class NetworkTrafficListenerTest
                 while (true)
                 {
                     int read = input.read(buffer);
-                    if (read < 0)
-                        break;
+                    if (read < 0) {
+						break;
+					}
                 }
                 request.setHandled(true);
             }
@@ -424,19 +386,11 @@ public class NetworkTrafficListenerTest
 
         // Generate 32 KiB of request content
         String requestContent = "0123456789ABCDEF";
-        for (int i = 0; i < 11; ++i)
-            requestContent += requestContent;
-        String request = "" +
-                "POST / HTTP/1.1\r\n" +
-                "Host: localhost:" + port + "\r\n" +
-                "Content-Type: text/plain\r\n" +
-                "Content-Length: " + requestContent.length() + "\r\n" +
-                "\r\n" +
-                requestContent;
-        String expectedResponse = "" +
-                "HTTP/1.1 200 OK\r\n" +
-                "Content-Length: 0\r\n" +
-                "\r\n";
+        for (int i = 0; i < 11; ++i) {
+			requestContent += requestContent;
+		}
+        String request = "POST / HTTP/1.1\r\n" + "Host: localhost:" + port + "\r\n" + "Content-Type: text/plain\r\n" + "Content-Length: " + requestContent.length() + "\r\n" + "\r\n" + requestContent;
+        String expectedResponse = "HTTP/1.1 200 OK\r\n" + "Content-Length: 0\r\n" + "\r\n";
 
         Socket socket = new Socket("localhost", port);
         OutputStream output = socket.getOutputStream();
@@ -466,17 +420,20 @@ public class NetworkTrafficListenerTest
             baos.write(read);
 
             // Handle non-chunked end of response
-            if (read == END_OF_CONTENT)
-                break;
+            if (read == END_OF_CONTENT) {
+				break;
+			}
 
             // Handle chunked end of response
             String response = baos.toString("UTF-8");
-            if (response.endsWith("\r\n0\r\n\r\n"))
-                break;
+            if (response.endsWith("\r\n0\r\n\r\n")) {
+				break;
+			}
 
             // Handle non-content responses
-            if (response.contains("Content-Length: 0") && response.endsWith("\r\n\r\n"))
-                break;
+            if (response.contains("Content-Length: 0") && response.endsWith("\r\n\r\n")) {
+				break;
+			}
         }
         return baos.toByteArray();
     }

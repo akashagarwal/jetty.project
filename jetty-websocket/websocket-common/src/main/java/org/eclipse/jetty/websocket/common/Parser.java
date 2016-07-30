@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.common;
 
@@ -62,13 +57,13 @@ public class Parser
     private final WebSocketPolicy policy;
     private final ByteBufferPool bufferPool;
 
-    // State specific
+    /** State specific. */
     private State state = State.START;
-    private int cursor = 0;
-    // Frame
+    private int cursor;
+    /** Frame. */
     private WebSocketFrame frame;
     private boolean priorDataFrame;
-    // payload specific
+    /** Payload specific. */
     private ByteBuffer payload;
     private int payloadLength;
     private PayloadProcessor maskProcessor = new DeMaskProcessor();
@@ -84,7 +79,7 @@ public class Parser
      *   0001_0000 (0x10) = rsv3
      * </pre>
      */
-    private byte flagsInUse=0x00;
+    private byte flagsInUse;
     
     private IncomingFrames incomingFramesHandler;
 
@@ -182,8 +177,9 @@ public class Parser
 
     protected void notifyFrame(final Frame f)
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("{} Notify {}",policy.getBehavior(),getIncomingFramesHandler());
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("{} Notify {}",policy.getBehavior(),getIncomingFramesHandler());
+		}
 
         if (policy.getBehavior() == WebSocketBehavior.SERVER)
         {
@@ -202,14 +198,9 @@ public class Parser
                 throw new ProtocolException("Client MUST mask all frames (RFC-6455: Section 5.1)");
             }
         }
-        else if(policy.getBehavior() == WebSocketBehavior.CLIENT)
-        {
-            // Required by RFC-6455 / Section 5.1
-            if (f.isMasked())
-            {
-                throw new ProtocolException("Server MUST NOT mask any frames (RFC-6455: Section 5.1)");
-            }
-        }
+        else if(policy.getBehavior() == WebSocketBehavior.CLIENT && f.isMasked()) {
+		    throw new ProtocolException("Server MUST NOT mask any frames (RFC-6455: Section 5.1)");
+		}
 
         if (incomingFramesHandler == null)
         {
@@ -251,8 +242,9 @@ public class Parser
             // parse through all the frames in the buffer
             while (parseFrame(buffer))
             {
-                if (LOG.isDebugEnabled())
-                    LOG.debug("{} Parsed Frame: {}",policy.getBehavior(),frame);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("{} Parsed Frame: {}",policy.getBehavior(),frame);
+				}
                 notifyFrame(frame);
                 if (frame.isDataFrame())
                 {
@@ -284,8 +276,9 @@ public class Parser
 
     private void reset()
     {
-        if (frame != null)
-            frame.reset();
+        if (frame != null) {
+			frame.reset();
+		}
         frame = null;
         bufferPool.release(payload);
         payload = null;
@@ -316,7 +309,7 @@ public class Parser
                 {
                     // peek at byte
                     byte b = buffer.get();
-                    boolean fin = ((b & 0x80) != 0);
+                    boolean fin = (b & 0x80) != 0;
                     
                     byte opcode = (byte)(b & 0x0F);
 
@@ -325,14 +318,15 @@ public class Parser
                         throw new ProtocolException("Unknown opcode: " + opcode);
                     }
                     
-                    if (LOG.isDebugEnabled())
-                        LOG.debug("{} OpCode {}, fin={} rsv={}{}{}",
+                    if (LOG.isDebugEnabled()) {
+						LOG.debug("{} OpCode {}, fin={} rsv={}{}{}",
                                 policy.getBehavior(),
                                 OpCode.name(opcode),
                                 fin,
-                                (((b & 0x40) != 0)?'1':'.'),
-                                (((b & 0x20) != 0)?'1':'.'),
-                                (((b & 0x10) != 0)?'1':'.'));
+                                ((b & 0x40) != 0)?'1':'.',
+                                ((b & 0x20) != 0)?'1':'.',
+                                ((b & 0x10) != 0)?'1':'.');
+					}
 
                     // base framing flags
                     switch(opcode)
@@ -401,24 +395,27 @@ public class Parser
                          */
                         if ((b & 0x40) != 0)
                         {
-                            if (isRsv1InUse())
-                                frame.setRsv1(true);
-                            else
-                                throw new ProtocolException("RSV1 not allowed to be set");   
+                            if (isRsv1InUse()) {
+								frame.setRsv1(true);
+							} else {
+								throw new ProtocolException("RSV1 not allowed to be set");
+							}   
                         }
                         if ((b & 0x20) != 0)
                         {
-                            if (isRsv2InUse())
-                                frame.setRsv2(true);
-                            else
-                                throw new ProtocolException("RSV2 not allowed to be set");   
+                            if (isRsv2InUse()) {
+								frame.setRsv2(true);
+							} else {
+								throw new ProtocolException("RSV2 not allowed to be set");
+							}   
                         }
                         if ((b & 0x10) != 0)
                         {
-                            if (isRsv3InUse())
-                                frame.setRsv3(true);
-                            else
-                                throw new ProtocolException("RSV3 not allowed to be set");   
+                            if (isRsv3InUse()) {
+								frame.setRsv3(true);
+							} else {
+								throw new ProtocolException("RSV3 not allowed to be set");
+							}   
                         }
                     }
                     
@@ -430,7 +427,7 @@ public class Parser
                 {
                     byte b = buffer.get();
                     frame.setMasked((b & 0x80) != 0);
-                    payloadLength = (byte)(0x7F & b);
+                    payloadLength = 0x7F & b;
 
                     if (payloadLength == 127) // 0x7F
                     {
@@ -474,7 +471,7 @@ public class Parser
                 {
                     byte b = buffer.get();
                     --cursor;
-                    payloadLength |= (b & 0xFF) << (8 * cursor);
+                    payloadLength |= (b & 0xFF) << 8 * cursor;
                     if (cursor == 0)
                     {
                         assertSanePayloadLength(payloadLength);
@@ -567,7 +564,7 @@ public class Parser
     }
 
     /**
-     * Implementation specific parsing of a payload
+     * Implementation specific parsing of a payload.
      * 
      * @param buffer
      *            the payload buffer
@@ -639,13 +636,13 @@ public class Parser
         StringBuilder builder = new StringBuilder();
         builder.append("Parser@").append(Integer.toHexString(hashCode()));
         builder.append("[");
-        if (incomingFramesHandler == null)
+        if (incomingFramesHandler != null)
         {
-            builder.append("NO_HANDLER");
+            builder.append(incomingFramesHandler.getClass().getSimpleName());
         }
         else
         {
-            builder.append(incomingFramesHandler.getClass().getSimpleName());
+            builder.append("NO_HANDLER");
         }
         builder.append(",s=").append(state);
         builder.append(",c=").append(cursor);

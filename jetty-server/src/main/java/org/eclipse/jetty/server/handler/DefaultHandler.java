@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server.handler;
 
@@ -62,7 +57,7 @@ public class DefaultHandler extends AbstractHandler
     {
         try
         {
-            URL fav = this.getClass().getClassLoader().getResource("org/eclipse/jetty/favicon.ico");
+            URL fav = getClass().getClassLoader().getResource("org/eclipse/jetty/favicon.ico");
             if (fav!=null)
             {
                 Resource r = Resource.newResource(fav);
@@ -75,26 +70,24 @@ public class DefaultHandler extends AbstractHandler
         }
     }
 
-    /* ------------------------------------------------------------ */
-    /*
-     * @see org.eclipse.jetty.server.server.Handler#handle(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, int)
-     */
+    /** ------------------------------------------------------------. */
     @Override
     public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
     {
-        if (response.isCommitted() || baseRequest.isHandled())
-            return;
+        if (response.isCommitted() || baseRequest.isHandled()) {
+			return;
+		}
 
         baseRequest.setHandled(true);
 
         String method=request.getMethod();
 
         // little cheat for common request
-        if (_serveIcon && _favicon!=null && HttpMethod.GET.is(method) && request.getRequestURI().equals("/favicon.ico"))
+        if (_serveIcon && _favicon!=null && HttpMethod.GET.is(method) && "/favicon.ico".equals(request.getRequestURI()))
         {
-            if (request.getDateHeader(HttpHeader.IF_MODIFIED_SINCE.toString())==_faviconModified)
-                response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-            else
+            if (request.getDateHeader(HttpHeader.IF_MODIFIED_SINCE.toString())==_faviconModified) {
+				response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+			} else
             {
                 response.setStatus(HttpServletResponse.SC_OK);
                 response.setContentType("image/x-icon");
@@ -107,7 +100,7 @@ public class DefaultHandler extends AbstractHandler
         }
 
 
-        if (!_showContexts || !HttpMethod.GET.is(method) || !request.getRequestURI().equals("/"))
+        if (!_showContexts || !HttpMethod.GET.is(method) || !"/".equals(request.getRequestURI()))
         {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
@@ -132,15 +125,18 @@ public class DefaultHandler extends AbstractHandler
                 if (context.isRunning())
                 {
                     writer.write("<li><a href=\"");
-                    if (context.getVirtualHosts()!=null && context.getVirtualHosts().length>0)
-                        writer.write(request.getScheme()+"://"+context.getVirtualHosts()[0]+":"+request.getLocalPort());
+                    if (context.getVirtualHosts()!=null && context.getVirtualHosts().length>0) {
+						writer.write(request.getScheme()+"://"+context.getVirtualHosts()[0]+":"+request.getLocalPort());
+					}
                     writer.write(context.getContextPath());
-                    if (context.getContextPath().length()>1 && context.getContextPath().endsWith("/"))
-                        writer.write("/");
+                    if (context.getContextPath().length()>1 && context.getContextPath().endsWith("/")) {
+						writer.write("/");
+					}
                     writer.write("\">");
                     writer.write(context.getContextPath());
-                    if (context.getVirtualHosts()!=null && context.getVirtualHosts().length>0)
-                        writer.write("&nbsp;@&nbsp;"+context.getVirtualHosts()[0]+":"+request.getLocalPort());
+                    if (context.getVirtualHosts()!=null && context.getVirtualHosts().length>0) {
+						writer.write("&nbsp;@&nbsp;"+context.getVirtualHosts()[0]+":"+request.getLocalPort());
+					}
                     writer.write("&nbsp;--->&nbsp;");
                     writer.write(context.toString());
                     writer.write("</a></li>\n");
@@ -149,14 +145,17 @@ public class DefaultHandler extends AbstractHandler
                 {
                     writer.write("<li>");
                     writer.write(context.getContextPath());
-                    if (context.getVirtualHosts()!=null && context.getVirtualHosts().length>0)
-                        writer.write("&nbsp;@&nbsp;"+context.getVirtualHosts()[0]+":"+request.getLocalPort());
+                    if (context.getVirtualHosts()!=null && context.getVirtualHosts().length>0) {
+						writer.write("&nbsp;@&nbsp;"+context.getVirtualHosts()[0]+":"+request.getLocalPort());
+					}
                     writer.write("&nbsp;--->&nbsp;");
                     writer.write(context.toString());
-                    if (context.isFailed())
-                        writer.write(" [failed]");
-                    if (context.isStopped())
-                        writer.write(" [stopped]");
+                    if (context.isFailed()) {
+						writer.write(" [failed]");
+					}
+                    if (context.isStopped()) {
+						writer.write(" [stopped]");
+					}
                     writer.write("</li>\n");
                 }
             }

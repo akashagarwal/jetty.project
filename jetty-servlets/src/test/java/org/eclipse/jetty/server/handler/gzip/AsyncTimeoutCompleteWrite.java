@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server.handler.gzip;
 
@@ -74,7 +69,7 @@ public abstract class AsyncTimeoutCompleteWrite extends TestDirContentServlet im
     {
         assertThat("'filename' request attribute shouldn't be declared",request.getAttribute("filename"),nullValue());
 
-        AsyncContext ctx = (AsyncContext)request.getAttribute(this.getClass().getName());
+        AsyncContext ctx = (AsyncContext)request.getAttribute(getClass().getName());
         assertThat("AsyncContext (shouldn't be in request attribute)", ctx, nullValue());
         
         if (originalReqResp)
@@ -93,7 +88,7 @@ public abstract class AsyncTimeoutCompleteWrite extends TestDirContentServlet im
         ctx.setTimeout(20);
         
         // Setup indication of a redispatch (which this scenario shouldn't do)
-        request.setAttribute(this.getClass().getName(),ctx);
+        request.setAttribute(getClass().getName(),ctx);
     }
 
     @Override
@@ -114,10 +109,11 @@ public abstract class AsyncTimeoutCompleteWrite extends TestDirContentServlet im
 
         ServletOutputStream out = response.getOutputStream();
 
-        if (fileName.endsWith("txt"))
-            response.setContentType("text/plain");
-        else if (fileName.endsWith("mp3"))
-            response.setContentType("audio/mpeg");
+        if (fileName.endsWith("txt")) {
+			response.setContentType("text/plain");
+		} else if (fileName.endsWith("mp3")) {
+			response.setContentType("audio/mpeg");
+		}
         response.setHeader("ETag","W/etag-" + fileName);
 
         out.write(dataBytes);

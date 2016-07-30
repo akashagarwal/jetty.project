@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 
@@ -55,7 +50,7 @@ public abstract class ConnectorCloseTestBase extends HttpServerTestFixture
         "et cursus magna. Donec orci enim, molestie a lobortis eu, imperdiet vitae neque.";
     private static int __length = __content.length();
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Test
     public void testCloseBetweenRequests() throws Exception
     {
@@ -73,7 +68,7 @@ public abstract class ConnectorCloseTestBase extends HttpServerTestFixture
             ResponseReader reader = new ResponseReader(client) {
                 private int _index = 0;
 
-                /* ------------------------------------------------------------ */
+                /** ------------------------------------------------------------. */
                 @Override
                 protected int doRead() throws IOException, InterruptedException
                 {
@@ -100,8 +95,9 @@ public abstract class ConnectorCloseTestBase extends HttpServerTestFixture
                 if (pipeline == requestCount / 2)
                 {
                     // wait for at least 1 request to have been received
-                    if (latch.getCount()==requestCount)
-                        Thread.sleep(1);
+                    if (latch.getCount()==requestCount) {
+						Thread.sleep(1);
+					}
                     _connector.close();
                 }
 
@@ -129,13 +125,13 @@ public abstract class ConnectorCloseTestBase extends HttpServerTestFixture
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     private int iterations(int cnt)
     {
         return cnt > 0 ? iterations(--cnt) + cnt : 0;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Test
     public void testCloseBetweenChunks() throws Exception
     {
@@ -194,16 +190,16 @@ public abstract class ConnectorCloseTestBase extends HttpServerTestFixture
     }
 
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public class ResponseReader implements Runnable
     {
-        private boolean _done = false;
+        private boolean _done;
 
         protected char[] _buffer;
         protected StringBuffer _response;
         protected BufferedReader _reader;
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         public ResponseReader(Socket client) throws IOException
         {
             _buffer = new char[256];
@@ -211,7 +207,7 @@ public abstract class ConnectorCloseTestBase extends HttpServerTestFixture
             _reader = new BufferedReader(new InputStreamReader(client.getInputStream()));
         }
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         public void setDone()
         {
             _done = true;
@@ -222,10 +218,7 @@ public abstract class ConnectorCloseTestBase extends HttpServerTestFixture
             return _response;
         }
 
-        /* ------------------------------------------------------------ */
-        /**
-         * @see java.lang.Runnable#run()
-         */
+        /** ------------------------------------------------------------. */
         public void run()
         {
             try
@@ -248,7 +241,7 @@ public abstract class ConnectorCloseTestBase extends HttpServerTestFixture
             }
         }
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         protected int doRead() throws IOException, InterruptedException
         {
             if (!_reader.ready())

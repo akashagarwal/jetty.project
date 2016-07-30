@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util.log;
 
@@ -36,8 +31,9 @@ public abstract class AbstractLogger implements Logger
     @Override
     public final Logger getLogger(String name)
     {
-        if (isBlank(name))
-            return this;
+        if (isBlank(name)) {
+			return this;
+		}
 
         final String basename = getName();
         final String fullname = (isBlank(basename) || Log.getRootLogger()==this)?name:(basename + "." + name);
@@ -48,8 +44,9 @@ public abstract class AbstractLogger implements Logger
             Logger newlog = newLogger(fullname);
             
             logger = Log.getMutableLoggers().putIfAbsent(fullname,newlog);
-            if (logger == null)
-                logger=newlog;
+            if (logger == null) {
+				logger=newlog;
+			}
         }
 
         return logger;
@@ -96,19 +93,20 @@ public abstract class AbstractLogger implements Logger
      */
     public static int lookupLoggingLevel(Properties props, final String name)
     {
-        if ((props == null) || (props.isEmpty()) || name==null )
-            return LEVEL_DEFAULT;
+        if (props == null || props.isEmpty() || name==null ) {
+			return LEVEL_DEFAULT;
+		}
         
         // Calculate the level this named logger should operate under.
         // Checking with FQCN first, then each package segment from longest to shortest.
         String nameSegment = name;
     
-        while ((nameSegment != null) && (nameSegment.length() > 0))
+        while (nameSegment != null && nameSegment.length() > 0)
         {
             String levelStr = props.getProperty(nameSegment + ".LEVEL");
             // System.err.printf("[StdErrLog.CONFIG] Checking for property [%s.LEVEL] = %s%n",nameSegment,levelStr);
             int level = getLevelId(nameSegment + ".LEVEL",levelStr);
-            if (level != (-1))
+            if (level != -1)
             {
                 return level;
             }
@@ -136,11 +134,12 @@ public abstract class AbstractLogger implements Logger
         // Checking with FQCN first, then each package segment from longest to shortest.
         String nameSegment = name;
     
-        while ((nameSegment != null) && (nameSegment.length() > 0))
+        while (nameSegment != null && nameSegment.length() > 0)
         {
             String s = props.getProperty(nameSegment+"."+property);
-            if (s!=null)
-                return s;
+            if (s!=null) {
+				return s;
+			}
     
             // Trim and try again.
             int idx = nameSegment.lastIndexOf('.');
@@ -202,7 +201,7 @@ public abstract class AbstractLogger implements Logger
     {
         String parts[] = classname.split("\\.");
         StringBuilder dense = new StringBuilder();
-        for (int i = 0; i < (parts.length - 1); i++)
+        for (int i = 0; i < parts.length - 1; i++)
         {
             dense.append(parts[i].charAt(0));
         }
@@ -219,7 +218,7 @@ public abstract class AbstractLogger implements Logger
     {
         if (isDebugEnabled())
         {
-            debug(msg,new Object[] { new Long(arg) });
+            debug(msg,new Object[] { Long.valueOf(arg) });
         }
     }
 }

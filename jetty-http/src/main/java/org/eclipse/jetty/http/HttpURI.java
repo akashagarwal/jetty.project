@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http;
 
@@ -91,19 +86,21 @@ public class HttpURI
      */
     public static HttpURI createHttpURI(String scheme, String host, int port, String path, String param, String query, String fragment)
     {
-        if (port==80 && HttpScheme.HTTP.is(scheme))
-            port=0;
-        if (port==443 && HttpScheme.HTTPS.is(scheme))
-            port=0;
+        if (port==80 && HttpScheme.HTTP.is(scheme)) {
+			port=0;
+		}
+        if (port==443 && HttpScheme.HTTPS.is(scheme)) {
+			port=0;
+		}
         return new HttpURI(scheme,host,port,path,param,query,fragment);
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public HttpURI()
     {
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public HttpURI(String scheme, String host, int port, String path, String param, String query, String fragment)
     {
         _scheme = scheme;
@@ -115,28 +112,29 @@ public class HttpURI
         _fragment = fragment;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public HttpURI(HttpURI uri)
     {
         this(uri._scheme,uri._host,uri._port,uri._path,uri._param,uri._query,uri._fragment);
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public HttpURI(String uri)
     {
         _port=-1;
         parse(State.START,uri,0,uri.length());
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public HttpURI(URI uri)
     {
         _uri=null;
         
         _scheme=uri.getScheme();
         _host=uri.getHost();
-        if (_host==null && uri.getRawSchemeSpecificPart().startsWith("//"))
-            _host="";
+        if (_host==null && uri.getRawSchemeSpecificPart().startsWith("//")) {
+			_host="";
+		}
         _port=uri.getPort();
         _user = uri.getUserInfo();
         _path=uri.getRawPath();
@@ -145,8 +143,9 @@ public class HttpURI
         if (_decodedPath != null)
         {
             int p = _decodedPath.lastIndexOf(';');
-            if (p >= 0)
-                _param = _decodedPath.substring(p + 1);
+            if (p >= 0) {
+				_param = _decodedPath.substring(p + 1);
+			}
         }
         _query=uri.getRawQuery();
         _fragment=uri.getFragment();
@@ -154,7 +153,7 @@ public class HttpURI
         _decodedPath=null;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public HttpURI(String scheme, String host, int port, String pathQuery)
     {
         _uri=null;
@@ -167,7 +166,7 @@ public class HttpURI
         
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void parse(String uri)
     {
         clear();
@@ -185,13 +184,14 @@ public class HttpURI
         clear();
         _uri=uri;
 
-        if (HttpMethod.CONNECT.is(method))
-            _path=uri;
-        else
-            parse(uri.startsWith("/")?State.PATH:State.START,uri,0,uri.length());
+        if (HttpMethod.CONNECT.is(method)) {
+			_path=uri;
+		} else {
+			parse(uri.startsWith("/")?State.PATH:State.START,uri,0,uri.length());
+		}
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Deprecated
     public void parseConnect(String uri)
     {
@@ -200,7 +200,7 @@ public class HttpURI
         _path=uri;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void parse(String uri, int offset, int length)
     {
         clear();
@@ -209,7 +209,7 @@ public class HttpURI
         parse(State.START,uri,offset,end);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     private void parse(State state, final String uri, final int offset, final int end)
     {
         boolean encoded=false;
@@ -251,9 +251,9 @@ public class HttpURI
 
                         default:
                             mark=i;
-                            if (_scheme==null)
-                                state=State.SCHEME_OR_PATH;
-                            else
+                            if (_scheme==null) {
+								state=State.SCHEME_OR_PATH;
+							} else
                             {
                                 path_mark=i;
                                 state=State.PATH;
@@ -344,14 +344,16 @@ public class HttpURI
                             state=State.PATH;
                             break;
                         case ':':
-                            if (i > mark)
-                                _host=uri.substring(mark,i);
+                            if (i > mark) {
+								_host=uri.substring(mark,i);
+							}
                             mark=i+1;
                             state=State.PORT;
                             break;
                         case '@':
-                            if (_user!=null)
-                                throw new IllegalArgumentException("Bad authority");
+                            if (_user!=null) {
+								throw new IllegalArgumentException("Bad authority");
+							}
                             _user=uri.substring(mark,i);
                             mark=i+1;
                             break;
@@ -392,8 +394,9 @@ public class HttpURI
                 {
                     if (c=='@')
                     {
-                        if (_user!=null)
-                            throw new IllegalArgumentException("Bad authority");
+                        if (_user!=null) {
+							throw new IllegalArgumentException("Bad authority");
+						}
                         // It wasn't a port, but a password!
                         _user=_host+":"+uri.substring(mark,i);
                         mark=i+1;
@@ -500,8 +503,9 @@ public class HttpURI
                 break;
                 
             case HOST:
-                if(end>mark)
-                    _host=uri.substring(mark,end);
+                if(end>mark) {
+					_host=uri.substring(mark,end);
+				}
                 break;
                 
             case IPV6:
@@ -534,29 +538,31 @@ public class HttpURI
         
         if (!encoded)
         {
-            if (_param==null)
-                _decodedPath=_path;
-            else
-                _decodedPath=_path.substring(0,_path.length()-_param.length()-1);
+            if (_param!=null) {
+				_decodedPath=_path.substring(0,_path.length()-_param.length()-1);
+			} else {
+				_decodedPath=_path;
+			}
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public String getScheme()
     {
         return _scheme;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public String getHost()
     {
         // Return null for empty host to retain compatibility with java.net.URI
-        if (_host!=null && _host.length()==0)
-            return null;
+        if (_host!=null && _host.length()==0) {
+			return null;
+		}
         return _host;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public int getPort()
     {
         return _port;
@@ -573,65 +579,69 @@ public class HttpURI
         return _path;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public String getDecodedPath()
     {
-        if (_decodedPath==null && _path!=null)
-            _decodedPath=URIUtil.decodePath(_path);
+        if (_decodedPath==null && _path!=null) {
+			_decodedPath=URIUtil.decodePath(_path);
+		}
         return _decodedPath;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public String getParam()
     {
         return _param;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public String getQuery()
     {
         return _query;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public boolean hasQuery()
     {
         return _query!=null && _query.length()>0;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public String getFragment()
     {
         return _fragment;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void decodeQueryTo(MultiMap<String> parameters)
     {
-        if (_query==_fragment)
-            return;
+        if (_query==_fragment) {
+			return;
+		}
         UrlEncoded.decodeUtf8To(_query,parameters);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void decodeQueryTo(MultiMap<String> parameters, String encoding) throws UnsupportedEncodingException
     {
         decodeQueryTo(parameters,Charset.forName(encoding));
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void decodeQueryTo(MultiMap<String> parameters, Charset encoding) throws UnsupportedEncodingException
     {
-        if (_query==_fragment)
-            return;
+        if (_query==_fragment) {
+			return;
+		}
 
-        if (encoding==null || StandardCharsets.UTF_8.equals(encoding))
-            UrlEncoded.decodeUtf8To(_query,parameters);
-        else
-            UrlEncoded.decodeTo(_query,parameters,encoding);
+        if (encoding==null || StandardCharsets.UTF_8.equals(encoding)) {
+			UrlEncoded.decodeUtf8To(_query,parameters);
+		} else {
+			UrlEncoded.decodeTo(_query,parameters,encoding);
+		}
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void clear()
     {
         _uri=null;
@@ -647,13 +657,13 @@ public class HttpURI
         _decodedPath=null;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public boolean isAbsolute()
     {
         return _scheme!=null && _scheme.length()>0;
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public String toString()
     {
@@ -661,48 +671,51 @@ public class HttpURI
         {
             StringBuilder out = new StringBuilder();
             
-            if (_scheme!=null)
-                out.append(_scheme).append(':');
+            if (_scheme!=null) {
+				out.append(_scheme).append(':');
+			}
             
             if (_host != null)
             {
                 out.append("//");
-                if (_user != null)
-                    out.append(_user).append('@');
+                if (_user != null) {
+					out.append(_user).append('@');
+				}
                 out.append(_host);
             }
             
-            if (_port>0)
-                out.append(':').append(_port);
+            if (_port>0) {
+				out.append(':').append(_port);
+			}
             
-            if (_path!=null)
-                out.append(_path);
+            if (_path!=null) {
+				out.append(_path);
+			}
             
-            if (_query!=null)
-                out.append('?').append(_query);
+            if (_query!=null) {
+				out.append('?').append(_query);
+			}
             
-            if (_fragment!=null)
-                out.append('#').append(_fragment);
+            if (_fragment!=null) {
+				out.append('#').append(_fragment);
+			}
             
-            if (out.length()>0)
-                _uri=out.toString();
-            else
-                _uri="";
+            if (out.length()>0) {
+				_uri=out.toString();
+			} else {
+				_uri="";
+			}
         }
         return _uri;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public boolean equals(Object o)
     {
-        if (o==this)
-            return true;
-        if (!(o instanceof HttpURI))
-            return false;
-        return toString().equals(o.toString());
+        return o==this || (o instanceof HttpURI && toString().equals(o.toString()));
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void setScheme(String scheme)
     {
         _scheme=scheme;
@@ -732,7 +745,7 @@ public class HttpURI
         _decodedPath=null;
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void setPathQuery(String path)
     {
         _uri=null;
@@ -740,40 +753,43 @@ public class HttpURI
         _decodedPath=null;
         _param=null;
         _fragment=null;
-        if (path!=null)
-            parse(State.PATH,path,0,path.length());
+        if (path!=null) {
+			parse(State.PATH,path,0,path.length());
+		}
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void setQuery(String query)
     {
         _query=query;
         _uri=null;
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public URI toURI() throws URISyntaxException
     {
         return new URI(_scheme,null,_host,_port,_path,_query==null?null:UrlEncoded.decodeString(_query),_fragment);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public String getPathQuery()
     {
-        if (_query==null)
-            return _path;
-        return _path+"?"+_query;
+        if (_query!=null) {
+			return _path+"?"+_query;
+		}
+        return _path;
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public String getAuthority()
     {
-        if (_port>0)
-            return _host+":"+_port;
+        if (_port>0) {
+			return _host+":"+_port;
+		}
         return _host;
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public String getUser()
     {
         return _user;

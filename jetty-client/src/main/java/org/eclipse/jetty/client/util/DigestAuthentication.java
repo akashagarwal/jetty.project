@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.client.util;
 
@@ -79,24 +74,28 @@ public class DigestAuthentication extends AbstractAuthentication
     {
         Map<String, String> params = parseParameters(headerInfo.getParameters());
         String nonce = params.get("nonce");
-        if (nonce == null || nonce.length() == 0)
-            return null;
+        if (nonce == null || nonce.length() == 0) {
+			return null;
+		}
         String opaque = params.get("opaque");
         String algorithm = params.get("algorithm");
-        if (algorithm == null)
-            algorithm = "MD5";
+        if (algorithm == null) {
+			algorithm = "MD5";
+		}
         MessageDigest digester = getMessageDigest(algorithm);
-        if (digester == null)
-            return null;
+        if (digester == null) {
+			return null;
+		}
         String serverQOP = params.get("qop");
         String clientQOP = null;
         if (serverQOP != null)
         {
             List<String> serverQOPValues = StringUtil.csvSplit(null,serverQOP,0,serverQOP.length());
-            if (serverQOPValues.contains("auth"))
-                clientQOP = "auth";
-            else if (serverQOPValues.contains("auth-int"))
-                clientQOP = "auth-int";
+            if (serverQOPValues.contains("auth")) {
+				clientQOP = "auth";
+			} else if (serverQOPValues.contains("auth-int")) {
+				clientQOP = "auth-int";
+			}
         }
 
         return new DigestResult(headerInfo.getHeader(), response.getContent(), getRealm(), user, password, algorithm, nonce, clientQOP, opaque);
@@ -113,8 +112,9 @@ public class DigestAuthentication extends AbstractAuthentication
             {
                 String name = matcher.group(1).trim().toLowerCase(Locale.ENGLISH);
                 String value = matcher.group(2).trim();
-                if (value.startsWith("\"") && value.endsWith("\""))
-                    value = value.substring(1, value.length() - 1);
+                if (value.startsWith("\"") && value.endsWith("\"")) {
+					value = value.substring(1, value.length() - 1);
+				}
                 result.put(name, value);
             }
         }
@@ -141,8 +141,9 @@ public class DigestAuthentication extends AbstractAuthentication
                     if (quotes % 2 == 0)
                     {
                         String element = paramString.substring(start, i).trim();
-                        if (element.length() > 0)
-                            result.add(element);
+                        if (element.length() > 0) {
+							result.add(element);
+						}
                         start = i + 1;
                     }
                     break;
@@ -202,16 +203,18 @@ public class DigestAuthentication extends AbstractAuthentication
         public void apply(Request request)
         {
             MessageDigest digester = getMessageDigest(algorithm);
-            if (digester == null)
-                return;
+            if (digester == null) {
+				return;
+			}
 
             String A1 = user + ":" + realm + ":" + password;
             String hashA1 = toHexString(digester.digest(A1.getBytes(StandardCharsets.ISO_8859_1)));
 
             URI uri = request.getURI();
             String A2 = request.getMethod() + ":" + uri;
-            if ("auth-int".equals(qop))
-                A2 += ":" + toHexString(digester.digest(content));
+            if ("auth-int".equals(qop)) {
+				A2 += ":" + toHexString(digester.digest(content));
+			}
             String hashA2 = toHexString(digester.digest(A2.getBytes(StandardCharsets.ISO_8859_1)));
 
             String nonceCount;
@@ -235,8 +238,9 @@ public class DigestAuthentication extends AbstractAuthentication
             value.append(" username=\"").append(user).append("\"");
             value.append(", realm=\"").append(realm).append("\"");
             value.append(", nonce=\"").append(nonce).append("\"");
-            if (opaque != null)
-                value.append(", opaque=\"").append(opaque).append("\"");
+            if (opaque != null) {
+				value.append(", opaque=\"").append(opaque).append("\"");
+			}
             value.append(", algorithm=\"").append(algorithm).append("\"");
             value.append(", uri=\"").append(uri).append("\"");
             if (qop != null)

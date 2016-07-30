@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 
@@ -74,7 +69,7 @@ import org.eclipse.jetty.util.thread.ThreadPool.SizedThreadPool;
  * The server is itself a handler and a ThreadPool.  Connectors use the ThreadPool methods
  * to run jobs that will eventually call the handle method.
  */
-@ManagedObject(value="Jetty HTTP Servlet server")
+@ManagedObject("Jetty HTTP Servlet server")
 public class Server extends HandlerWrapper implements Attributes
 {
     private static final Logger LOG = Log.getLogger(Server.class);
@@ -84,15 +79,15 @@ public class Server extends HandlerWrapper implements Attributes
     private final List<Connector> _connectors = new CopyOnWriteArrayList<>();
     private SessionIdManager _sessionIdManager;
     private boolean _stopAtShutdown;
-    private boolean _dumpAfterStart=false;
-    private boolean _dumpBeforeStop=false;
+    private boolean _dumpAfterStart;
+    private boolean _dumpBeforeStop;
     private RequestLog _requestLog;
 
     private final Locker _dateLocker = new Locker();
     private volatile DateField _dateField;
 
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public Server()
     {
         this((ThreadPool)null);
@@ -128,7 +123,7 @@ public class Server extends HandlerWrapper implements Attributes
         setConnectors(new Connector[]{connector});
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public Server(@Name("threadpool") ThreadPool pool)
     {
         _threadPool=pool!=null?pool:new QueuedThreadPool();
@@ -136,27 +131,27 @@ public class Server extends HandlerWrapper implements Attributes
         setServer(this);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public RequestLog getRequestLog()
     {
         return _requestLog;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void setRequestLog(RequestLog requestLog)
     {
         updateBean(_requestLog,requestLog);
         _requestLog = requestLog;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @ManagedAttribute("version of this server")
     public static String getVersion()
     {
         return Jetty.VERSION;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public boolean getStopAtShutdown()
     {
         return _stopAtShutdown;
@@ -189,15 +184,12 @@ public class Server extends HandlerWrapper implements Attributes
         if (stop)
         {
             //and we weren't stopping before
-            if (!_stopAtShutdown)
-            {
-                //only register to stop if we're already started (otherwise we'll do it in doStart())
-                if (isStarted())
-                    ShutdownThread.register(this);
-            }
-        }
-        else
-            ShutdownThread.deregister(this);
+            if (!_stopAtShutdown && isStarted()) {
+				ShutdownThread.register(this);
+			}
+        } else {
+			ShutdownThread.deregister(this);
+		}
 
         _stopAtShutdown=stop;
     }
@@ -213,14 +205,16 @@ public class Server extends HandlerWrapper implements Attributes
         return connectors.toArray(new Connector[connectors.size()]);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void addConnector(Connector connector)
     {
-        if (connector.getServer() != this)
-            throw new IllegalArgumentException("Connector " + connector +
+        if (connector.getServer() != this) {
+			throw new IllegalArgumentException("Connector " + connector +
                     " cannot be shared among server " + connector.getServer() + " and server " + this);
-        if (_connectors.add(connector))
-            addBean(connector);
+		}
+        if (_connectors.add(connector)) {
+			addBean(connector);
+		}
     }
 
     /* ------------------------------------------------------------ */
@@ -231,8 +225,9 @@ public class Server extends HandlerWrapper implements Attributes
      */
     public void removeConnector(Connector connector)
     {
-        if (_connectors.remove(connector))
-            removeBean(connector);
+        if (_connectors.remove(connector)) {
+			removeBean(connector);
+		}
     }
 
     /* ------------------------------------------------------------ */
@@ -246,17 +241,19 @@ public class Server extends HandlerWrapper implements Attributes
         {
             for (Connector connector : connectors)
             {
-                if (connector.getServer() != this)
-                    throw new IllegalArgumentException("Connector " + connector +
+                if (connector.getServer() != this) {
+					throw new IllegalArgumentException("Connector " + connector +
                             " cannot be shared among server " + connector.getServer() + " and server " + this);
+				}
             }
         }
 
         Connector[] oldConnectors = getConnectors();
         updateBeans(oldConnectors, connectors);
         _connectors.removeAll(Arrays.asList(oldConnectors));
-        if (connectors != null)
-            _connectors.addAll(Arrays.asList(connectors));
+        if (connectors != null) {
+			_connectors.addAll(Arrays.asList(connectors));
+		}
     }
 
     /* ------------------------------------------------------------ */
@@ -303,7 +300,7 @@ public class Server extends HandlerWrapper implements Attributes
         _dumpBeforeStop = dumpBeforeStop;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public HttpField getDateField()
     {
         long now=System.currentTimeMillis();
@@ -326,14 +323,15 @@ public class Server extends HandlerWrapper implements Attributes
         return df._dateField;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     protected void doStart() throws Exception
     {
         //If the Server should be stopped when the jvm exits, register
         //with the shutdown handler thread.
-        if (getStopAtShutdown())
-            ShutdownThread.register(this);
+        if (getStopAtShutdown()) {
+			ShutdownThread.register(this);
+		}
 
         //Register the Server with the handler thread for receiving
         //remote stop commands
@@ -361,17 +359,20 @@ public class Server extends HandlerWrapper implements Attributes
         {
             for (Connector connector : _connectors)
             {
-                if (connector instanceof AbstractConnector)
-                    acceptors+=((AbstractConnector)connector).getAcceptors();
+                if (connector instanceof AbstractConnector) {
+					acceptors+=((AbstractConnector)connector).getAcceptors();
+				}
 
-                if (connector instanceof ServerConnector)
-                    selectors+=((ServerConnector)connector).getSelectorManager().getSelectorCount();
+                if (connector instanceof ServerConnector) {
+					selectors+=((ServerConnector)connector).getSelectorManager().getSelectorCount();
+				}
             }
         }
 
         int needed=1+selectors+acceptors;
-        if (max>0 && needed>max)
-            throw new IllegalStateException(String.format("Insufficient threads: max=%d < needed(acceptors=%d + selectors=%d + request=1)",max,acceptors,selectors));
+        if (max>0 && needed>max) {
+			throw new IllegalStateException(String.format("Insufficient threads: max=%d < needed(acceptors=%d + selectors=%d + request=1)",max,acceptors,selectors));
+		}
 
         try
         {
@@ -395,8 +396,9 @@ public class Server extends HandlerWrapper implements Attributes
             }
         }
 
-        if (isDumpAfterStart())
-            dumpStdErr();
+        if (isDumpAfterStart()) {
+			dumpStdErr();
+		}
 
         mex.ifExceptionThrow();
 
@@ -407,19 +409,22 @@ public class Server extends HandlerWrapper implements Attributes
     protected void start(LifeCycle l) throws Exception
     {
         // start connectors last
-        if (!(l instanceof Connector))
-            super.start(l);
+        if (!(l instanceof Connector)) {
+			super.start(l);
+		}
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     protected void doStop() throws Exception
     {
-        if (isDumpBeforeStop())
-            dumpStdErr();
+        if (isDumpBeforeStop()) {
+			dumpStdErr();
+		}
 
-        if (LOG.isDebugEnabled())
-            LOG.debug("doStop {}",this);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("doStop {}",this);
+		}
 
         MultiException mex=new MultiException();
 
@@ -427,29 +432,33 @@ public class Server extends HandlerWrapper implements Attributes
         List<Future<Void>> futures = new ArrayList<>();
 
         // First close the network connectors to stop accepting new connections
-        for (Connector connector : _connectors)
-            futures.add(connector.shutdown());
+        for (Connector connector : _connectors) {
+			futures.add(connector.shutdown());
+		}
 
         // Then tell the contexts that we are shutting down
         Handler[] gracefuls = getChildHandlersByClass(Graceful.class);
-        for (Handler graceful : gracefuls)
-            futures.add(((Graceful)graceful).shutdown());
+        for (Handler graceful : gracefuls) {
+			futures.add(((Graceful)graceful).shutdown());
+		}
 
         // Shall we gracefully wait for zero connections?
         long stopTimeout = getStopTimeout();
         if (stopTimeout>0)
         {
             long stop_by=System.currentTimeMillis()+stopTimeout;
-            if (LOG.isDebugEnabled())
-                LOG.debug("Graceful shutdown {} by ",this,new Date(stop_by));
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Graceful shutdown {} by ",this,new Date(stop_by));
+			}
 
             // Wait for shutdowns
             for (Future<Void> future: futures)
             {
                 try
                 {
-                    if (!future.isDone())
-                        future.get(Math.max(1L,stop_by-System.currentTimeMillis()),TimeUnit.MILLISECONDS);
+                    if (!future.isDone()) {
+						future.get(Math.max(1L,stop_by-System.currentTimeMillis()),TimeUnit.MILLISECONDS);
+					}
                 }
                 catch (Exception e)
                 {
@@ -459,9 +468,11 @@ public class Server extends HandlerWrapper implements Attributes
         }
 
         // Cancel any shutdowns not done
-        for (Future<Void> future: futures)
-            if (!future.isDone())
-                future.cancel(true);
+        for (Future<Void> future: futures) {
+			if (!future.isDone()) {
+				future.cancel(true);
+			}
+		}
 
         // Now stop the connectors (this will close existing connections)
         for (Connector connector : _connectors)
@@ -486,8 +497,9 @@ public class Server extends HandlerWrapper implements Attributes
             mex.add(e);
         }
 
-        if (getStopAtShutdown())
-            ShutdownThread.deregister(this);
+        if (getStopAtShutdown()) {
+			ShutdownThread.deregister(this);
+		}
 
         //Unregister the Server with the handler thread for receiving
         //remote stop commands as we are stopped already
@@ -497,7 +509,7 @@ public class Server extends HandlerWrapper implements Attributes
     }
 
     /* ------------------------------------------------------------ */
-    /* Handle a request from a connection.
+    /** Handle a request from a connection.
      * Called to handle a request on the connection when either the header has been received,
      * or after the entire request has been received (for short requests of known length), or
      * on the dispatch of an async request.
@@ -508,33 +520,37 @@ public class Server extends HandlerWrapper implements Attributes
         final Request request=channel.getRequest();
         final Response response=channel.getResponse();
 
-        if (LOG.isDebugEnabled())
-            LOG.debug("{} {} {} on {}", request.getDispatcherType(), request.getMethod(), target, channel);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("{} {} {} on {}", request.getDispatcherType(), request.getMethod(), target, channel);
+		}
 
         if (HttpMethod.OPTIONS.is(request.getMethod()) || "*".equals(target))
         {
-            if (!HttpMethod.OPTIONS.is(request.getMethod()))
-                response.sendError(HttpStatus.BAD_REQUEST_400);
+            if (!HttpMethod.OPTIONS.is(request.getMethod())) {
+				response.sendError(HttpStatus.BAD_REQUEST_400);
+			}
             handleOptions(request,response);
-            if (!request.isHandled())
-                handle(target, request, request, response);
-        }
-        else
-            handle(target, request, request, response);
+            if (!request.isHandled()) {
+				handle(target, request, request, response);
+			}
+        } else {
+			handle(target, request, request, response);
+		}
 
-        if (LOG.isDebugEnabled())
-            LOG.debug("handled={} async={} committed={} on {}", request.isHandled(),request.isAsyncStarted(),response.isCommitted(),channel);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("handled={} async={} committed={} on {}", request.isHandled(),request.isAsyncStarted(),response.isCommitted(),channel);
+		}
     }
 
     /* ------------------------------------------------------------ */
-    /* Handle Options request to server
+    /** Handle Options request to server.
      */
     protected void handleOptions(Request request,Response response) throws IOException
     {
     }
 
     /* ------------------------------------------------------------ */
-    /* Handle a request from a connection.
+    /** Handle a request from a connection.
      * Called to handle a request on the connection when either the header has been received,
      * or after the entire request has been received (for short requests of known length), or
      * on the dispatch of an async request.
@@ -556,21 +572,25 @@ public class Server extends HandlerWrapper implements Attributes
             HttpURI uri = baseRequest.getHttpURI();
             baseRequest.setPathInfo(uri.getDecodedPath());
             if (uri.getQuery()!=null)
-                baseRequest.mergeQueryParameters(query,uri.getQuery(), true); //we have to assume dispatch path and query are UTF8
+			 {
+				baseRequest.mergeQueryParameters(query,uri.getQuery(), true); //we have to assume dispatch path and query are UTF8
+			}
         }
 
         final String target=baseRequest.getPathInfo();
         final HttpServletRequest request=(HttpServletRequest)event.getSuppliedRequest();
         final HttpServletResponse response=(HttpServletResponse)event.getSuppliedResponse();
 
-        if (LOG.isDebugEnabled())
-            LOG.debug("{} {} {} on {}", request.getDispatcherType(), request.getMethod(), target, channel);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("{} {} {} on {}", request.getDispatcherType(), request.getMethod(), target, channel);
+		}
         handle(target, baseRequest, request, response);
-        if (LOG.isDebugEnabled())
-            LOG.debug("handledAsync={} async={} committed={} on {}", channel.getRequest().isHandled(),request.isAsyncStarted(),response.isCommitted(),channel);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("handledAsync={} async={} committed={} on {}", channel.getRequest().isHandled(),request.isAsyncStarted(),response.isCommitted(),channel);
+		}
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void join() throws InterruptedException
     {
         getThreadPool().join();
@@ -595,56 +615,43 @@ public class Server extends HandlerWrapper implements Attributes
         _sessionIdManager=sessionIdManager;
     }
 
-    /* ------------------------------------------------------------ */
-    /*
-     * @see org.eclipse.util.AttributesMap#clearAttributes()
-     */
+    /** ------------------------------------------------------------. */
     @Override
     public void clearAttributes()
     {
         Enumeration<String> names = _attributes.getAttributeNames();
-        while (names.hasMoreElements())
-            removeBean(_attributes.getAttribute(names.nextElement()));
+        while (names.hasMoreElements()) {
+			removeBean(_attributes.getAttribute(names.nextElement()));
+		}
         _attributes.clearAttributes();
     }
 
-    /* ------------------------------------------------------------ */
-    /*
-     * @see org.eclipse.util.AttributesMap#getAttribute(java.lang.String)
-     */
+    /** ------------------------------------------------------------. */
     @Override
     public Object getAttribute(String name)
     {
         return _attributes.getAttribute(name);
     }
 
-    /* ------------------------------------------------------------ */
-    /*
-     * @see org.eclipse.util.AttributesMap#getAttributeNames()
-     */
+    /** ------------------------------------------------------------. */
     @Override
     public Enumeration<String> getAttributeNames()
     {
         return AttributesMap.getAttributeNamesCopy(_attributes);
     }
 
-    /* ------------------------------------------------------------ */
-    /*
-     * @see org.eclipse.util.AttributesMap#removeAttribute(java.lang.String)
-     */
+    /** ------------------------------------------------------------. */
     @Override
     public void removeAttribute(String name)
     {
         Object bean=_attributes.getAttribute(name);
-        if (bean!=null)
-            removeBean(bean);
+        if (bean!=null) {
+			removeBean(bean);
+		}
         _attributes.removeAttribute(name);
     }
 
-    /* ------------------------------------------------------------ */
-    /*
-     * @see org.eclipse.util.AttributesMap#setAttribute(java.lang.String, java.lang.Object)
-     */
+    /** ------------------------------------------------------------. */
     @Override
     public void setAttribute(String name, Object attribute)
     {
@@ -669,8 +676,9 @@ public class Server extends HandlerWrapper implements Attributes
             }
         }
 
-        if (connector==null)
-            return null;
+        if (connector==null) {
+			return null;
+		}
 
         ContextHandler context = getChildHandlerByClass(ContextHandler.class);
 
@@ -678,18 +686,22 @@ public class Server extends HandlerWrapper implements Attributes
         {
             String protocol = connector.getDefaultConnectionFactory().getProtocol();
             String scheme="http";
-            if (protocol.startsWith("SSL-") || protocol.equals("SSL"))
-                scheme = "https";
+            if (protocol.startsWith("SSL-") || "SSL".equals(protocol)) {
+				scheme = "https";
+			}
 
             String host=connector.getHost();
-            if (context!=null && context.getVirtualHosts()!=null && context.getVirtualHosts().length>0)
-                host=context.getVirtualHosts()[0];
-            if (host==null)
-                host=InetAddress.getLocalHost().getHostAddress();
+            if (context!=null && context.getVirtualHosts()!=null && context.getVirtualHosts().length>0) {
+				host=context.getVirtualHosts()[0];
+			}
+            if (host==null) {
+				host=InetAddress.getLocalHost().getHostAddress();
+			}
 
             String path=context==null?null:context.getContextPath();
-            if (path==null)
-                path="/";
+            if (path==null) {
+				path="/";
+			}
             return new URI(scheme,null,host,connector.getLocalPort(),path,null,null);
         }
         catch(Exception e)
@@ -699,28 +711,28 @@ public class Server extends HandlerWrapper implements Attributes
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public String toString()
     {
-        return this.getClass().getName()+"@"+Integer.toHexString(hashCode());
+        return getClass().getName()+"@"+Integer.toHexString(hashCode());
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void dump(Appendable out,String indent) throws IOException
     {
-        dumpBeans(out,indent,Collections.singleton(new ClassLoaderDump(this.getClass().getClassLoader())));
+        dumpBeans(out,indent,Collections.singleton(new ClassLoaderDump(getClass().getClassLoader())));
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public static void main(String...args) throws Exception
     {
         System.err.println(getVersion());
     }
 
     /* ------------------------------------------------------------ */
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     private static class DateField
     {
         final long _seconds;

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.jsr356.annotations;
 
@@ -39,7 +34,7 @@ import org.eclipse.jetty.util.log.Logger;
 import org.eclipse.jetty.websocket.jsr356.JsrSession;
 
 /**
- * The live event methods found for a specific Annotated Endpoint
+ * The live event methods found for a specific Annotated Endpoint.
  * @param <T> the annotation type
  * @param <C> the endpoint config type
  */
@@ -54,37 +49,37 @@ public class JsrEvents<T extends Annotation, C extends EndpointConfig>
     private final OnOpenCallable onOpen;
 
     /**
-     * Callable for &#064;{@link OnClose} annotation
+     * Callable for &#064;{@link OnClose} annotation.
      */
     private final OnCloseCallable onClose;
 
     /**
-     * Callable for &#064;{@link OnError} annotation
+     * Callable for &#064;{@link OnError} annotation.
      */
     private final OnErrorCallable onError;
 
     /**
-     * Callable for &#064;{@link OnMessage} annotation dealing with Text Message Format
+     * Callable for &#064;{@link OnMessage} annotation dealing with Text Message Format.
      */
     private final OnMessageTextCallable onText;
 
     /**
-     * Callable for &#064;{@link OnMessage} annotation dealing with Text Streaming Message Format
+     * Callable for &#064;{@link OnMessage} annotation dealing with Text Streaming Message Format.
      */
     private final OnMessageTextStreamCallable onTextStream;
 
     /**
-     * Callable for &#064;{@link OnMessage} annotation dealing with Binary Message Format
+     * Callable for &#064;{@link OnMessage} annotation dealing with Binary Message Format.
      */
     private final OnMessageBinaryCallable onBinary;
 
     /**
-     * Callable for &#064;{@link OnMessage} annotation dealing with Binary Streaming Message Format
+     * Callable for &#064;{@link OnMessage} annotation dealing with Binary Streaming Message Format.
      */
     private final OnMessageBinaryStreamCallable onBinaryStream;
 
     /**
-     * Callable for &#064;{@link OnMessage} annotation dealing with Pong Message Format
+     * Callable for &#064;{@link OnMessage} annotation dealing with Pong Message Format.
      */
     private OnMessagePongCallable onPong;
 
@@ -229,22 +224,22 @@ public class JsrEvents<T extends Annotation, C extends EndpointConfig>
 
     public boolean hasBinary()
     {
-        return (onBinary != null);
+        return onBinary != null;
     }
 
     public boolean hasBinaryStream()
     {
-        return (onBinaryStream != null);
+        return onBinaryStream != null;
     }
 
     public boolean hasText()
     {
-        return (onText != null);
+        return onText != null;
     }
 
     public boolean hasTextStream()
     {
-        return (onTextStream != null);
+        return onTextStream != null;
     }
 
     public void init(JsrSession session)
@@ -287,20 +282,12 @@ public class JsrEvents<T extends Annotation, C extends EndpointConfig>
 
     public boolean isBinaryPartialSupported()
     {
-        if (onBinary == null)
-        {
-            return false;
-        }
-        return onBinary.isPartialMessageSupported();
+        return onBinary != null && onBinary.isPartialMessageSupported();
     }
 
     public boolean isTextPartialSupported()
     {
-        if (onText == null)
-        {
-            return false;
-        }
-        return onText.isPartialMessageSupported();
+        return onText != null && onText.isPartialMessageSupported();
     }
 
     public void setPathParameters(Map<String, String> pathParameters)

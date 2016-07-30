@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.nosql.mongodb;
 
@@ -183,7 +178,7 @@ public class SessionExpiryTest extends AbstractSessionExpiryTest
             assertEquals(HttpServletResponse.SC_OK,response2.getStatus());
             //verify that the session timeout is set in mongo
             verifySessionTimeout(sessions, sessionId, inactivePeriod);
-            assertTrue(getSessionAccessed(sessions, sessionId)+ (1000L*inactivePeriod) == getSessionExpiry(sessions, sessionId));            
+            assertTrue(getSessionAccessed(sessions, sessionId)+ 1000L*inactivePeriod == getSessionExpiry(sessions, sessionId));            
         }
         finally
         {
@@ -324,7 +319,7 @@ public class SessionExpiryTest extends AbstractSessionExpiryTest
         DBObject o = sessions.findOne(new BasicDBObject(MongoSessionManager.__ID,id));
         assertNotNull(o);
         Long expiry = (Long)o.get(MongoSessionManager.__EXPIRY);
-        return (expiry == null? null : expiry.longValue());
+        return expiry == null? null : expiry.longValue();
     }
     
     public int getSessionMaxInactiveInterval (DBCollection sessions, String id) throws Exception
@@ -335,7 +330,7 @@ public class SessionExpiryTest extends AbstractSessionExpiryTest
         DBObject o = sessions.findOne(new BasicDBObject(MongoSessionManager.__ID,id));
         assertNotNull(o);
         Integer inactiveInterval = (Integer)o.get(MongoSessionManager.__MAX_IDLE);
-        return (inactiveInterval == null? null : inactiveInterval.intValue());
+        return inactiveInterval == null? null : inactiveInterval.intValue();
     }
     
     public long getSessionAccessed (DBCollection sessions, String id) throws Exception
@@ -346,7 +341,7 @@ public class SessionExpiryTest extends AbstractSessionExpiryTest
         DBObject o = sessions.findOne(new BasicDBObject(MongoSessionManager.__ID,id));
         assertNotNull(o);
         Long accessed = (Long)o.get(MongoSessionManager.__ACCESSED);
-        return (accessed == null? null : accessed.longValue());
+        return accessed == null? null : accessed.longValue();
     }
     
     public void debugPrint (DBCollection sessions, String id) throws Exception
@@ -374,7 +369,7 @@ public class SessionExpiryTest extends AbstractSessionExpiryTest
             else if ("change".equals(action))
             {
                 String tmp = request.getParameter("val");
-                int val = (StringUtil.isBlank(tmp)?0:Integer.valueOf(tmp.trim()));
+                int val = StringUtil.isBlank(tmp)?0:Integer.valueOf(tmp.trim());
                 HttpSession session = request.getSession(false);
                 assertNotNull(session);
                 session.setMaxInactiveInterval(val);
@@ -399,13 +394,13 @@ public class SessionExpiryTest extends AbstractSessionExpiryTest
                 HttpSession session = request.getSession(true);
                 assertNotNull(session);
                 String tmp = request.getParameter("val");
-                int val = (StringUtil.isBlank(tmp)?0:Integer.valueOf(tmp.trim()));
+                int val = StringUtil.isBlank(tmp)?0:Integer.valueOf(tmp.trim());
                 session.setMaxInactiveInterval(val);
             }
             else if ("change".equals(action))
             {
                 String tmp = request.getParameter("val");
-                int val = (StringUtil.isBlank(tmp)?0:Integer.valueOf(tmp.trim()));
+                int val = StringUtil.isBlank(tmp)?0:Integer.valueOf(tmp.trim());
                 HttpSession session = request.getSession(false);
                 assertNotNull(session);
                 session.setMaxInactiveInterval(val);

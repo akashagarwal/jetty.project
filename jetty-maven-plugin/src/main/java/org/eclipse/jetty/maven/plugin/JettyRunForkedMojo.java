@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.maven.plugin;
 
@@ -126,20 +121,20 @@ public class JettyRunForkedMojo extends JettyRunMojo
     
     
     /**
-     * Extra environment variables to be passed to the forked process
+     * Extra environment variables to be passed to the forked process.
      * 
      * @parameter
      */
     private Map<String,String> env = new HashMap<String,String>();
 
     /**
-     * The forked jetty instance
+     * The forked jetty instance.
      */
     private Process forkedProcess;
     
     
     /**
-     * Random number generator
+     * Random number generator.
      */
     private Random random;    
     
@@ -152,7 +147,7 @@ public class JettyRunForkedMojo extends JettyRunMojo
     /**
      * ShutdownThread
      *
-     *
+     *.
      */
     public class ShutdownThread extends Thread
     {
@@ -176,7 +171,7 @@ public class JettyRunForkedMojo extends JettyRunMojo
     /**
      * ConsoleStreamer
      * 
-     * Simple streamer for the console output from a Process
+     * Simple streamer for the console output from a Process.
      */
     private static class ConsoleStreamer implements Runnable
     {
@@ -195,7 +190,7 @@ public class JettyRunForkedMojo extends JettyRunMojo
             String line;
             try
             {
-                while ((line = reader.readLine()) != (null))
+                while ((line = reader.readLine()) != null)
                 {
                     System.out.println("[" + mode + "] " + line);
                 }
@@ -215,9 +210,6 @@ public class JettyRunForkedMojo extends JettyRunMojo
     
     
     
-    /**
-     * @see org.apache.maven.plugin.Mojo#execute()
-     */
     public void execute() throws MojoExecutionException, MojoFailureException
     {
         Runtime.getRuntime().addShutdownHook(new ShutdownThread());
@@ -239,8 +231,9 @@ public class JettyRunForkedMojo extends JettyRunMojo
             printSystemProperties();
 
             //do NOT apply the jettyXml configuration - as the jvmArgs may be needed for it to work 
-            if (server == null)
-                server = new Server();
+            if (server == null) {
+				server = new Server();
+			}
 
             //ensure handler structure enabled
             ServerSupport.configureHandlers(server, null);
@@ -263,13 +256,16 @@ public class JettyRunForkedMojo extends JettyRunMojo
 
             if (webApp.getQuickStartWebDescriptor() == null)
             {
-                if (forkWebXml == null)
-                    forkWebXml = new File (target, "fork-web.xml");
+                if (forkWebXml == null) {
+					forkWebXml = new File (target, "fork-web.xml");
+				}
 
-                if (!forkWebXml.getParentFile().exists())
-                    forkWebXml.getParentFile().mkdirs();
-                if (!forkWebXml.exists())
-                    forkWebXml.createNewFile();
+                if (!forkWebXml.getParentFile().exists()) {
+					forkWebXml.getParentFile().mkdirs();
+				}
+                if (!forkWebXml.exists()) {
+					forkWebXml.createNewFile();
+				}
 
                 webApp.setQuickStartWebDescriptor(Resource.newResource(forkWebXml));
             }
@@ -280,10 +276,11 @@ public class JettyRunForkedMojo extends JettyRunMojo
             //if our server has a thread pool associated we can do annotation scanning multithreaded,
             //otherwise scanning will be single threaded
             QueuedThreadPool tpool = server.getBean(QueuedThreadPool.class);
-            if (tpool != null)
-                tpool.start();
-            else
-                webApp.setAttribute(AnnotationConfiguration.MULTI_THREADED, Boolean.FALSE.toString());
+            if (tpool != null) {
+				tpool.start();
+			} else {
+				webApp.setAttribute(AnnotationConfiguration.MULTI_THREADED, Boolean.FALSE.toString());
+			}
 
             //leave everything unpacked for the forked process to use
             webApp.setPersistTempDirectory(true);
@@ -295,8 +292,9 @@ public class JettyRunForkedMojo extends JettyRunMojo
             
             webApp.stop();
             
-            if (tpool != null)
-                tpool.stop();
+            if (tpool != null) {
+				tpool.stop();
+			}
             
             List<String> cmd = new ArrayList<String>();
             cmd.add(getJavaBin());
@@ -306,8 +304,9 @@ public class JettyRunForkedMojo extends JettyRunMojo
                 String[] args = jvmArgs.split(" ");
                 for (int i=0;args != null && i<args.length;i++)
                 {
-                    if (args[i] !=null && !"".equals(args[i]))
-                        cmd.add(args[i].trim());
+                    if (args[i] !=null && !"".equals(args[i])) {
+						cmd.add(args[i].trim());
+					}
                 }
             }
             
@@ -348,8 +347,9 @@ public class JettyRunForkedMojo extends JettyRunMojo
             ProcessBuilder builder = new ProcessBuilder(cmd);
             builder.directory(project.getBasedir());
             
-            if (PluginLog.getLog().isDebugEnabled())
-                PluginLog.getLog().debug(Arrays.toString(cmd.toArray()));
+            if (PluginLog.getLog().isDebugEnabled()) {
+				PluginLog.getLog().debug(Arrays.toString(cmd.toArray()));
+			}
             
             PluginLog.getLog().info("Forked process starting");
             
@@ -385,17 +385,18 @@ public class JettyRunForkedMojo extends JettyRunMojo
                         {
                             --attempts;
                             line = reader.readLine();
-                            if (line != null && line.startsWith(token))
-                                break;
+                            if (line != null && line.startsWith(token)) {
+								break;
+							}
                         }
 
                     }
 
-                    if (line != null && line.trim().equals(token))
-                        PluginLog.getLog().info("Forked process started.");
-                    else
+                    if (line != null && line.trim().equals(token)) {
+						PluginLog.getLog().info("Forked process started.");
+					} else
                     {
-                        String err = (line == null?"":(line.startsWith(token)?line.substring(token.length()):line));
+                        String err = line == null?"":(line.startsWith(token)?line.substring(token.length()):line);
                         PluginLog.getLog().info("Forked process startup errors"+(!"".equals(err)?", received: "+err:""));
                     }
                 }
@@ -408,15 +409,17 @@ public class JettyRunForkedMojo extends JettyRunMojo
         }
         catch (InterruptedException ex)
         {
-            if (forkedProcess != null && waitForChild)
-                forkedProcess.destroy();
+            if (forkedProcess != null && waitForChild) {
+				forkedProcess.destroy();
+			}
             
             throw new MojoExecutionException("Failed to start Jetty within time limit");
         }
         catch (Exception ex)
         {
-            if (forkedProcess != null && waitForChild)
-                forkedProcess.destroy();
+            if (forkedProcess != null && waitForChild) {
+				forkedProcess.destroy();
+			}
             
             throw new MojoExecutionException("Failed to create Jetty process", ex);
         }
@@ -443,9 +446,9 @@ public class JettyRunForkedMojo extends JettyRunMojo
                 }
                 return provided;
 
-        }
-        else
-            return null;
+        } else {
+			return null;
+		}
     }
     
     public File prepareConfiguration() throws MojoExecutionException
@@ -454,8 +457,9 @@ public class JettyRunForkedMojo extends JettyRunMojo
         {   
             //work out the configuration based on what is configured in the pom
             File propsFile = new File (target, "fork.props");
-            if (propsFile.exists())
-                propsFile.delete();   
+            if (propsFile.exists()) {
+				propsFile.delete();
+			}   
 
             propsFile.createNewFile();
             //propsFile.deleteOnExit();
@@ -485,18 +489,20 @@ public class JettyRunForkedMojo extends JettyRunMojo
             props.put("tmp.dir.persist", Boolean.toString(originalPersistTemp));
 
             //send over the original base resources before any overlays were added
-            if (originalBaseResource instanceof ResourceCollection)
-                props.put("base.dirs.orig", toCSV(((ResourceCollection)originalBaseResource).getResources()));
-            else
-                props.put("base.dirs.orig", originalBaseResource.toString());
+            if (originalBaseResource instanceof ResourceCollection) {
+				props.put("base.dirs.orig", toCSV(((ResourceCollection)originalBaseResource).getResources()));
+			} else {
+				props.put("base.dirs.orig", originalBaseResource.toString());
+			}
 
             //send over the calculated resource bases that includes unpacked overlays, but none of the
             //meta-inf resources
             Resource postOverlayResources = (Resource)webApp.getAttribute(MavenWebInfConfiguration.RESOURCE_BASES_POST_OVERLAY);
-            if (postOverlayResources instanceof ResourceCollection)
-                props.put("base.dirs", toCSV(((ResourceCollection)postOverlayResources).getResources()));
-            else
-                props.put("base.dirs", postOverlayResources.toString());
+            if (postOverlayResources instanceof ResourceCollection) {
+				props.put("base.dirs", toCSV(((ResourceCollection)postOverlayResources).getResources()));
+			} else {
+				props.put("base.dirs", postOverlayResources.toString());
+			}
         
             
             //web-inf classes
@@ -517,8 +523,9 @@ public class JettyRunForkedMojo extends JettyRunMojo
             {
                 File d = deps.get(i);
                 strbuff.append(d.getAbsolutePath());
-                if (i < deps.size()-1)
-                    strbuff.append(",");
+                if (i < deps.size()-1) {
+					strbuff.append(",");
+				}
             }
             props.put("lib.jars", strbuff.toString());
 
@@ -528,8 +535,8 @@ public class JettyRunForkedMojo extends JettyRunMojo
             {
                 strbuff.setLength(0);           
                 Artifact a  = warArtifacts.get(i);
-                strbuff.append(a.getGroupId()+",");
-                strbuff.append(a.getArtifactId()+",");
+                strbuff.append(a.getGroupId()).append(",");
+                strbuff.append(a.getArtifactId()).append(",");
                 strbuff.append(a.getFile().getAbsolutePath());
                 props.put("maven.war.artifact."+i, strbuff.toString());
             }
@@ -547,7 +554,7 @@ public class JettyRunForkedMojo extends JettyRunMojo
             int i=0;
             for (OverlayConfig c:configs)
             {
-                props.put("maven.war.overlay."+(i++), c.toString());
+                props.put("maven.war.overlay."+i++, c.toString());
             }
             
             try (OutputStream out = new BufferedOutputStream(new FileOutputStream(propsFile)))
@@ -567,21 +574,17 @@ public class JettyRunForkedMojo extends JettyRunMojo
     
   
     
-    /**
-     * @return
-     * @throws MalformedURLException
-     * @throws IOException
-     */
     private List<Artifact> getWarArtifacts()
     throws MalformedURLException, IOException
     {
         List<Artifact> warArtifacts = new ArrayList<Artifact>();
         for ( Iterator<Artifact> iter = project.getArtifacts().iterator(); iter.hasNext(); )
         {
-            Artifact artifact = (Artifact) iter.next();  
+            Artifact artifact = iter.next();  
             
-            if (artifact.getType().equals("war"))
-                warArtifacts.add(artifact);
+            if ("war".equals(artifact.getType())) {
+				warArtifacts.add(artifact);
+			}
         }
 
         return warArtifacts;
@@ -589,16 +592,18 @@ public class JettyRunForkedMojo extends JettyRunMojo
     
     public boolean isPluginArtifact(Artifact artifact)
     {
-        if (pluginArtifacts == null || pluginArtifacts.isEmpty())
-            return false;
+        if (pluginArtifacts == null || pluginArtifacts.isEmpty()) {
+			return false;
+		}
         
         boolean isPluginArtifact = false;
         for (Iterator<Artifact> iter = pluginArtifacts.iterator(); iter.hasNext() && !isPluginArtifact; )
         {
             Artifact pluginArtifact = iter.next();
             if (getLog().isDebugEnabled()) { getLog().debug("Checking "+pluginArtifact);}
-            if (pluginArtifact.getGroupId().equals(artifact.getGroupId()) && pluginArtifact.getArtifactId().equals(artifact.getArtifactId()))
-                isPluginArtifact = true;
+            if (pluginArtifact.getGroupId().equals(artifact.getGroupId()) && pluginArtifact.getArtifactId().equals(artifact.getArtifactId())) {
+				isPluginArtifact = true;
+			}
         }
         
         return isPluginArtifact;
@@ -663,7 +668,9 @@ public class JettyRunForkedMojo extends JettyRunMojo
             {
                 classPath.append(File.pathSeparator);
                 classPath.append(jar);
-                if (getLog().isDebugEnabled()) getLog().debug("Adding provided jar: "+jar);
+                if (getLog().isDebugEnabled()) {
+					getLog().debug("Adding provided jar: "+jar);
+				}
             }
         }
 
@@ -673,9 +680,6 @@ public class JettyRunForkedMojo extends JettyRunMojo
     
 
     
-    /**
-     * @return
-     */
     private String getJavaBin()
     {
         String javaexes[] = new String[]
@@ -699,7 +703,7 @@ public class JettyRunForkedMojo extends JettyRunMojo
         StringBuilder ret = new StringBuilder();
         for (char c : path.toCharArray())
         {
-            if ((c == '/') || (c == '\\'))
+            if (c == '/' || c == '\\')
             {
                 ret.append(File.separatorChar);
             }
@@ -716,7 +720,7 @@ public class JettyRunForkedMojo extends JettyRunMojo
         StringBuilder ret = new StringBuilder();
         for (char c : path.toCharArray())
         {
-            if ((c == ',') || (c == ':'))
+            if (c == ',' || c == ':')
             {
                 ret.append(File.pathSeparatorChar);
             }
@@ -743,15 +747,17 @@ public class JettyRunForkedMojo extends JettyRunMojo
 
     private String toCSV (List<String> strings)
     {
-        if (strings == null)
-            return "";
+        if (strings == null) {
+			return "";
+		}
         StringBuffer strbuff = new StringBuffer();
         Iterator<String> itor = strings.iterator();
         while (itor.hasNext())
         {
             strbuff.append(itor.next());
-            if (itor.hasNext())
-                strbuff.append(",");
+            if (itor.hasNext()) {
+				strbuff.append(",");
+			}
         }
         return strbuff.toString();
     }
@@ -762,8 +768,10 @@ public class JettyRunForkedMojo extends JettyRunMojo
 
         for (Resource r:resources)
         {
-            if (rb.length() > 0) rb.append(",");
-            rb.append(r.toString());
+            if (rb.length() > 0) {
+				rb.append(",");
+			}
+            rb.append(r);
         }        
 
         return rb.toString();

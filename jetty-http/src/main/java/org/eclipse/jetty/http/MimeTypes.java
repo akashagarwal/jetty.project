@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http;
 
@@ -42,10 +37,7 @@ import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.log.Logger;
 
 
-/* ------------------------------------------------------------ */
-/**
- *
- */
+/** ------------------------------------------------------------. */
 public class MimeTypes
 {
     public enum Type
@@ -76,7 +68,7 @@ public class MimeTypes
         APPLICATION_JSON_UTF_8("text/json;charset=utf-8",APPLICATION_JSON);
 
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         private final String _string;
         private final Type _base;
         private final ByteBuffer _buffer;
@@ -85,7 +77,7 @@ public class MimeTypes
         private final boolean _assumedCharset;
         private final HttpField _field;
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         Type(String s)
         {
             _string=s;
@@ -97,7 +89,7 @@ public class MimeTypes
             _field=new PreEncodedHttpField(HttpHeader.CONTENT_TYPE,_string);
         }
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         Type(String s,Type base)
         {
             _string=s;
@@ -110,7 +102,7 @@ public class MimeTypes
             _field=new PreEncodedHttpField(HttpHeader.CONTENT_TYPE,_string);
         }
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         Type(String s,Charset cs)
         {
             _string=s;
@@ -122,68 +114,68 @@ public class MimeTypes
             _field=new PreEncodedHttpField(HttpHeader.CONTENT_TYPE,_string);
         }
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         public ByteBuffer asBuffer()
         {
             return _buffer.asReadOnlyBuffer();
         }
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         public Charset getCharset()
         {
             return _charset;
         }
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         public String getCharsetString()
         {
             return _charsetString;
         }
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         public boolean is(String s)
         {
             return _string.equalsIgnoreCase(s);
         }
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         public String asString()
         {
             return _string;
         }
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         @Override
         public String toString()
         {
             return _string;
         }
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         public boolean isCharsetAssumed()
         {
             return _assumedCharset;
         }
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         public HttpField getContentTypeField()
         {
             return _field;
         }
 
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         public Type getBaseType()
         {
             return _base;
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     private static final Logger LOG = Log.getLogger(MimeTypes.class);
-    public  final static Trie<MimeTypes.Type> CACHE= new ArrayTrie<>(512);
-    private final static Trie<ByteBuffer> TYPES= new ArrayTrie<ByteBuffer>(512);
-    private final static Map<String,String> __dftMimeMap = new HashMap<String,String>();
-    private final static Map<String,String> __encodings = new HashMap<String,String>();
+    public static final Trie<MimeTypes.Type> CACHE= new ArrayTrie<>(512);
+    private static final Trie<ByteBuffer> TYPES= new ArrayTrie<ByteBuffer>(512);
+    private static final Map<String,String> __dftMimeMap = new HashMap<String,String>();
+    private static final Map<String,String> __encodings = new HashMap<String,String>();
 
     static
     {
@@ -278,7 +270,7 @@ public class MimeTypes
     }
 
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     private final Map<String,String> _mimeMap=new HashMap<String,String>();
 
     /* ------------------------------------------------------------ */
@@ -288,7 +280,7 @@ public class MimeTypes
     {
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public synchronized Map<String,String> getMimeMap()
     {
         return _mimeMap;
@@ -303,8 +295,9 @@ public class MimeTypes
         _mimeMap.clear();
         if (mimeMap!=null)
         {
-            for (Entry<String, String> ext : mimeMap.entrySet())
-                _mimeMap.put(StringUtil.asciiToLowerCase(ext.getKey()),normalizeMimeType(ext.getValue()));
+            for (Entry<String, String> ext : mimeMap.entrySet()) {
+				_mimeMap.put(StringUtil.asciiToLowerCase(ext.getKey()),normalizeMimeType(ext.getValue()));
+			}
         }
     }
 
@@ -325,30 +318,35 @@ public class MimeTypes
             {
                 i=filename.indexOf(".",i+1);
 
-                if (i<0 || i>=filename.length())
-                    break;
+                if (i<0 || i>=filename.length()) {
+					break;
+				}
 
                 String ext=StringUtil.asciiToLowerCase(filename.substring(i+1));
-                if (_mimeMap!=null)
-                    type=_mimeMap.get(ext);
-                if (type==null)
-                    type=__dftMimeMap.get(ext);
+                if (_mimeMap!=null) {
+					type=_mimeMap.get(ext);
+				}
+                if (type==null) {
+					type=__dftMimeMap.get(ext);
+				}
             }
         }
 
         if (type==null)
         {
-            if (_mimeMap!=null)
-                type=_mimeMap.get("*");
-            if (type==null)
-                type=__dftMimeMap.get("*");
+            if (_mimeMap!=null) {
+				type=_mimeMap.get("*");
+			}
+            if (type==null) {
+				type=__dftMimeMap.get("*");
+			}
         }
 
         return type;
     }
 
     /* ------------------------------------------------------------ */
-    /** Set a mime mapping
+    /** Set a mime mapping.
      * @param extension the extension
      * @param type the mime type
      */
@@ -357,27 +355,29 @@ public class MimeTypes
         _mimeMap.put(StringUtil.asciiToLowerCase(extension),normalizeMimeType(type));
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public static Set<String> getKnownMimeTypes()
     {
         return new HashSet<>(__dftMimeMap.values());
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     private static String normalizeMimeType(String type)
     {
         MimeTypes.Type t =CACHE.get(type);
-        if (t!=null)
-            return t.asString();
+        if (t!=null) {
+			return t.asString();
+		}
 
         return StringUtil.asciiToLowerCase(type);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public static String getCharsetFromContentType(String value)
     {
-        if (value==null)
-            return null;
+        if (value==null) {
+			return null;
+		}
         int end=value.length();
         int state=0;
         int start=0;
@@ -389,8 +389,9 @@ public class MimeTypes
 
             if (quote && state!=10)
             {
-                if ('"'==b)
-                    quote=false;
+                if ('"'==b) {
+					quote=false;
+				}
                 continue;
             }
 
@@ -402,23 +403,57 @@ public class MimeTypes
                         quote=true;
                         break;
                     }
-                    if (';'==b)
-                        state=1;
+                    if (';'==b) {
+						state=1;
+					}
                     break;
 
-                case 1: if ('c'==b) state=2; else if (' '!=b) state=0; break;
-                case 2: if ('h'==b) state=3; else state=0;break;
-                case 3: if ('a'==b) state=4; else state=0;break;
-                case 4: if ('r'==b) state=5; else state=0;break;
-                case 5: if ('s'==b) state=6; else state=0;break;
-                case 6: if ('e'==b) state=7; else state=0;break;
-                case 7: if ('t'==b) state=8; else state=0;break;
+                case 1: if ('c'==b) {
+					state=2;
+				} else if (' '!=b) {
+					state=0;
+				} break;
+                case 2: if ('h'==b) {
+					state=3;
+				} else {
+					state=0;
+				}break;
+                case 3: if ('a'==b) {
+					state=4;
+				} else {
+					state=0;
+				}break;
+                case 4: if ('r'==b) {
+					state=5;
+				} else {
+					state=0;
+				}break;
+                case 5: if ('s'==b) {
+					state=6;
+				} else {
+					state=0;
+				}break;
+                case 6: if ('e'==b) {
+					state=7;
+				} else {
+					state=0;
+				}break;
+                case 7: if ('t'==b) {
+					state=8;
+				} else {
+					state=0;
+				}break;
 
-                case 8: if ('='==b) state=9; else if (' '!=b) state=0; break;
+                case 8: if ('='==b) {
+					state=9;
+				} else if (' '!=b) {
+					state=0;
+				} break;
 
                 case 9:
-                    if (' '==b)
-                        break;
+                    if (' '==b) {
+						break;
+					}
                     if ('"'==b)
                     {
                         quote=true;
@@ -431,14 +466,16 @@ public class MimeTypes
                     break;
 
                 case 10:
-                    if (!quote && (';'==b || ' '==b )||
-                            (quote && '"'==b ))
-                        return StringUtil.normalizeCharset(value,start,i-start);
+                    if ((!quote && (';'==b || ' '==b ))||
+                            (quote && '"'==b )) {
+						return StringUtil.normalizeCharset(value,start,i-start);
+					}
             }
         }
 
-        if (state==10)
-            return StringUtil.normalizeCharset(value,start,i-start);
+        if (state==10) {
+			return StringUtil.normalizeCharset(value,start,i-start);
+		}
 
         return null;
     }
@@ -462,14 +499,7 @@ public class MimeTypes
 
             if ('"'==b)
             {
-                if (quote)
-                {
-                    quote=false;
-                }
-                else
-                {
-                    quote=true;
-                }
+                quote = !quote;
 
                 switch(state)
                 {
@@ -491,32 +521,67 @@ public class MimeTypes
 
             if (quote)
             {
-                if (builder!=null && state!=10)
-                    builder.append(b);
+                if (builder!=null && state!=10) {
+					builder.append(b);
+				}
                 continue;
             }
 
             switch(state)
             {
                 case 0:
-                    if (';'==b)
-                        state=1;
-                    else if (' '!=b)
-                        start=i;
+                    if (';'==b) {
+						state=1;
+					} else if (' '!=b) {
+						start=i;
+					}
                     break;
 
-                case 1: if ('c'==b) state=2; else if (' '!=b) state=0; break;
-                case 2: if ('h'==b) state=3; else state=0;break;
-                case 3: if ('a'==b) state=4; else state=0;break;
-                case 4: if ('r'==b) state=5; else state=0;break;
-                case 5: if ('s'==b) state=6; else state=0;break;
-                case 6: if ('e'==b) state=7; else state=0;break;
-                case 7: if ('t'==b) state=8; else state=0;break;
-                case 8: if ('='==b) state=9; else if (' '!=b) state=0; break;
+                case 1: if ('c'==b) {
+					state=2;
+				} else if (' '!=b) {
+					state=0;
+				} break;
+                case 2: if ('h'==b) {
+					state=3;
+				} else {
+					state=0;
+				}break;
+                case 3: if ('a'==b) {
+					state=4;
+				} else {
+					state=0;
+				}break;
+                case 4: if ('r'==b) {
+					state=5;
+				} else {
+					state=0;
+				}break;
+                case 5: if ('s'==b) {
+					state=6;
+				} else {
+					state=0;
+				}break;
+                case 6: if ('e'==b) {
+					state=7;
+				} else {
+					state=0;
+				}break;
+                case 7: if ('t'==b) {
+					state=8;
+				} else {
+					state=0;
+				}break;
+                case 8: if ('='==b) {
+					state=9;
+				} else if (' '!=b) {
+					state=0;
+				} break;
 
                 case 9:
-                    if (' '==b)
-                        break;
+                    if (' '==b) {
+						break;
+					}
                     builder=new StringBuilder();
                     builder.append(value,0,start+1);
                     state=10;
@@ -530,13 +595,15 @@ public class MimeTypes
                     }
                     break;
                 case 11:
-                    if (' '!=b)
-                        builder.append(b);
+                    if (' '!=b) {
+						builder.append(b);
+					}
             }
         }
-        if (builder==null)
-            return value;
-        return builder.toString();
+        if (builder!=null) {
+			return builder.toString();
+		}
+        return value;
 
     }
 }

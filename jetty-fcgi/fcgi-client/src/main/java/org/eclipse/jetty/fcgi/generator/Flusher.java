@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.fcgi.generator;
 
@@ -42,8 +37,9 @@ public class Flusher
 
     public void flush(Generator.Result... results)
     {
-        for (Generator.Result result : results)
-            queue.offer(result);
+        for (Generator.Result result : results) {
+			queue.offer(result);
+		}
         flushCallback.iterate();
     }
 
@@ -72,8 +68,9 @@ public class Flusher
             // queue so this is a real optimization because
             // it sends both results in just one TCP packet.
             Generator.Result other = queue.poll();
-            if (other != null)
-                result = result.join(other);
+            if (other != null) {
+				result = result.join(other);
+			}
 
             active = result;
             ByteBuffer[] buffers = result.getByteBuffers();
@@ -91,8 +88,9 @@ public class Flusher
         @Override
         public void succeeded()
         {
-            if (active != null)
-                active.succeeded();
+            if (active != null) {
+				active.succeeded();
+			}
             active = null;
             super.succeeded();
         }
@@ -100,15 +98,17 @@ public class Flusher
         @Override
         public void onCompleteFailure(Throwable x)
         {
-            if (active != null)
-                active.failed(x);
+            if (active != null) {
+				active.failed(x);
+			}
             active = null;
 
             while (true)
             {
                 Generator.Result result = queue.poll();
-                if (result == null)
-                    break;
+                if (result == null) {
+					break;
+				}
                 result.failed(x);
             }
         }
@@ -135,8 +135,9 @@ public class Flusher
 
         private void shutdown()
         {
-            if (LOG.isDebugEnabled())
-                LOG.debug("Shutting down {}", endPoint);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Shutting down {}", endPoint);
+			}
             endPoint.shutdownOutput();
         }
     }

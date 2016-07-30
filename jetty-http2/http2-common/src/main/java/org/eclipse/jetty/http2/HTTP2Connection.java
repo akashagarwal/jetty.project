@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http2;
 
@@ -75,8 +70,9 @@ public class HTTP2Connection extends AbstractConnection
     @Override
     public void onOpen()
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("HTTP2 Open {} ", this);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("HTTP2 Open {} ", this);
+		}
         super.onOpen();
         executionStrategy.execute();
     }
@@ -84,16 +80,18 @@ public class HTTP2Connection extends AbstractConnection
     @Override
     public void onClose()
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("HTTP2 Close {} ", this);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("HTTP2 Close {} ", this);
+		}
         super.onClose();
     }
 
     @Override
     public void onFillable()
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("HTTP2 onFillable {} ", this);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("HTTP2 onFillable {} ", this);
+		}
         executionStrategy.execute();
     }
 
@@ -101,8 +99,9 @@ public class HTTP2Connection extends AbstractConnection
     {
         try
         {
-            if (endPoint.isInputShutdown())
-                return -1;
+            if (endPoint.isInputShutdown()) {
+				return -1;
+			}
             return endPoint.fill(buffer);
         }
         catch (IOException x)
@@ -117,18 +116,20 @@ public class HTTP2Connection extends AbstractConnection
     {
         boolean close = session.onIdleTimeout();
         boolean idle = isFillInterested();
-        if (close && idle)
-            session.close(ErrorCode.NO_ERROR.code, "idle_timeout", Callback.NOOP);
+        if (close && idle) {
+			session.close(ErrorCode.NO_ERROR.code, "idle_timeout", Callback.NOOP);
+		}
         return false;
     }
 
     protected void offerTask(Runnable task, boolean dispatch)
     {
         tasks.offer(task);
-        if (dispatch)
-            executionStrategy.dispatch();
-        else
-            executionStrategy.execute();
+        if (dispatch) {
+			executionStrategy.dispatch();
+		} else {
+			executionStrategy.execute();
+		}
     }
 
     @Override
@@ -148,27 +149,34 @@ public class HTTP2Connection extends AbstractConnection
         public Runnable produce()
         {
             Runnable task = tasks.poll();
-            if (LOG.isDebugEnabled())
-                LOG.debug("Dequeued task {}", task);
-            if (task != null)
-                return task;
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Dequeued task {}", task);
+			}
+            if (task != null) {
+				return task;
+			}
 
-            if (isFillInterested())
-                return null;
+            if (isFillInterested()) {
+				return null;
+			}
 
             if (buffer == null)
-                buffer = byteBufferPool.acquire(bufferSize, false); // TODO: make directness customizable
+			 {
+				buffer = byteBufferPool.acquire(bufferSize, false); // TODO: make directness customizable
+			}
             boolean looping = BufferUtil.hasContent(buffer);
             while (true)
             {
                 if (looping)
                 {
-                    while (buffer.hasRemaining())
-                        parser.parse(buffer);
+                    while (buffer.hasRemaining()) {
+						parser.parse(buffer);
+					}
 
                     task = tasks.poll();
-                    if (LOG.isDebugEnabled())
-                        LOG.debug("Dequeued new task {}", task);
+                    if (LOG.isDebugEnabled()) {
+						LOG.debug("Dequeued new task {}", task);
+					}
                     if (task != null)
                     {
                         release();
@@ -177,8 +185,9 @@ public class HTTP2Connection extends AbstractConnection
                 }
 
                 int filled = fill(getEndPoint(), buffer);
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Filled {} bytes", filled);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("Filled {} bytes", filled);
+				}
 
                 if (filled == 0)
                 {

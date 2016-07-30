@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 
 package org.eclipse.jetty.maven.plugin;
@@ -65,19 +60,21 @@ public class ServerSupport
      */
     public static void configureHandlers (Server server, RequestLog requestLog) throws Exception 
     {
-        if (server == null)
-            throw new IllegalArgumentException ("Server is null");
+        if (server == null) {
+			throw new IllegalArgumentException ("Server is null");
+		}
 
         DefaultHandler defaultHandler = new DefaultHandler();
         RequestLogHandler requestLogHandler = new RequestLogHandler();
-        if (requestLog != null)
-            requestLogHandler.setRequestLog(requestLog);
+        if (requestLog != null) {
+			requestLogHandler.setRequestLog(requestLog);
+		}
 
         ContextHandlerCollection contexts = findContextHandlerCollection(server);
         if (contexts == null)
         {   
             contexts = new ContextHandlerCollection();
-            HandlerCollection handlers = (HandlerCollection)server.getChildHandlerByClass(HandlerCollection.class);
+            HandlerCollection handlers = server.getChildHandlerByClass(HandlerCollection.class);
             if (handlers == null)
             {
                 handlers = new HandlerCollection();               
@@ -93,15 +90,16 @@ public class ServerSupport
     
 
     /**
-     * Configure at least one connector for the server
+     * Configure at least one connector for the server.
      * 
      * @param server the server
      * @param connector the connector
      */
     public static void configureConnectors (Server server, Connector connector)
     {
-        if (server == null)
-            throw new IllegalArgumentException("Server is null");
+        if (server == null) {
+			throw new IllegalArgumentException("Server is null");
+		}
         
         //if a connector is provided, use it
         if (connector != null)
@@ -135,14 +133,15 @@ public class ServerSupport
      */
     public static void configureLoginServices (Server server, LoginService[] loginServices)
     {
-        if (server == null)
-            throw new IllegalArgumentException ("Server is null");
+        if (server == null) {
+			throw new IllegalArgumentException ("Server is null");
+		}
 
         if (loginServices != null)
         {
             for (LoginService loginService:loginServices)
             {
-                PluginLog.getLog().debug(loginService.getClass().getName() + ": "+ loginService.toString());
+                PluginLog.getLog().debug(loginService.getClass().getName() + ": "+ loginService);
                 server.addBean(loginService);
             }
         }
@@ -150,21 +149,24 @@ public class ServerSupport
     
     public static void addWebApplication(Server server, WebAppContext webapp) throws Exception
     {  
-        if (server == null)
-            throw new IllegalArgumentException ("Server is null");
+        if (server == null) {
+			throw new IllegalArgumentException ("Server is null");
+		}
        ContextHandlerCollection contexts = findContextHandlerCollection(server);
-       if (contexts == null)
-           throw new IllegalStateException("ContextHandlerCollection is null");
+       if (contexts == null) {
+		throw new IllegalStateException("ContextHandlerCollection is null");
+	}
        contexts.addHandler (webapp);
     }
     
 
     public static ContextHandlerCollection findContextHandlerCollection (Server server)
     {
-        if (server == null)
-            return null;
+        if (server != null) {
+			return server.getChildHandlerByClass(ContextHandlerCollection.class);
+		}
 
-        return (ContextHandlerCollection)server.getChildHandlerByClass(ContextHandlerCollection.class);
+        return null;
     }
 
 
@@ -180,26 +182,30 @@ public class ServerSupport
     public static Server applyXmlConfigurations (Server server, List<File> files) 
     throws Exception
     {
-        if (files == null || files.isEmpty())
-            return server;
+        if (files == null || files.isEmpty()) {
+			return server;
+		}
 
         Map<String,Object> lastMap = new HashMap<String,Object>();
         
-        if (server != null)
-            lastMap.put("Server", server);
+        if (server != null) {
+			lastMap.put("Server", server);
+		}
      
 
         for ( File xmlFile : files )
         {
-            if (PluginLog.getLog() != null)
-                PluginLog.getLog().info( "Configuring Jetty from xml configuration file = " + xmlFile.getCanonicalPath() );   
+            if (PluginLog.getLog() != null) {
+				PluginLog.getLog().info( "Configuring Jetty from xml configuration file = " + xmlFile.getCanonicalPath() );
+			}   
 
 
             XmlConfiguration xmlConfiguration = new XmlConfiguration(Resource.toURL(xmlFile));
 
             //chain ids from one config file to another
-            if (lastMap != null)
-                xmlConfiguration.getIdMap().putAll(lastMap); 
+            if (lastMap != null) {
+				xmlConfiguration.getIdMap().putAll(lastMap);
+			} 
 
             //Set the system properties each time in case the config file set a new one
             Enumeration<?> ensysprop = System.getProperties().propertyNames();

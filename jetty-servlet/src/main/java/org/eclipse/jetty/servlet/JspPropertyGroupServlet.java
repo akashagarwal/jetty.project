@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.servlet;
 
@@ -45,7 +40,7 @@ public class JspPropertyGroupServlet extends GenericServlet
 {
     private static final long serialVersionUID = 3681783214726776945L;
 
-    public final static String NAME = "__org.eclipse.jetty.servlet.JspPropertyGroupServlet__";
+    public static final String NAME = "__org.eclipse.jetty.servlet.JspPropertyGroupServlet__";
     private final ServletHandler _servletHandler;
     private final ContextHandler _contextHandler;
     private ServletHolder _dftServlet;
@@ -76,8 +71,9 @@ public class JspPropertyGroupServlet extends GenericServlet
                 {
                     for (String path:paths)
                     {
-                        if ("*.jsp".equals(path) && !NAME.equals(m.getServletName()))
-                            servlet_mapping = m;
+                        if ("*.jsp".equals(path) && !NAME.equals(m.getServletName())) {
+							servlet_mapping = m;
+						}
                     }
                 }
             }
@@ -88,8 +84,9 @@ public class JspPropertyGroupServlet extends GenericServlet
 
         String dft_name="default";
         ServletMapping default_mapping=_servletHandler.getServletMapping("/");
-        if (default_mapping!=null)
-            dft_name=default_mapping.getServletName();
+        if (default_mapping!=null) {
+			dft_name=default_mapping.getServletName();
+		}
         _dftServlet=_servletHandler.getServlet(dft_name);
     }
 
@@ -97,10 +94,11 @@ public class JspPropertyGroupServlet extends GenericServlet
     public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException
     {
         HttpServletRequest request = null;
-        if (req instanceof HttpServletRequest)
-            request = (HttpServletRequest)req;
-        else
-            throw new ServletException("Request not HttpServletRequest");
+        if (req instanceof HttpServletRequest) {
+			request = (HttpServletRequest)req;
+		} else {
+			throw new ServletException("Request not HttpServletRequest");
+		}
 
         String servletPath=null;
         String pathInfo=null;
@@ -134,10 +132,11 @@ public class JspPropertyGroupServlet extends GenericServlet
         {
 
             Resource resource = _contextHandler.getResource(pathInContext);
-            if (resource!=null && resource.isDirectory())
-                _dftServlet.getServlet().service(req,res);
-            else
-                _jspServlet.getServlet().service(req,res);
+            if (resource!=null && resource.isDirectory()) {
+				_dftServlet.getServlet().service(req,res);
+			} else {
+				_jspServlet.getServlet().service(req,res);
+			}
         }
 
     }

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.monitor.triggers;
 
@@ -31,7 +26,7 @@ import org.eclipse.jetty.monitor.jmx.EventTrigger;
  *
  * EventTrigger aggregation using logical OR operation 
  * that executes matching of the aggregated event triggers
- * in left to right order  
+ * in left to right order.  
  */
 public class OrEventTrigger
     extends EventTrigger
@@ -41,7 +36,7 @@ public class OrEventTrigger
     /* ------------------------------------------------------------ */
     /**
      * Construct an event trigger and associate the list 
-     * of event triggers to be aggregated by this trigger
+     * of event triggers to be aggregated by this trigger.
      * 
      * @param triggers list of event triggers to add
      */
@@ -53,7 +48,7 @@ public class OrEventTrigger
     /* ------------------------------------------------------------ */
     /**
      * Construct an event trigger and associate the array 
-     * of event triggers to be aggregated by this trigger
+     * of event triggers to be aggregated by this trigger.
      * 
      * @param triggers array of event triggers to add
      */
@@ -76,8 +71,9 @@ public class OrEventTrigger
     {
         for(EventTrigger trigger : _triggers)
         {
-            if (trigger.match(timestamp))
-                return true;
+            if (trigger.match(timestamp)) {
+				return true;
+			}
         }
         return false;
     }

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 
@@ -23,14 +18,11 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 
-/**
- *
- */
 public class EncodingHttpWriter extends HttpWriter
 {
     final Writer _converter;
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public EncodingHttpWriter(HttpOutput out, String encoding)
     {
         super(out);
@@ -44,7 +36,7 @@ public class EncodingHttpWriter extends HttpWriter
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void write (char[] s,int offset, int length) throws IOException
     {

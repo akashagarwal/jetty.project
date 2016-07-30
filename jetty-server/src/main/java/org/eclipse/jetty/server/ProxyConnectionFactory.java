@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 
@@ -49,7 +44,7 @@ public class ProxyConnectionFactory extends AbstractConnectionFactory
 
     /* ------------------------------------------------------------ */
     /** Proxy Connection Factory that uses the next ConnectionFactory
-     * on the connector as the next protocol
+     * on the connector as the next protocol.
      */
     public ProxyConnectionFactory()
     {
@@ -85,9 +80,11 @@ public class ProxyConnectionFactory extends AbstractConnectionFactory
 
     public static class ProxyConnection extends AbstractConnection
     {
-        // 0     1 2       3       4 5 6
-        // 98765432109876543210987654321
-        // PROXY P R.R.R.R L.L.L.L R Lrn
+        /**
+         * 0     1 2       3       4 5 6
+         * 98765432109876543210987654321
+         * PROXY P R.R.R.R L.L.L.L R Lrn
+         */
 
         private final int[] __size = {29,23,21,13,5,3,1};
         private final Connector _connector;
@@ -121,10 +118,11 @@ public class ProxyConnectionFactory extends AbstractConnectionFactory
                 {
                     // Create a buffer that will not read too much data
                     int size=Math.max(1,__size[_fields]-_builder.length());
-                    if (buffer==null || buffer.capacity()!=size)
-                        buffer=BufferUtil.allocate(size);
-                    else
-                        BufferUtil.clear(buffer);
+                    if (buffer==null || buffer.capacity()!=size) {
+						buffer=BufferUtil.allocate(size);
+					} else {
+						BufferUtil.clear(buffer);
+					}
 
                     // Read data
                     int fill=getEndPoint().fill(buffer);
@@ -153,7 +151,7 @@ public class ProxyConnectionFactory extends AbstractConnectionFactory
                         byte b = buffer.get();
                         if (_fields<6)
                         {
-                            if (b==' ' || b=='\r' && _fields==5)
+                            if (b==' ' || (b=='\r' && _fields==5))
                             {
                                 _field[_fields++]=_builder.toString();
                                 _builder.setLength(0);
@@ -171,8 +169,9 @@ public class ProxyConnectionFactory extends AbstractConnectionFactory
                         }
                         else
                         {
-                            if (b=='\n')
-                                break loop;
+                            if (b=='\n') {
+								break loop;
+							}
 
                             LOG.warn("Bad CRLF for {}",getEndPoint());
                             close();

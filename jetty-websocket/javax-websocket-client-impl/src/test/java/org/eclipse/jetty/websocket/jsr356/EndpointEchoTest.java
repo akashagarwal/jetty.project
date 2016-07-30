@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.jsr356;
 
@@ -92,11 +87,13 @@ public class EndpointEchoTest
         Assert.assertThat(echoer,instanceOf(javax.websocket.Endpoint.class));
         // Issue connect using instance of class that extends Endpoint
         Session session = container.connectToServer(echoer,serverUri);
-        if (LOG.isDebugEnabled())
-            LOG.debug("Client Connected: {}",session);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Client Connected: {}",session);
+		}
         session.getBasicRemote().sendText("Echo");
-        if (LOG.isDebugEnabled())
-            LOG.debug("Client Message Sent");
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Client Message Sent");
+		}
         echoer.textCapture.messageQueue.awaitMessages(1,1000,TimeUnit.MILLISECONDS);
     }
 
@@ -106,13 +103,16 @@ public class EndpointEchoTest
         WebSocketContainer container = ContainerProvider.getWebSocketContainer();
         // Issue connect using class reference (class extends Endpoint)
         Session session = container.connectToServer(EndpointEchoClient.class,serverUri);
-        if (LOG.isDebugEnabled())
-            LOG.debug("Client Connected: {}",session);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Client Connected: {}",session);
+		}
         session.getBasicRemote().sendText("Echo");
         if (LOG.isDebugEnabled())
-            LOG.debug("Client Message Sent");
+		 {
+			LOG.debug("Client Message Sent");
         // TODO: figure out echo verification.
         // echoer.textCapture.messageQueue.awaitMessages(1,1000,TimeUnit.MILLISECONDS);
+		}
     }
 
     @Test
@@ -123,11 +123,13 @@ public class EndpointEchoTest
         Assert.assertThat(echoer,instanceOf(javax.websocket.Endpoint.class));
         // Issue connect using instance of class that extends abstract that extends Endpoint
         Session session = container.connectToServer(echoer,serverUri);
-        if (LOG.isDebugEnabled())
-            LOG.debug("Client Connected: {}",session);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Client Connected: {}",session);
+		}
         session.getBasicRemote().sendText("Echo");
-        if (LOG.isDebugEnabled())
-            LOG.debug("Client Message Sent");
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Client Message Sent");
+		}
         echoer.messageQueue.awaitMessages(1,1000,TimeUnit.MILLISECONDS);
     }
 
@@ -137,12 +139,15 @@ public class EndpointEchoTest
         WebSocketContainer container = ContainerProvider.getWebSocketContainer();
         // Issue connect using class reference (class that extends abstract that extends Endpoint)
         Session session = container.connectToServer(EchoStringEndpoint.class,serverUri);
-        if (LOG.isDebugEnabled())
-            LOG.debug("Client Connected: {}",session);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Client Connected: {}",session);
+		}
         session.getBasicRemote().sendText("Echo");
         if (LOG.isDebugEnabled())
-            LOG.debug("Client Message Sent");
+		 {
+			LOG.debug("Client Message Sent");
         // TODO: figure out echo verification.
         // echoer.messageQueue.awaitMessages(1,1000,TimeUnit.MILLISECONDS);
+		}
     }
 }

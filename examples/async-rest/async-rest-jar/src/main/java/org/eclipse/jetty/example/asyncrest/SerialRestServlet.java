@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.example.asyncrest;
 
@@ -36,7 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.jetty.util.ajax.JSON;
 
 /**
- * Servlet implementation class SerialRestServlet
+ * Servlet implementation class SerialRestServlet.
  */
 public class SerialRestServlet extends AbstractRestServlet
 {   
@@ -60,8 +55,9 @@ public class SerialRestServlet extends AbstractRestServlet
             Object[] auctions = (Object[]) query.get("Item");
             if (auctions != null)
             {
-                for (Object o : auctions)
-                    results.add((Map) o);
+                for (Object o : auctions) {
+					results.add((Map) o);
+				}
             }
         }
         
@@ -94,10 +90,6 @@ public class SerialRestServlet extends AbstractRestServlet
 
     }
 
-    /**
-     * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-     *      response)
-     */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
         doGet(request, response);

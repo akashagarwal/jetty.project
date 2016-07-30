@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.rewrite.handler;
 
@@ -42,7 +37,7 @@ public abstract class AbstractRuleTestCase
     protected volatile Request _request;
     protected volatile Response _response;
     protected volatile CountDownLatch _latch;
-    protected boolean _isSecure = false;
+    protected boolean _isSecure;
 
     @After
     public void stopServer() throws Exception
@@ -87,21 +82,24 @@ public abstract class AbstractRuleTestCase
         _latch=new CountDownLatch(1);
         _connector.executeRequest("GET / HTTP/1.0\nCookie: set=already\n\n");
         
-        while (_response==null)
-            Thread.sleep(1);
+        while (_response==null) {
+			Thread.sleep(1);
+		}
     }
 
     protected void reset()
     {
-        if (_latch!=null)
-            _latch.countDown();
+        if (_latch!=null) {
+			_latch.countDown();
+		}
         _request = null;
         _response = null;
         _latch=new CountDownLatch(1);
         _connector.executeRequest("GET / HTTP/1.0\nCookie: set=already\n\n");
         
-        while (_response==null)
-            Thread.yield();
+        while (_response==null) {
+			Thread.yield();
+		}
     }
     
     protected void stop() throws Exception

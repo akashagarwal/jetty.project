@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.osgi.boot.internal.webapp;
 
@@ -54,7 +49,7 @@ public class OSGiWebappClassLoader extends WebAppClassLoader implements BundleRe
     private static final Logger __logger = Log.getLogger(OSGiWebappClassLoader.class.getName());
 
     /**
-     * when a logging framework is setup in the osgi classloaders, it can access
+     * When a logging framework is setup in the osgi classloaders, it can access
      * this and register the classes that must not be found in the jar.
      */
     public static final Set<String> JAR_WITH_SUCH_CLASS_MUST_BE_EXCLUDED = new HashSet<String>();
@@ -115,7 +110,7 @@ public class OSGiWebappClassLoader extends WebAppClassLoader implements BundleRe
         return _contributor;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public Enumeration<URL> getResources(String name) throws IOException
     {
@@ -133,7 +128,7 @@ public class OSGiWebappClassLoader extends WebAppClassLoader implements BundleRe
     
     
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public URL getResource(String name)
     {
@@ -151,19 +146,21 @@ public class OSGiWebappClassLoader extends WebAppClassLoader implements BundleRe
     
     
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     private List<URL> toList(Enumeration<URL> e, Enumeration<URL> e2)
     {
         List<URL> list = new ArrayList<URL>();
-        while (e != null && e.hasMoreElements())
-            list.add(e.nextElement());
-        while (e2 != null && e2.hasMoreElements())
-            list.add(e2.nextElement());
+        while (e != null && e.hasMoreElements()) {
+			list.add(e.nextElement());
+		}
+        while (e2 != null && e2.hasMoreElements()) {
+			list.add(e2.nextElement());
+		}
         return list;
     }
 
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected Class<?> findClass(String name) throws ClassNotFoundException
     {
         try
@@ -244,13 +241,15 @@ public class OSGiWebappClassLoader extends WebAppClassLoader implements BundleRe
                 }
                 finally
                 {
-                    if (jar != null) try
-                    {
-                        jar.close();
-                    }
-                    catch (IOException ioe)
-                    {
-                    }
+                    if (jar != null) {
+						try
+						{
+						    jar.close();
+						}
+						catch (IOException ioe)
+						{
+						}
+					}
                 }
             }
         }

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 
 package org.eclipse.jetty.servlets;
@@ -65,16 +60,18 @@ public abstract class EventSourceServlet extends HttpServlet
     public void init() throws ServletException
     {
         String heartBeatPeriodParam = getServletConfig().getInitParameter("heartBeatPeriod");
-        if (heartBeatPeriodParam != null)
-            heartBeatPeriod = Integer.parseInt(heartBeatPeriodParam);
+        if (heartBeatPeriodParam != null) {
+			heartBeatPeriod = Integer.parseInt(heartBeatPeriodParam);
+		}
         scheduler = Executors.newSingleThreadScheduledExecutor();
     }
 
     @Override
     public void destroy()
     {
-        if (scheduler != null)
-            scheduler.shutdown();
+        if (scheduler != null) {
+			scheduler.shutdown();
+		}
     }
 
     @Override
@@ -85,7 +82,7 @@ public abstract class EventSourceServlet extends HttpServlet
         while (acceptValues.hasMoreElements())
         {
             String accept = acceptValues.nextElement();
-            if (accept.equals("text/event-stream"))
+            if ("text/event-stream".equals(accept))
             {
                 EventSource eventSource = newEventSource(request);
                 if (eventSource == null)
@@ -232,8 +229,9 @@ public abstract class EventSourceServlet extends HttpServlet
         {
             synchronized (this)
             {
-                if (!closed)
-                    heartBeat = scheduler.schedule(this, heartBeatPeriod, TimeUnit.SECONDS);
+                if (!closed) {
+					heartBeat = scheduler.schedule(this, heartBeatPeriod, TimeUnit.SECONDS);
+				}
             }
         }
     }

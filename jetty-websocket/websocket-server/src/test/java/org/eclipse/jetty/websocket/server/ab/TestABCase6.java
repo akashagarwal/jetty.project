@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.server.ab;
 
@@ -42,7 +37,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
- * UTF-8 Tests
+ * UTF-8 Tests.
  */
 @RunWith(AdvancedRunner.class)
 public class TestABCase6 extends AbstractABCase
@@ -71,7 +66,7 @@ public class TestABCase6 extends AbstractABCase
             mini = new byte[1];
             mini[0] = msg[i];
             frame.setPayload(ByteBuffer.wrap(mini));
-            boolean isLast = (i >= (len - 1));
+            boolean isLast = i >= len - 1;
             frame.setFin(isLast);
             frames.add(frame);
             continuation = true;
@@ -79,7 +74,7 @@ public class TestABCase6 extends AbstractABCase
     }
 
     /**
-     * text message, 1 frame, 0 length
+     * Text message, 1 frame, 0 length.
      * @throws Exception on test failure
      */
     @Test
@@ -103,7 +98,7 @@ public class TestABCase6 extends AbstractABCase
     }
 
     /**
-     * text message, 0 length, 3 fragments
+     * Text message, 0 length, 3 fragments.
      * @throws Exception on test failure
      */
     @Test
@@ -129,7 +124,7 @@ public class TestABCase6 extends AbstractABCase
     }
 
     /**
-     * text message, small length, 3 fragments (only middle frame has payload)
+     * Text message, small length, 3 fragments (only middle frame has payload).
      * @throws Exception on test failure
      */
     @Test
@@ -155,7 +150,7 @@ public class TestABCase6 extends AbstractABCase
     }
 
     /**
-     * valid utf8 text message, 2 fragments (on UTF8 code point boundary)
+     * Valid utf8 text message, 2 fragments (on UTF8 code point boundary).
      * @throws Exception on test failure
      */
     @Test
@@ -190,7 +185,7 @@ public class TestABCase6 extends AbstractABCase
     }
 
     /**
-     * valid utf8 text message, many fragments (1 byte each)
+     * Valid utf8 text message, many fragments (1 byte each).
      * @throws Exception on test failure
      */
     @Test
@@ -217,7 +212,7 @@ public class TestABCase6 extends AbstractABCase
     }
 
     /**
-     * valid utf8 text message, many fragments (1 byte each)
+     * Valid utf8 text message, many fragments (1 byte each).
      * @throws Exception on test failure
      */
     @Test
@@ -243,7 +238,7 @@ public class TestABCase6 extends AbstractABCase
     }
 
     /**
-     * invalid utf8 text message, many fragments (1 byte each)
+     * Invalid utf8 text message, many fragments (1 byte each).
      * @throws Exception on test failure
      */
     @Test
@@ -268,7 +263,7 @@ public class TestABCase6 extends AbstractABCase
     }
 
     /**
-     * invalid text message, 3 fragments.
+     * Invalid text message, 3 fragments.
      * <p>
      * fragment #1 and fragment #3 are both valid in themselves.
      * <p>
@@ -302,7 +297,7 @@ public class TestABCase6 extends AbstractABCase
     }
 
     /**
-     * invalid text message, 3 fragments.
+     * Invalid text message, 3 fragments.
      * <p>
      * fragment #1 is valid and ends in the middle of an incomplete code point.
      * <p>
@@ -336,7 +331,7 @@ public class TestABCase6 extends AbstractABCase
     }
 
     /**
-     * invalid text message, 1 frame/fragment (slowly, and split within code points)
+     * Invalid text message, 1 frame/fragment (slowly, and split within code points).
      * @throws Exception on test failure
      */
     @Test
@@ -389,7 +384,7 @@ public class TestABCase6 extends AbstractABCase
     }
 
     /**
-     * invalid text message, 1 frame/fragment (slowly, and split within code points)
+     * Invalid text message, 1 frame/fragment (slowly, and split within code points).
      * @throws Exception on test failure
      */
     @Test

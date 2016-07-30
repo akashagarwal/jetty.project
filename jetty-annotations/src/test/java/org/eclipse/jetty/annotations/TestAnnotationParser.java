@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.annotations;
 
@@ -64,8 +59,9 @@ public class TestAnnotationParser
         @Override
         public void handle(ClassInfo info, String annotation)
         {
-            if (annotation == null || !annotationName.equals(annotation))
-                return;
+            if (annotation == null || !annotationName.equals(annotation)) {
+				return;
+			}
             foundClasses.add(info.getClassName());
         }
     }
@@ -86,24 +82,27 @@ public class TestAnnotationParser
 
             public void handle(ClassInfo info, String annotation)
             {
-                if (annotation == null || !"org.eclipse.jetty.annotations.Sample".equals(annotation))
-                    return;
+                if (annotation == null || !"org.eclipse.jetty.annotations.Sample".equals(annotation)) {
+					return;
+				}
 
                 assertEquals("org.eclipse.jetty.annotations.ClassA",info.getClassName());
             }
 
             public void handle(FieldInfo info, String annotation)
             {                
-                if (annotation == null || !"org.eclipse.jetty.annotations.Sample".equals(annotation))
-                    return;
+                if (annotation == null || !"org.eclipse.jetty.annotations.Sample".equals(annotation)) {
+					return;
+				}
                 assertEquals("m",info.getFieldName());
                 assertEquals(org.objectweb.asm.Type.OBJECT,org.objectweb.asm.Type.getType(info.getFieldType()).getSort());
             }
 
             public void handle(MethodInfo info, String annotation)
             {                
-                if (annotation == null || !"org.eclipse.jetty.annotations.Sample".equals(annotation))
-                    return;
+                if (annotation == null || !"org.eclipse.jetty.annotations.Sample".equals(annotation)) {
+					return;
+				}
                 assertEquals("org.eclipse.jetty.annotations.ClassA",info.getClassInfo().getClassName());
                 assertTrue(methods.contains(info.getMethodName()));
                 assertEquals("org.eclipse.jetty.annotations.Sample",annotation);
@@ -140,23 +139,26 @@ public class TestAnnotationParser
         {
             public void handle(ClassInfo info, String annotation)
             {
-                if (annotation == null || ! "org.eclipse.jetty.annotations.Multi".equals(annotation))
-                    return;
+                if (annotation == null || ! "org.eclipse.jetty.annotations.Multi".equals(annotation)) {
+					return;
+				}
                 assertTrue("org.eclipse.jetty.annotations.ClassB".equals(info.getClassName()));
             }
 
             public void handle(FieldInfo info, String annotation)
             {                
-                if (annotation == null || ! "org.eclipse.jetty.annotations.Multi".equals(annotation))
-                    return;
+                if (annotation == null || ! "org.eclipse.jetty.annotations.Multi".equals(annotation)) {
+					return;
+				}
                 // there should not be any
                 fail();
             }
 
             public void handle(MethodInfo info, String annotation)
             {  
-                if (annotation == null || ! "org.eclipse.jetty.annotations.Multi".equals(annotation))
-                    return;
+                if (annotation == null || ! "org.eclipse.jetty.annotations.Multi".equals(annotation)) {
+					return;
+				}
                 assertTrue("org.eclipse.jetty.annotations.ClassB".equals(info.getClassInfo().getClassName()));
                 assertTrue("a".equals(info.getMethodName()));
             }
@@ -205,7 +207,7 @@ public class TestAnnotationParser
     private void copyClass(Class<?> clazz, File basedir) throws IOException
     {
         String classname = clazz.getName().replace('.',File.separatorChar) + ".class";
-        URL url = this.getClass().getResource('/'+classname);
+        URL url = getClass().getResource('/'+classname);
         Assert.assertThat("URL for: " + classname,url,notNullValue());
 
         String classpath = classname.substring(0,classname.lastIndexOf(File.separatorChar));

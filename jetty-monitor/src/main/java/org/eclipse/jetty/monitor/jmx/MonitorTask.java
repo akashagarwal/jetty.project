@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.monitor.jmx;
 
@@ -49,7 +44,7 @@ public class MonitorTask extends TimerTask
     
     /* ------------------------------------------------------------ */
     /**
-     * Creates new instance of MonitorTask 
+     * Creates new instance of MonitorTask .
      * 
      * @param action instance of MonitorAction to use
      */
@@ -60,7 +55,7 @@ public class MonitorTask extends TimerTask
     
     /* ------------------------------------------------------------ */
     /**
-     * Schedule new timer task for specified monitor action
+     * Schedule new timer task for specified monitor action.
      * 
      * @param action monitor action
      */
@@ -76,15 +71,16 @@ public class MonitorTask extends TimerTask
     
     /* ------------------------------------------------------------ */
     /**
-     * Cancel timer task for specified monitor action
+     * Cancel timer task for specified monitor action.
      * 
      * @param action monitor action
      */
     public static void cancel(MonitorAction action)
     {
         TimerTask task = __tasks.remove(action.getID());
-        if (task != null)
-            task.cancel();
+        if (task != null) {
+			task.cancel();
+		}
     }
 
     /* ------------------------------------------------------------ */
@@ -106,8 +102,9 @@ public class MonitorTask extends TimerTask
             {
                 try
                 {
-                    if(trigger.match(timestamp))
-                        _action.doExecute(timestamp);
+                    if(trigger.match(timestamp)) {
+						_action.doExecute(timestamp);
+					}
                 }
                 catch (Exception ex)
                 {

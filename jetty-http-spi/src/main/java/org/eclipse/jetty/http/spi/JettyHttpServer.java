@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http.spi;
 
@@ -91,18 +86,23 @@ public class JettyHttpServer extends com.sun.net.httpserver.HttpServer
             for (NetworkConnector connector : connectors)
             {
                 if (connector.getPort() == addr.getPort()) {
-                    if (LOG.isDebugEnabled()) LOG.debug("server already bound to port " + addr.getPort() + ", no need to rebind");
+                    if (LOG.isDebugEnabled()) {
+						LOG.debug("server already bound to port " + addr.getPort() + ", no need to rebind");
+					}
                     return;
                 }
             }
         }
 
-        if (_serverShared)
-            throw new IOException("jetty server is not bound to port " + addr.getPort());
+        if (_serverShared) {
+			throw new IOException("jetty server is not bound to port " + addr.getPort());
+		}
 
         this._addr = addr;
 
-        if (LOG.isDebugEnabled()) LOG.debug("binding server to port " + addr.getPort());
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("binding server to port " + addr.getPort());
+		}
         ServerConnector connector = new ServerConnector(_server);
         connector.setPort(addr.getPort());
         connector.setHost(addr.getHostName());
@@ -128,7 +128,9 @@ public class JettyHttpServer extends com.sun.net.httpserver.HttpServer
     @Override
     public void start()
     {
-        if (_serverShared) return;
+        if (_serverShared) {
+			return;
+		}
 
         try
         {
@@ -143,21 +145,24 @@ public class JettyHttpServer extends com.sun.net.httpserver.HttpServer
     @Override
     public void setExecutor(Executor executor)
     {
-        if (executor == null)
-            throw new IllegalArgumentException("missing required 'executor' argument");
+        if (executor == null) {
+			throw new IllegalArgumentException("missing required 'executor' argument");
+		}
         ThreadPool threadPool = _server.getThreadPool();
-        if (threadPool instanceof DelegatingThreadPool)
-            ((DelegatingThreadPool)_server.getThreadPool()).setExecutor(executor);
-        else
-            throw new UnsupportedOperationException("!DelegatingThreadPool");
+        if (threadPool instanceof DelegatingThreadPool) {
+			((DelegatingThreadPool)_server.getThreadPool()).setExecutor(executor);
+		} else {
+			throw new UnsupportedOperationException("!DelegatingThreadPool");
+		}
     }
 
     @Override
     public Executor getExecutor()
     {
         ThreadPool threadPool = _server.getThreadPool();
-        if (threadPool instanceof DelegatingThreadPool)
-            return ((DelegatingThreadPool)_server.getThreadPool()).getExecutor();
+        if (threadPool instanceof DelegatingThreadPool) {
+			return ((DelegatingThreadPool)_server.getThreadPool()).getExecutor();
+		}
         return threadPool;
     }
 
@@ -167,7 +172,9 @@ public class JettyHttpServer extends com.sun.net.httpserver.HttpServer
         cleanUpContexts();
         cleanUpConnectors();
 
-        if (_serverShared) return;
+        if (_serverShared) {
+			return;
+		}
 
         try
         {
@@ -216,8 +223,9 @@ public class JettyHttpServer extends com.sun.net.httpserver.HttpServer
         HttpSpiContextHandler jettyContextHandler = context.getJettyContextHandler();
 
         ContextHandlerCollection chc = findContextHandlerCollection(_server.getHandlers());
-        if (chc == null)
-            throw new RuntimeException("could not find ContextHandlerCollection, you must configure one");
+        if (chc == null) {
+			throw new RuntimeException("could not find ContextHandlerCollection, you must configure one");
+		}
 
         chc.addHandler(jettyContextHandler);
         _contexts.put(path, context);
@@ -227,8 +235,9 @@ public class JettyHttpServer extends com.sun.net.httpserver.HttpServer
 
     private ContextHandlerCollection findContextHandlerCollection(Handler[] handlers)
     {
-        if (handlers == null)
-            return null;
+        if (handlers == null) {
+			return null;
+		}
 
         for (Handler handler : handlers)
         {
@@ -241,8 +250,9 @@ public class JettyHttpServer extends com.sun.net.httpserver.HttpServer
             {
                 HandlerCollection hc = (HandlerCollection) handler;
                 ContextHandlerCollection chc = findContextHandlerCollection(hc.getHandlers());
-                if (chc != null)
-                    return chc;
+                if (chc != null) {
+					return chc;
+				}
             }
         }
         return null;
@@ -254,19 +264,23 @@ public class JettyHttpServer extends com.sun.net.httpserver.HttpServer
         if (serverHandler instanceof ContextHandler)
         {
             ContextHandler ctx = (ContextHandler) serverHandler;
-            if (ctx.getContextPath().equals(path))
-                throw new RuntimeException("another context already bound to path " + path);
+            if (ctx.getContextPath().equals(path)) {
+				throw new RuntimeException("another context already bound to path " + path);
+			}
         }
 
         Handler[] handlers = _server.getHandlers();
-        if (handlers == null) return;
+        if (handlers == null) {
+			return;
+		}
 
         for (Handler handler : handlers)
         {
             if (handler instanceof ContextHandler) {
                 ContextHandler ctx = (ContextHandler) handler;
-                if (ctx.getContextPath().equals(path))
-                    throw new RuntimeException("another context already bound to path " + path);
+                if (ctx.getContextPath().equals(path)) {
+					throw new RuntimeException("another context already bound to path " + path);
+				}
             }
         }
     }
@@ -281,7 +295,9 @@ public class JettyHttpServer extends com.sun.net.httpserver.HttpServer
     public void removeContext(String path) throws IllegalArgumentException
     {
         JettyHttpContext context = _contexts.remove(path);
-        if (context == null) return;
+        if (context == null) {
+			return;
+		}
         _server.removeBean(context.getJettyContextHandler());
     }
 

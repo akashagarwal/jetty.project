@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.annotations;
 
@@ -51,15 +46,17 @@ public class ServletContainerInitializersStarter extends AbstractLifeCycle imple
     public void doStart()
     {
         List<ContainerInitializer> initializers = (List<ContainerInitializer>)_context.getAttribute(AnnotationConfiguration.CONTAINER_INITIALIZERS);
-        if (initializers == null)
-            return;
+        if (initializers == null) {
+			return;
+		}
         
         for (ContainerInitializer i : initializers)
         {
             try
             {
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Calling ServletContainerInitializer "+i.getTarget().getClass().getName());
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("Calling ServletContainerInitializer "+i.getTarget().getClass().getName());
+				}
                 i.callStartup(_context);
             }
             catch (Exception e)

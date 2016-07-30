@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.servlet;
 
@@ -345,16 +340,17 @@ public class DispatcherTest
         {
             RequestDispatcher dispatcher = null;
 
-            if(request.getParameter("do").equals("include"))
-                dispatcher = getServletContext().getRequestDispatcher("/IncludeServlet/includepath?do=assertforwardinclude");
-            else if(request.getParameter("do").equals("assertincludeforward"))
-                dispatcher = getServletContext().getRequestDispatcher("/AssertIncludeForwardServlet/assertpath?do=end");
-            else if(request.getParameter("do").equals("assertforward"))
-                dispatcher = getServletContext().getRequestDispatcher("/AssertForwardServlet?do=end&do=the");
-            else if(request.getParameter("do").equals("ctx.echo"))
-                dispatcher = getServletContext().getRequestDispatcher(request.getParameter("uri"));
-            else if(request.getParameter("do").equals("req.echo"))
-                dispatcher = request.getRequestDispatcher(request.getParameter("uri"));
+            if("include".equals(request.getParameter("do"))) {
+				dispatcher = getServletContext().getRequestDispatcher("/IncludeServlet/includepath?do=assertforwardinclude");
+			} else if("assertincludeforward".equals(request.getParameter("do"))) {
+				dispatcher = getServletContext().getRequestDispatcher("/AssertIncludeForwardServlet/assertpath?do=end");
+			} else if("assertforward".equals(request.getParameter("do"))) {
+				dispatcher = getServletContext().getRequestDispatcher("/AssertForwardServlet?do=end&do=the");
+			} else if("ctx.echo".equals(request.getParameter("do"))) {
+				dispatcher = getServletContext().getRequestDispatcher(request.getParameter("uri"));
+			} else if("req.echo".equals(request.getParameter("do"))) {
+				dispatcher = request.getRequestDispatcher(request.getParameter("uri"));
+			}
             dispatcher.forward(request, response);
         }
     }
@@ -371,7 +367,7 @@ public class DispatcherTest
         }
     }
     
-    /*
+    /**
      * Forward filter works with roger, echo and reverse echo servlets to test various
      * forwarding bits using filters.
      *
@@ -439,10 +435,11 @@ public class DispatcherTest
             else if(request.getParameter("forward")!=null)
             {
                 dispatcher = getServletContext().getRequestDispatcher(request.getParameter("forward"));
-                if (dispatcher!=null)
-                    dispatcher.forward(new ServletRequestWrapper(request), new ServletResponseWrapper(response));
-                else
-                    response.sendError(404);
+                if (dispatcher!=null) {
+					dispatcher.forward(new ServletRequestWrapper(request), new ServletResponseWrapper(response));
+				} else {
+					response.sendError(404);
+				}
             }
 
         }
@@ -456,12 +453,13 @@ public class DispatcherTest
         {
             RequestDispatcher dispatcher = null;
 
-            if(request.getParameter("do").equals("forward"))
-                dispatcher = getServletContext().getRequestDispatcher("/ForwardServlet/forwardpath?do=assertincludeforward");
-            else if(request.getParameter("do").equals("assertforwardinclude"))
-                dispatcher = getServletContext().getRequestDispatcher("/AssertForwardIncludeServlet/assertpath?do=end");
-            else if(request.getParameter("do").equals("assertinclude"))
-                dispatcher = getServletContext().getRequestDispatcher("/AssertIncludeServlet?do=end&do=the");
+            if("forward".equals(request.getParameter("do"))) {
+				dispatcher = getServletContext().getRequestDispatcher("/ForwardServlet/forwardpath?do=assertincludeforward");
+			} else if("assertforwardinclude".equals(request.getParameter("do"))) {
+				dispatcher = getServletContext().getRequestDispatcher("/AssertForwardIncludeServlet/assertpath?do=end");
+			} else if("assertinclude".equals(request.getParameter("do"))) {
+				dispatcher = getServletContext().getRequestDispatcher("/AssertIncludeServlet?do=end&do=the");
+			}
             dispatcher.include(request, response);
         }
     }
@@ -522,11 +520,11 @@ public class DispatcherTest
 
             if ( "true".equals(req.getParameter("wrapped")))
             {
-                if (req.getParameter("do").equals("forward"))
+                if ("forward".equals(req.getParameter("do")))
                 {
                     dispatcher.forward(new HttpServletRequestWrapper(req),new HttpServletResponseWrapper(res));
                 }
-                else if (req.getParameter("do").equals("include"))
+                else if ("include".equals(req.getParameter("do")))
                 {
                     dispatcher.include(new HttpServletRequestWrapper(req),new HttpServletResponseWrapper(res));
                 }
@@ -534,22 +532,18 @@ public class DispatcherTest
                 {
                     throw new ServletException("type of forward or include is required");
                 }
-            }
-            else
-            {
-                if (req.getParameter("do").equals("forward"))
-                {
-                    dispatcher.forward(req,res);
-                }
-                else if (req.getParameter("do").equals("include"))
-                {
-                    dispatcher.include(req,res);
-                }
-                else
-                {
-                    throw new ServletException("type of forward or include is required");
-                }
-            }
+            } else if ("forward".equals(req.getParameter("do")))
+			{
+			    dispatcher.forward(req,res);
+			}
+			else if ("include".equals(req.getParameter("do")))
+			{
+			    dispatcher.include(req,res);
+			}
+			else
+			{
+			    throw new ServletException("type of forward or include is required");
+			}
         }
     }
 

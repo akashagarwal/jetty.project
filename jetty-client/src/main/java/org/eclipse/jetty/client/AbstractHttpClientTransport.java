@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.client;
 
@@ -96,8 +91,9 @@ public abstract class AbstractHttpClientTransport extends ContainerLifeCycle imp
             HttpDestination destination = (HttpDestination)context.get(HTTP_DESTINATION_CONTEXT_KEY);
             HttpClient client = destination.getHttpClient();
             SocketAddress bindAddress = client.getBindAddress();
-            if (bindAddress != null)
-                channel.bind(bindAddress);
+            if (bindAddress != null) {
+				channel.bind(bindAddress);
+			}
             configure(client, channel);
 
             context.put(SslClientConnectionFactory.SSL_PEER_HOST_CONTEXT_KEY, destination.getHost());
@@ -112,10 +108,11 @@ public abstract class AbstractHttpClientTransport extends ContainerLifeCycle imp
             else
             {
                 channel.configureBlocking(false);
-                if (channel.connect(address))
-                    selectorManager.accept(channel, context);
-                else
-                    selectorManager.connect(channel, context);
+                if (channel.connect(address)) {
+					selectorManager.accept(channel, context);
+				} else {
+					selectorManager.connect(channel, context);
+				}
             }
         }
         // Must catch all exceptions, since some like
@@ -124,13 +121,15 @@ public abstract class AbstractHttpClientTransport extends ContainerLifeCycle imp
         {
             // If IPv6 is not deployed, a generic SocketException "Network is unreachable"
             // exception is being thrown, so we attempt to provide a better error message.
-            if (x.getClass() == SocketException.class)
-                x = new SocketException("Could not connect to " + address).initCause(x);
+            if (x.getClass() == SocketException.class) {
+				x = new SocketException("Could not connect to " + address).initCause(x);
+			}
 
             try
             {
-                if (channel != null)
-                    channel.close();
+                if (channel != null) {
+					channel.close();
+				}
             }
             catch (IOException xx)
             {
@@ -145,8 +144,9 @@ public abstract class AbstractHttpClientTransport extends ContainerLifeCycle imp
 
     protected void connectFailed(Map<String, Object> context, Throwable x)
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("Could not connect to {}", context.get(HTTP_DESTINATION_CONTEXT_KEY));
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Could not connect to {}", context.get(HTTP_DESTINATION_CONTEXT_KEY));
+		}
         @SuppressWarnings("unchecked")
         Promise<Connection> promise = (Promise<Connection>)context.get(HTTP_CONNECTION_PROMISE_CONTEXT_KEY);
         promise.failed(x);

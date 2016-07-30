@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 
@@ -47,7 +42,7 @@ import org.eclipse.jetty.util.statistic.SampleStatistic;
 @ManagedObject("Connector Statistics")
 public class ConnectorStatistics extends AbstractLifeCycle implements Dumpable, Connection.Listener
 {
-    private final static Sample ZERO=new Sample();
+    private static final Sample ZERO=new Sample();
     private final AtomicLong _startMillis = new AtomicLong(-1L);
     private final CounterStatistic _connectionStats = new CounterStatistic();
     private final SampleStatistic _messagesIn = new SampleStatistic();
@@ -251,8 +246,9 @@ public class ConnectorStatistics extends AbstractLifeCycle implements Dumpable, 
     {
         for (Connector connector : server.getConnectors())
         {
-            if (connector instanceof Container)
-             ((Container)connector).addBean(new ConnectorStatistics());
+            if (connector instanceof Container) {
+				((Container)connector).addBean(new ConnectorStatistics());
+			}
         }
     }  
     
@@ -263,29 +259,25 @@ public class ConnectorStatistics extends AbstractLifeCycle implements Dumpable, 
         long then=_nanoStamp.get();
         long duration=now-then;
                 
-        if (duration>SECOND_NANOS/2)
-        {
-            if (_nanoStamp.compareAndSet(then,now))
-            {
-                long msgsIn=_closedIn.sumThenReset();
-                long msgsOut=_closedOut.sumThenReset();
+        if (duration>SECOND_NANOS/2 && _nanoStamp.compareAndSet(then,now)) {
+		    long msgsIn=_closedIn.sumThenReset();
+		    long msgsOut=_closedOut.sumThenReset();
 
-                for (Map.Entry<Connection, Sample> entry : _samples.entrySet())
-                {
-                    Connection connection=entry.getKey();
-                    Sample sample = entry.getValue();
-                    Sample next = new Sample(connection);
-                    if (_samples.replace(connection,sample,next))
-                    {
-                        msgsIn+=next._messagesIn-sample._messagesIn;
-                        msgsOut+=next._messagesOut-sample._messagesOut;
-                    }
-                }
-                
-                _messagesInPerSecond=(int)(msgsIn*SECOND_NANOS/duration);
-                _messagesOutPerSecond=(int)(msgsOut*SECOND_NANOS/duration);
-            }
-        }
+		    for (Map.Entry<Connection, Sample> entry : _samples.entrySet())
+		    {
+		        Connection connection=entry.getKey();
+		        Sample sample = entry.getValue();
+		        Sample next = new Sample(connection);
+		        if (_samples.replace(connection,sample,next))
+		        {
+		            msgsIn+=next._messagesIn-sample._messagesIn;
+		            msgsOut+=next._messagesOut-sample._messagesOut;
+		        }
+		    }
+		    
+		    _messagesInPerSecond=(int)(msgsIn*SECOND_NANOS/duration);
+		    _messagesOutPerSecond=(int)(msgsOut*SECOND_NANOS/duration);
+		}
     }
     
     private static class Sample

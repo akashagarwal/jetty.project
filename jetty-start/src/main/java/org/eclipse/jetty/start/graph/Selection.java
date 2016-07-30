@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.start.graph;
 
@@ -92,7 +87,7 @@ public class Selection
     }
 
     /**
-     * Get the criteria for this selection
+     * Get the criteria for this selection.
      * @return the criteria
      */
     public String getCriteria()
@@ -105,9 +100,8 @@ public class Selection
     {
         final int prime = 31;
         int result = 1;
-        result = (prime * result) + (explicit ? 1231 : 1237);
-        result = (prime * result) + ((criteria == null) ? 0 : criteria.hashCode());
-        return result;
+        result = prime * result + (explicit ? 1231 : 1237);
+        return prime * result + ((criteria == null) ? 0 : criteria.hashCode());
     }
 
     public boolean isExplicit()

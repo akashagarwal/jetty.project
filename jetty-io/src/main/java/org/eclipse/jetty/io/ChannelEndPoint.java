@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.io;
 
@@ -66,25 +61,29 @@ public class ChannelEndPoint extends AbstractEndPoint
 
     protected void shutdownInput()
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("ishut {}", this);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("ishut {}", this);
+		}
         _ishut=true;
-        if (_oshut)
-            close();
+        if (_oshut) {
+			close();
+		}
     }
 
     @Override
     public void shutdownOutput()
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("oshut {}", this);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("oshut {}", this);
+		}
         _oshut = true;
         if (_channel.isOpen())
         {
             try
             {
-                if (!_socket.isOutputShutdown())
-                    _socket.shutdownOutput();
+                if (!_socket.isOutputShutdown()) {
+					_socket.shutdownOutput();
+				}
             }
             catch (IOException e)
             {
@@ -116,8 +115,9 @@ public class ChannelEndPoint extends AbstractEndPoint
     public void close()
     {
         super.close();
-        if (LOG.isDebugEnabled())
-            LOG.debug("close {}", this);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("close {}", this);
+		}
         try
         {
             _channel.close();
@@ -136,20 +136,23 @@ public class ChannelEndPoint extends AbstractEndPoint
     @Override
     public int fill(ByteBuffer buffer) throws IOException
     {
-        if (_ishut)
-            return -1;
+        if (_ishut) {
+			return -1;
+		}
 
         int pos=BufferUtil.flipToFill(buffer);
         try
         {
             int filled = _channel.read(buffer);
-            if (LOG.isDebugEnabled()) // Avoid boxing of variable 'filled'
-                LOG.debug("filled {} {}", filled, this);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("filled {} {}", filled, this);
+			}
 
-            if (filled>0)
-                notIdle();
-            else if (filled==-1)
-                shutdownInput();
+            if (filled>0) {
+				notIdle();
+			} else if (filled==-1) {
+				shutdownInput();
+			}
 
             return filled;
         }
@@ -171,38 +174,44 @@ public class ChannelEndPoint extends AbstractEndPoint
         long flushed=0;
         try
         {
-            if (buffers.length==1)
-                flushed=_channel.write(buffers[0]);
-            else if (buffers.length>1)
-                flushed=_channel.write(buffers,0,buffers.length);
-            else
+            if (buffers.length==1) {
+				flushed=_channel.write(buffers[0]);
+			} else if (buffers.length>1) {
+				flushed=_channel.write(buffers,0,buffers.length);
+			} else
             {
                 for (ByteBuffer b : buffers)
                 {
                     if (b.hasRemaining())
                     {
                         int l=_channel.write(b);
-                        if (l>0)
-                            flushed+=l;
-                        if (b.hasRemaining())
-                            break;
+                        if (l>0) {
+							flushed+=l;
+						}
+                        if (b.hasRemaining()) {
+							break;
+						}
                     }
                 }
             }
-            if (LOG.isDebugEnabled())
-                LOG.debug("flushed {} {}", flushed, this);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("flushed {} {}", flushed, this);
+			}
         }
         catch (IOException e)
         {
             throw new EofException(e);
         }
 
-        if (flushed>0)
-            notIdle();
+        if (flushed>0) {
+			notIdle();
+		}
 
-        for (ByteBuffer b : buffers)
-            if (!BufferUtil.isEmpty(b))
-                return false;
+        for (ByteBuffer b : buffers) {
+			if (!BufferUtil.isEmpty(b)) {
+				return false;
+			}
+		}
 
         return true;
     }

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.client;
 
@@ -34,7 +29,7 @@ public interface ProtocolHandler
     /**
      * @return a unique name among protocol handlers
      */
-    public String getName();
+    String getName();
 
     /**
      * <p>Inspects the given {@code request} and {@code response}
@@ -48,11 +43,11 @@ public interface ProtocolHandler
      * @param response the response to accept
      * @return true if this protocol handler can handle the given request and response
      */
-    public boolean accept(Request request, Response response);
+    boolean accept(Request request, Response response);
 
     /**
      * @return a response listener that will handle the request and response
      * on behalf of the application.
      */
-    public Response.Listener getResponseListener();
+    Response.Listener getResponseListener();
 }

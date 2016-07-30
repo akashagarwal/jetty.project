@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.osgi.test;
 
@@ -54,7 +49,7 @@ public class TestJettyOSGiBootWithJsp
     private static final String LOG_LEVEL = "WARN";
 
     @Inject
-    BundleContext bundleContext = null;
+    BundleContext bundleContext;
 
     @Configuration
     public static Option[] configure()
@@ -82,12 +77,13 @@ public class TestJettyOSGiBootWithJsp
         String etc = "file://" + etcFolder.getAbsolutePath();
         List<Option> options = new ArrayList<Option>();
         String xmlConfigs = etc     + "/jetty.xml";
-        if (ssl)
-            xmlConfigs += ";" 
+        if (ssl) {
+			xmlConfigs += ";" 
                     + etc
                     + "/jetty-ssl.xml;"
                     + etc
                     + "/jetty-https.xml;";
+		}
         xmlConfigs+= ";"
                 + etc
                 + "/"
@@ -108,8 +104,7 @@ public class TestJettyOSGiBootWithJsp
 
     public static List<Option> jspDependencies()
     {
-        List<Option> res = new ArrayList<Option>();
-        res.addAll(TestJettyOSGiBootCore.jspDependencies());
+        List<Option> res = new ArrayList<Option>(TestJettyOSGiBootCore.jspDependencies());
         //test webapp bundle
         res.add(mavenBundle().groupId("org.eclipse.jetty").artifactId("test-jetty-webapp").classifier("webbundle").versionAsInProject());
         
@@ -125,8 +120,10 @@ public class TestJettyOSGiBootWithJsp
         TestOSGiUtil.assertAllBundlesActiveOrResolved(bundleContext);
     }
 
-    // at the moment can't run httpservice with jsp at the same time.
-    // that is a regression in jetty-9
+    /**
+     * At the moment can't run httpservice with jsp at the same time.
+     * that is a regression in jetty-9
+     */
     @Ignore
     @Test
     public void testHttpService() throws Exception

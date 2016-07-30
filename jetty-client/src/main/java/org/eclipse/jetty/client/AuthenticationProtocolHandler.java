@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.client;
 
@@ -88,8 +83,9 @@ public abstract class AuthenticationProtocolHandler implements ProtocolHandler
             ContentResponse response = new HttpContentResponse(result.getResponse(), getContent(), getMediaType(), getEncoding());
             if (result.isFailed())
             {
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Authentication challenge failed {}", result.getFailure());
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("Authentication challenge failed {}", result.getFailure());
+				}
                 forwardFailureComplete(request, result.getRequestFailure(), response, result.getResponseFailure());
                 return;
             }
@@ -99,8 +95,9 @@ public abstract class AuthenticationProtocolHandler implements ProtocolHandler
             if (conversation.getAttribute(authenticationAttribute) != null)
             {
                 // We have already tried to authenticate, but we failed again
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Bad credentials for {}", request);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("Bad credentials for {}", request);
+				}
                 forwardSuccessComplete(request, response);
                 return;
             }
@@ -109,8 +106,9 @@ public abstract class AuthenticationProtocolHandler implements ProtocolHandler
             List<Authentication.HeaderInfo> headerInfos = parseAuthenticateHeader(response, header);
             if (headerInfos.isEmpty())
             {
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Authentication challenge without {} header", header);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("Authentication challenge without {} header", header);
+				}
                 forwardFailureComplete(request, null, response, new HttpResponseException("HTTP protocol violation: Authentication challenge without " + header + " header", response));
                 return;
             }
@@ -132,8 +130,9 @@ public abstract class AuthenticationProtocolHandler implements ProtocolHandler
             }
             if (authentication == null)
             {
-                if (LOG.isDebugEnabled())
-                    LOG.debug("No authentication available for {}", request);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("No authentication available for {}", request);
+				}
                 forwardSuccessComplete(request, response);
                 return;
             }
@@ -141,8 +140,9 @@ public abstract class AuthenticationProtocolHandler implements ProtocolHandler
             try
             {
                 final Authentication.Result authnResult = authentication.authenticate(request, response, headerInfo, conversation);
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Authentication result {}", authnResult);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("Authentication result {}", authnResult);
+				}
                 if (authnResult == null)
                 {
                     forwardSuccessComplete(request, response);
@@ -157,14 +157,16 @@ public abstract class AuthenticationProtocolHandler implements ProtocolHandler
                 {
                     String uri = request.getScheme() + "://" + request.getHost();
                     int port = request.getPort();
-                    if (port > 0)
-                        uri += ":" + port;
+                    if (port > 0) {
+						uri += ":" + port;
+					}
                     requestURI = URI.create(uri);
                     path = request.getPath();
                 }
                 Request newRequest = client.copyRequest(request, requestURI);
-                if (path != null)
-                    newRequest.path(path);
+                if (path != null) {
+					newRequest.path(path);
+				}
 
                 authnResult.apply(newRequest);
                 // Copy existing, explicitly set, authorization headers.
@@ -174,15 +176,17 @@ public abstract class AuthenticationProtocolHandler implements ProtocolHandler
                 newRequest.onResponseSuccess(r -> client.getAuthenticationStore().addAuthenticationResult(authnResult));
 
                 Connection connection = (Connection)request.getAttributes().get(Connection.class.getName());
-                if (connection != null)
-                    connection.send(newRequest, null);
-                else
-                    newRequest.send(null);
+                if (connection != null) {
+					connection.send(newRequest, null);
+				} else {
+					newRequest.send(null);
+				}
             }
             catch (Throwable x)
             {
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Authentication failed", x);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("Authentication failed", x);
+				}
                 forwardFailureComplete(request, null, response, x);
             }
         }
@@ -190,8 +194,9 @@ public abstract class AuthenticationProtocolHandler implements ProtocolHandler
         private void copyIfAbsent(HttpRequest oldRequest, Request newRequest, HttpHeader header)
         {
             HttpField field = oldRequest.getHeaders().getField(header);
-            if (field != null && !newRequest.getHeaders().contains(header))
-                newRequest.getHeaders().put(field);
+            if (field != null && !newRequest.getHeaders().contains(header)) {
+				newRequest.getHeaders().put(field);
+			}
         }
 
         private void forwardSuccessComplete(HttpRequest request, Response response)
@@ -206,10 +211,11 @@ public abstract class AuthenticationProtocolHandler implements ProtocolHandler
             HttpConversation conversation = request.getConversation();
             conversation.updateResponseListeners(null);
             List<Response.ResponseListener> responseListeners = conversation.getResponseListeners();
-            if (responseFailure == null)
-                notifier.forwardSuccess(responseListeners, response);
-            else
-                notifier.forwardFailure(responseListeners, response, responseFailure);
+            if (responseFailure != null) {
+				notifier.forwardFailure(responseListeners, response, responseFailure);
+			} else {
+				notifier.forwardSuccess(responseListeners, response);
+			}
             notifier.notifyComplete(responseListeners, new Result(request, requestFailure, response, responseFailure));
         }
 

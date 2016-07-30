@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http2;
 
@@ -27,8 +22,8 @@ public class HTTP2Cipher
 {
     public static final Comparator<String> COMPARATOR = new CipherComparator();
 
-    private final static Trie<Boolean> __blackProtocols = new ArrayTrie<>(6*5);
-    private final static Trie<Boolean> __blackCiphers = new ArrayTrie<>(275*40);
+    private static final Trie<Boolean> __blackProtocols = new ArrayTrie<>(6*5);
+    private static final Trie<Boolean> __blackCiphers = new ArrayTrie<>(275*40);
 
     static
     {
@@ -346,10 +341,12 @@ public class HTTP2Cipher
         {
             boolean b1=isBlackListCipher(c1);
             boolean b2=isBlackListCipher(c2);
-            if (b1==b2)
-                return 0;
-            if (b1)
-                return 1;
+            if (b1==b2) {
+				return 0;
+			}
+            if (b1) {
+				return 1;
+			}
             return -1;
         }
     }

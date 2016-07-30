@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 
@@ -51,7 +46,7 @@ public class AsyncRequestReadTest
 {
     private static Server server;
     private static ServerConnector connector;
-    private final static BlockingQueue<Long> __total=new BlockingArrayQueue<>();
+    private static final BlockingQueue<Long> __total=new BlockingArrayQueue<>();
 
     @Before
     public void startServer() throws Exception
@@ -197,8 +192,9 @@ public class AsyncRequestReadTest
 
                         byte[] b = new byte[4*4096];
                         int read;
-                        while((read =in.read(b))>=0)
-                            total += read;
+                        while((read =in.read(b))>=0) {
+							total += read;
+						}
                     }
                     catch(Exception e)
                     {
@@ -349,13 +345,14 @@ public class AsyncRequestReadTest
 
             BufferedReader in = request.getReader();
             PrintWriter out =httpResponse.getWriter();
-            int read=Integer.valueOf(request.getParameter("read"));
+            int read=Integer.parseInt(request.getParameter("read"));
             // System.err.println("read="+read);
             for (int i=read;i-->0;)
             {
                 int c=in.read();
-                if (c<0)
-                    break;
+                if (c<0) {
+					break;
+				}
                 out.write(c);
             }
             out.println();

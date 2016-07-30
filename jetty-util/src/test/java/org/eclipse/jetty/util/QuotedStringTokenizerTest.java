@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util;
 
@@ -25,14 +20,10 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 
-/**
- *
- *
- */
 public class QuotedStringTokenizerTest
 {
-    /*
-     * Test for String nextToken()
+    /**
+     * Test for String nextToken().
      */
     @Test
     public void testTokenizer0()
@@ -42,8 +33,8 @@ public class QuotedStringTokenizerTest
         checkTok(tok,false,false);
     }
 
-    /*
-     * Test for String nextToken()
+    /**
+     * Test for String nextToken().
      */
     @Test
     public void testTokenizer1()
@@ -54,8 +45,8 @@ public class QuotedStringTokenizerTest
         checkTok(tok,false,false);
     }
 
-    /*
-     * Test for String nextToken()
+    /**
+     * Test for String nextToken().
      */
     @Test
     public void testTokenizer2()
@@ -70,8 +61,8 @@ public class QuotedStringTokenizerTest
         checkTok(tok,true,false);
     }
 
-    /*
-     * Test for String nextToken()
+    /**
+     * Test for String nextToken().
      */
     @Test
     public void testTokenizer3()
@@ -114,8 +105,8 @@ public class QuotedStringTokenizerTest
 
     }
 
-    /*
-     * Test for String nextToken()
+    /**
+     * Test for String nextToken().
      */
     @Test
     public void testTokenizer4()
@@ -134,19 +125,27 @@ public class QuotedStringTokenizerTest
         assertTrue(tok.hasMoreElements());
         assertTrue(tok.hasMoreTokens());
         assertEquals("abc",tok.nextToken());
-        if (delim)assertEquals(",",tok.nextToken());
-        if (delim)assertEquals(" ",tok.nextToken());
+        if (delim) {
+			assertEquals(",",tok.nextToken());
+		}
+        if (delim) {
+			assertEquals(" ",tok.nextToken());
+		}
 
         assertEquals(quotes?"\"d\\\"'\"":"d\"'",tok.nextElement());
-        if (delim)assertEquals(",",tok.nextToken());
+        if (delim) {
+			assertEquals(",",tok.nextToken());
+		}
         assertEquals(quotes?"'p\\',y'":"p',y",tok.nextToken());
-        if (delim)assertEquals(" ",tok.nextToken());
+        if (delim) {
+			assertEquals(" ",tok.nextToken());
+		}
         assertEquals("z",tok.nextToken());
         assertFalse(tok.hasMoreTokens());
     }
 
-    /*
-     * Test for String quote(String, String)
+    /**
+     * Test for String quote(String, String).
      */
     @Test
     public void testQuoteIfNeeded()

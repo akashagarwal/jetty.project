@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http2;
 
@@ -102,8 +97,9 @@ public class HTTP2Stream extends IdleTimeout implements IStream
     @Override
     public void reset(ResetFrame frame, Callback callback)
     {
-        if (isReset())
-            return;
+        if (isReset()) {
+			return;
+		}
         localReset = true;
         session.frames(this, callback, frame, Frame.EMPTY_ARRAY);
     }
@@ -157,8 +153,9 @@ public class HTTP2Stream extends IdleTimeout implements IStream
     @Override
     protected void onIdleExpired(TimeoutException timeout)
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("Idle timeout {}ms expired on {}", getIdleTimeout(), this);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Idle timeout {}ms expired on {}", getIdleTimeout(), this);
+		}
 
         // The stream is now gone, we must close it to
         // avoid that its idle timeout is rescheduled.
@@ -237,8 +234,9 @@ public class HTTP2Stream extends IdleTimeout implements IStream
 
     private void onHeaders(HeadersFrame frame, Callback callback)
     {
-        if (updateClose(frame.isEndStream(), false))
-            session.removeStream(this);
+        if (updateClose(frame.isEndStream(), false)) {
+			session.removeStream(this);
+		}
         callback.succeeded();
     }
 
@@ -268,8 +266,9 @@ public class HTTP2Stream extends IdleTimeout implements IStream
             return;
         }
 
-        if (updateClose(frame.isEndStream(), false))
-            session.removeStream(this);
+        if (updateClose(frame.isEndStream(), false)) {
+			session.removeStream(this);
+		}
         notifyData(this, frame, callback);
     }
 
@@ -298,11 +297,13 @@ public class HTTP2Stream extends IdleTimeout implements IStream
     @Override
     public boolean updateClose(boolean update, boolean local)
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("Update close for {} close={} local={}", this, update, local);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Update close for {} close={} local={}", this, update, local);
+		}
 
-        if (!update)
-            return false;
+        if (!update) {
+			return false;
+		}
 
         while (true)
         {
@@ -312,21 +313,24 @@ public class HTTP2Stream extends IdleTimeout implements IStream
                 case NOT_CLOSED:
                 {
                     CloseState newValue = local ? CloseState.LOCALLY_CLOSED : CloseState.REMOTELY_CLOSED;
-                    if (closeState.compareAndSet(current, newValue))
-                        return false;
+                    if (closeState.compareAndSet(current, newValue)) {
+						return false;
+					}
                     break;
                 }
                 case LOCALLY_CLOSED:
                 {
-                    if (local)
-                        return false;
+                    if (local) {
+						return false;
+					}
                     close();
                     return true;
                 }
                 case REMOTELY_CLOSED:
                 {
-                    if (!local)
-                        return false;
+                    if (!local) {
+						return false;
+					}
                     close();
                     return true;
                 }
@@ -370,8 +374,9 @@ public class HTTP2Stream extends IdleTimeout implements IStream
     private void notifyData(Stream stream, DataFrame frame, Callback callback)
     {
         final Listener listener = this.listener;
-        if (listener == null)
-            return;
+        if (listener == null) {
+			return;
+		}
         try
         {
             listener.onData(stream, frame, callback);
@@ -385,8 +390,9 @@ public class HTTP2Stream extends IdleTimeout implements IStream
     private void notifyReset(Stream stream, ResetFrame frame)
     {
         final Listener listener = this.listener;
-        if (listener == null)
-            return;
+        if (listener == null) {
+			return;
+		}
         try
         {
             listener.onReset(stream, frame);
@@ -400,8 +406,9 @@ public class HTTP2Stream extends IdleTimeout implements IStream
     private void notifyTimeout(Stream stream, Throwable failure)
     {
         Listener listener = this.listener;
-        if (listener == null)
-            return;
+        if (listener == null) {
+			return;
+		}
         try
         {
             listener.onTimeout(stream, failure);

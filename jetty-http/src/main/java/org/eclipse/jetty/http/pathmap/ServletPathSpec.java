@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http.pathmap;
 
@@ -28,7 +23,7 @@ public class ServletPathSpec extends PathSpec
         assertValidServletPathSpec(servletPathSpec);
 
         // The Root Path Spec
-        if ((servletPathSpec == null) || (servletPathSpec.length() == 0))
+        if (servletPathSpec == null || servletPathSpec.length() == 0)
         {
             super.pathSpec = "";
             super.pathDepth = -1; // force this to be at the end of the sort order
@@ -51,7 +46,7 @@ public class ServletPathSpec extends PathSpec
         super.pathDepth = 0;
         char lastChar = servletPathSpec.charAt(specLength - 1);
         // prefix based
-        if ((servletPathSpec.charAt(0) == '/') && (specLength > 1) && (lastChar == '*'))
+        if (servletPathSpec.charAt(0) == '/' && specLength > 1 && lastChar == '*')
         {
             this.group = PathSpecGroup.PREFIX_GLOB;
         }
@@ -85,7 +80,7 @@ public class ServletPathSpec extends PathSpec
 
     private void assertValidServletPathSpec(String servletPathSpec)
     {
-        if ((servletPathSpec == null) || servletPathSpec.equals(""))
+        if (servletPathSpec == null || "".equals(servletPathSpec))
         {
             return; // empty path spec
         }
@@ -105,7 +100,7 @@ public class ServletPathSpec extends PathSpec
                 return; // no hit on glob '*'
             }
             // only allowed to have '*' at the end of the path spec
-            if (idx != (len - 1))
+            if (idx != len - 1)
             {
                 throw new IllegalArgumentException("Servlet Spec 12.2 violation: glob '*' can only exist at end of prefix based matches: bad spec \""+ servletPathSpec +"\"");
             }
@@ -227,14 +222,7 @@ public class ServletPathSpec extends PathSpec
     {
         // For a spec of "/foo/*" match "/foo" , "/foo/..." but not "/foobar"
         int cpl = specLength - 2;
-        if ((group == PathSpecGroup.PREFIX_GLOB) && (path.regionMatches(0,pathSpec,0,cpl)))
-        {
-            if ((path.length() == cpl) || ('/' == path.charAt(cpl)))
-            {
-                return true;
-            }
-        }
-        return false;
+        return group == PathSpecGroup.PREFIX_GLOB && path.regionMatches(0,pathSpec,0,cpl) && (path.length() == cpl || '/' == path.charAt(cpl));
     }
 
     @Override
@@ -250,7 +238,7 @@ public class ServletPathSpec extends PathSpec
                 return path.regionMatches((path.length() - specLength) + 1,pathSpec,1,specLength - 1);
             case ROOT:
                 // Only "/" matches
-                return ("/".equals(path));
+                return "/".equals(path);
             case DEFAULT:
                 // If we reached this point, then everything matches
                 return true;

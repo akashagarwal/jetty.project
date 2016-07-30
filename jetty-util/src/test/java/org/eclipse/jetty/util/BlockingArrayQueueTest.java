@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util;
 
@@ -92,8 +87,9 @@ public class BlockingArrayQueueTest
             queue.set(queue.size()-3,queue.get(queue.size()-3)+"!");
         }
 
-        for (int i=0;i<99;i++)
-            Assert.assertEquals(i + "!", queue.get(i));
+        for (int i=0;i<99;i++) {
+			Assert.assertEquals(i + "!", queue.get(i));
+		}
     }
 
     @Test
@@ -133,13 +129,15 @@ public class BlockingArrayQueueTest
             Assert.assertEquals(s, queue.size());
             Assert.assertEquals(c, queue.getCapacity());
 
-            for (int i=queue.size();i-->0;)
-                queue.poll();
+            for (int i=queue.size();i-->0;) {
+				queue.poll();
+			}
             Assert.assertEquals(0, queue.size());
             Assert.assertEquals(c, queue.getCapacity());
 
-            for (int i=queue.getCapacity();i-->0;)
-                queue.add("a");
+            for (int i=queue.getCapacity();i-->0;) {
+				queue.add("a");
+			}
             queue.add("a");
             Assert.assertEquals(s + 1, queue.size());
             Assert.assertEquals(c + 2, queue.getCapacity());
@@ -243,8 +241,9 @@ public class BlockingArrayQueueTest
                             else
                             {
                                 Integer msg=queue.poll(r,TimeUnit.MILLISECONDS);
-                                if (msg!=null)
-                                    consumed.add(msg);
+                                if (msg!=null) {
+									consumed.add(msg);
+								}
                             }
                         }
 
@@ -285,8 +284,9 @@ public class BlockingArrayQueueTest
                         {
                             Integer msg = random.nextInt();
                             produced.add(msg);
-                            if (!queue.offer(msg))
-                                throw new Exception(id+" FULL! "+queue.size());
+                            if (!queue.offer(msg)) {
+								throw new Exception(id+" FULL! "+queue.size());
+							}
                             Thread.sleep(1+random.nextInt(10));
                         }
                     }
@@ -339,8 +339,9 @@ public class BlockingArrayQueueTest
     {
         BlockingArrayQueue<String> queue = new BlockingArrayQueue<>(6);
         // Wrap the tail
-        for (int i = 0; i < queue.getMaxCapacity(); ++i)
-            queue.offer("" + i);
+        for (int i = 0; i < queue.getMaxCapacity(); ++i) {
+			queue.offer("" + i);
+		}
         // Advance the head
         queue.poll();
         // Remove from the middle
@@ -380,8 +381,9 @@ public class BlockingArrayQueueTest
 
         queue.clear();
 
-        for (int i = 0; i < queue.getMaxCapacity(); ++i)
-            queue.offer("" + i);
+        for (int i = 0; i < queue.getMaxCapacity(); ++i) {
+			queue.offer("" + i);
+		}
 
         Assert.assertTrue(queue.remove("" + (queue.getMaxCapacity() - 1)));
     }
@@ -404,8 +406,9 @@ public class BlockingArrayQueueTest
     {
         BlockingArrayQueue<String> queue = new BlockingArrayQueue<>(4,0,4);
         int count = queue.getMaxCapacity() - 1;
-        for (int i = 0; i < count; ++i)
-            queue.offer("" + i);
+        for (int i = 0; i < count; ++i) {
+			queue.offer("" + i);
+		}
 
         int sum = 0;
         for (String element : queue)

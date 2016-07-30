@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.start;
 
@@ -86,7 +81,7 @@ public final class Props implements Iterable<Prop>
     public static String getValue(String arg)
     {
         int idx = arg.indexOf('=');
-        if (idx == (-1))
+        if (idx == -1)
         {
             throw new UsageException(ERR_BAD_ARG,"Argument is missing a required value: %s",arg);
         }
@@ -196,7 +191,7 @@ public final class Props implements Iterable<Prop>
             return str;
         }
 
-        if (str.indexOf("${") < 0)
+        if (!str.contains("${"))
         {
             // Contains no potential expressions.
             return str;
@@ -228,7 +223,7 @@ public final class Props implements Iterable<Prop>
             }
 
             // find property name
-            expanded.append(str.subSequence(offset,mat.start()));
+            expanded.append(str, offset, mat.start());
             // get property value
             value = getString(property);
             if (value == null)
@@ -268,7 +263,7 @@ public final class Props implements Iterable<Prop>
     public Prop getProp(String key, boolean searchSystemProps)
     {
         Prop prop = props.get(key);
-        if ((prop == null) && searchSystemProps)
+        if (prop == null && searchSystemProps)
         {
             // try system property
             prop = getSystemProperty(key);
@@ -291,31 +286,31 @@ public final class Props implements Iterable<Prop>
         }
 
         Prop prop = getProp(name);
-        if (prop == null)
+        if (prop != null)
         {
-            return null;
+            return prop.value;
         }
-        return prop.value;
+        return null;
     }
 
     public String getString(String key, String defVal)
     {
         String val = getString(key);
-        if (val == null)
+        if (val != null)
         {
-            return defVal;
+            return val;
         }
-        return val;
+        return defVal;
     }
 
     private Prop getSystemProperty(String key)
     {
         String value = System.getProperty(key);
-        if (value == null)
+        if (value != null)
         {
-            return null;
+            return new Prop(key,value,ORIGIN_SYSPROP);
         }
-        return new Prop(key,value,ORIGIN_SYSPROP);
+        return null;
     }
 
     public static boolean hasPropertyKey(String name)
@@ -342,13 +337,13 @@ public final class Props implements Iterable<Prop>
     public void setProperty(String key, String value, String origin)
     {
         Prop prop = props.get(key);
-        if (prop == null)
+        if (prop != null)
         {
-            prop = new Prop(key,value,origin);
+            prop = new Prop(key,value,origin,prop);
         }
         else
         {
-            prop = new Prop(key,value,origin,prop);
+            prop = new Prop(key,value,origin);
         }
         props.put(key,prop);
     }

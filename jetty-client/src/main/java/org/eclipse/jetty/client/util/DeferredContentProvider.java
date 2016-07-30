@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.client.util;
 
@@ -100,30 +95,33 @@ public class DeferredContentProvider implements AsyncContentProvider, Callback, 
     private Throwable failure;
 
     /**
-     * Creates a new {@link DeferredContentProvider} with the given initial content
+     * Creates a new {@link DeferredContentProvider} with the given initial content.
      *
      * @param buffers the initial content
      */
     public DeferredContentProvider(ByteBuffer... buffers)
     {
-        for (ByteBuffer buffer : buffers)
-            offer(buffer);
+        for (ByteBuffer buffer : buffers) {
+			offer(buffer);
+		}
     }
 
     @Override
     public void setListener(Listener listener)
     {
-        if (!this.listener.compareAndSet(null, listener))
-            throw new IllegalStateException(String.format("The same %s instance cannot be used in multiple requests",
+        if (!this.listener.compareAndSet(null, listener)) {
+			throw new IllegalStateException(String.format("The same %s instance cannot be used in multiple requests",
                     AsyncContentProvider.class.getName()));
+		}
 
         if (isClosed())
         {
             synchronized (lock)
             {
                 long total = 0;
-                for (Chunk chunk : chunks)
-                    total += chunk.buffer.remaining();
+                for (Chunk chunk : chunks) {
+					total += chunk.buffer.remaining();
+				}
                 length = total;
             }
         }
@@ -162,14 +160,16 @@ public class DeferredContentProvider implements AsyncContentProvider, Callback, 
             if (failure == null)
             {
                 result = chunks.offer(chunk);
-                if (result && chunk != CLOSE)
-                    ++size;
+                if (result && chunk != CLOSE) {
+					++size;
+				}
             }
         }
-        if (failure != null)
-            chunk.callback.failed(failure);
-        else if (result)
-            notifyListener();
+        if (failure != null) {
+			chunk.callback.failed(failure);
+		} else if (result) {
+			notifyListener();
+		}
         return result;
     }
 
@@ -189,10 +189,12 @@ public class DeferredContentProvider implements AsyncContentProvider, Callback, 
             {
                 while (true)
                 {
-                    if (failure != null)
-                        throw new IOException(failure);
-                    if (size == 0)
-                        break;
+                    if (failure != null) {
+						throw new IOException(failure);
+					}
+                    if (size == 0) {
+						break;
+					}
                     lock.wait();
                 }
             }
@@ -209,8 +211,9 @@ public class DeferredContentProvider implements AsyncContentProvider, Callback, 
      */
     public void close()
     {
-        if (closed.compareAndSet(false, true))
-            offer(CLOSE);
+        if (closed.compareAndSet(false, true)) {
+			offer(CLOSE);
+		}
     }
 
     public boolean isClosed()
@@ -227,8 +230,9 @@ public class DeferredContentProvider implements AsyncContentProvider, Callback, 
     private void notifyListener()
     {
         Listener listener = this.listener.get();
-        if (listener != null)
-            listener.onContent();
+        if (listener != null) {
+			listener.onContent();
+		}
     }
 
     @Override
@@ -286,8 +290,9 @@ public class DeferredContentProvider implements AsyncContentProvider, Callback, 
                     lock.notify();
                 }
             }
-            if (chunk != null)
-                chunk.callback.succeeded();
+            if (chunk != null) {
+				chunk.callback.succeeded();
+			}
         }
 
         @Override
@@ -300,14 +305,16 @@ public class DeferredContentProvider implements AsyncContentProvider, Callback, 
                 // Transfer all chunks to fail them all.
                 Chunk chunk = current;
                 current = null;
-                if (chunk != null)
-                    chunks.add(chunk);
+                if (chunk != null) {
+					chunks.add(chunk);
+				}
                 chunks.addAll(DeferredContentProvider.this.chunks);
                 clear();
                 lock.notify();
             }
-            for (Chunk chunk : chunks)
-                chunk.callback.failed(x);
+            for (Chunk chunk : chunks) {
+				chunk.callback.failed(x);
+			}
         }
 
         @Override

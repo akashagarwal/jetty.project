@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.security.jaspi;
 
@@ -81,7 +76,7 @@ public class JaspiMessageInfo implements MessageInfo
     }
 
 
-    //TODO this has bugs in the view implementations.  Changing them will not affect the hardcoded values.
+    /** TODO this has bugs in the view implementations.  Changing them will not affect the hardcoded values. */
     private static class MIMap implements Map
     {
         private final boolean isMandatory;
@@ -107,24 +102,32 @@ public class JaspiMessageInfo implements MessageInfo
 
         public boolean containsKey(Object key)
         {
-            if (MANDATORY_KEY.equals(key)) return isMandatory;
-            if (AUTH_METHOD_KEY.equals(key)) return authMethod != null;
+            if (MANDATORY_KEY.equals(key)) {
+				return isMandatory;
+			}
+            if (AUTH_METHOD_KEY.equals(key)) {
+				return authMethod != null;
+			}
             return delegate != null && delegate.containsKey(key);
         }
 
         public boolean containsValue(Object value)
         {
-            if (isMandatory && "true".equals(value)) return true;
-            if (authMethod == value || (authMethod != null && authMethod.equals(value))) return true;
-            return delegate != null && delegate.containsValue(value);
+            return (isMandatory && "true".equals(value)) || authMethod == value || (authMethod != null && authMethod.equals(value)) || (delegate != null && delegate.containsValue(value));
         }
 
         public Object get(Object key)
         {
-            if (MANDATORY_KEY.equals(key)) return isMandatory? "true": null;
-            if (AUTH_METHOD_KEY.equals(key)) return authMethod;
-            if (delegate == null) return null;
-            return delegate.get(key);
+            if (MANDATORY_KEY.equals(key)) {
+				return isMandatory? "true": null;
+			}
+            if (AUTH_METHOD_KEY.equals(key)) {
+				return authMethod;
+			}
+            if (delegate != null) {
+				return delegate.get(key);
+			}
+            return null;
         }
 
         public Object put(Object key, Object value)
@@ -137,7 +140,9 @@ public class JaspiMessageInfo implements MessageInfo
             {
                 String authMethod = this.authMethod;
                 this.authMethod = (String) value;
-                if (delegate != null) delegate.put(AUTH_METHOD_KEY, value);
+                if (delegate != null) {
+					delegate.put(AUTH_METHOD_KEY, value);
+				}
                 return authMethod;
             }
 
@@ -154,11 +159,15 @@ public class JaspiMessageInfo implements MessageInfo
             {
                 String authMethod = this.authMethod;
                 this.authMethod = null;
-                if (delegate != null) delegate.remove(AUTH_METHOD_KEY);
+                if (delegate != null) {
+					delegate.remove(AUTH_METHOD_KEY);
+				}
                 return authMethod;
             }
-            if (delegate == null) return null;
-            return delegate.remove(key);
+            if (delegate != null) {
+				return delegate.remove(key);
+			}
+            return null;
         }
 
         public void putAll(Map map)
@@ -196,12 +205,18 @@ public class JaspiMessageInfo implements MessageInfo
 
         private Map getDelegate(boolean create)
         {
-            if (!create || delegate != null) return delegate;
+            if (!create || delegate != null) {
+				return delegate;
+			}
             if (create)
             {
                 delegate = new HashMap();
-                if (isMandatory) delegate.put(MANDATORY_KEY, "true");
-                if (authMethod != null) delegate.put(AUTH_METHOD_KEY, authMethod);
+                if (isMandatory) {
+					delegate.put(MANDATORY_KEY, "true");
+				}
+                if (authMethod != null) {
+					delegate.put(AUTH_METHOD_KEY, authMethod);
+				}
             }
             return delegate;
         }

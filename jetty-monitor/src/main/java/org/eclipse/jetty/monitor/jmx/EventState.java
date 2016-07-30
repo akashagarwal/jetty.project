@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.monitor.jmx;
 
@@ -50,7 +45,7 @@ public class EventState<TYPE>
         
         /* ------------------------------------------------------------ */
         /**
-         * Construct a trigger state 
+         * Construct a trigger state .
          * 
          * @param id unique identification string of the associated event trigger
          * @param desc description of the associated event trigger
@@ -65,7 +60,7 @@ public class EventState<TYPE>
         
         /* ------------------------------------------------------------ */
         /**
-         * Retrieve the identification string of associated event trigger
+         * Retrieve the identification string of associated event trigger.
          * 
          * @return unique identification string
          */
@@ -76,7 +71,7 @@ public class EventState<TYPE>
         
         /* ------------------------------------------------------------ */
         /**
-         * Retrieve the description string set by event trigger
+         * Retrieve the description string set by event trigger.
          * 
          * @return description string
          */
@@ -87,7 +82,7 @@ public class EventState<TYPE>
         
         /* ------------------------------------------------------------ */
         /**
-         * Retrieve the effective value of the MXBean attribute (if applicable)
+         * Retrieve the effective value of the MXBean attribute (if applicable).
          * 
          * @return attribute value
          */
@@ -116,7 +111,7 @@ public class EventState<TYPE>
     
     /* ------------------------------------------------------------ */
     /**
-     * Constructs an empty event state
+     * Constructs an empty event state.
      */
     public EventState()
     {
@@ -126,7 +121,7 @@ public class EventState<TYPE>
 
     /* ------------------------------------------------------------ */
     /**
-     * Constructs an event state and adds a specified trigger state to it
+     * Constructs an event state and adds a specified trigger state to it.
      * 
      * @param id unique identification string of the associated event trigger
      * @param desc description of the associated event trigger
@@ -141,7 +136,7 @@ public class EventState<TYPE>
 
     /* ------------------------------------------------------------ */
     /**
-     * Adds a trigger state to the event state
+     * Adds a trigger state to the event state.
      * 
      * @param state trigger state to add
      */
@@ -152,7 +147,7 @@ public class EventState<TYPE>
     
     /* ------------------------------------------------------------ */
     /**
-     * Adds a collection of trigger states to the event state
+     * Adds a collection of trigger states to the event state.
      * 
      * @param entries collection of trigger states to add
      */
@@ -166,7 +161,7 @@ public class EventState<TYPE>
 
     /* ------------------------------------------------------------ */
     /**
-     * Retrieves a single trigger state
+     * Retrieves a single trigger state.
      * 
      * @param id unique identification string of the event trigger
      * @return requested trigger state or null if not found
@@ -178,7 +173,7 @@ public class EventState<TYPE>
 
     /* ------------------------------------------------------------ */
     /**
-     * Retrieves a collection of all trigger states of the event state
+     * Retrieves a collection of all trigger states of the event state.
      * 
      * @return collection of the trigger states
      */
@@ -189,7 +184,7 @@ public class EventState<TYPE>
     
     /* ------------------------------------------------------------ */
     /**
-     * Returns a string representation of the event state
+     * Returns a string representation of the event state.
      * 
      * @return string representation of the event state
      */
@@ -201,7 +196,7 @@ public class EventState<TYPE>
         for (TriggerState<TYPE> value : _states.values())
         {
             result.append(cnt++>0?"#":"");
-            result.append(value.toString());
+            result.append(value);
         }
         
         return result.toString();

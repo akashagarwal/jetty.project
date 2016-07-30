@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util;
 
@@ -57,7 +52,7 @@ public class IncludeExclude<ITEM>
     }
     
     /**
-     * Default constructor over {@link HashSet}
+     * Default constructor over {@link HashSet}.
      */
     public IncludeExclude()
     {
@@ -98,7 +93,7 @@ public class IncludeExclude<ITEM>
     }
     
     /**
-     * Construct an IncludeExclude
+     * Construct an IncludeExclude.
      * 
      * @param includeSet the Set of items that represent the included space 
      * @param includePredicate the Predicate for included item testing
@@ -126,8 +121,9 @@ public class IncludeExclude<ITEM>
     
     public void include(ITEM... element)
     {
-        for (ITEM e: element)
-            _includes.add(e);
+        for (ITEM e: element) {
+			_includes.add(e);
+		}
     }
 
     public void exclude(ITEM element)
@@ -137,15 +133,14 @@ public class IncludeExclude<ITEM>
     
     public void exclude(ITEM... element)
     {
-        for (ITEM e: element)
-            _excludes.add(e);
+        for (ITEM e: element) {
+			_excludes.add(e);
+		}
     }
     
     public boolean matches(ITEM e)
     {
-        if (!_includes.isEmpty() && !_includePredicate.test(e))
-            return false;
-        return !_excludePredicate.test(e);
+        return (_includes.isEmpty() || _includePredicate.test(e)) && !_excludePredicate.test(e);
     }
     
     public int size()
@@ -172,6 +167,6 @@ public class IncludeExclude<ITEM>
     @Override
     public String toString()
     {
-        return String.format("%s@%x{i=%s,ip=%s,e=%s,ep=%s}",this.getClass().getSimpleName(),hashCode(),_includes,_includePredicate,_excludes,_excludePredicate);
+        return String.format("%s@%x{i=%s,ip=%s,e=%s,ep=%s}",getClass().getSimpleName(),hashCode(),_includes,_includePredicate,_excludes,_excludePredicate);
     }
 }

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.server;
 
@@ -53,14 +48,14 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Tests various close scenarios
+ * Tests various close scenarios.
  */
 public class WebSocketCloseTest
 {
     static class AbstractCloseSocket extends WebSocketAdapter
     {
         public CountDownLatch closeLatch = new CountDownLatch(1);
-        public String closeReason = null;
+        public String closeReason;
         public int closeStatusCode = -1;
         public List<Throwable> errors = new ArrayList<>();
 
@@ -120,7 +115,7 @@ public class WebSocketCloseTest
     }
 
     /**
-     * On Message, return container information
+     * On Message, return container information.
      */
     public static class ContainerSocket extends AbstractCloseSocket
     {
@@ -137,7 +132,7 @@ public class WebSocketCloseTest
         public void onWebSocketText(String message)
         {
             LOG.debug("onWebSocketText({})",message);
-            if (message.equalsIgnoreCase("openSessions"))
+            if ("openSessions".equalsIgnoreCase(message))
             {
                 Collection<WebSocketSession> sessions = container.getOpenSessions();
 
@@ -146,7 +141,7 @@ public class WebSocketCloseTest
                 int idx = 0;
                 for (WebSocketSession sess : sessions)
                 {
-                    ret.append('[').append(idx++).append("] ").append(sess.toString()).append('\n');
+                    ret.append('[').append(idx++).append("] ").append(sess).append('\n');
                 }
                 session.getRemote().sendStringByFuture(ret.toString());
             }
@@ -162,7 +157,7 @@ public class WebSocketCloseTest
     }
 
     /**
-     * On Connect, close socket
+     * On Connect, close socket.
      */
     public static class FastCloseSocket extends AbstractCloseSocket
     {
@@ -177,7 +172,7 @@ public class WebSocketCloseTest
     }
 
     /**
-     * On Connect, throw unhandled exception
+     * On Connect, throw unhandled exception.
      */
     public static class FastFailSocket extends AbstractCloseSocket
     {
@@ -212,7 +207,7 @@ public class WebSocketCloseTest
     }
 
     /**
-     * Test fast close (bug #403817)
+     * Test fast close (bug #403817).
      * 
      * @throws Exception
      *             on test failure
@@ -245,7 +240,7 @@ public class WebSocketCloseTest
     }
 
     /**
-     * Test fast fail (bug #410537)
+     * Test fast fail (bug #410537).
      * 
      * @throws Exception
      *             on test failure
@@ -280,7 +275,7 @@ public class WebSocketCloseTest
     }
 
     /**
-     * Test session open session cleanup (bug #474936)
+     * Test session open session cleanup (bug #474936).
      * 
      * @throws Exception
      *             on test failure

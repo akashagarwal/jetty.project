@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 
@@ -30,15 +25,15 @@ import java.io.IOException;
  */
 public class Utf8HttpWriter extends HttpWriter
 {
-    int _surrogate=0;
+    int _surrogate;
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public Utf8HttpWriter(HttpOutput out)
     {
         super(out);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void write (char[] s,int offset, int length) throws IOException
     {
@@ -57,8 +52,9 @@ public class Utf8HttpWriter extends HttpWriter
             byte[] buffer=_bytes.getBuf();
             int bytes=_bytes.getCount();
 
-            if (bytes+chars>buffer.length)
-                chars=buffer.length-bytes;
+            if (bytes+chars>buffer.length) {
+				chars=buffer.length-bytes;
+			}
 
             for (int i = 0; i < chars; i++)
             {
@@ -95,7 +91,7 @@ public class Utf8HttpWriter extends HttpWriter
                         chars=i;
                         break;
                     }
-                    buffer[bytes++]=(byte)(code);
+                    buffer[bytes++]=(byte)code;
                 }
                 else
                 {
@@ -166,7 +162,7 @@ public class Utf8HttpWriter extends HttpWriter
                     }
                     else
                     {
-                        buffer[bytes++]=(byte)('?');
+                        buffer[bytes++]=(byte)'?';
                     }
 
                     _surrogate=0; // USED

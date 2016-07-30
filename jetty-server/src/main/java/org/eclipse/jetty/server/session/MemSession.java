@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server.session;
 
@@ -34,7 +29,7 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * MemSession
  *
- * A session whose data is kept in memory
+ * A session whose data is kept in memory.
  */
 public class MemSession extends AbstractSession
 {
@@ -52,7 +47,7 @@ public class MemSession extends AbstractSession
     }
     
     
-    /* ------------------------------------------------------------- */
+    /** -------------------------------------------------------------. */
     @Override
     public Map<String,Object> getAttributeMap()
     {
@@ -60,7 +55,7 @@ public class MemSession extends AbstractSession
     }
    
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public int getAttributes()
     {
@@ -71,7 +66,7 @@ public class MemSession extends AbstractSession
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @SuppressWarnings({ "unchecked" })
     @Override
     public Enumeration<String> doGetAttributeNames()
@@ -81,7 +76,7 @@ public class MemSession extends AbstractSession
     }
 
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public Set<String> getNames()
     {
@@ -92,7 +87,7 @@ public class MemSession extends AbstractSession
     }
    
     
-    /* ------------------------------------------------------------- */
+    /** -------------------------------------------------------------. */
     @Override
     public void clearAttributes()
     {
@@ -107,7 +102,7 @@ public class MemSession extends AbstractSession
             Iterator<String> iter=keys.iterator();
             while (iter.hasNext())
             {
-                String key=(String)iter.next();
+                String key=iter.next();
 
                 Object value;
                 synchronized(this)
@@ -119,24 +114,25 @@ public class MemSession extends AbstractSession
                 ((AbstractSessionManager)getSessionManager()).doSessionAttributeListeners(this,key,value,null);
             }
         }
-        if (_attributes!=null)
-            _attributes.clear();
+        if (_attributes!=null) {
+			_attributes.clear();
+		}
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void addAttributes(Map<String,Object> map)
     {
         _attributes.putAll(map);
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public Object doPutOrRemove(String name, Object value)
     {
         return value==null?_attributes.remove(name):_attributes.put(name,value);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public Object doGet(String name)
     {

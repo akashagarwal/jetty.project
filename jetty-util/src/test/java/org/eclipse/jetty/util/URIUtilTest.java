@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util;
 
@@ -33,7 +28,7 @@ import org.junit.Test;
  */
 public class URIUtilTest
 {
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Test
     public void testEncodePath()
     {
@@ -63,7 +58,7 @@ public class URIUtilTest
         assertEquals("test%3F%C3%B6%3F%C3%B6:%C3%9F", buf.toString());
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Test
     public void testDecodePath()
     {
@@ -85,7 +80,7 @@ public class URIUtilTest
         assertEquals(odd,URIUtil.decodePath("/%00/"));
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Test
     public void testAddPaths()
     {
@@ -175,7 +170,7 @@ public class URIUtilTest
 
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Test
     public void testCompactPath()
     {
@@ -189,7 +184,7 @@ public class URIUtilTest
         assertEquals("/foo/bar?a=b//c", URIUtil.compactPath("/foo///bar?a=b//c"));
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Test
     public void testParentPath()
     {
@@ -201,7 +196,7 @@ public class URIUtilTest
         assertEquals("parent null",null, URIUtil.parentPath(null));
 
     }
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Test
     public void testEqualsIgnoreEncoding()
     {
@@ -223,7 +218,7 @@ public class URIUtilTest
         assertFalse(URIUtil.equalsIgnoreEncodings("/foo2fbar","/foo/bar"));
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Test
     public void testCanonicalPath()
     {
@@ -276,11 +271,12 @@ public class URIUtilTest
             {"/foo/../bar//","/bar//"},
         };
 
-        for (int t=0;t<canonical.length;t++)
-            assertEquals( "canonical "+canonical[t][0],
+        for (int t=0;t<canonical.length;t++) {
+			assertEquals( "canonical "+canonical[t][0],
                           canonical[t][1],
                           URIUtil.canonicalPath(canonical[t][0])
                           );
+		}
 
     }
 

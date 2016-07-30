@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util.ssl;
 
@@ -64,8 +59,9 @@ public class SslContextFactoryTest
         cf.start();
 
         System.err.println(Arrays.asList(cf.getSelectedProtocols()));
-        for (String cipher : cf.getSelectedCipherSuites())
-            System.err.println(cipher);
+        for (String cipher : cf.getSelectedCipherSuites()) {
+			System.err.println(cipher);
+		}
 
     }
     
@@ -84,7 +80,7 @@ public class SslContextFactoryTest
     public void testNoTsSetKs() throws Exception
     {
         KeyStore ks = KeyStore.getInstance("JKS");
-        try (InputStream keystoreInputStream = this.getClass().getResourceAsStream("keystore"))
+        try (InputStream keystoreInputStream = getClass().getResourceAsStream("keystore"))
         {
             ks.load(keystoreInputStream, "storepwd".toCharArray());
         }
@@ -212,8 +208,9 @@ public class SslContextFactoryTest
         SSLEngine sslEngine = cf.newSSLEngine();
         String[] enabledCipherSuites = sslEngine.getEnabledCipherSuites();
         assertThat("At least 1 cipherSuite is enabled", enabledCipherSuites.length, greaterThan(0));
-        for (String enabledCipherSuite : enabledCipherSuites)
-            assertThat("CipherSuite does not contain RC4", enabledCipherSuite.contains("RC4"), equalTo(false));
+        for (String enabledCipherSuite : enabledCipherSuites) {
+			assertThat("CipherSuite does not contain RC4", enabledCipherSuite.contains("RC4"), equalTo(false));
+		}
     }
 
     @Test
@@ -226,8 +223,9 @@ public class SslContextFactoryTest
         SSLEngine sslEngine = cf.newSSLEngine();
         String[] enabledCipherSuites = sslEngine.getEnabledCipherSuites();
         assertThat("At least 1 cipherSuite is enabled", enabledCipherSuites.length, greaterThan(1));
-        for (String enabledCipherSuite : enabledCipherSuites)
-            assertThat("CipherSuite contains ECDHE", enabledCipherSuite.contains("ECDHE"), equalTo(true));
+        for (String enabledCipherSuite : enabledCipherSuites) {
+			assertThat("CipherSuite contains ECDHE", enabledCipherSuite.contains("ECDHE"), equalTo(true));
+		}
     }
 
     @Test

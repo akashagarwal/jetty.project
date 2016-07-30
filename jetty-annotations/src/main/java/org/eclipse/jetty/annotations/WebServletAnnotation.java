@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.annotations;
 
@@ -43,7 +38,7 @@ import org.eclipse.jetty.webapp.WebAppContext;
 /**
  * WebServletAnnotation
  *
- *
+ *.
  */
 public class WebServletAnnotation extends DiscoveredAnnotation
 {
@@ -60,9 +55,6 @@ public class WebServletAnnotation extends DiscoveredAnnotation
         super(context, className, resource);
     }
 
-    /**
-     * @see DiscoveredAnnotation#apply()
-     */
     public void apply()
     {
         //TODO check this algorithm with new rules for applying descriptors and annotations in order
@@ -81,7 +73,7 @@ public class WebServletAnnotation extends DiscoveredAnnotation
             return;
         }
 
-        WebServlet annotation = (WebServlet)clazz.getAnnotation(WebServlet.class);
+        WebServlet annotation = clazz.getAnnotation(WebServlet.class);
 
         if (annotation.urlPatterns().length > 0 && annotation.value().length > 0)
         {
@@ -90,8 +82,9 @@ public class WebServletAnnotation extends DiscoveredAnnotation
         }
 
         String[] urlPatterns = annotation.value();
-        if (urlPatterns.length == 0)
-            urlPatterns = annotation.urlPatterns();
+        if (urlPatterns.length == 0) {
+			urlPatterns = annotation.urlPatterns();
+		}
 
         if (urlPatterns.length == 0)
         {
@@ -101,10 +94,11 @@ public class WebServletAnnotation extends DiscoveredAnnotation
 
         //canonicalize the patterns
         ArrayList<String> urlPatternList = new ArrayList<String>();
-        for (String p : urlPatterns)
-            urlPatternList.add(Util.normalizePattern(p));
+        for (String p : urlPatterns) {
+			urlPatternList.add(Util.normalizePattern(p));
+		}
 
-        String servletName = (annotation.name().equals("")?clazz.getName():annotation.name());
+        String servletName = "".equals(annotation.name())?clazz.getName():annotation.name();
 
         MetaData metaData = _context.getMetaData();
         ServletMapping mapping = null; //the new mapping
@@ -163,10 +157,12 @@ public class WebServletAnnotation extends DiscoveredAnnotation
             //NOTE: this may be considered as "completing" an incomplete servlet registration, and it is
             //not clear from servlet 3.0 spec whether this is intended, or if only a ServletContext.addServlet() call
             //can complete it, see http://java.net/jira/browse/SERVLET_SPEC-42
-            if (holder.getClassName() == null)
-                holder.setClassName(clazz.getName());
-            if (holder.getHeldClass() == null)
-                holder.setHeldClass(clazz);
+            if (holder.getClassName() == null) {
+				holder.setClassName(clazz.getName());
+			}
+            if (holder.getHeldClass() == null) {
+				holder.setHeldClass(clazz);
+			}
 
             //check if the existing servlet has each init-param from the annotation
             //if not, add it
@@ -222,12 +218,16 @@ public class WebServletAnnotation extends DiscoveredAnnotation
                     if (updatedPaths == null || updatedPaths.length == 0)
                     {
                         boolean success = allMappings.remove(existingMapping);
-                        if (LOG.isDebugEnabled()) LOG.debug("Removed empty mapping {} from defaults descriptor success:{}",existingMapping, success);
+                        if (LOG.isDebugEnabled()) {
+							LOG.debug("Removed empty mapping {} from defaults descriptor success:{}",existingMapping, success);
+						}
                     }
                     else
                     {
                         existingMapping.setPathSpecs(updatedPaths);
-                        if (LOG.isDebugEnabled()) LOG.debug("Removed path {} from mapping {} from defaults descriptor ", p,existingMapping);
+                        if (LOG.isDebugEnabled()) {
+							LOG.debug("Removed path {} from mapping {} from defaults descriptor ", p,existingMapping);
+						}
                     }
                 }
                 _context.getMetaData().setOrigin(servletName+".servlet.mapping."+p, annotation, clazz);
@@ -240,15 +240,12 @@ public class WebServletAnnotation extends DiscoveredAnnotation
 
 
 
-    /**
-     * @param name
-     * @return
-     */
     private List<ServletMapping>  getServletMappingsForServlet (String name)
     {
         ServletMapping[] allMappings = _context.getServletHandler().getServletMappings();
-        if (allMappings == null)
-            return Collections.emptyList();
+        if (allMappings == null) {
+			return Collections.emptyList();
+		}
 
         List<ServletMapping> mappings = new ArrayList<ServletMapping>();
         for (ServletMapping m:allMappings)
@@ -262,18 +259,16 @@ public class WebServletAnnotation extends DiscoveredAnnotation
     }
 
 
-    /**
-     * @param mappings
-     * @return
-     */
     private boolean containsNonDefaultMappings (List<ServletMapping> mappings)
     {
-        if (mappings == null)
-            return false;
+        if (mappings == null) {
+			return false;
+		}
         for (ServletMapping m:mappings)
         {
-            if (!m.isDefault())
-                return true;
+            if (!m.isDefault()) {
+				return true;
+			}
         }
         return false;
     }

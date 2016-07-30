@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 
 package org.eclipse.jetty.http2.hpack;
@@ -38,7 +33,7 @@ import org.eclipse.jetty.util.log.Logger;
 public class HpackDecoder
 {
     public static final Logger LOG = Log.getLogger(HpackDecoder.class);
-    public final static HttpField.LongValueHttpField CONTENT_LENGTH_0 =
+    public static final HttpField.LongValueHttpField CONTENT_LENGTH_0 =
             new HttpField.LongValueHttpField(HttpHeader.CONTENT_LENGTH,0L);
 
     private final HpackContext _context;
@@ -68,12 +63,14 @@ public class HpackDecoder
 
     public MetaData decode(ByteBuffer buffer)
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug(String.format("CtxTbl[%x] decoding %d octets",_context.hashCode(),buffer.remaining()));
+        if (LOG.isDebugEnabled()) {
+			LOG.debug(String.format("CtxTbl[%x] decoding %d octets",_context.hashCode(),buffer.remaining()));
+		}
 
         // If the buffer is big, don't even think about decoding it
-        if (buffer.remaining()>_builder.getMaxSize())
-            throw new BadMessageException(HttpStatus.REQUEST_HEADER_FIELDS_TOO_LARGE_431,"Header frame size "+buffer.remaining()+">"+_builder.getMaxSize());
+        if (buffer.remaining()>_builder.getMaxSize()) {
+			throw new BadMessageException(HttpStatus.REQUEST_HEADER_FIELDS_TOO_LARGE_431,"Header frame size "+buffer.remaining()+">"+_builder.getMaxSize());
+		}
 
         while(buffer.hasRemaining())
         {
@@ -97,8 +94,9 @@ public class HpackDecoder
                 }
                 else if (entry.isStatic())
                 {
-                    if (LOG.isDebugEnabled())
-                        LOG.debug("decode IdxStatic {}",entry);
+                    if (LOG.isDebugEnabled()) {
+						LOG.debug("decode IdxStatic {}",entry);
+					}
                     // emit field
                     _builder.emit(entry.getHttpField());
 
@@ -107,8 +105,9 @@ public class HpackDecoder
                 }
                 else
                 {
-                    if (LOG.isDebugEnabled())
-                        LOG.debug("decode Idx {}",entry);
+                    if (LOG.isDebugEnabled()) {
+						LOG.debug("decode Idx {}",entry);
+					}
                     // emit
                     _builder.emit(entry.getHttpField());
                 }
@@ -130,10 +129,12 @@ public class HpackDecoder
                     case 3: // 7.3
                         // change table size
                         int size = NBitInteger.decode(buffer,5);
-                        if (LOG.isDebugEnabled())
-                            LOG.debug("decode resize="+size);
-                        if (size>_localMaxDynamicTableSize)
-                            throw new IllegalArgumentException();
+                        if (LOG.isDebugEnabled()) {
+							LOG.debug("decode resize="+size);
+						}
+                        if (size>_localMaxDynamicTableSize) {
+							throw new IllegalArgumentException();
+						}
                         _context.resize(size);
                         continue;
 
@@ -169,10 +170,11 @@ public class HpackDecoder
                     huffmanName = (buffer.get()&0x80)==0x80;
                     int length = NBitInteger.decode(buffer,7);
                     _builder.checkSize(length,huffmanName);
-                    if (huffmanName)
-                        name=Huffman.decode(buffer,length);
-                    else
-                        name=toASCIIString(buffer,length);
+                    if (huffmanName) {
+						name=Huffman.decode(buffer,length);
+					} else {
+						name=toASCIIString(buffer,length);
+					}
                     for (int i=0;i<name.length();i++)
                     {
                         char c=name.charAt(i);
@@ -188,10 +190,11 @@ public class HpackDecoder
                 boolean huffmanValue = (buffer.get()&0x80)==0x80;
                 int length = NBitInteger.decode(buffer,7);
                 _builder.checkSize(length,huffmanValue);
-                if (huffmanValue)
-                    value=Huffman.decode(buffer,length);
-                else
-                    value=toASCIIString(buffer,length);
+                if (huffmanValue) {
+					value=Huffman.decode(buffer,length);
+				} else {
+					value=toASCIIString(buffer,length);
+				}
 
                 // Make the new field
                 HttpField field;
@@ -207,10 +210,11 @@ public class HpackDecoder
                     switch(header)
                     {
                         case C_STATUS:
-                            if (indexed)
-                                field = new HttpField.IntValueHttpField(header,name,value);
-                            else
-                                field = new HttpField(header,name,value);
+                            if (indexed) {
+								field = new HttpField.IntValueHttpField(header,name,value);
+							} else {
+								field = new HttpField(header,name,value);
+							}
                             break;
 
                         case C_AUTHORITY:
@@ -218,10 +222,11 @@ public class HpackDecoder
                             break;
 
                         case CONTENT_LENGTH:
-                            if ("0".equals(value))
-                                field = CONTENT_LENGTH_0;
-                            else
-                                field = new HttpField.LongValueHttpField(header,name,value);
+                            if ("0".equals(value)) {
+								field = CONTENT_LENGTH_0;
+							} else {
+								field = new HttpField.LongValueHttpField(header,name,value);
+							}
                             break;
 
                         default:
@@ -263,8 +268,9 @@ public class HpackDecoder
         int end=start+length;
         buffer.position(position+length);
         byte[] array=buffer.array();
-        for (int i=start;i<end;i++)
-            builder.append((char)(0x7f&array[i]));
+        for (int i=start;i<end;i++) {
+			builder.append((char)(0x7f&array[i]));
+		}
         return builder.toString();
     }
 

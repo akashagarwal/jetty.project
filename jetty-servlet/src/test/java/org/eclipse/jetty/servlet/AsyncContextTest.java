@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.servlet;
 
@@ -58,7 +53,7 @@ import org.junit.Test;
 /**
  * This tests the correct functioning of the AsyncContext
  *
- * tests for #371649 and #371635
+ * tests for #371649 and #371635.
  */
 public class AsyncContextTest
 {
@@ -425,8 +420,9 @@ public class AsyncContextTest
 
         public void run()
         {
-            if (wrapped)
-                assertTrue(asyncContext.getResponse() instanceof Wrapper);
+            if (wrapped) {
+				assertTrue(asyncContext.getResponse() instanceof Wrapper);
+			}
             asyncContext.dispatch();
         }
     }
@@ -448,8 +444,9 @@ public class AsyncContextTest
         {
             response.getOutputStream().print("ERROR: " + request.getServletPath() + "\n");
             response.getOutputStream().print("PathInfo= " + request.getPathInfo() + "\n");
-            if (request.getAttribute(RequestDispatcher.ERROR_EXCEPTION)!=null)
-                response.getOutputStream().print("EXCEPTION: " + request.getAttribute(RequestDispatcher.ERROR_EXCEPTION) + "\n");
+            if (request.getAttribute(RequestDispatcher.ERROR_EXCEPTION)!=null) {
+				response.getOutputStream().print("EXCEPTION: " + request.getAttribute(RequestDispatcher.ERROR_EXCEPTION) + "\n");
+			}
         }
     }
     
@@ -562,8 +559,9 @@ public class AsyncContextTest
                 if (Boolean.valueOf(request.getParameter("complete")))
                 {
                     response.getOutputStream().write("completeBeforeThrow".getBytes());
-                    if (Boolean.valueOf(request.getParameter("flush")))
-                        response.flushBuffer();
+                    if (Boolean.valueOf(request.getParameter("flush"))) {
+						response.flushBuffer();
+					}
                     request.getAsyncContext().complete();
                 }
                     

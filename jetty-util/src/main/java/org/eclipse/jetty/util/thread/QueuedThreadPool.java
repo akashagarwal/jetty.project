@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 
 package org.eclipse.jetty.util.thread;
@@ -61,8 +56,8 @@ public class QueuedThreadPool extends AbstractLifeCycle implements SizedThreadPo
     private int _maxThreads;
     private int _minThreads;
     private int _priority = Thread.NORM_PRIORITY;
-    private boolean _daemon = false;
-    private boolean _detailedDump = false;
+    private boolean _daemon;
+    private boolean _detailedDump;
     private int _lowThreadsThreshold = 1;
 
     public QueuedThreadPool()
@@ -124,37 +119,43 @@ public class QueuedThreadPool extends AbstractLifeCycle implements SizedThreadPo
         BlockingQueue<Runnable> jobs = getQueue();
 
         // If no stop timeout, clear job queue
-        if (timeout <= 0)
-            jobs.clear();
+        if (timeout <= 0) {
+			jobs.clear();
+		}
 
         // Fill job Q with noop jobs to wakeup idle
         Runnable noop = () -> {};
-        for (int i = _threadsStarted.get(); i-- > 0; )
-            jobs.offer(noop);
+        for (int i = _threadsStarted.get(); i-- > 0; ) {
+			jobs.offer(noop);
+		}
 
         // try to jobs complete naturally for half our stop time
         long stopby = System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(timeout) / 2;
         for (Thread thread : _threads)
         {
             long canwait = TimeUnit.NANOSECONDS.toMillis(stopby - System.nanoTime());
-            if (canwait > 0)
-                thread.join(canwait);
+            if (canwait > 0) {
+				thread.join(canwait);
+			}
         }
 
         // If we still have threads running, get a bit more aggressive
 
         // interrupt remaining threads
-        if (_threadsStarted.get() > 0)
-            for (Thread thread : _threads)
-                thread.interrupt();
+        if (_threadsStarted.get() > 0) {
+			for (Thread thread : _threads) {
+				thread.interrupt();
+			}
+		}
 
         // wait again for the other half of our stop time
         stopby = System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(timeout) / 2;
         for (Thread thread : _threads)
         {
             long canwait = TimeUnit.NANOSECONDS.toMillis(stopby - System.nanoTime());
-            if (canwait > 0)
-                thread.join(canwait);
+            if (canwait > 0) {
+				thread.join(canwait);
+			}
         }
 
         Thread.yield();
@@ -177,8 +178,9 @@ public class QueuedThreadPool extends AbstractLifeCycle implements SizedThreadPo
             }
             else
             {
-                for (Thread unstopped : _threads)
-                    LOG.warn("{} Couldn't stop {}",this,unstopped);
+                for (Thread unstopped : _threads) {
+					LOG.warn("{} Couldn't stop {}",this,unstopped);
+				}
             }
         }
 
@@ -224,8 +226,9 @@ public class QueuedThreadPool extends AbstractLifeCycle implements SizedThreadPo
     public void setMaxThreads(int maxThreads)
     {
         _maxThreads = maxThreads;
-        if (_minThreads > _maxThreads)
-            _minThreads = _maxThreads;
+        if (_minThreads > _maxThreads) {
+			_minThreads = _maxThreads;
+		}
     }
 
     /**
@@ -240,12 +243,14 @@ public class QueuedThreadPool extends AbstractLifeCycle implements SizedThreadPo
     {
         _minThreads = minThreads;
 
-        if (_minThreads > _maxThreads)
-            _maxThreads = _minThreads;
+        if (_minThreads > _maxThreads) {
+			_maxThreads = _minThreads;
+		}
 
         int threads = _threadsStarted.get();
-        if (isStarted() && threads < _minThreads)
-            startThreads(_minThreads - threads);
+        if (isStarted() && threads < _minThreads) {
+			startThreads(_minThreads - threads);
+		}
     }
 
     /**
@@ -253,8 +258,9 @@ public class QueuedThreadPool extends AbstractLifeCycle implements SizedThreadPo
      */
     public void setName(String name)
     {
-        if (isRunning())
-            throw new IllegalStateException("started");
+        if (isRunning()) {
+			throw new IllegalStateException("started");
+		}
         _name = name;
     }
 
@@ -375,19 +381,17 @@ public class QueuedThreadPool extends AbstractLifeCycle implements SizedThreadPo
     @Override
     public void execute(Runnable job)
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("queue {}",job);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("queue {}",job);
+		}
         if (!isRunning() || !_jobs.offer(job))
         {
             LOG.warn("{} rejected {}", this, job);
             throw new RejectedExecutionException(job.toString());
-        }
-        else
-        {
-            // Make sure there is at least one thread executing the job.
-            if (getThreads() == 0)
-                startThreads(1);
-        }
+        } else // Make sure there is at least one thread executing the job.
+		if (getThreads() == 0) {
+			startThreads(1);
+		}
     }
 
     /**
@@ -398,12 +402,14 @@ public class QueuedThreadPool extends AbstractLifeCycle implements SizedThreadPo
     {
         synchronized (_joinLock)
         {
-            while (isRunning())
-                _joinLock.wait();
+            while (isRunning()) {
+				_joinLock.wait();
+			}
         }
 
-        while (isStopping())
-            Thread.sleep(1);
+        while (isStopping()) {
+			Thread.sleep(1);
+		}
     }
 
     /**
@@ -457,11 +463,13 @@ public class QueuedThreadPool extends AbstractLifeCycle implements SizedThreadPo
         while (threadsToStart > 0 && isRunning())
         {
             int threads = _threadsStarted.get();
-            if (threads >= _maxThreads)
-                return false;
+            if (threads >= _maxThreads) {
+				return false;
+			}
 
-            if (!_threadsStarted.compareAndSet(threads, threads + 1))
-                continue;
+            if (!_threadsStarted.compareAndSet(threads, threads + 1)) {
+				continue;
+			}
 
             boolean started = false;
             try
@@ -478,8 +486,9 @@ public class QueuedThreadPool extends AbstractLifeCycle implements SizedThreadPo
             }
             finally
             {
-                if (!started)
-                    _threadsStarted.decrementAndGet();
+                if (!started) {
+					_threadsStarted.decrementAndGet();
+				}
             }
         }
         return true;
@@ -522,12 +531,15 @@ public class QueuedThreadPool extends AbstractLifeCycle implements SizedThreadPo
                     @Override
                     public void dump(Appendable out, String indent) throws IOException
                     {
-                        out.append(String.valueOf(thread.getId())).append(' ').append(thread.getName()).append(' ').append(thread.getState().toString()).append(idle ? " IDLE" : "");
-                        if (thread.getPriority()!=Thread.NORM_PRIORITY)
-                            out.append(" prio=").append(String.valueOf(thread.getPriority()));
+                        out.append(String.valueOf(thread.getId())).append(' ').append(thread.getName()).append(' ').append(thread.getState())
+								.append(idle ? " IDLE" : "");
+                        if (thread.getPriority()!=Thread.NORM_PRIORITY) {
+							out.append(" prio=").append(String.valueOf(thread.getPriority()));
+						}
                         out.append(System.lineSeparator());
-                        if (!idle)
-                            ContainerLifeCycle.dump(out, indent, Arrays.asList(trace));
+                        if (!idle) {
+							ContainerLifeCycle.dump(out, indent, Arrays.asList(trace));
+						}
                     }
 
                     @Override
@@ -545,8 +557,9 @@ public class QueuedThreadPool extends AbstractLifeCycle implements SizedThreadPo
         }
 
         List<Runnable> jobs = Collections.emptyList();
-        if (isDetailedDump())
-            jobs = new ArrayList<>(getQueue());
+        if (isDetailedDump()) {
+			jobs = new ArrayList<>(getQueue());
+		}
 
         ContainerLifeCycle.dumpObject(out, this);
         ContainerLifeCycle.dump(out, indent, threads, jobs);
@@ -555,7 +568,7 @@ public class QueuedThreadPool extends AbstractLifeCycle implements SizedThreadPo
     @Override
     public String toString()
     {
-        return String.format("%s{%s,%d<=%d<=%d,i=%d,q=%d}", _name, getState(), getMinThreads(), getThreads(), getMaxThreads(), getIdleThreads(), (_jobs == null ? -1 : _jobs.size()));
+        return String.format("%s{%s,%d<=%d<=%d,i=%d,q=%d}", _name, getState(), getMinThreads(), getThreads(), getMaxThreads(), getIdleThreads(), _jobs == null ? -1 : _jobs.size());
     }
 
     private Runnable idleJobPoll() throws InterruptedException
@@ -584,11 +597,13 @@ public class QueuedThreadPool extends AbstractLifeCycle implements SizedThreadPo
                     // Job loop
                     while (job != null && isRunning())
                     {
-                        if (LOG.isDebugEnabled())
-                            LOG.debug("run {}",job);
+                        if (LOG.isDebugEnabled()) {
+							LOG.debug("run {}",job);
+						}
                         runJob(job);
-                        if (LOG.isDebugEnabled())
-                            LOG.debug("ran {}",job);
+                        if (LOG.isDebugEnabled()) {
+							LOG.debug("ran {}",job);
+						}
                         if (Thread.interrupted())
                         {
                             ignore=true;
@@ -604,9 +619,9 @@ public class QueuedThreadPool extends AbstractLifeCycle implements SizedThreadPo
 
                         while (isRunning() && job == null)
                         {
-                            if (_idleTimeout <= 0)
-                                job = _jobs.take();
-                            else
+                            if (_idleTimeout <= 0) {
+								job = _jobs.take();
+							} else
                             {
                                 // maybe we should shrink?
                                 final int size = _threadsStarted.get();
@@ -614,14 +629,10 @@ public class QueuedThreadPool extends AbstractLifeCycle implements SizedThreadPo
                                 {
                                     long last = _lastShrink.get();
                                     long now = System.nanoTime();
-                                    if (last == 0 || (now - last) > TimeUnit.MILLISECONDS.toNanos(_idleTimeout))
-                                    {
-                                        if (_lastShrink.compareAndSet(last, now) && _threadsStarted.compareAndSet(size, size - 1))
-                                        {
-                                            shrink=true;
-                                            break loop;
-                                        }
-                                    }
+                                    if ((last == 0 || now - last > TimeUnit.MILLISECONDS.toNanos(_idleTimeout)) && _lastShrink.compareAndSet(last, now) && _threadsStarted.compareAndSet(size, size - 1)) {
+									    shrink=true;
+									    break loop;
+									}
                                 }
                                 job = idleJobPoll();
                             }
@@ -649,11 +660,13 @@ public class QueuedThreadPool extends AbstractLifeCycle implements SizedThreadPo
             {
                 if (!shrink && isRunning())
                 {
-                    if (!ignore)
-                        LOG.warn("Unexpected thread death: {} in {}",this,QueuedThreadPool.this);
+                    if (!ignore) {
+						LOG.warn("Unexpected thread death: {} in {}",this,QueuedThreadPool.this);
+					}
                     // This is an unexpected thread death!
-                    if (_threadsStarted.decrementAndGet()<getMaxThreads())
-                        startThreads(1);
+                    if (_threadsStarted.decrementAndGet()<getMaxThreads()) {
+						startThreads(1);
+					}
                 }
                 _threads.remove(Thread.currentThread());
             }
@@ -721,8 +734,9 @@ public class QueuedThreadPool extends AbstractLifeCycle implements SizedThreadPo
                 StringBuilder buf = new StringBuilder();
                 buf.append(thread.getId()).append(" ").append(thread.getName()).append(" ");
                 buf.append(thread.getState()).append(":").append(System.lineSeparator());
-                for (StackTraceElement element : thread.getStackTrace())
-                    buf.append("  at ").append(element.toString()).append(System.lineSeparator());
+                for (StackTraceElement element : thread.getStackTrace()) {
+					buf.append("  at ").append(element).append(System.lineSeparator());
+				}
                 return buf.toString();
             }
         }

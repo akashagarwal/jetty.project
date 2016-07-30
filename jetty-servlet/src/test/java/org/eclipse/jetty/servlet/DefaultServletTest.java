@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.servlet;
 
@@ -271,9 +266,9 @@ public class DefaultServletTest
         {
             response = connector.getResponses("GET /context/dir%3F/ HTTP/1.0\r\n\r\n");
             assertResponseContains("Directory: /context/dir?/<", response);
-        }
-        else
-            assertResponseContains("404", response);
+        } else {
+			assertResponseContains("404", response);
+		}
 
         response = connector.getResponses("GET /context/index.html HTTP/1.0\r\n\r\n");
         assertResponseContains("Hello Index", response);
@@ -528,8 +523,9 @@ public class DefaultServletTest
     @Test
     public void testDirectFromResourceHttpContent() throws Exception
     {
-        if (!OS.IS_LINUX)
-            return;
+        if (!OS.IS_LINUX) {
+			return;
+		}
         
         testdir.ensureEmpty();
         File resBase = testdir.getPathFile("docroot").toFile();
@@ -1095,8 +1091,9 @@ public class DefaultServletTest
                 FS.ensureDirExists(deletedDir);
                 File dest = File.createTempFile(file.getName(), "deleted", deletedDir);
                 boolean renamed = file.renameTo(dest);
-                if (!renamed)
-                    System.err.println("WARNING: unable to move file out of the way: " + file.getName());
+                if (!renamed) {
+					System.err.println("WARNING: unable to move file out of the way: " + file.getName());
+				}
             }
         }
         else
@@ -1109,8 +1106,9 @@ public class DefaultServletTest
     {
         Pattern pattern=Pattern.compile("[\\r\\n]"+header+"\\s*:\\s*(.*?)\\s*[\\r\\n]");
         Matcher matcher = pattern.matcher(response);
-        if (matcher.find())
-            return matcher.group(1);
+        if (matcher.find()) {
+			return matcher.group(1);
+		}
         return null;
     }
 }

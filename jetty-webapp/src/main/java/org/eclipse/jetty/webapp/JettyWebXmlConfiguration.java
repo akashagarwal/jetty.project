@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.webapp;
 
@@ -72,15 +67,18 @@ public class JettyWebXmlConfiguration extends AbstractConfiguration
         {
             // do jetty.xml file
             Resource jetty=web_inf.addPath("jetty8-web.xml");
-            if(!jetty.exists())
-                jetty=web_inf.addPath(JETTY_WEB_XML);
-            if(!jetty.exists())
-                jetty=web_inf.addPath("web-jetty.xml");
+            if(!jetty.exists()) {
+				jetty=web_inf.addPath(JETTY_WEB_XML);
+			}
+            if(!jetty.exists()) {
+				jetty=web_inf.addPath("web-jetty.xml");
+			}
 
             if(jetty.exists())
             {             
-                if(LOG.isDebugEnabled())
-                    LOG.debug("Configure: "+jetty);
+                if(LOG.isDebugEnabled()) {
+					LOG.debug("Configure: "+jetty);
+				}
 
                 Object xml_attr=context.getAttribute(XML_CONFIGURATION);
                 context.removeAttribute(XML_CONFIGURATION);

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http;
 
@@ -55,8 +50,9 @@ public class HttpTesterTest
             HttpTester.Input input = HttpTester.from(socket.getInputStream());
             HttpTester.Response response = HttpTester.parseResponse(input);
             System.err.printf("%s %s %s%n",response.getVersion(),response.getStatus(),response.getReason());
-            for (HttpField field:response)
-                System.err.printf("%s: %s%n",field.getName(),field.getValue());
+            for (HttpField field:response) {
+				System.err.printf("%s: %s%n",field.getName(),field.getValue());
+			}
             System.err.printf("%n%s%n",response.getContent());
         }
      
@@ -263,8 +259,9 @@ public class HttpTesterTest
             @Override
             public synchronized int read(byte[] b, int off, int len) throws IOException
             {
-                if (available()==0)
-                    return 0;
+                if (available()==0) {
+					return 0;
+				}
                 return super.read(b,off,len);
             }
         };
@@ -308,9 +305,7 @@ public class HttpTesterTest
         response = HttpTester.parseResponse(in);
         assertThat(response,nullValue());
         
-        src.write((
-            "ABCDEF"
-            ).getBytes(StandardCharsets.ISO_8859_1)
+        src.write("ABCDEF".getBytes(StandardCharsets.ISO_8859_1)
         );
         
         response = HttpTester.parseResponse(in);

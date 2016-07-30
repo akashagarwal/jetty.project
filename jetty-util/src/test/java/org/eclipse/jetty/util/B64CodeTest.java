@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util;
 
@@ -65,7 +60,7 @@ public class B64CodeTest
     public void testInteger() throws Exception
     {
         byte[] bytes = text.getBytes(StandardCharsets.ISO_8859_1);
-        int value=(bytes[0]<<24)+(bytes[1]<<16)+(bytes[2]<<8)+(bytes[3]);
+        int value=(bytes[0]<<24)+(bytes[1]<<16)+(bytes[2]<<8)+bytes[3];
         
         StringBuilder b = new StringBuilder();
         B64Code.encode(value,b);

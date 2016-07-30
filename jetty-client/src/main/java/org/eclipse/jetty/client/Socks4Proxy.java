@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.client;
 
@@ -113,11 +108,10 @@ public class Socks4Proxy extends ProxyConfiguration.Proxy
                 // SOCKS 4
                 ByteBuffer buffer = ByteBuffer.allocate(9);
                 buffer.put((byte)4).put((byte)1).putShort(port);
-                for (int i = 1; i <= 4; ++i)
-                    buffer.put((byte)Integer.parseInt(matcher.group(i)));
+                for (int i = 1; i <= 4; ++i) {
+					buffer.put((byte)Integer.parseInt(matcher.group(i)));
+				}
                 buffer.put((byte)0);
-                buffer.flip();
-                getEndPoint().write(this, buffer);
             }
             else
             {
@@ -127,16 +121,17 @@ public class Socks4Proxy extends ProxyConfiguration.Proxy
                 buffer.put((byte)4).put((byte)1).putShort(port);
                 buffer.put((byte)0).put((byte)0).put((byte)0).put((byte)1).put((byte)0);
                 buffer.put(hostBytes).put((byte)0);
-                buffer.flip();
-                getEndPoint().write(this, buffer);
             }
+			buffer.flip();
+			getEndPoint().write(this, buffer);
         }
 
         @Override
         public void succeeded()
         {
-            if (LOG.isDebugEnabled())
-                LOG.debug("Written SOCKS4 connect request");
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Written SOCKS4 connect request");
+			}
             fillInterested();
         }
 
@@ -160,11 +155,13 @@ public class Socks4Proxy extends ProxyConfiguration.Proxy
                     // the parser how much left there is to read.
                     ByteBuffer buffer = BufferUtil.allocate(parser.expected());
                     int filled = getEndPoint().fill(buffer);
-                    if (LOG.isDebugEnabled())
-                        LOG.debug("Read SOCKS4 connect response, {} bytes", filled);
+                    if (LOG.isDebugEnabled()) {
+						LOG.debug("Read SOCKS4 connect response, {} bytes", filled);
+					}
 
-                    if (filled < 0)
-                        throw new IOException("SOCKS4 tunnel failed, connection closed");
+                    if (filled < 0) {
+						throw new IOException("SOCKS4 tunnel failed, connection closed");
+					}
 
                     if (filled == 0)
                     {
@@ -172,8 +169,9 @@ public class Socks4Proxy extends ProxyConfiguration.Proxy
                         return;
                     }
 
-                    if (parser.parse(buffer))
-                        return;
+                    if (parser.parse(buffer)) {
+						return;
+					}
                 }
             }
             catch (Throwable x)
@@ -184,10 +182,11 @@ public class Socks4Proxy extends ProxyConfiguration.Proxy
 
         private void onSocks4Response(int responseCode) throws IOException
         {
-            if (responseCode == 0x5A)
-                tunnel();
-            else
-                throw new IOException("SOCKS4 tunnel failed with code " + responseCode);
+            if (responseCode == 0x5A) {
+				tunnel();
+			} else {
+				throw new IOException("SOCKS4 tunnel failed with code " + responseCode);
+			}
         }
 
         private void tunnel()
@@ -197,12 +196,14 @@ public class Socks4Proxy extends ProxyConfiguration.Proxy
                 HttpDestination destination = (HttpDestination)context.get(HttpClientTransport.HTTP_DESTINATION_CONTEXT_KEY);
                 HttpClient client = destination.getHttpClient();
                 ClientConnectionFactory connectionFactory = this.connectionFactory;
-                if (HttpScheme.HTTPS.is(destination.getScheme()))
-                    connectionFactory = new SslClientConnectionFactory(client.getSslContextFactory(), client.getByteBufferPool(), client.getExecutor(), connectionFactory);
+                if (HttpScheme.HTTPS.is(destination.getScheme())) {
+					connectionFactory = new SslClientConnectionFactory(client.getSslContextFactory(), client.getByteBufferPool(), client.getExecutor(), connectionFactory);
+				}
                 org.eclipse.jetty.io.Connection newConnection = connectionFactory.newConnection(getEndPoint(), context);
                 getEndPoint().upgrade(newConnection);
-                if (LOG.isDebugEnabled())
-                    LOG.debug("SOCKS4 tunnel established: {} over {}", this, newConnection);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("SOCKS4 tunnel established: {} over {}", this, newConnection);
+				}
             }
             catch (Throwable x)
             {
@@ -221,8 +222,9 @@ public class Socks4Proxy extends ProxyConfiguration.Proxy
                 while (buffer.hasRemaining())
                 {
                     byte current = buffer.get();
-                    if (cursor == 1)
-                        response = current & 0xFF;
+                    if (cursor == 1) {
+						response = current & 0xFF;
+					}
                     ++cursor;
                     if (cursor == EXPECTED_LENGTH)
                     {

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util.security;
 
@@ -60,17 +55,17 @@ public class CertificateValidator
     private KeyStore _trustStore;
     private Collection<? extends CRL> _crls;
 
-    /** Maximum certification path length (n - number of intermediate certs, -1 for unlimited) */
+    /** Maximum certification path length (n - number of intermediate certs, -1 for unlimited). */
     private int _maxCertPathLength = -1;
-    /** CRL Distribution Points (CRLDP) support */
-    private boolean _enableCRLDP = false;
-    /** On-Line Certificate Status Protocol (OCSP) support */
-    private boolean _enableOCSP = false;
-    /** Location of OCSP Responder */
+    /** CRL Distribution Points (CRLDP) support. */
+    private boolean _enableCRLDP;
+    /** On-Line Certificate Status Protocol (OCSP) support. */
+    private boolean _enableOCSP;
+    /** Location of OCSP Responder. */
     private String _ocspResponderURL;
     
     /**
-     * creates an instance of the certificate validator 
+     * Creates an instance of the certificate validator .
      *
      * @param trustStore the truststore to use 
      * @param crls the Certificate Revocation List to use 
@@ -87,7 +82,7 @@ public class CertificateValidator
     }
     
     /**
-     * validates all aliases inside of a given keystore
+     * Validates all aliases inside of a given keystore.
      * 
      * @param keyStore the keystore to validate
      * @throws CertificateException if keystore error and unable to validate 
@@ -114,7 +109,7 @@ public class CertificateValidator
     
 
     /**
-     * validates a specific alias inside of the keystore being passed in
+     * Validates a specific alias inside of the keystore being passed in.
      * 
      * @param keyStore the keystore to validate
      * @param keyAlias the keyalias in the keystore to valid with
@@ -144,7 +139,7 @@ public class CertificateValidator
     }
     
     /**
-     * validates a specific certificate inside of the keystore being passed in
+     * Validates a specific certificate inside of the keystore being passed in.
      * 
      * @param keyStore the keystore to validate against
      * @param cert the certificate to validate
@@ -154,7 +149,7 @@ public class CertificateValidator
     {
         Certificate[] certChain = null;
         
-        if (cert != null && cert instanceof X509Certificate)
+        if (cert instanceof X509Certificate)
         {
             ((X509Certificate)cert).checkValidity();
             
@@ -197,8 +192,9 @@ public class CertificateValidator
             ArrayList<X509Certificate> certList = new ArrayList<X509Certificate>();
             for (Certificate item : certChain)
             {
-                if (item == null)
-                    continue;
+                if (item == null) {
+					continue;
+				}
                 
                 if (!(item instanceof X509Certificate))
                 {
@@ -297,7 +293,7 @@ public class CertificateValidator
     }
 
     /* ------------------------------------------------------------ */
-    /** Enables CRL Distribution Points Support
+    /** Enables CRL Distribution Points Support.
      * @param enableCRLDP true - turn on, false - turns off
      */
     public void setEnableCRLDP(boolean enableCRLDP)
@@ -315,7 +311,7 @@ public class CertificateValidator
     }
 
     /* ------------------------------------------------------------ */
-    /** Enables On-Line Certificate Status Protocol support
+    /** Enables On-Line Certificate Status Protocol support.
      * @param enableOCSP true - turn on, false - turn off
      */
     public void setEnableOCSP(boolean enableOCSP)

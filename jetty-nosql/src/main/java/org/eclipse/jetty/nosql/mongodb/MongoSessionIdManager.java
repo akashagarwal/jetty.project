@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.nosql.mongodb;
 
@@ -65,13 +60,14 @@ import com.mongodb.MongoException;
  */
 public class MongoSessionIdManager extends AbstractSessionIdManager
 {
-    private final static Logger __log = Log.getLogger("org.eclipse.jetty.server.session");
+    private static final Logger __log = Log.getLogger("org.eclipse.jetty.server.session");
 
-    final static DBObject __version_1 = new BasicDBObject(MongoSessionManager.__VERSION,1);
-    final static DBObject __valid_false = new BasicDBObject(MongoSessionManager.__VALID,false);
-    final static DBObject __valid_true = new BasicDBObject(MongoSessionManager.__VALID,true);
+    static final DBObject __version_1 = new BasicDBObject(MongoSessionManager.__VERSION,1);
+    static final DBObject __valid_false = new BasicDBObject(MongoSessionManager.__VALID,false);
+    static final DBObject __valid_true = new BasicDBObject(MongoSessionManager.__VALID,true);
 
-    final static long __defaultScavengePeriod = 30 * 60 * 1000; // every 30 minutes
+    /** Every 30 minutes. */
+    static final long __defaultScavengePeriod = 30 * 60 * 1000;
    
     
     final DBCollection _sessions;
@@ -87,44 +83,44 @@ public class MongoSessionIdManager extends AbstractSessionIdManager
     
 
     /** 
-     * purge process is enabled by default
+     * Purge process is enabled by default.
      */
     private boolean _purge = true;
 
     /**
-     * purge process would run daily by default
+     * Purge process would run daily by default.
      */
     private long _purgeDelay = 24 * 60 * 60 * 1000; // every day
     
     /**
-     * how long do you want to persist sessions that are no longer
-     * valid before removing them completely
+     * How long do you want to persist sessions that are no longer
+     * valid before removing them completely.
      */
     private long _purgeInvalidAge = 24 * 60 * 60 * 1000; // default 1 day
 
     /**
-     * how long do you want to leave sessions that are still valid before
-     * assuming they are dead and removing them
+     * How long do you want to leave sessions that are still valid before
+     * assuming they are dead and removing them.
      */
     private long _purgeValidAge = 7 * 24 * 60 * 60 * 1000; // default 1 week
 
     
     /**
-     * the collection of session ids known to this manager
+     * The collection of session ids known to this manager.
      */
     protected final Set<String> _sessionsIds = new ConcurrentHashSet<>();
 
     /**
      * The maximum number of items to return from a purge query.
      */
-    private int _purgeLimit = 0;
+    private int _purgeLimit;
 
     private int _scavengeBlockSize;
     
     
     /**
      * Scavenger
-     *
+     *.
      */
     protected class Scavenger implements Runnable
     {
@@ -138,8 +134,9 @@ public class MongoSessionIdManager extends AbstractSessionIdManager
             }
             finally
             {
-                if (_scheduler != null && _scheduler.isRunning())
-                    _scavengerTask = _scheduler.schedule(this, _scavengePeriod, TimeUnit.MILLISECONDS);
+                if (_scheduler != null && _scheduler.isRunning()) {
+					_scavengerTask = _scheduler.schedule(this, _scavengePeriod, TimeUnit.MILLISECONDS);
+				}
             }
         } 
     }
@@ -147,7 +144,7 @@ public class MongoSessionIdManager extends AbstractSessionIdManager
     
     /**
      * Purger
-     *
+     *.
      */
     protected class Purger implements Runnable
     {
@@ -160,8 +157,9 @@ public class MongoSessionIdManager extends AbstractSessionIdManager
             }
             finally
             {
-                if (_scheduler != null && _scheduler.isRunning())
-                    _purgerTask = _scheduler.schedule(this, _purgeDelay, TimeUnit.MILLISECONDS);
+                if (_scheduler != null && _scheduler.isRunning()) {
+					_purgerTask = _scheduler.schedule(this, _purgeDelay, TimeUnit.MILLISECONDS);
+				}
             }
         }
     }
@@ -169,13 +167,13 @@ public class MongoSessionIdManager extends AbstractSessionIdManager
     
     
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public MongoSessionIdManager(Server server) throws UnknownHostException, MongoException
     {
         this(server, new Mongo().getDB("HttpSessions").getCollection("sessions"));
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public MongoSessionIdManager(Server server, DBCollection sessions)
     {
         super(new Random());
@@ -239,7 +237,7 @@ public class MongoSessionIdManager extends AbstractSessionIdManager
         while (itor.hasNext())
         {
             block.add(itor.next());
-            if ((_scavengeBlockSize > 0) && (block.size() == _scavengeBlockSize))
+            if (_scavengeBlockSize > 0 && block.size() == _scavengeBlockSize)
             {
                 //got a block
                 scavengeBlock (now, block);
@@ -249,8 +247,9 @@ public class MongoSessionIdManager extends AbstractSessionIdManager
         }
         
         //non evenly divisble block size, or doing it all at once
-        if (!block.isEmpty())
-            scavengeBlock(now, block);
+        if (!block.isEmpty()) {
+			scavengeBlock(now, block);
+		}
     }
     
     
@@ -263,8 +262,9 @@ public class MongoSessionIdManager extends AbstractSessionIdManager
      */
     protected void scavengeBlock (long atTime, Set<String> ids)
     {
-        if (ids == null)
-            return;
+        if (ids == null) {
+			return;
+		}
         
         BasicDBObject query = new BasicDBObject();     
         query.put(MongoSessionManager.__ID,new BasicDBObject("$in", ids ));
@@ -393,20 +393,20 @@ public class MongoSessionIdManager extends AbstractSessionIdManager
     }
     
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public DBCollection getSessions()
     {
         return _sessions;
     }
     
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public boolean isPurgeEnabled()
     {
         return _purge;
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void setPurge(boolean purge)
     {
         this._purge = purge;
@@ -421,10 +421,11 @@ public class MongoSessionIdManager extends AbstractSessionIdManager
      */
     public void setScavengePeriod(long scavengePeriod)
     {
-        if (scavengePeriod <= 0)
-            _scavengePeriod = __defaultScavengePeriod;
-        else
-            _scavengePeriod = TimeUnit.SECONDS.toMillis(scavengePeriod);
+        if (scavengePeriod <= 0) {
+			_scavengePeriod = __defaultScavengePeriod;
+		} else {
+			_scavengePeriod = TimeUnit.SECONDS.toMillis(scavengePeriod);
+		}
     }
 
     /* ------------------------------------------------------------ */
@@ -437,7 +438,7 @@ public class MongoSessionIdManager extends AbstractSessionIdManager
         _scavengeBlockSize = size;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public int getScavengeBlockSize ()
     {
         return _scavengeBlockSize;
@@ -455,7 +456,7 @@ public class MongoSessionIdManager extends AbstractSessionIdManager
         _purgeLimit = purgeLimit;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public int getPurgeLimit()
     {
         return _purgeLimit;
@@ -463,7 +464,7 @@ public class MongoSessionIdManager extends AbstractSessionIdManager
 
 
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void setPurgeDelay(long purgeDelay)
     {
         if ( isRunning() )
@@ -474,7 +475,7 @@ public class MongoSessionIdManager extends AbstractSessionIdManager
         this._purgeDelay = purgeDelay;
     }
  
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public long getPurgeInvalidAge()
     {
         return _purgeInvalidAge;
@@ -482,8 +483,8 @@ public class MongoSessionIdManager extends AbstractSessionIdManager
 
     /* ------------------------------------------------------------ */
     /**
-     * sets how old a session is to be persisted past the point it is
-     * no longer valid
+     * Sets how old a session is to be persisted past the point it is
+     * no longer valid.
      * @param purgeValidAge the purge valid age
      */
     public void setPurgeInvalidAge(long purgeValidAge)
@@ -491,7 +492,7 @@ public class MongoSessionIdManager extends AbstractSessionIdManager
         this._purgeInvalidAge = purgeValidAge;
     } 
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public long getPurgeValidAge()
     {
         return _purgeValidAge;
@@ -499,7 +500,7 @@ public class MongoSessionIdManager extends AbstractSessionIdManager
 
     /* ------------------------------------------------------------ */
     /**
-     * sets how old a session is to be persist past the point it is 
+     * Sets how old a session is to be persist past the point it is 
      * considered no longer viable and should be removed
      * 
      * NOTE: set this value to 0 to disable purging of valid sessions
@@ -510,7 +511,7 @@ public class MongoSessionIdManager extends AbstractSessionIdManager
         this._purgeValidAge = purgeValidAge;
     } 
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     protected void doStart() throws Exception
     {
@@ -527,8 +528,9 @@ public class MongoSessionIdManager extends AbstractSessionIdManager
                 _ownScheduler = true;
                 _scheduler.start();
             }   
-            else if (!_scheduler.isStarted())
-                throw new IllegalStateException("Shared scheduler not started");
+            else if (!_scheduler.isStarted()) {
+				throw new IllegalStateException("Shared scheduler not started");
+			}
             
 
             //setup the scavenger thread
@@ -542,8 +544,9 @@ public class MongoSessionIdManager extends AbstractSessionIdManager
 
                 _scavengerTask = _scheduler.schedule(new Scavenger(), _scavengePeriod, TimeUnit.MILLISECONDS);
             }
-            else if (__log.isDebugEnabled())
-                __log.debug("Scavenger disabled");
+            else if (__log.isDebugEnabled()) {
+				__log.debug("Scavenger disabled");
+			}
 
 
             //if purging is enabled, setup the purge thread
@@ -556,12 +559,13 @@ public class MongoSessionIdManager extends AbstractSessionIdManager
                 }
                 _purgerTask = _scheduler.schedule(new Purger(), _purgeDelay, TimeUnit.MILLISECONDS);
             }
-            else if (__log.isDebugEnabled())
-                __log.debug("Purger disabled");
+            else if (__log.isDebugEnabled()) {
+				__log.debug("Purger disabled");
+			}
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     protected void doStop() throws Exception
     {
@@ -590,7 +594,7 @@ public class MongoSessionIdManager extends AbstractSessionIdManager
 
     /* ------------------------------------------------------------ */
     /**
-     * Searches database to find if the session id known to mongo, and is it valid
+     * Searches database to find if the session id known to mongo, and is it valid.
      */
     @Override
     public boolean idInUse(String sessionId)
@@ -603,18 +607,13 @@ public class MongoSessionIdManager extends AbstractSessionIdManager
         if ( o != null )
         {                    
             Boolean valid = (Boolean)o.get(MongoSessionManager.__VALID);
-            if ( valid == null )
-            {
-                return false;
-            }            
-            
-            return valid;
+            return valid != null && valid;
         }
         
         return false;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void addSession(HttpSession session)
     {
@@ -633,7 +632,7 @@ public class MongoSessionIdManager extends AbstractSessionIdManager
         
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void removeSession(HttpSession session)
     {
@@ -666,7 +665,7 @@ public class MongoSessionIdManager extends AbstractSessionIdManager
             {
                 SessionManager manager = sessionHandler.getSessionManager();
 
-                if (manager != null && manager instanceof MongoSessionManager)
+                if (manager instanceof MongoSessionManager)
                 {
                     ((MongoSessionManager)manager).invalidateSession(sessionId);
                 }
@@ -696,7 +695,7 @@ public class MongoSessionIdManager extends AbstractSessionIdManager
             {
                 SessionManager manager = sessionHandler.getSessionManager();
 
-                if (manager != null && manager instanceof MongoSessionManager)
+                if (manager instanceof MongoSessionManager)
                 {
                     ((MongoSessionManager)manager).expire(sessionId);
                 }
@@ -716,7 +715,7 @@ public class MongoSessionIdManager extends AbstractSessionIdManager
             {
                 SessionManager manager = sessionHandler.getSessionManager();
 
-                if (manager != null && manager instanceof MongoSessionManager)
+                if (manager instanceof MongoSessionManager)
                 {
                     ((MongoSessionManager)manager).idle();
                 }
@@ -724,7 +723,7 @@ public class MongoSessionIdManager extends AbstractSessionIdManager
         }      
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void renewSessionId(String oldClusterId, String oldNodeId, HttpServletRequest request)
     {
@@ -743,7 +742,7 @@ public class MongoSessionIdManager extends AbstractSessionIdManager
             {
                 SessionManager manager = sessionHandler.getSessionManager();
 
-                if (manager != null && manager instanceof MongoSessionManager)
+                if (manager instanceof MongoSessionManager)
                 {
                     ((MongoSessionManager)manager).renewSessionId(oldClusterId, oldNodeId, newClusterId, getNodeId(newClusterId, request));
                 }

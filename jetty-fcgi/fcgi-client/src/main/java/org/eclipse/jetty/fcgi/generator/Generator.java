@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.fcgi.generator;
 
@@ -60,8 +55,9 @@ public class Generator
             buffer.putShort((short)0);
             BufferUtil.flipToFlush(buffer, 0);
 
-            if (contentLength == 0)
-                break;
+            if (contentLength == 0) {
+				break;
+			}
 
             // Slice the content to avoid copying
             int limit = content.limit();
@@ -73,14 +69,15 @@ public class Generator
             content.limit(limit);
             contentLength -= length;
             // Recycle the content buffer if needed
-            if (recycle && contentLength == 0)
-                result = result.append(content, true);
+            if (recycle && contentLength == 0) {
+				result = result.append(content, true);
+			}
         }
 
         return result;
     }
 
-    // TODO: rewrite this class in light of ByteBufferPool.Lease.
+    /** TODO: rewrite this class in light of ByteBufferPool.Lease. */
     public static class Result implements Callback
     {
         private final List<Callback> callbacks = new ArrayList<>(2);
@@ -125,8 +122,9 @@ public class Generator
             for (int i = 0; i < callbacks.size(); ++i)
             {
                 Callback callback = callbacks.get(i);
-                if (callback != null)
-                    callback.succeeded();
+                if (callback != null) {
+					callback.succeeded();
+				}
             }
         }
 
@@ -138,8 +136,9 @@ public class Generator
             for (int i = 0; i < callbacks.size(); ++i)
             {
                 Callback callback = callbacks.get(i);
-                if (callback != null)
-                    callback.failed(x);
+                if (callback != null) {
+					callback.failed(x);
+				}
             }
         }
 
@@ -148,8 +147,9 @@ public class Generator
             for (int i = 0; i < buffers.size(); ++i)
             {
                 ByteBuffer buffer = buffers.get(i);
-                if (recycles.get(i))
-                    byteBufferPool.release(buffer);
+                if (recycles.get(i)) {
+					byteBufferPool.release(buffer);
+				}
             }
         }
     }

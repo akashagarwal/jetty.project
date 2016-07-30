@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.ant;
 
@@ -51,9 +46,9 @@ public class AntWebInfConfiguration extends WebInfConfiguration
         //Apply an initial ordering to the jars which governs which will be scanned for META-INF
         //info and annotations. The ordering is based on inclusion patterns.       
         String tmp = (String)context.getAttribute(WEBINF_JAR_PATTERN);
-        Pattern webInfPattern = (tmp==null?null:Pattern.compile(tmp));
+        Pattern webInfPattern = tmp==null?null:Pattern.compile(tmp);
         tmp = (String)context.getAttribute(CONTAINER_JAR_PATTERN);
-        Pattern containerPattern = (tmp==null?null:Pattern.compile(tmp));
+        Pattern containerPattern = tmp==null?null:Pattern.compile(tmp);
 
         //Apply ordering to container jars - if no pattern is specified, we won't
         //match any of the container jars

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.proxy;
 
@@ -117,8 +112,9 @@ public abstract class AbstractProxyServlet extends HttpServlet
         _hostHeader = config.getInitParameter("hostHeader");
 
         _viaHost = config.getInitParameter("viaHost");
-        if (_viaHost == null)
-            _viaHost = viaHost();
+        if (_viaHost == null) {
+			_viaHost = viaHost();
+		}
 
         try
         {
@@ -128,12 +124,14 @@ public abstract class AbstractProxyServlet extends HttpServlet
             getServletContext().setAttribute(config.getServletName() + ".HttpClient", _client);
 
             String whiteList = config.getInitParameter("whiteList");
-            if (whiteList != null)
-                getWhiteListHosts().addAll(parseList(whiteList));
+            if (whiteList != null) {
+				getWhiteListHosts().addAll(parseList(whiteList));
+			}
 
             String blackList = config.getInitParameter("blackList");
-            if (blackList != null)
-                getBlackListHosts().addAll(parseList(blackList));
+            if (blackList != null) {
+				getBlackListHosts().addAll(parseList(blackList));
+			}
         }
         catch (Exception e)
         {
@@ -150,8 +148,9 @@ public abstract class AbstractProxyServlet extends HttpServlet
         }
         catch (Exception x)
         {
-            if (_log.isDebugEnabled())
-                _log.debug(x);
+            if (_log.isDebugEnabled()) {
+				_log.debug(x);
+			}
         }
     }
 
@@ -204,7 +203,7 @@ public abstract class AbstractProxyServlet extends HttpServlet
     {
         String servletName = getServletConfig().getServletName();
         servletName = servletName.replace('-', '.');
-        if ((getClass().getPackage() != null) && !servletName.startsWith(getClass().getPackage().getName()))
+        if (getClass().getPackage() != null && !servletName.startsWith(getClass().getPackage().getName()))
         {
             servletName = getClass().getName() + "." + servletName;
         }
@@ -278,16 +277,18 @@ public abstract class AbstractProxyServlet extends HttpServlet
         if (value == null || "-".equals(value))
         {
             executor = (Executor)getServletContext().getAttribute("org.eclipse.jetty.server.Executor");
-            if (executor==null)
-                throw new IllegalStateException("No server executor for proxy");
+            if (executor==null) {
+				throw new IllegalStateException("No server executor for proxy");
+			}
         }
         else
         {
             QueuedThreadPool qtp= new QueuedThreadPool(Integer.parseInt(value));
             String servletName = config.getServletName();
             int dot = servletName.lastIndexOf('.');
-            if (dot >= 0)
-                servletName = servletName.substring(dot + 1);
+            if (dot >= 0) {
+				servletName = servletName.substring(dot + 1);
+			}
             qtp.setName(servletName);
             executor=qtp;
         }
@@ -295,27 +296,32 @@ public abstract class AbstractProxyServlet extends HttpServlet
         client.setExecutor(executor);
 
         value = config.getInitParameter("maxConnections");
-        if (value == null)
-            value = "256";
+        if (value == null) {
+			value = "256";
+		}
         client.setMaxConnectionsPerDestination(Integer.parseInt(value));
 
         value = config.getInitParameter("idleTimeout");
-        if (value == null)
-            value = "30000";
+        if (value == null) {
+			value = "30000";
+		}
         client.setIdleTimeout(Long.parseLong(value));
 
         value = config.getInitParameter("timeout");
-        if (value == null)
-            value = "60000";
+        if (value == null) {
+			value = "60000";
+		}
         _timeout = Long.parseLong(value);
 
         value = config.getInitParameter("requestBufferSize");
-        if (value != null)
-            client.setRequestBufferSize(Integer.parseInt(value));
+        if (value != null) {
+			client.setRequestBufferSize(Integer.parseInt(value));
+		}
 
         value = config.getInitParameter("responseBufferSize");
-        if (value != null)
-            client.setResponseBufferSize(Integer.parseInt(value));
+        if (value != null) {
+			client.setResponseBufferSize(Integer.parseInt(value));
+		}
 
         try
         {
@@ -355,8 +361,9 @@ public abstract class AbstractProxyServlet extends HttpServlet
         for (String host : hosts)
         {
             host = host.trim();
-            if (host.length() == 0)
-                continue;
+            if (host.length() == 0) {
+				continue;
+			}
             result.add(host);
         }
         return result;
@@ -372,36 +379,32 @@ public abstract class AbstractProxyServlet extends HttpServlet
     public boolean validateDestination(String host, int port)
     {
         String hostPort = host + ":" + port;
-        if (!_whiteList.isEmpty())
-        {
-            if (!_whiteList.contains(hostPort))
-            {
-                if (_log.isDebugEnabled())
-                    _log.debug("Host {}:{} not whitelisted", host, port);
-                return false;
-            }
-        }
-        if (!_blackList.isEmpty())
-        {
-            if (_blackList.contains(hostPort))
-            {
-                if (_log.isDebugEnabled())
-                    _log.debug("Host {}:{} blacklisted", host, port);
-                return false;
-            }
-        }
+        if (!_whiteList.isEmpty() && !_whiteList.contains(hostPort)) {
+		    if (_log.isDebugEnabled()) {
+				_log.debug("Host {}:{} not whitelisted", host, port);
+			}
+		    return false;
+		}
+        if (!_blackList.isEmpty() && _blackList.contains(hostPort)) {
+		    if (_log.isDebugEnabled()) {
+				_log.debug("Host {}:{} blacklisted", host, port);
+			}
+		    return false;
+		}
         return true;
     }
 
     protected String rewriteTarget(HttpServletRequest clientRequest)
     {
-        if (!validateDestination(clientRequest.getServerName(), clientRequest.getServerPort()))
-            return null;
+        if (!validateDestination(clientRequest.getServerName(), clientRequest.getServerPort())) {
+			return null;
+		}
 
         StringBuffer target = clientRequest.getRequestURL();
         String query = clientRequest.getQueryString();
-        if (query != null)
-            target.append("?").append(query);
+        if (query != null) {
+			target.append("?").append(query);
+		}
         return target.toString();
     }
 
@@ -439,26 +442,31 @@ public abstract class AbstractProxyServlet extends HttpServlet
             String headerName = headerNames.nextElement();
             String lowerHeaderName = headerName.toLowerCase(Locale.ENGLISH);
 
-            if (HttpHeader.HOST.is(headerName) && !_preserveHost)
-                continue;
+            if (HttpHeader.HOST.is(headerName) && !_preserveHost) {
+				continue;
+			}
 
             // Remove hop-by-hop headers.
-            if (HOP_HEADERS.contains(lowerHeaderName))
-                continue;
-            if (headersToRemove != null && headersToRemove.contains(lowerHeaderName))
-                continue;
+            if (HOP_HEADERS.contains(lowerHeaderName)) {
+				continue;
+			}
+            if (headersToRemove != null && headersToRemove.contains(lowerHeaderName)) {
+				continue;
+			}
 
             for (Enumeration<String> headerValues = clientRequest.getHeaders(headerName); headerValues.hasMoreElements();)
             {
                 String headerValue = headerValues.nextElement();
-                if (headerValue != null)
-                    proxyRequest.header(headerName, headerValue);
+                if (headerValue != null) {
+					proxyRequest.header(headerName, headerValue);
+				}
             }
         }
 
         // Force the Host header if configured
-        if (_hostHeader != null)
-            proxyRequest.header(HttpHeader.HOST, _hostHeader);
+        if (_hostHeader != null) {
+			proxyRequest.header(HttpHeader.HOST, _hostHeader);
+		}
     }
 
     protected Set<String> findConnectionHeaders(HttpServletRequest clientRequest)
@@ -474,8 +482,9 @@ public abstract class AbstractProxyServlet extends HttpServlet
             for (String name : values)
             {
                 name = name.trim().toLowerCase(Locale.ENGLISH);
-                if (hopHeaders == null)
-                    hopHeaders = new HashSet<>();
+                if (hopHeaders == null) {
+					hopHeaders = new HashSet<>();
+				}
                 hopHeaders.add(name);
             }
         }
@@ -508,8 +517,9 @@ public abstract class AbstractProxyServlet extends HttpServlet
             StringBuilder builder = new StringBuilder(clientRequest.getMethod());
             builder.append(" ").append(clientRequest.getRequestURI());
             String query = clientRequest.getQueryString();
-            if (query != null)
-                builder.append("?").append(query);
+            if (query != null) {
+				builder.append("?").append(query);
+			}
             builder.append(" ").append(clientRequest.getProtocol()).append(System.lineSeparator());
             for (Enumeration<String> headerNames = clientRequest.getHeaderNames(); headerNames.hasMoreElements();)
             {
@@ -518,10 +528,12 @@ public abstract class AbstractProxyServlet extends HttpServlet
                 for (Enumeration<String> headerValues = clientRequest.getHeaders(headerName); headerValues.hasMoreElements();)
                 {
                     String headerValue = headerValues.nextElement();
-                    if (headerValue != null)
-                        builder.append(headerValue);
-                    if (headerValues.hasMoreElements())
-                        builder.append(",");
+                    if (headerValue != null) {
+						builder.append(headerValue);
+					}
+                    if (headerValues.hasMoreElements()) {
+						builder.append(",");
+					}
                 }
                 builder.append(System.lineSeparator());
             }
@@ -559,12 +571,14 @@ public abstract class AbstractProxyServlet extends HttpServlet
         {
             String headerName = field.getName();
             String lowerHeaderName = headerName.toLowerCase(Locale.ENGLISH);
-            if (HOP_HEADERS.contains(lowerHeaderName))
-                continue;
+            if (HOP_HEADERS.contains(lowerHeaderName)) {
+				continue;
+			}
 
             String newHeaderValue = filterServerResponseHeader(clientRequest, serverResponse, headerName, field.getValue());
-            if (newHeaderValue == null || newHeaderValue.trim().length() == 0)
-                continue;
+            if (newHeaderValue == null || newHeaderValue.trim().length() == 0) {
+				continue;
+			}
 
             proxyResponse.addHeader(headerName, newHeaderValue);
         }
@@ -580,10 +594,12 @@ public abstract class AbstractProxyServlet extends HttpServlet
                 for (Iterator<String> headerValues = proxyResponse.getHeaders(headerName).iterator(); headerValues.hasNext(); )
                 {
                     String headerValue = headerValues.next();
-                    if (headerValue != null)
-                        builder.append(headerValue);
-                    if (headerValues.hasNext())
-                        builder.append(",");
+                    if (headerValue != null) {
+						builder.append(headerValue);
+					}
+                    if (headerValues.hasNext()) {
+						builder.append(",");
+					}
                 }
                 builder.append(System.lineSeparator());
             }
@@ -605,8 +621,9 @@ public abstract class AbstractProxyServlet extends HttpServlet
 
     protected void onProxyResponseSuccess(HttpServletRequest clientRequest, HttpServletResponse proxyResponse, Response serverResponse)
     {
-        if (_log.isDebugEnabled())
-            _log.debug("{} proxying successful", getRequestId(clientRequest));
+        if (_log.isDebugEnabled()) {
+			_log.debug("{} proxying successful", getRequestId(clientRequest));
+		}
 
         AsyncContext asyncContext = clientRequest.getAsyncContext();
         asyncContext.complete();
@@ -614,8 +631,9 @@ public abstract class AbstractProxyServlet extends HttpServlet
 
     protected void onProxyResponseFailure(HttpServletRequest clientRequest, HttpServletResponse proxyResponse, Response serverResponse, Throwable failure)
     {
-        if (_log.isDebugEnabled())
-            _log.debug(getRequestId(clientRequest) + " proxying failed", failure);
+        if (_log.isDebugEnabled()) {
+			_log.debug(getRequestId(clientRequest) + " proxying failed", failure);
+		}
 
         if (proxyResponse.isCommitted())
         {
@@ -628,8 +646,9 @@ public abstract class AbstractProxyServlet extends HttpServlet
             }
             catch (IOException x)
             {
-                if (_log.isDebugEnabled())
-                    _log.debug(getRequestId(clientRequest) + " could not close the connection", failure);
+                if (_log.isDebugEnabled()) {
+					_log.debug(getRequestId(clientRequest) + " could not close the connection", failure);
+				}
             }
         }
         else
@@ -651,8 +670,9 @@ public abstract class AbstractProxyServlet extends HttpServlet
     {
         proxyResponse.setStatus(status);
         proxyResponse.setHeader(HttpHeader.CONNECTION.asString(), HttpHeaderValue.CLOSE.asString());
-        if (clientRequest.isAsyncStarted())
-            clientRequest.getAsyncContext().complete();
+        if (clientRequest.isAsyncStarted()) {
+			clientRequest.getAsyncContext().complete();
+		}
     }
 
     /**
@@ -680,14 +700,16 @@ public abstract class AbstractProxyServlet extends HttpServlet
         protected void init(ServletConfig config) throws ServletException
         {
             _proxyTo = config.getInitParameter("proxyTo");
-            if (_proxyTo == null)
-                throw new UnavailableException("Init parameter 'proxyTo' is required.");
+            if (_proxyTo == null) {
+				throw new UnavailableException("Init parameter 'proxyTo' is required.");
+			}
 
             String prefix = config.getInitParameter("prefix");
             if (prefix != null)
             {
-                if (!prefix.startsWith("/"))
-                    throw new UnavailableException("Init parameter 'prefix' must start with a '/'.");
+                if (!prefix.startsWith("/")) {
+					throw new UnavailableException("Init parameter 'prefix' must start with a '/'.");
+				}
                 _prefix = prefix;
             }
 
@@ -695,24 +717,28 @@ public abstract class AbstractProxyServlet extends HttpServlet
             String contextPath = config.getServletContext().getContextPath();
             _prefix = _prefix == null ? contextPath : (contextPath + _prefix);
 
-            if (proxyServlet._log.isDebugEnabled())
-                proxyServlet._log.debug(config.getServletName() + " @ " + _prefix + " to " + _proxyTo);
+            if (proxyServlet._log.isDebugEnabled()) {
+				proxyServlet._log.debug(config.getServletName() + " @ " + _prefix + " to " + _proxyTo);
+			}
         }
 
         protected String rewriteTarget(HttpServletRequest request)
         {
             String path = request.getRequestURI();
-            if (!path.startsWith(_prefix))
-                return null;
+            if (!path.startsWith(_prefix)) {
+				return null;
+			}
 
             StringBuilder uri = new StringBuilder(_proxyTo);
-            if (_proxyTo.endsWith("/"))
-                uri.setLength(uri.length() - 1);
+            if (_proxyTo.endsWith("/")) {
+				uri.setLength(uri.length() - 1);
+			}
             String rest = path.substring(_prefix.length());
             if (!rest.isEmpty())
             {
-                if (!rest.startsWith("/"))
-                    uri.append("/");
+                if (!rest.startsWith("/")) {
+					uri.append("/");
+				}
                 uri.append(rest);
             }
 
@@ -721,14 +747,16 @@ public abstract class AbstractProxyServlet extends HttpServlet
             {
                 // Is there at least one path segment ?
                 String separator = "://";
-                if (uri.indexOf("/", uri.indexOf(separator) + separator.length()) < 0)
-                    uri.append("/");
+                if (uri.indexOf("/", uri.indexOf(separator) + separator.length()) < 0) {
+					uri.append("/");
+				}
                 uri.append("?").append(query);
             }
             URI rewrittenURI = URI.create(uri.toString()).normalize();
 
-            if (!proxyServlet.validateDestination(rewrittenURI.getHost(), rewrittenURI.getPort()))
-                return null;
+            if (!proxyServlet.validateDestination(rewrittenURI.getHost(), rewrittenURI.getPort())) {
+				return null;
+			}
 
             return rewrittenURI.toString();
         }

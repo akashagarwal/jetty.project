@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 
 package org.eclipse.jetty.server.session;
@@ -32,7 +27,7 @@ import org.infinispan.manager.EmbeddedCacheManager;
 /**
  * InfinispanTestSupport
  *
- *
+ *.
  */
 public class InfinispanTestSupport
 {
@@ -64,8 +59,9 @@ public class InfinispanTestSupport
     
     public InfinispanTestSupport(String cacheName)
     {     
-        if (cacheName == null)
-            cacheName = DEFAULT_CACHE_NAME+System.currentTimeMillis();
+        if (cacheName == null) {
+			cacheName = DEFAULT_CACHE_NAME+System.currentTimeMillis();
+		}
         
         _name = cacheName;
         _builder = new ConfigurationBuilder();
@@ -103,12 +99,8 @@ public class InfinispanTestSupport
     public void teardown () throws Exception
     {
         _manager.removeCache(_name);
-        if (_useFileStore)
-        {
-            if (_tmpdir != null)
-            {
-                IO.delete(_tmpdir);
-            }
-        }
+        if (_useFileStore && _tmpdir != null) {
+		    IO.delete(_tmpdir);
+		}
     }
 }

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http2.server;
 
@@ -118,13 +113,7 @@ public class HTTP2CServerTest extends AbstractServerTest
         try (Socket client = new Socket("localhost", connector.getLocalPort()))
         {
             OutputStream output = client.getOutputStream();
-            output.write(("" +
-                    "GET /one HTTP/1.1\r\n" +
-                    "Host: localhost\r\n" +
-                    "Connection: something, else, upgrade, HTTP2-Settings\r\n" +
-                    "Upgrade: h2c\r\n" +
-                    "HTTP2-Settings: \r\n" +
-                    "\r\n").getBytes(StandardCharsets.ISO_8859_1));
+            output.write(("GET /one HTTP/1.1\r\n" + "Host: localhost\r\n" + "Connection: something, else, upgrade, HTTP2-Settings\r\n" + "Upgrade: h2c\r\n" + "HTTP2-Settings: \r\n" + "\r\n").getBytes(StandardCharsets.ISO_8859_1));
             output.flush();
 
             InputStream input = client.getInputStream();
@@ -133,13 +122,15 @@ public class HTTP2CServerTest extends AbstractServerTest
             while (true)
             {
                 int read = input.read();
-                if (read == '\r' || read == '\n')
-                    ++crlfs;
-                else
-                    crlfs = 0;
+                if (read == '\r' || read == '\n') {
+					++crlfs;
+				} else {
+					crlfs = 0;
+				}
                 upgrade.append((byte)read);
-                if (crlfs == 4)
-                    break;
+                if (crlfs == 4) {
+					break;
+				}
             }
 
             assertTrue(upgrade.toString().startsWith("HTTP/1.1 101 "));
@@ -194,8 +185,9 @@ public class HTTP2CServerTest extends AbstractServerTest
             generator.control(lease, new SettingsFrame(new HashMap<>(), false));
             MetaData.Request metaData = new MetaData.Request("GET", HttpScheme.HTTP, new HostPortHttpField("localhost:" + connector.getLocalPort()), "/two", HttpVersion.HTTP_2, new HttpFields());
             generator.control(lease, new HeadersFrame(3, metaData, null, true));
-            for (ByteBuffer buffer : lease.getByteBuffers())
-                output.write(BufferUtil.toArray(buffer));
+            for (ByteBuffer buffer : lease.getByteBuffers()) {
+				output.write(BufferUtil.toArray(buffer));
+			}
             output.flush();
 
             parseResponse(client, parser);
@@ -321,8 +313,9 @@ public class HTTP2CServerTest extends AbstractServerTest
         try (Socket client = new Socket("localhost", connector.getLocalPort()))
         {
             OutputStream output = client.getOutputStream();
-            for (ByteBuffer buffer : lease.getByteBuffers())
-                output.write(BufferUtil.toArray(buffer));
+            for (ByteBuffer buffer : lease.getByteBuffers()) {
+				output.write(BufferUtil.toArray(buffer));
+			}
 
             // We sent a HTTP/2 preface, but the server has no "h2c" connection
             // factory so it does not know how to handle this request.
@@ -333,8 +326,9 @@ public class HTTP2CServerTest extends AbstractServerTest
             Assert.assertThat(responseLine, Matchers.containsString(" 426 "));
             while (true)
             {
-                if (reader.read() < 0)
-                    break;
+                if (reader.read() < 0) {
+					break;
+				}
             }
         }
 

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.maven.plugin;
 
@@ -47,13 +42,10 @@ public class MavenWebInfConfiguration extends WebInfConfiguration
     private static final Logger LOG = Log.getLogger(MavenWebInfConfiguration.class);
 
     public static final String RESOURCE_BASES_POST_OVERLAY = "org.eclipse.jetty.resource.postOverlay";
-    protected static int COUNTER = 0; 
+    protected static int COUNTER; 
     protected Resource _originalResourceBase;
     protected List<Resource>  _unpackedOverlayResources;
     
-    /** 
-     * @see org.eclipse.jetty.webapp.WebInfConfiguration#configure(org.eclipse.jetty.webapp.WebAppContext)
-     */
     public void configure(WebAppContext context) throws Exception
     {
         JettyWebAppContext jwac = (JettyWebAppContext)context;
@@ -61,10 +53,13 @@ public class MavenWebInfConfiguration extends WebInfConfiguration
         //put the classes dir and all dependencies into the classpath
         if (jwac.getClassPathFiles() != null)
         {
-            if (LOG.isDebugEnabled()) LOG.debug("Setting up classpath ...");
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Setting up classpath ...");
+			}
             Iterator itor = jwac.getClassPathFiles().iterator();
-            while (itor.hasNext())
-                ((WebAppClassLoader)context.getClassLoader()).addClassPath(((File)itor.next()).getCanonicalPath());
+            while (itor.hasNext()) {
+				((WebAppClassLoader)context.getClassLoader()).addClassPath(((File)itor.next()).getCanonicalPath());
+			}
         }
         
         super.configure(context);
@@ -78,8 +73,9 @@ public class MavenWebInfConfiguration extends WebInfConfiguration
         if (LOG.isDebugEnabled())
         {
             LOG.debug("Server classes:");
-            for (int i=0;i<newServerClasses.length;i++)
-                LOG.debug(newServerClasses[i]);
+            for (int i=0;i<newServerClasses.length;i++) {
+				LOG.debug(newServerClasses[i]);
+			}
         }
         context.setServerClasses( newServerClasses ); 
     }
@@ -87,9 +83,6 @@ public class MavenWebInfConfiguration extends WebInfConfiguration
     
     
 
-    /** 
-     * @see org.eclipse.jetty.webapp.WebInfConfiguration#preConfigure(org.eclipse.jetty.webapp.WebAppContext)
-     */
     public void preConfigure(WebAppContext context) throws Exception
     {
         super.preConfigure(context);
@@ -99,9 +92,6 @@ public class MavenWebInfConfiguration extends WebInfConfiguration
     
     
     
-    /** 
-     * @see org.eclipse.jetty.webapp.AbstractConfiguration#postConfigure(org.eclipse.jetty.webapp.WebAppContext)
-     */
     public void postConfigure(WebAppContext context) throws Exception
     {
         super.postConfigure(context);
@@ -110,9 +100,6 @@ public class MavenWebInfConfiguration extends WebInfConfiguration
 
     
     
-    /** 
-     * @see org.eclipse.jetty.webapp.WebInfConfiguration#deconfigure(org.eclipse.jetty.webapp.WebAppContext)
-     */
     public void deconfigure(WebAppContext context) throws Exception
     {   
         super.deconfigure(context);
@@ -125,9 +112,6 @@ public class MavenWebInfConfiguration extends WebInfConfiguration
     
     
 
-    /** 
-     * @see org.eclipse.jetty.webapp.WebInfConfiguration#unpack(org.eclipse.jetty.webapp.WebAppContext)
-     */
     @Override
     public void unpack(WebAppContext context) throws IOException
     {
@@ -216,8 +200,9 @@ public class MavenWebInfConfiguration extends WebInfConfiguration
         }
 
         List<Resource> superList = super.findJars(context);
-        if (superList != null)
-            list.addAll(superList);
+        if (superList != null) {
+			list.addAll(superList);
+		}
         return list;
     }
     
@@ -254,8 +239,9 @@ public class MavenWebInfConfiguration extends WebInfConfiguration
         }
         
         List<Resource> classesDirs = super.findClassDirs(context);
-        if (classesDirs != null)
-            list.addAll(classesDirs);
+        if (classesDirs != null) {
+			list.addAll(classesDirs);
+		}
         return list;
     }
 
@@ -269,24 +255,29 @@ public class MavenWebInfConfiguration extends WebInfConfiguration
         LOG.debug("Unpacking overlay: " + overlay);
         
         if (overlay.getResource() == null)
-            return null; //nothing to unpack
+		 {
+			return null; //nothing to unpack
+		}
    
         //Get the name of the overlayed war and unpack it to a dir of the
         //same name in the temporary directory
         String name = overlay.getResource().getName();
-        if (name.endsWith("!/"))
-            name = name.substring(0,name.length()-2);
+        if (name.endsWith("!/")) {
+			name = name.substring(0,name.length()-2);
+		}
         int i = name.lastIndexOf('/');
-        if (i>0)
-            name = name.substring(i+1,name.length());
+        if (i>0) {
+			name = name.substring(i+1,name.length());
+		}
         name = name.replace('.', '_');
-        name = name+(++COUNTER); //add some digits to ensure uniqueness
+        name = name+++COUNTER; //add some digits to ensure uniqueness
         File dir = new File(context.getTempDirectory(), name); 
         
         //if specified targetPath, unpack to that subdir instead
         File unpackDir = dir;
-        if (overlay.getConfig() != null && overlay.getConfig().getTargetPath() != null)
-            unpackDir = new File (dir, overlay.getConfig().getTargetPath());
+        if (overlay.getConfig() != null && overlay.getConfig().getTargetPath() != null) {
+			unpackDir = new File (dir, overlay.getConfig().getTargetPath());
+		}
         
         overlay.getResource().copyTo(unpackDir);
         //use top level of unpacked content

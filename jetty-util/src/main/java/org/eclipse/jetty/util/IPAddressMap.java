@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util;
 
@@ -75,12 +70,14 @@ public class IPAddressMap<TYPE> extends HashMap<String, TYPE>
     public TYPE put(String addrSpec, TYPE object)
         throws IllegalArgumentException
     {
-        if (addrSpec == null || addrSpec.trim().length() == 0)
-            throw new IllegalArgumentException("Invalid IP address pattern: "+addrSpec);
+        if (addrSpec == null || addrSpec.trim().length() == 0) {
+			throw new IllegalArgumentException("Invalid IP address pattern: "+addrSpec);
+		}
         
         String spec = addrSpec.trim();
-        if (_patterns.get(spec) == null)
-            _patterns.put(spec,new IPAddrPattern(spec));
+        if (_patterns.get(spec) == null) {
+			_patterns.put(spec,new IPAddrPattern(spec));
+		}
         
         return super.put(spec, object);
     }
@@ -144,8 +141,9 @@ public class IPAddressMap<TYPE> extends HashMap<String, TYPE>
      */
     public Object getLazyMatches(String addr)
     {
-        if (addr == null)
-            return LazyList.getList(super.entrySet());
+        if (addr == null) {
+			return LazyList.getList(super.entrySet());
+		}
         
         Object entries = null;
         for(Map.Entry<String, TYPE> entry: super.entrySet())
@@ -170,7 +168,7 @@ public class IPAddressMap<TYPE> extends HashMap<String, TYPE>
         private final OctetPattern[] _octets = new OctetPattern[4];
         /* ------------------------------------------------------------ */
         /**
-         * Create new IPAddrPattern
+         * Create new IPAddrPattern.
          * 
          * @param value internet address wildcard specification
          * @throws IllegalArgumentException if wildcard specification is invalid
@@ -178,8 +176,9 @@ public class IPAddressMap<TYPE> extends HashMap<String, TYPE>
         public IPAddrPattern(String value)
             throws IllegalArgumentException
         {
-            if (value == null || value.trim().length() == 0)
-                throw new IllegalArgumentException("Invalid IP address pattern: "+value);
+            if (value == null || value.trim().length() == 0) {
+				throw new IllegalArgumentException("Invalid IP address pattern: "+value);
+			}
                 
             try
             {
@@ -191,8 +190,9 @@ public class IPAddressMap<TYPE> extends HashMap<String, TYPE>
                     part = parts.hasMoreTokens() ? parts.nextToken().trim() : "0-255";
                     
                     int len = part.length();
-                    if (len == 0 && parts.hasMoreTokens())
-                        throw new IllegalArgumentException("Invalid IP address pattern: "+value);
+                    if (len == 0 && parts.hasMoreTokens()) {
+						throw new IllegalArgumentException("Invalid IP address pattern: "+value);
+					}
                     
                     _octets[idx] = new OctetPattern(len==0 ? "0-255" : part);
                 }
@@ -205,7 +205,7 @@ public class IPAddressMap<TYPE> extends HashMap<String, TYPE>
         
         /* ------------------------------------------------------------ */
         /**
-         * Match the specified internet address against the wildcard
+         * Match the specified internet address against the wildcard.
          * 
          * @param value internet address
          * @return true if specified internet address matches wildcard specification
@@ -215,8 +215,9 @@ public class IPAddressMap<TYPE> extends HashMap<String, TYPE>
         public boolean match(String value)
             throws IllegalArgumentException
         {
-            if (value == null || value.trim().length() == 0)
-                throw new IllegalArgumentException("Invalid IP address: "+value);
+            if (value == null || value.trim().length() == 0) {
+				throw new IllegalArgumentException("Invalid IP address: "+value);
+			}
             
             try
             {
@@ -225,11 +226,13 @@ public class IPAddressMap<TYPE> extends HashMap<String, TYPE>
                 boolean result = true;
                 for (int idx=0; idx<4; idx++)
                 {
-                    if (!parts.hasMoreTokens())
-                        throw new IllegalArgumentException("Invalid IP address: "+value);
+                    if (!parts.hasMoreTokens()) {
+						throw new IllegalArgumentException("Invalid IP address: "+value);
+					}
                         
-                    if (!(result &= _octets[idx].match(parts.nextToken())))
-                        break;
+                    if (!(result &= _octets[idx].match(parts.nextToken()))) {
+						break;
+					}
                 }
                 return result;
             }
@@ -253,7 +256,7 @@ public class IPAddressMap<TYPE> extends HashMap<String, TYPE>
         
         /* ------------------------------------------------------------ */
         /**
-         * Create new OctetPattern
+         * Create new OctetPattern.
          * 
          * @param octetSpec octet wildcard specification
          * @throws IllegalArgumentException if wildcard specification is invalid
@@ -322,7 +325,7 @@ public class IPAddressMap<TYPE> extends HashMap<String, TYPE>
         
         /* ------------------------------------------------------------ */
         /**
-         * Match specified octet value against the wildcard
+         * Match specified octet value against the wildcard.
          * 
          * @param value octet value
          * @return true if specified octet value matches the wildcard
@@ -331,8 +334,9 @@ public class IPAddressMap<TYPE> extends HashMap<String, TYPE>
         public boolean match(String value)
             throws IllegalArgumentException
         {
-            if (value == null || value.trim().length() == 0)
-                throw new IllegalArgumentException("Invalid octet: "+value);
+            if (value == null || value.trim().length() == 0) {
+				throw new IllegalArgumentException("Invalid octet: "+value);
+			}
 
             try
             {
@@ -347,7 +351,7 @@ public class IPAddressMap<TYPE> extends HashMap<String, TYPE>
         
         /* ------------------------------------------------------------ */
         /**
-         * Match specified octet value against the wildcard
+         * Match specified octet value against the wildcard.
          * 
          * @param number octet value
          * @return true if specified octet value matches the wildcard
@@ -356,8 +360,9 @@ public class IPAddressMap<TYPE> extends HashMap<String, TYPE>
         public boolean match(int number)
             throws IllegalArgumentException
         {
-            if (number < 0 || number > 255)
-                throw new IllegalArgumentException("Invalid octet: "+number);
+            if (number < 0 || number > 255) {
+				throw new IllegalArgumentException("Invalid octet: "+number);
+			}
             
             return _mask.get(number);
         }

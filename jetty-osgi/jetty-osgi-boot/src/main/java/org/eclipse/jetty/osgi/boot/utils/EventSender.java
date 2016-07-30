@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.osgi.boot.utils;
 
@@ -28,11 +23,11 @@ import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
 
 /**
- * Utility class for emiting OSGi EventAdmin events
+ * Utility class for emiting OSGi EventAdmin events.
  */
 public class EventSender
 {    
-    //OSGi Event Admin events for webapps
+    /** OSGi Event Admin events for webapps. */
     public static final String DEPLOYING_EVENT = "org/osgi/service/web/DEPLOYING";
     public static final String DEPLOYED_EVENT = "org/osgi/service/web/DEPLOYED";
     public static final String UNDEPLOYING_EVENT = "org/osgi/service/web/UNDEPLOYING";
@@ -47,8 +42,9 @@ public class EventSender
     {
         _myBundle = FrameworkUtil.getBundle(EventSender.class);
         ServiceReference ref = _myBundle.getBundleContext().getServiceReference(EventAdmin.class.getName());
-        if (ref != null)
-            _eventAdmin = (EventAdmin)_myBundle.getBundleContext().getService(ref);
+        if (ref != null) {
+			_eventAdmin = (EventAdmin)_myBundle.getBundleContext().getService(ref);
+		}
     }
     
     public static EventSender getInstance()
@@ -58,16 +54,18 @@ public class EventSender
 
     public  void send (String topic, Bundle wab, String contextPath)
     {
-        if (topic==null || wab==null || contextPath==null)
-            return;
+        if (topic==null || wab==null || contextPath==null) {
+			return;
+		}
         
         send(topic, wab, contextPath, null);
     }
     
     public  void send (String topic, Bundle wab, String contextPath, Exception ex)
     {        
-        if (_eventAdmin == null)
-            return; 
+        if (_eventAdmin == null) {
+			return;
+		} 
         
         Dictionary<String,Object> props = new Hashtable<String,Object>();
         props.put("bundle.symbolicName", wab.getSymbolicName());
@@ -81,8 +79,9 @@ public class EventSender
         props.put("extender.bundle.id", _myBundle.getBundleId());
         props.put("extender.bundle.version", _myBundle.getVersion());
         
-        if (FAILED_EVENT.equalsIgnoreCase(topic)  && ex != null)
-            props.put("exception", ex);
+        if (FAILED_EVENT.equalsIgnoreCase(topic)  && ex != null) {
+			props.put("exception", ex);
+		}
 
         _eventAdmin.sendEvent(new Event(topic, props));
     }

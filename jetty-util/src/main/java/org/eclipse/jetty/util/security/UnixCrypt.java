@@ -9,14 +9,14 @@
  * all copies.
  */
 
-/**
+/*
  * Unix crypt(3C) utility
  *
  * @version 	0.9, 11/25/96
  * @author 	Aki Yoshida
  */
 
-/**
+/*
  * modified April 2001
  * by Iris Van den Broeke, Daniel Deville
  */
@@ -35,12 +35,12 @@ package org.eclipse.jetty.util.security;
 public class UnixCrypt
 {
 
-    /* (mostly) Standard DES Tables from Tom Truscott */
+    /** (mostly) Standard DES Tables from Tom Truscott. */
     private static final byte[] IP = { /* initial permutation */
     58, 50, 42, 34, 26, 18, 10, 2, 60, 52, 44, 36, 28, 20, 12, 4, 62, 54, 46, 38, 30, 22, 14, 6, 64, 56, 48, 40, 32, 24, 16, 8, 57, 49, 41, 33, 25, 17, 9, 1,
             59, 51, 43, 35, 27, 19, 11, 3, 61, 53, 45, 37, 29, 21, 13, 5, 63, 55, 47, 39, 31, 23, 15, 7 };
 
-    /* The final permutation is the inverse of IP - no table is necessary */
+    /** The final permutation is the inverse of IP - no table is necessary. */
     private static final byte[] ExpandTr = { /* expansion operation */
     32, 1, 2, 3, 4, 5, 4, 5, 6, 7, 8, 9, 8, 9, 10, 11, 12, 13, 12, 13, 14, 15, 16, 17, 16, 17, 18, 19, 20, 21, 20, 21, 22, 23, 24, 25, 24, 25, 26, 27, 28, 29,
             28, 29, 30, 31, 32, 1 };
@@ -103,26 +103,26 @@ public class UnixCrypt
             (byte) 'l', (byte) 'm', (byte) 'n', (byte) 'o', (byte) 'p', (byte) 'q', (byte) 'r', (byte) 's', (byte) 't', (byte) 'u', (byte) 'v', (byte) 'w',
             (byte) 'x', (byte) 'y', (byte) 'z' };
 
-    /* ===== Tables that are initialized at run time ==================== */
+    /** ===== Tables that are initialized at run time ====================. */
 
     private static final byte[] A64TOI = new byte[128]; /* ascii-64 => 0..63 */
 
-    /* Initial key schedule permutation */
+    /** Initial key schedule permutation. */
     private static final long[][] PC1ROT = new long[16][16];
 
-    /* Subsequent key schedule rotation permutations */
+    /** Subsequent key schedule rotation permutations. */
     private static final long[][][] PC2ROT = new long[2][16][16];
 
-    /* Initial permutation/expansion table */
+    /** Initial permutation/expansion table. */
     private static final long[][] IE3264 = new long[8][16];
 
-    /* Table that combines the S, P, and E operations. */
+    /** Table that combines the S, P, and E operations. */
     private static final long[][] SPE = new long[8][64];
 
-    /* compressed/interleaved => final permutation table */
+    /** Compressed/interleaved => final permutation table. */
     private static final long[][] CF6464 = new long[16][16];
 
-    /* ==================================== */
+    /** ====================================. */
 
     static
     {
@@ -130,19 +130,25 @@ public class UnixCrypt
         byte[] temp = new byte[64];
 
         // inverse table.
-        for (int i = 0; i < 64; i++)
-            A64TOI[ITOA64[i]] = (byte) i;
+        for (int i = 0; i < 64; i++) {
+			A64TOI[ITOA64[i]] = (byte) i;
+		}
 
         // PC1ROT - bit reverse, then PC1, then Rotate, then PC2
-        for (int i = 0; i < 64; i++)
-            perm[i] = (byte) 0;
+        for (int i = 0; i < 64; i++) {
+			perm[i] = 0;
+		}
         
         for (int i = 0; i < 64; i++)
         {
-            int k;
-            if ((k = PC2[i]) == 0) continue;
+            int k = PC2[i];
+            if (k == 0) {
+				continue;
+			}
             k += Rotates[0] - 1;
-            if ((k % 28) < Rotates[0]) k -= 28;
+            if (k % 28 < Rotates[0]) {
+				k -= 28;
+			}
             k = PC1[k];
             if (k > 0)
             {
@@ -158,18 +164,27 @@ public class UnixCrypt
         for (int j = 0; j < 2; j++)
         {
             int k;
-            for (int i = 0; i < 64; i++)
-                perm[i] = temp[i] = 0;
+            for (int i = 0; i < 64; i++) {
+				perm[i] = temp[i] = 0;
+			}
             for (int i = 0; i < 64; i++)
             {
-                if ((k = PC2[i]) == 0) continue;
+                k = PC2[i];
+				if (k == 0) {
+					continue;
+				}
                 temp[k - 1] = (byte) (i + 1);
             }
             for (int i = 0; i < 64; i++)
             {
-                if ((k = PC2[i]) == 0) continue;
+                k = PC2[i];
+				if (k == 0) {
+					continue;
+				}
                 k += j;
-                if ((k % 28) <= j) k -= 28;
+                if (k % 28 <= j) {
+					k -= 28;
+				}
                 perm[i] = temp[k];
             }
 
@@ -182,9 +197,11 @@ public class UnixCrypt
             for (int j = 0; j < 8; j++)
             {
                 int k = (j < 2) ? 0 : IP[ExpandTr[i * 6 + j - 2] - 1];
-                if (k > 32)
-                    k -= 32;
-                else if (k > 0) k--;
+                if (k > 32) {
+					k -= 32;
+				} else if (k > 0) {
+					k--;
+				}
                 if (k > 0)
                 {
                     k--;
@@ -213,8 +230,9 @@ public class UnixCrypt
         init_perm(CF6464, perm, 8);
 
         // SPE table
-        for (int i = 0; i < 48; i++)
-            perm[i] = P32Tr[ExpandTr[i] - 1];
+        for (int i = 0; i < 48; i++) {
+			perm[i] = P32Tr[ExpandTr[i] - 1];
+		}
         for (int t = 0; t < 8; t++)
         {
             for (int j = 0; j < 64; j++)
@@ -226,13 +244,16 @@ public class UnixCrypt
                         | (((j >> 5) & 0x01) << 4);
                 k = S[t][k];
                 k = (((k >> 3) & 0x01) << 0) | (((k >> 2) & 0x01) << 1) | (((k >> 1) & 0x01) << 2) | (((k >> 0) & 0x01) << 3);
-                for (int i = 0; i < 32; i++)
-                    temp[i] = 0;
-                for (int i = 0; i < 4; i++)
-                    temp[4 * t + i] = (byte) ((k >> i) & 0x01);
+                for (int i = 0; i < 32; i++) {
+					temp[i] = 0;
+				}
+                for (int i = 0; i < 4; i++) {
+					temp[4 * t + i] = (byte) ((k >> i) & 0x01);
+				}
                 long kk = 0;
-                for (int i = 24; --i >= 0;)
-                    kk = ((kk << 1) | ((long) temp[perm[i] - 1]) << 32 | (temp[perm[i + 24] - 1]));
+                for (int i = 24; --i >= 0;) {
+					kk = (kk << 1) | (temp[perm[i] - 1] << 32) | temp[perm[i + 24] - 1];
+				}
 
                 SPE[t][j] = to_six_bit(kk);
             }
@@ -252,7 +273,7 @@ public class UnixCrypt
      */
     private static int to_six_bit(int num)
     {
-        return (((num << 26) & 0xfc000000) | ((num << 12) & 0xfc0000) | ((num >> 2) & 0xfc00) | ((num >> 16) & 0xfc));
+        return ((num << 26) & 0xfc000000) | ((num << 12) & 0xfc0000) | ((num >> 2) & 0xfc00) | ((num >> 16) & 0xfc);
     }
 
     /**
@@ -261,7 +282,7 @@ public class UnixCrypt
      */
     private static long to_six_bit(long num)
     {
-        return (((num << 26) & 0xfc000000fc000000L) | ((num << 12) & 0xfc000000fc0000L) | ((num >> 2) & 0xfc000000fc00L) | ((num >> 16) & 0xfc000000fcL));
+        return ((num << 26) & 0xfc000000fc000000L) | ((num << 12) & 0xfc000000fc0000L) | ((num >> 2) & 0xfc000000fc00L) | ((num >> 16) & 0xfc000000fcL);
     }
 
     /**
@@ -292,7 +313,7 @@ public class UnixCrypt
         long out = 0L;
         for (int i = 4; --i >= 0;)
         {
-            int t = (0x00ff & c);
+            int t = 0x00ff & c;
             c >>= 8;
             long tp = p[i << 1][t & 0x0f];
             out |= tp;
@@ -332,7 +353,7 @@ public class UnixCrypt
         long R = L;
         L &= 0x5555555555555555L;
         R = (R & 0xaaaaaaaa00000000L) | ((R >> 1) & 0x0000000055555555L);
-        L = ((((L << 1) | (L << 32)) & 0xffffffff00000000L) | ((R | (R >> 32)) & 0x00000000ffffffffL));
+        L = (((L << 1) | (L << 32)) & 0xffffffff00000000L) | ((R | (R >> 32)) & 0x00000000ffffffffL);
 
         L = perm3264((int) (L >> 32), IE3264);
         R = perm3264((int) (L & 0xffffffff), IE3264);
@@ -346,39 +367,37 @@ public class UnixCrypt
                 long k;
 
                 kp = KS[(loop_count << 1)];
-                k = ((R >> 32) ^ R) & salt & 0xffffffffL;
-                k |= (k << 32);
-                B = (k ^ R ^ kp);
+                k = (R >> 32 ^ R) & salt & 0xffffffffL;
+                k |= k << 32;
+                B = k ^ R ^ kp;
 
-                L ^= (SPE[0][(int) ((B >> 58) & 0x3f)] ^ SPE[1][(int) ((B >> 50) & 0x3f)]
+                L ^= SPE[0][(int) ((B >> 58) & 0x3f)] ^ SPE[1][(int) ((B >> 50) & 0x3f)]
                       ^ SPE[2][(int) ((B >> 42) & 0x3f)]
                       ^ SPE[3][(int) ((B >> 34) & 0x3f)]
                       ^ SPE[4][(int) ((B >> 26) & 0x3f)]
                       ^ SPE[5][(int) ((B >> 18) & 0x3f)]
-                      ^ SPE[6][(int) ((B >> 10) & 0x3f)] ^ SPE[7][(int) ((B >> 2) & 0x3f)]);
+                      ^ SPE[6][(int) ((B >> 10) & 0x3f)] ^ SPE[7][(int) ((B >> 2) & 0x3f)];
 
                 kp = KS[(loop_count << 1) + 1];
-                k = ((L >> 32) ^ L) & salt & 0xffffffffL;
-                k |= (k << 32);
-                B = (k ^ L ^ kp);
+                k = (L >> 32 ^ L) & salt & 0xffffffffL;
+                k |= k << 32;
+                B = k ^ L ^ kp;
 
-                R ^= (SPE[0][(int) ((B >> 58) & 0x3f)] ^ SPE[1][(int) ((B >> 50) & 0x3f)]
+                R ^= SPE[0][(int) ((B >> 58) & 0x3f)] ^ SPE[1][(int) ((B >> 50) & 0x3f)]
                       ^ SPE[2][(int) ((B >> 42) & 0x3f)]
                       ^ SPE[3][(int) ((B >> 34) & 0x3f)]
                       ^ SPE[4][(int) ((B >> 26) & 0x3f)]
                       ^ SPE[5][(int) ((B >> 18) & 0x3f)]
-                      ^ SPE[6][(int) ((B >> 10) & 0x3f)] ^ SPE[7][(int) ((B >> 2) & 0x3f)]);
+                      ^ SPE[6][(int) ((B >> 10) & 0x3f)] ^ SPE[7][(int) ((B >> 2) & 0x3f)];
             }
             // swap L and R
             L ^= R;
             R ^= L;
             L ^= R;
         }
-        L = ((((L >> 35) & 0x0f0f0f0fL) | (((L & 0xffffffff) << 1) & 0xf0f0f0f0L)) << 32 | (((R >> 35) & 0x0f0f0f0fL) | (((R & 0xffffffff) << 1) & 0xf0f0f0f0L)));
+        L = ((((L >> 35) & 0x0f0f0f0fL) | (((L & 0xffffffff) << 1) & 0xf0f0f0f0L)) << 32) | ((R >> 35) & 0x0f0f0f0fL) | (((R & 0xffffffff) << 1) & 0xf0f0f0f0L);
 
-        L = perm6464(L, CF6464);
-
-        return L;
+        return perm6464(L, CF6464);
     }
 
     /**
@@ -390,13 +409,17 @@ public class UnixCrypt
         {
 
             int l = p[k] - 1;
-            if (l < 0) continue;
+            if (l < 0) {
+				continue;
+			}
             int i = l >> 2;
             l = 1 << (l & 0x03);
             for (int j = 0; j < 16; j++)
             {
-                int s = ((k & 0x07) + ((7 - (k >> 3)) << 3));
-                if ((j & l) != 0x00) perm[i][j] |= (1L << s);
+                int s = (k & 0x07) + (7 - (k >> 3) << 3);
+                if ((j & l) != 0x00) {
+					perm[i][j] |= 1L << s;
+				}
             }
         }
     }
@@ -414,8 +437,11 @@ public class UnixCrypt
         byte[] cryptresult = new byte[13]; /* encrypted result */
         long keyword = 0L;
         /* invalid parameters! */
-        if (key == null || setting == null) return "*"; // will NOT match under
-        // ANY circumstances!
+        if (key == null || setting == null)
+		 {
+			return "*"; // will NOT match under
+			// ANY circumstances!
+		}
 
         int keylen = key.length();
 
@@ -436,11 +462,11 @@ public class UnixCrypt
 
         long rsltblock = des_cipher(constdatablock, salt, 25, KS);
 
-        cryptresult[12] = ITOA64[(((int) rsltblock) << 2) & 0x3f];
+        cryptresult[12] = ITOA64[((int) rsltblock << 2) & 0x3f];
         rsltblock >>= 4;
         for (int i = 12; --i >= 2;)
         {
-            cryptresult[i] = ITOA64[((int) rsltblock) & 0x3f];
+            cryptresult[i] = ITOA64[(int) rsltblock & 0x3f];
             rsltblock >>= 6;
         }
 

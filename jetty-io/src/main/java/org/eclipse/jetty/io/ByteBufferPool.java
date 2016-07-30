@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.io;
 
@@ -45,7 +40,7 @@ public interface ByteBufferPool
      * @return the requested buffer
      * @see #release(ByteBuffer)
      */
-    public ByteBuffer acquire(int size, boolean direct);
+    ByteBuffer acquire(int size, boolean direct);
 
     /**
      * <p>Returns a {@link ByteBuffer}, usually obtained with {@link #acquire(int, boolean)}
@@ -54,7 +49,7 @@ public interface ByteBufferPool
      * @param buffer the buffer to return
      * @see #acquire(int, boolean)
      */
-    public void release(ByteBuffer buffer);
+    void release(ByteBuffer buffer);
 
     public static class Lease
     {
@@ -96,8 +91,9 @@ public interface ByteBufferPool
         public long getTotalLength()
         {
             long length = 0;
-            for (int i = 0; i < buffers.size(); ++i)
-                length += buffers.get(i).remaining();
+            for (int i = 0; i < buffers.size(); ++i) {
+				length += buffers.get(i).remaining();
+			}
             return length;
         }
 
@@ -111,8 +107,9 @@ public interface ByteBufferPool
             for (int i = 0; i < buffers.size(); ++i)
             {
                 ByteBuffer buffer = buffers.get(i);
-                if (recycles.get(i))
-                    byteBufferPool.release(buffer);
+                if (recycles.get(i)) {
+					byteBufferPool.release(buffer);
+				}
             }
             buffers.clear();
             recycles.clear();
@@ -134,35 +131,39 @@ public interface ByteBufferPool
         public void release(ByteBuffer buffer)
         {
             BufferUtil.clear(buffer);
-            if (_space==null)
-                _queue.offer(buffer);
-            else if (_space.decrementAndGet()>=0)
-                _queue.offer(buffer);
-            else
-                _space.incrementAndGet();
+            if (_space==null) {
+				_queue.offer(buffer);
+			} else if (_space.decrementAndGet()>=0) {
+				_queue.offer(buffer);
+			} else {
+				_space.incrementAndGet();
+			}
         }
     
         public ByteBuffer acquire(boolean direct)
         {
             ByteBuffer buffer = _queue.poll();
-            if (buffer == null) 
-               return direct ? BufferUtil.allocateDirect(_capacity) : BufferUtil.allocate(_capacity);
-            if (_space!=null)
-                _space.incrementAndGet();
+            if (buffer == null) {
+				return direct ? BufferUtil.allocateDirect(_capacity) : BufferUtil.allocate(_capacity);
+			}
+            if (_space!=null) {
+				_space.incrementAndGet();
+			}
             return buffer;        
         }
     
         public void clear()
         {
-            if (_space==null)
-                _queue.clear();
-            else
+            if (_space==null) {
+				_queue.clear();
+			} else
             {
                 int s=_space.getAndSet(0);
                 while(s-->0)
                 {
-                    if (_queue.poll()==null)
-                        _space.incrementAndGet();
+                    if (_queue.poll()==null) {
+						_space.incrementAndGet();
+					}
                 }
             }
         }

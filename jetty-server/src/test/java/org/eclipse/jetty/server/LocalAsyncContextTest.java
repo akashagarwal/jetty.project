@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 
@@ -249,10 +244,11 @@ public class LocalAsyncContextTest
                 "Host: localhost\r\n" +
                 "Connection: close\r\n";
 
-        if (content == null)
-            request += "\r\n";
-        else
-            request += "Content-Length: " + content.length() + "\r\n" + "\r\n" + content;
+        if (content != null) {
+			request += "Content-Length: " + content.length() + "\r\n" + "\r\n" + content;
+		} else {
+			request += "\r\n";
+		}
 
         return getResponse(request);
     }
@@ -323,23 +319,26 @@ public class LocalAsyncContextTest
                 {
                     int read = _read;
                     byte[] buf = new byte[read];
-                    while (read > 0)
-                        read -= request.getInputStream().read(buf);
+                    while (read > 0) {
+						read -= request.getInputStream().read(buf);
+					}
                 }
                 else if (_read < 0)
                 {
                     InputStream in = request.getInputStream();
                     int b = in.read();
-                    while (b != -1)
-                        b = in.read();
+                    while (b != -1) {
+						b = in.read();
+					}
                 }
 
                 final AsyncContext asyncContext = baseRequest.startAsync();
                 response.getOutputStream().println("STARTASYNC");
                 asyncContext.addListener(__asyncListener);
                 asyncContext.addListener(__asyncListener1);
-                if (_suspendFor > 0)
-                    asyncContext.setTimeout(_suspendFor);
+                if (_suspendFor > 0) {
+					asyncContext.setTimeout(_suspendFor);
+				}
 
                 if (_completeAfter > 0)
                 {
@@ -381,8 +380,9 @@ public class LocalAsyncContextTest
                             try
                             {
                                 Thread.sleep(_resumeAfter);
-                                if (((HttpServletRequest)asyncContext.getRequest()).getSession(true).getId() != null)
-                                    asyncContext.dispatch();
+                                if (((HttpServletRequest)asyncContext.getRequest()).getSession(true).getId() != null) {
+									asyncContext.dispatch();
+								}
                             }
                             catch (Exception e)
                             {
@@ -398,17 +398,19 @@ public class LocalAsyncContextTest
             }
             else
             {
-                if (request.getAttribute("TIMEOUT") != null)
-                    response.getOutputStream().println("TIMEOUT");
-                else
-                    response.getOutputStream().println("DISPATCHED");
+                if (request.getAttribute("TIMEOUT") != null) {
+					response.getOutputStream().println("TIMEOUT");
+				} else {
+					response.getOutputStream().println("DISPATCHED");
+				}
 
                 if (_suspendFor2 >= 0)
                 {
                     final AsyncContext asyncContext = baseRequest.startAsync();
                     response.getOutputStream().println("STARTASYNC2");
-                    if (_suspendFor2 > 0)
-                        asyncContext.setTimeout(_suspendFor2);
+                    if (_suspendFor2 > 0) {
+						asyncContext.setTimeout(_suspendFor2);
+					}
                     _suspendFor2 = -1;
 
                     if (_completeAfter2 > 0)
@@ -573,9 +575,10 @@ public class LocalAsyncContextTest
         while (now < end)
         {
             actual = actualSupplier.get();
-            if (actual == null && expected == null ||
-                    actual != null && actual.equals(expected))
-                break;
+            if ((actual == null && expected == null) ||
+                    (actual != null && actual.equals(expected))) {
+				break;
+			}
             try
             {
                 Thread.sleep(10);

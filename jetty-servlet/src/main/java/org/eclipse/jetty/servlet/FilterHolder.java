@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.servlet;
 
@@ -41,13 +36,13 @@ public class FilterHolder extends Holder<Filter>
 {
     private static final Logger LOG = Log.getLogger(FilterHolder.class);
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     private transient Filter _filter;
     private transient Config _config;
     private transient FilterRegistration.Dynamic _registration;
 
     /* ---------------------------------------------------------------- */
-    /** Constructor
+    /** Constructor.
      */
     public FilterHolder()
     {
@@ -56,7 +51,7 @@ public class FilterHolder extends Holder<Filter>
 
 
     /* ---------------------------------------------------------------- */
-    /** Constructor
+    /** Constructor.
      * @param source the holder source
      */
     public FilterHolder(Holder.Source source)
@@ -65,7 +60,7 @@ public class FilterHolder extends Holder<Filter>
     }
 
     /* ---------------------------------------------------------------- */
-    /** Constructor
+    /** Constructor.
      * @param filter the filter class
      */
     public FilterHolder(Class<? extends Filter> filter)
@@ -84,7 +79,7 @@ public class FilterHolder extends Holder<Filter>
         setFilter(filter);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void doStart()
         throws Exception
@@ -105,7 +100,7 @@ public class FilterHolder extends Holder<Filter>
 
 
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void initialize() throws Exception
     {
@@ -123,22 +118,25 @@ public class FilterHolder extends Holder<Filter>
             catch (ServletException se)
             {
                 Throwable cause = se.getRootCause();
-                if (cause instanceof InstantiationException)
-                    throw (InstantiationException)cause;
-                if (cause instanceof IllegalAccessException)
-                    throw (IllegalAccessException)cause;
+                if (cause instanceof InstantiationException) {
+					throw (InstantiationException)cause;
+				}
+                if (cause instanceof IllegalAccessException) {
+					throw (IllegalAccessException)cause;
+				}
                 throw se;
             }
         }
 
         _config=new Config();
-        if (LOG.isDebugEnabled())
-            LOG.debug("Filter.init {}",_filter);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Filter.init {}",_filter);
+		}
         _filter.init(_config);
     }
 
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void doStop()
         throws Exception
@@ -154,49 +152,52 @@ public class FilterHolder extends Holder<Filter>
                 LOG.warn(e);
             }
         }
-        if (!_extInstance)
-            _filter=null;
+        if (!_extInstance) {
+			_filter=null;
+		}
 
         _config=null;
         super.doStop();
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void destroyInstance (Object o)
         throws Exception
     {
-        if (o==null)
-            return;
+        if (o==null) {
+			return;
+		}
         Filter f = (Filter)o;
         f.destroy();
         getServletHandler().destroyFilter(f);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public synchronized void setFilter(Filter filter)
     {
         _filter=filter;
         _extInstance=true;
         setHeldClass(filter.getClass());
-        if (getName()==null)
-            setName(filter.getClass().getName());
+        if (getName()==null) {
+			setName(filter.getClass().getName());
+		}
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public Filter getFilter()
     {
         return _filter;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public String toString()
     {
         return getName();
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void dump(Appendable out, String indent) throws IOException
     {
@@ -206,17 +207,18 @@ public class FilterHolder extends Holder<Filter>
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public FilterRegistration.Dynamic getRegistration()
     {
-        if (_registration == null)
-            _registration = new Registration();
+        if (_registration == null) {
+			_registration = new Registration();
+		}
         return _registration;
     }
 
     /* ------------------------------------------------------------ */
     /* ------------------------------------------------------------ */
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected class Registration extends HolderRegistration implements FilterRegistration.Dynamic
     {
         public void addMappingForServletNames(EnumSet<DispatcherType> dispatcherTypes, boolean isMatchAfter, String... servletNames)
@@ -226,10 +228,11 @@ public class FilterHolder extends Holder<Filter>
             mapping.setFilterHolder(FilterHolder.this);
             mapping.setServletNames(servletNames);
             mapping.setDispatcherTypes(dispatcherTypes);
-            if (isMatchAfter)
-                _servletHandler.addFilterMapping(mapping);
-            else
-                _servletHandler.prependFilterMapping(mapping);
+            if (isMatchAfter) {
+				_servletHandler.addFilterMapping(mapping);
+			} else {
+				_servletHandler.prependFilterMapping(mapping);
+			}
         }
 
         public void addMappingForUrlPatterns(EnumSet<DispatcherType> dispatcherTypes, boolean isMatchAfter, String... urlPatterns)
@@ -239,10 +242,11 @@ public class FilterHolder extends Holder<Filter>
             mapping.setFilterHolder(FilterHolder.this);
             mapping.setPathSpecs(urlPatterns);
             mapping.setDispatcherTypes(dispatcherTypes);
-            if (isMatchAfter)
-                _servletHandler.addFilterMapping(mapping);
-            else
-                _servletHandler.prependFilterMapping(mapping);
+            if (isMatchAfter) {
+				_servletHandler.addFilterMapping(mapping);
+			} else {
+				_servletHandler.prependFilterMapping(mapping);
+			}
         }
 
         public Collection<String> getServletNameMappings()
@@ -251,11 +255,13 @@ public class FilterHolder extends Holder<Filter>
             List<String> names=new ArrayList<String>();
             for (FilterMapping mapping : mappings)
             {
-                if (mapping.getFilterHolder()!=FilterHolder.this)
-                    continue;
+                if (mapping.getFilterHolder()!=FilterHolder.this) {
+					continue;
+				}
                 String[] servlets=mapping.getServletNames();
-                if (servlets!=null && servlets.length>0)
-                    names.addAll(Arrays.asList(servlets));
+                if (servlets!=null && servlets.length>0) {
+					names.addAll(Arrays.asList(servlets));
+				}
             }
             return names;
         }
@@ -266,8 +272,9 @@ public class FilterHolder extends Holder<Filter>
             List<String> patterns=new ArrayList<String>();
             for (FilterMapping mapping : mappings)
             {
-                if (mapping.getFilterHolder()!=FilterHolder.this)
-                    continue;
+                if (mapping.getFilterHolder()!=FilterHolder.this) {
+					continue;
+				}
                 String[] specs=mapping.getPathSpecs();
                 patterns.addAll(TypeUtil.asList(specs));
             }
@@ -277,10 +284,10 @@ public class FilterHolder extends Holder<Filter>
 
     /* ------------------------------------------------------------ */
     /* ------------------------------------------------------------ */
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     class Config extends HolderConfig implements FilterConfig
     {
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         public String getFilterName()
         {
             return _name;

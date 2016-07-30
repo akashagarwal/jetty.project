@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.jsr356.annotations;
 
@@ -61,11 +56,11 @@ public class Param
     public Class<?> type;
     private transient Map<Class<? extends Annotation>, Annotation> annotations;
 
-    /*
+    /**
      * The bound role for this parameter.
      */
-    public Role role = null;
-    private String pathParamName = null;
+    public Role role;
+    private String pathParamName;
 
     public Param(int idx, Class<?> type, Annotation[] annos)
     {
@@ -89,12 +84,12 @@ public class Param
     @SuppressWarnings("unchecked")
     public <A extends Annotation> A getAnnotation(Class<A> annotationClass)
     {
-        if (this.annotations == null)
+        if (this.annotations != null)
         {
-            return null;
+            return (A)this.annotations.get(annotationClass);
         }
 
-        return (A)this.annotations.get(annotationClass);
+        return null;
     }
 
     public String getPathParamName()

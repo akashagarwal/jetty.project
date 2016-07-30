@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.osgi.boot.internal.webapp;
 
@@ -59,7 +54,7 @@ public class LibExtClassLoaderHelper
     /**
      * IFilesInJettyHomeResourcesProcessor
      * 
-     * Interface for callback impls
+     * Interface for callback impls.
      */
     public interface IFilesInJettyHomeResourcesProcessor
     {
@@ -95,14 +90,10 @@ public class LibExtClassLoaderHelper
                 if (f.getName().toLowerCase(Locale.ENGLISH).startsWith("readme"))
                 {
                     continue;
-                }
-                else
-                {
-                    if (urls.isEmpty())
-                    {
-                        urls.add(jettyResources.toURI().toURL());
-                    }
-                }
+                } else if (urls.isEmpty())
+				{
+				    urls.add(jettyResources.toURI().toURL());
+				}
             }
             processFilesInResourcesFolder(jettyHome, jettyResFiles);
         }
@@ -117,7 +108,7 @@ public class LibExtClassLoaderHelper
                     URL url = f.toURI().toURL();
                     if (f.isFile())
                     {// is this necessary anyways?
-                        url = new URL("jar:" + url.toString() + "!/");
+                        url = new URL("jar:" + url + "!/");
                     }
                     urls.add(url);
                 }
@@ -163,7 +154,7 @@ public class LibExtClassLoaderHelper
                             if (f.isFile())
                             {
                                 // is this necessary anyways?
-                                url = new URL("jar:" + url.toString() + "!/");
+                                url = new URL("jar:" + url + "!/");
                             }
                             urls.add(url);
                         }

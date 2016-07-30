@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http2.parser;
 
@@ -101,14 +96,16 @@ public class Parser
                 {
                     case HEADER:
                     {
-                        if (!parseHeader(buffer))
-                            return;
+                        if (!parseHeader(buffer)) {
+							return;
+						}
                         break;
                     }
                     case BODY:
                     {
-                        if (!parseBody(buffer))
-                            return;
+                        if (!parseBody(buffer)) {
+							return;
+						}
                         break;
                     }
                     default:
@@ -120,8 +117,9 @@ public class Parser
         }
         catch (Throwable x)
         {
-            if (LOG.isDebugEnabled())
-                LOG.debug(x);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug(x);
+			}
             BufferUtil.clear(buffer);
             notifyConnectionFailure(ErrorCode.PROTOCOL_ERROR.code, "parser_error");
         }
@@ -129,12 +127,14 @@ public class Parser
 
     protected boolean parseHeader(ByteBuffer buffer)
     {
-        if (!headerParser.parse(buffer))
-            return false;
+        if (!headerParser.parse(buffer)) {
+			return false;
+		}
 
         FrameType frameType = FrameType.from(getFrameType());
-        if (LOG.isDebugEnabled())
-            LOG.debug("Parsed {} frame header from {}", frameType, buffer);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Parsed {} frame header from {}", frameType, buffer);
+		}
 
         if (continuation)
         {
@@ -149,15 +149,11 @@ public class Parser
             {
                 continuation = false;
             }
-        }
-        else
-        {
-            if (frameType == FrameType.HEADERS &&
-                    !headerParser.hasFlag(Flags.END_HEADERS))
-            {
-                continuation = true;
-            }
-        }
+        } else if (frameType == FrameType.HEADERS &&
+		        !headerParser.hasFlag(Flags.END_HEADERS))
+		{
+		    continuation = true;
+		}
         state = State.BODY;
         return true;
     }
@@ -176,14 +172,12 @@ public class Parser
         if (headerParser.getLength() == 0)
         {
             bodyParser.emptyBody(buffer);
-        }
-        else
-        {
-            if (!bodyParser.parse(buffer))
-                return false;
-        }
-        if (LOG.isDebugEnabled())
-            LOG.debug("Parsed {} frame body from {}", FrameType.from(type), buffer);
+        } else if (!bodyParser.parse(buffer)) {
+			return false;
+		}
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Parsed {} frame body from {}", FrameType.from(type), buffer);
+		}
         reset();
         return true;
     }
@@ -212,25 +206,25 @@ public class Parser
 
     public interface Listener
     {
-        public void onData(DataFrame frame);
+        void onData(DataFrame frame);
 
-        public void onHeaders(HeadersFrame frame);
+        void onHeaders(HeadersFrame frame);
 
-        public void onPriority(PriorityFrame frame);
+        void onPriority(PriorityFrame frame);
 
-        public void onReset(ResetFrame frame);
+        void onReset(ResetFrame frame);
 
-        public void onSettings(SettingsFrame frame);
+        void onSettings(SettingsFrame frame);
 
-        public void onPushPromise(PushPromiseFrame frame);
+        void onPushPromise(PushPromiseFrame frame);
 
-        public void onPing(PingFrame frame);
+        void onPing(PingFrame frame);
 
-        public void onGoAway(GoAwayFrame frame);
+        void onGoAway(GoAwayFrame frame);
 
-        public void onWindowUpdate(WindowUpdateFrame frame);
+        void onWindowUpdate(WindowUpdateFrame frame);
 
-        public void onConnectionFailure(int error, String reason);
+        void onConnectionFailure(int error, String reason);
 
         public static class Adapter implements Listener
         {

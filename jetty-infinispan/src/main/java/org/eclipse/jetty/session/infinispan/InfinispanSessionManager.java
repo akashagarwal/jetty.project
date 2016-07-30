@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.session.infinispan;
 
@@ -70,16 +65,16 @@ import org.omg.CORBA._IDLTypeStub;
  */
 public class InfinispanSessionManager extends AbstractSessionManager
 {
-    private  final static Logger LOG = Log.getLogger("org.eclipse.jetty.server.session");
+    private static final Logger LOG = Log.getLogger("org.eclipse.jetty.server.session");
     
     /**
-     * Clustered cache of sessions
+     * Clustered cache of sessions.
      */
     private BasicCache<String, Object> _cache;
     
     
     /**
-     * Sessions known to this node held in memory
+     * Sessions known to this node held in memory.
      */
     private ConcurrentHashMap<String, InfinispanSessionManager.Session> _sessions;
 
@@ -90,19 +85,21 @@ public class InfinispanSessionManager extends AbstractSessionManager
      * the cluster - the current node is considered to be the master for the session.
      *
      */
-    private long _staleIntervalSec = 0;
+    private long _staleIntervalSec;
     
-    protected Scheduler.Task _task; //scavenge task
+    /** Scavenge task. */
+    protected Scheduler.Task _task;
     protected Scheduler _scheduler;
     protected Scavenger _scavenger;
-    protected long _scavengeIntervalMs = 1000L * 60 * 10; //10mins
+    /** 10mins. */
+    protected long _scavengeIntervalMs = 1000L * 60 * 10;
     protected boolean _ownScheduler;
     
     
 
     /**
      * Scavenger
-     *
+     *.
      */
     protected class Scavenger implements Runnable
     {
@@ -116,14 +113,15 @@ public class InfinispanSessionManager extends AbstractSessionManager
            }
            finally
            {
-               if (_scheduler != null && _scheduler.isRunning())
-                   _task = _scheduler.schedule(this, _scavengeIntervalMs, TimeUnit.MILLISECONDS);
+               if (_scheduler != null && _scheduler.isRunning()) {
+				_task = _scheduler.schedule(this, _scavengeIntervalMs, TimeUnit.MILLISECONDS);
+			}
            }
         }
     }
     
     
-    /*
+    /**
      * Every time a Session is put into the cache one of these objects
      * is created to copy the data out of the in-memory session, and 
      * every time an object is read from the cache one of these objects
@@ -132,9 +130,6 @@ public class InfinispanSessionManager extends AbstractSessionManager
      */
     public class SerializableSessionData implements Serializable
     {
-        /**
-         * 
-         */
         private static final long serialVersionUID = -7779120106058533486L;
         String clusterId;
         String contextPath;
@@ -218,46 +213,46 @@ public class InfinispanSessionManager extends AbstractSessionManager
         private ReentrantLock _lock = new ReentrantLock();
         
         /**
-         * The (canonical) context path for with which this session is associated
+         * The (canonical) context path for with which this session is associated.
          */
         private String _contextPath;
         
         
         
         /**
-         * The time in msec since the epoch at which this session should expire
+         * The time in msec since the epoch at which this session should expire.
          */
         private long _expiryTime; 
         
         
         /**
-         * Time in msec since the epoch at which this session was last read from cluster
+         * Time in msec since the epoch at which this session was last read from cluster.
          */
         private long _lastSyncTime;
         
         
         /**
-         * The workername of last node known to be managing the session
+         * The workername of last node known to be managing the session.
          */
         private String _lastNode;
         
         
         /**
-         * If dirty, session needs to be (re)sent to cluster
+         * If dirty, session needs to be (re)sent to cluster.
          */
-        protected boolean _dirty=false;
+        protected boolean _dirty;
         
         
      
 
         /**
-         * Any virtual hosts for the context with which this session is associated
+         * Any virtual hosts for the context with which this session is associated.
          */
         private String _vhost;
 
         
         /**
-         * Count of how many threads are active in this session
+         * Count of how many threads are active in this session.
          */
         private AtomicInteger _activeThreads = new AtomicInteger(0);
         
@@ -273,7 +268,7 @@ public class InfinispanSessionManager extends AbstractSessionManager
         {
             super(InfinispanSessionManager.this,request);
             long maxInterval = getMaxInactiveInterval();
-            _expiryTime = (maxInterval <= 0 ? 0 : (System.currentTimeMillis() + maxInterval*1000L));
+            _expiryTime = maxInterval <= 0 ? 0 : (System.currentTimeMillis() + maxInterval*1000L);
             _lastNode = getSessionIdManager().getWorkerName();
            setVHost(InfinispanSessionManager.getVirtualHost(_context));
            setContextPath(InfinispanSessionManager.getContextPath(_context));
@@ -284,7 +279,7 @@ public class InfinispanSessionManager extends AbstractSessionManager
         protected Session (SerializableSessionData sd)
         {
             super(InfinispanSessionManager.this, sd.createTime, sd.accessed, sd.clusterId);
-            _expiryTime = (sd.maxInactive <= 0 ? 0 : (System.currentTimeMillis() + sd.maxInactive*1000L));
+            _expiryTime = sd.maxInactive <= 0 ? 0 : (System.currentTimeMillis() + sd.maxInactive*1000L);
             setLastNode(sd.lastNode);
             setContextPath(sd.contextPath);
             setVHost(sd.vhost);
@@ -303,7 +298,7 @@ public class InfinispanSessionManager extends AbstractSessionManager
         protected Session (String sessionId, long created, long accessed, long maxInterval)
         {
             super(InfinispanSessionManager.this, created, accessed, sessionId);
-            _expiryTime = (maxInterval <= 0 ? 0 : (System.currentTimeMillis() + maxInterval*1000L));
+            _expiryTime = maxInterval <= 0 ? 0 : (System.currentTimeMillis() + maxInterval*1000L);
         }
         
         /** 
@@ -314,8 +309,9 @@ public class InfinispanSessionManager extends AbstractSessionManager
         @Override
         protected boolean access(long time)
         {
-            if (LOG.isDebugEnabled())
-                LOG.debug("Access session({}) for context {} on worker {}", getId(), getContextPath(), getSessionIdManager().getWorkerName());
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Access session({}) for context {} on worker {}", getId(), getContextPath(), getSessionIdManager().getWorkerName());
+			}
             try
             {
 
@@ -323,16 +319,12 @@ public class InfinispanSessionManager extends AbstractSessionManager
                 //lock so that no other thread can call access or complete until the first one has refreshed the session object if necessary
                 _lock.lock();
                 //a request thread is entering
-                if (_activeThreads.incrementAndGet() == 1)
-                {
-                    //if the first thread, check that the session in memory is not stale, if we're checking for stale sessions
-                    if (getStaleIntervalSec() > 0  && (now - getLastSyncTime()) >= (getStaleIntervalSec() * 1000L))
-                    {
-                        if (LOG.isDebugEnabled())
-                            LOG.debug("Acess session({}) for context {} on worker {} stale session. Reloading.", getId(), getContextPath(), getSessionIdManager().getWorkerName());
-                        refresh();
-                    }
-                }
+                if (_activeThreads.incrementAndGet() == 1 && getStaleIntervalSec() > 0  && now - getLastSyncTime() >= getStaleIntervalSec() * 1000L) {
+				    if (LOG.isDebugEnabled()) {
+						LOG.debug("Acess session({}) for context {} on worker {} stale session. Reloading.", getId(), getContextPath(), getSessionIdManager().getWorkerName());
+					}
+				    refresh();
+				}
             }
             catch (Exception e)
             {
@@ -346,7 +338,7 @@ public class InfinispanSessionManager extends AbstractSessionManager
             if (super.access(time))
             {
                 int maxInterval=getMaxInactiveInterval();
-                _expiryTime = (maxInterval <= 0 ? 0 : (time + maxInterval*1000L));
+                _expiryTime = maxInterval <= 0 ? 0 : (time + maxInterval*1000L);
                 return true;
             }
             return false;
@@ -377,17 +369,11 @@ public class InfinispanSessionManager extends AbstractSessionManager
                         //it to the cluster.
                         //TODO consider doing only periodic saves if only the last access
                         //time to the session changes
-                        if (isValid())
-                        {
-                            //if session still valid && its dirty or stale or never been synced, write it to the cluster
-                            //otherwise, we just keep the updated last access time in memory
-                            if (_dirty || getLastSyncTime() == 0 || isStale(System.currentTimeMillis()))
-                            {
-                                willPassivate();
-                                save(this);
-                                didActivate();
-                            }
-                        }
+                        if (isValid() && (_dirty || getLastSyncTime() == 0 || isStale(System.currentTimeMillis()))) {
+						    willPassivate();
+						    save(this);
+						    didActivate();
+						}
                     }
                     catch (Exception e)
                     {
@@ -405,17 +391,17 @@ public class InfinispanSessionManager extends AbstractSessionManager
             }
         }
         
-        /** Test if the session is stale
+        /** Test if the session is stale.
          * @param atTime time when stale
          * @return true if stale
          */
         protected boolean isStale (long atTime)
         {
-            return (getStaleIntervalSec() > 0) && (atTime - getLastSyncTime() >= (getStaleIntervalSec()*1000L));
+            return getStaleIntervalSec() > 0 && atTime - getLastSyncTime() >= getStaleIntervalSec()*1000L;
         }
         
         
-        /** Test if the session is dirty
+        /** Test if the session is dirty.
          * @return true if dirty
          */
         protected boolean isDirty ()
@@ -458,8 +444,9 @@ public class InfinispanSessionManager extends AbstractSessionManager
 
             //cluster copy assumed to be the same as we were the last
             //node to manage it
-            if (fresh.getLastNode().equals(getLastNode()))
-                return;
+            if (fresh.getLastNode().equals(getLastNode())) {
+				return;
+			}
 
             setLastNode(getSessionIdManager().getWorkerName());
             
@@ -467,24 +454,20 @@ public class InfinispanSessionManager extends AbstractSessionManager
             willPassivate();
 
             //if fresh has no attributes, remove them
-            if (fresh.getAttributes() == 0)
-                this.clearAttributes();
-            else
+            if (fresh.getAttributes() == 0) {
+				clearAttributes();
+			} else
             {
                 //reconcile attributes
                 for (String key:fresh.getAttributeMap().keySet())
                 {
                     Object freshvalue = fresh.getAttribute(key);
 
-                    //session does not already contain this attribute, so bind it
+                    doPutOrRemove(key,freshvalue);
+					//session does not already contain this attribute, so bind it
                     if (getAttribute(key) == null)
                     { 
-                        doPutOrRemove(key,freshvalue);
                         bindValue(key,freshvalue);
-                    }
-                    else //session already contains this attribute, update its value
-                    {
-                        doPutOrRemove(key,freshvalue);
                     }
 
                 }
@@ -529,7 +512,9 @@ public class InfinispanSessionManager extends AbstractSessionManager
         {
             Object old = changeAttribute(name, value);
             if (value == null && old == null)
-                return; //if same as remove attribute but attribute was already removed, no change
+			 {
+				return; //if same as remove attribute but attribute was already removed, no change
+			}
             
            _dirty = true;
         }
@@ -594,11 +579,13 @@ public class InfinispanSessionManager extends AbstractSessionManager
     @Override
     public void doStart() throws Exception
     {
-        if (_sessionIdManager == null)
-            throw new IllegalStateException("No session id manager defined");
+        if (_sessionIdManager == null) {
+			throw new IllegalStateException("No session id manager defined");
+		}
         
-        if (_cache == null)
-            throw new IllegalStateException("No session cache defined");
+        if (_cache == null) {
+			throw new IllegalStateException("No session cache defined");
+		}
         
         _sessions = new ConcurrentHashMap<String, Session>();
 
@@ -610,8 +597,9 @@ public class InfinispanSessionManager extends AbstractSessionManager
             _ownScheduler = true;
             _scheduler.start();
         }
-        else if (!_scheduler.isStarted())
-            throw new IllegalStateException("Shared scheduler not started");
+        else if (!_scheduler.isStarted()) {
+			throw new IllegalStateException("Shared scheduler not started");
+		}
  
         setScavengeInterval(getScavengeInterval());
         
@@ -629,11 +617,13 @@ public class InfinispanSessionManager extends AbstractSessionManager
     {
         super.doStop();
 
-        if (_task!=null)
-            _task.cancel();
+        if (_task!=null) {
+			_task.cancel();
+		}
         _task=null;
-        if (_ownScheduler && _scheduler !=null)
-            _scheduler.stop();
+        if (_ownScheduler && _scheduler !=null) {
+			_scheduler.stop();
+		}
         _scheduler = null;
         
         _sessions.clear();
@@ -645,9 +635,6 @@ public class InfinispanSessionManager extends AbstractSessionManager
     /**
      * Look for sessions in local memory that have expired.
      */
-    /**
-     * 
-     */
     public void scavenge ()
     {
         Set<String> candidateIds = new HashSet<String>();
@@ -657,14 +644,16 @@ public class InfinispanSessionManager extends AbstractSessionManager
         for (Map.Entry<String, Session> entry:_sessions.entrySet())
         {
             long expiry = entry.getValue().getExpiry();
-            if (expiry > 0 && expiry < now)
-                candidateIds.add(entry.getKey());
+            if (expiry > 0 && expiry < now) {
+				candidateIds.add(entry.getKey());
+			}
         }
 
         for (String candidateId:candidateIds)
         {
-            if (LOG.isDebugEnabled())
-                LOG.debug("Session {} expired ", candidateId);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Session {} expired ", candidateId);
+			}
             
             Session candidateSession = _sessions.get(candidateId);
             if (candidateSession != null)
@@ -675,20 +664,26 @@ public class InfinispanSessionManager extends AbstractSessionManager
                 Session cachedSession = load(makeKey(candidateId, _context));
                 if (cachedSession == null)
                 {
-                   if (LOG.isDebugEnabled()) LOG.debug("Locally expired session({}) does not exist in cluster ",candidateId);
+                   if (LOG.isDebugEnabled()) {
+					LOG.debug("Locally expired session({}) does not exist in cluster ",candidateId);
+				}
                     //the session no longer exists, do a full invalidation
                     candidateSession.timeout();
                 }
                 else if (getSessionIdManager().getWorkerName().equals(cachedSession.getLastNode()))
                 {
-                    if (LOG.isDebugEnabled()) LOG.debug("Expiring session({}) local to session manager",candidateId);
+                    if (LOG.isDebugEnabled()) {
+						LOG.debug("Expiring session({}) local to session manager",candidateId);
+					}
                     //if I am the master of the session then it can be timed out
                     candidateSession.timeout();
                 }
                 else
                 {
                     //some other node is the master of the session, simply remove it from my memory
-                    if (LOG.isDebugEnabled()) LOG.debug("Session({}) not local to this session manager, removing from local memory", candidateId);
+                    if (LOG.isDebugEnabled()) {
+						LOG.debug("Session({}) not local to this session manager, removing from local memory", candidateId);
+					}
                     candidateSession.willPassivate();
                     _sessions.remove(candidateSession.getClusterId());
                 }
@@ -715,8 +710,9 @@ public class InfinispanSessionManager extends AbstractSessionManager
      */
     public void setScavengeInterval (long sec)
     {
-        if (sec<=0)
-            sec=60;
+        if (sec<=0) {
+			sec=60;
+		}
 
         long old_period=_scavengeIntervalMs;
         long period=sec*1000L;
@@ -726,20 +722,24 @@ public class InfinispanSessionManager extends AbstractSessionManager
         //add a bit of variability into the scavenge time so that not all
         //nodes with the same scavenge time sync up
         long tenPercent = _scavengeIntervalMs/10;
-        if ((System.currentTimeMillis()%2) == 0)
-            _scavengeIntervalMs += tenPercent;
+        if ((System.currentTimeMillis()%2) == 0) {
+			_scavengeIntervalMs += tenPercent;
+		}
 
-        if (LOG.isDebugEnabled())
-            LOG.debug("Scavenging every "+_scavengeIntervalMs+" ms");
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Scavenging every "+_scavengeIntervalMs+" ms");
+		}
         
         synchronized (this)
         {
             if (_scheduler != null && (period!=old_period || _task==null))
             {
-                if (_task!=null)
-                    _task.cancel();
-                if (_scavenger == null)
-                    _scavenger = new Scavenger();
+                if (_task!=null) {
+					_task.cancel();
+				}
+                if (_scavenger == null) {
+					_scavenger = new Scavenger();
+				}
                 
                 _task = _scheduler.schedule(_scavenger,_scavengeIntervalMs,TimeUnit.MILLISECONDS);
             }
@@ -795,16 +795,19 @@ public class InfinispanSessionManager extends AbstractSessionManager
     @Override
     protected void addSession(AbstractSession session)
     {
-        if (session==null)
-            return;
+        if (session==null) {
+			return;
+		}
         
-        if (LOG.isDebugEnabled()) LOG.debug("Adding session({}) to session manager for context {} on worker {}",session.getClusterId(), getContextPath(getContext()),getSessionIdManager().getWorkerName() + " with lastnode="+((Session)session).getLastNode());
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Adding session({}) to session manager for context {} on worker {}",session.getClusterId(), getContextPath(getContext()),getSessionIdManager().getWorkerName() + " with lastnode="+((Session)session).getLastNode());
+		}
         _sessions.put(session.getClusterId(), (Session)session);
         
         try
         {     
                 session.willPassivate();
-                save(((InfinispanSessionManager.Session)session));
+                save((InfinispanSessionManager.Session)session);
                 session.didActivate();
             
         }
@@ -825,10 +828,11 @@ public class InfinispanSessionManager extends AbstractSessionManager
         Session session = null;
 
         //try and find the session in this node's memory
-        Session memSession = (Session)_sessions.get(idInCluster);
+        Session memSession = _sessions.get(idInCluster);
 
-        if (LOG.isDebugEnabled())
-            LOG.debug("getSession({}) {} in session map",idInCluster,(memSession==null?"not":""));
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("getSession({}) {} in session map",idInCluster,memSession==null?"not":"");
+		}
 
         long now = System.currentTimeMillis();
         try
@@ -836,8 +840,9 @@ public class InfinispanSessionManager extends AbstractSessionManager
             //if the session is not in this node's memory, then load it from the cluster cache
             if (memSession == null)
             {
-                if (LOG.isDebugEnabled())
-                    LOG.debug("getSession({}): loading session data from cluster", idInCluster);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("getSession({}): loading session data from cluster", idInCluster);
+				}
 
                 session = load(makeKey(idInCluster, _context));
                 if (session != null)
@@ -847,7 +852,9 @@ public class InfinispanSessionManager extends AbstractSessionManager
                     //Check that it wasn't expired
                     if (session.getExpiry() > 0 && session.getExpiry() <= now)
                     {
-                        if (LOG.isDebugEnabled()) LOG.debug("getSession ({}): Session expired", idInCluster);
+                        if (LOG.isDebugEnabled()) {
+							LOG.debug("getSession ({}): Session expired", idInCluster);
+						}
                         //ensure that the session id for the expired session is deleted so that a new session with the 
                         //same id cannot be created (because the idInUse() test would succeed)
                         ((InfinispanSessionIdManager)getSessionIdManager()).removeSession(session);
@@ -917,8 +924,9 @@ public class InfinispanSessionManager extends AbstractSessionManager
             {
                 if (session.isDirty())
                 {
-                    if (LOG.isDebugEnabled())
-                        LOG.debug("Saving dirty session {} before exiting ", session.getId());
+                    if (LOG.isDebugEnabled()) {
+						LOG.debug("Saving dirty session {} before exiting ", session.getId());
+					}
                     save(session);
                 }
             }
@@ -945,11 +953,12 @@ public class InfinispanSessionManager extends AbstractSessionManager
     @Override
     protected boolean removeSession(String idInCluster)
     {
-        Session session = (Session)_sessions.remove(idInCluster);
+        Session session = _sessions.remove(idInCluster);
         try
         {
-            if (session != null)
-                delete(session);
+            if (session != null) {
+				delete(session);
+			}
         }
         catch (Exception e)
         {
@@ -968,7 +977,7 @@ public class InfinispanSessionManager extends AbstractSessionManager
         try
         {
             //take the session with that id out of our managed list
-            session = (Session)_sessions.remove(oldClusterId);
+            session = _sessions.remove(oldClusterId);
             if (session != null)
             {
                 //TODO consider transactionality and ramifications if the session is live on another node
@@ -995,15 +1004,20 @@ public class InfinispanSessionManager extends AbstractSessionManager
      */
     protected Session load (String key)
     {
-        if (_cache == null)
-            throw new IllegalStateException("No cache");
+        if (_cache == null) {
+			throw new IllegalStateException("No cache");
+		}
         
-        if (LOG.isDebugEnabled()) LOG.debug("Loading session {} from cluster", key);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Loading session {} from cluster", key);
+		}
 
         SerializableSessionData storableSession = (SerializableSessionData)_cache.get(key);
         if (storableSession == null)
         {
-            if (LOG.isDebugEnabled()) LOG.debug("No session {} in cluster ",key);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("No session {} in cluster ",key);
+			}
             return null;
         }
         else
@@ -1017,7 +1031,7 @@ public class InfinispanSessionManager extends AbstractSessionManager
     
     
     /**
-     * Save or update the session to the cluster cache
+     * Save or update the session to the cluster cache.
      * 
      * @param session the session
      * @throws Exception if unable to save
@@ -1025,10 +1039,13 @@ public class InfinispanSessionManager extends AbstractSessionManager
     protected void save (InfinispanSessionManager.Session session)
     throws Exception
     {
-        if (_cache == null)
-            throw new IllegalStateException("No cache");
+        if (_cache == null) {
+			throw new IllegalStateException("No cache");
+		}
         
-        if (LOG.isDebugEnabled()) LOG.debug("Writing session {} to cluster", session.getId());
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Writing session {} to cluster", session.getId());
+		}
     
         SerializableSessionData storableSession = new SerializableSessionData(session);
 
@@ -1037,10 +1054,11 @@ public class InfinispanSessionManager extends AbstractSessionManager
         //scavenges the session before this timeout occurs, the session will be removed.
         //NOTE: that no session listeners can be called for this.
         InfinispanSessionIdManager sessionIdManager = (InfinispanSessionIdManager)getSessionIdManager();
-        if (storableSession.maxInactive > 0)
-            _cache.put(makeKey(session, _context), storableSession, -1, TimeUnit.SECONDS, storableSession.maxInactive*sessionIdManager.getIdleExpiryMultiple(), TimeUnit.SECONDS);
-        else
-            _cache.put(makeKey(session, _context), storableSession);
+        if (storableSession.maxInactive > 0) {
+			_cache.put(makeKey(session, _context), storableSession, -1, TimeUnit.SECONDS, storableSession.maxInactive*sessionIdManager.getIdleExpiryMultiple(), TimeUnit.SECONDS);
+		} else {
+			_cache.put(makeKey(session, _context), storableSession);
+		}
         
         //tickle the session id manager to keep the sessionid entry for this session up-to-date
         sessionIdManager.touch(session.getClusterId());
@@ -1057,21 +1075,24 @@ public class InfinispanSessionManager extends AbstractSessionManager
      */
     protected void delete (InfinispanSessionManager.Session session)
     {  
-        if (_cache == null)
-            throw new IllegalStateException("No cache");
-        if (LOG.isDebugEnabled()) LOG.debug("Removing session {} from cluster", session.getId());
+        if (_cache == null) {
+			throw new IllegalStateException("No cache");
+		}
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Removing session {} from cluster", session.getId());
+		}
         _cache.remove(makeKey(session, _context));
     }
 
     
     /**
-     * Invalidate a session for this context with the given id
+     * Invalidate a session for this context with the given id.
      * 
      * @param idInCluster session id in cluster
      */
     public void invalidateSession (String idInCluster)
     {
-        Session session = (Session)_sessions.get(idInCluster);
+        Session session = _sessions.get(idInCluster);
 
         if (session != null)
         {
@@ -1117,12 +1138,11 @@ public class InfinispanSessionManager extends AbstractSessionManager
     {
         String key = getContextPath(context);
         key = key + "_" + getVirtualHost(context);
-        key = key+"_"+id;
-        return key;
+        return key+"_"+id;
     }
     
     /**
-     * Turn the context path into an acceptable string
+     * Turn the context path into an acceptable string.
      * 
      * @param context
      * @return
@@ -1143,12 +1163,14 @@ public class InfinispanSessionManager extends AbstractSessionManager
     {
         String vhost = "0.0.0.0";
 
-        if (context==null)
-            return vhost;
+        if (context==null) {
+			return vhost;
+		}
 
         String [] vhosts = context.getContextHandler().getVirtualHosts();
-        if (vhosts==null || vhosts.length==0 || vhosts[0]==null)
-            return vhost;
+        if (vhosts==null || vhosts.length==0 || vhosts[0]==null) {
+			return vhost;
+		}
 
         return vhosts[0];
     }
@@ -1161,10 +1183,11 @@ public class InfinispanSessionManager extends AbstractSessionManager
      */
     private static String canonicalize (String path)
     {
-        if (path==null)
-            return "";
+        if (path!=null) {
+			return path.replace('/', '_').replace('.','_').replace('\\','_');
+		}
 
-        return path.replace('/', '_').replace('.','_').replace('\\','_');
+        return "";
     }
 
 }

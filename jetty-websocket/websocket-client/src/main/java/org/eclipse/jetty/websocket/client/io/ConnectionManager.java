@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.client.io;
 
@@ -110,14 +105,14 @@ public class ConnectionManager extends ContainerLifeCycle
         String scheme = uri.getScheme().toLowerCase(Locale.ENGLISH);
         if ("ws".equals(scheme))
         {
-            if (port == (-1))
+            if (port == -1)
             {
                 port = 80;
             }
         }
         else if ("wss".equals(scheme))
         {
-            if (port == (-1))
+            if (port == -1)
             {
                 port = 443;
             }
@@ -167,7 +162,7 @@ public class ConnectionManager extends ContainerLifeCycle
     }
 
     /**
-     * Factory method for new WebSocketClientSelectorManager (used by other projects like cometd)
+     * Factory method for new WebSocketClientSelectorManager (used by other projects like cometd).
      * 
      * @param client
      *            the client used to create the WebSocketClientSelectorManager

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.io;
 
@@ -45,7 +40,7 @@ public interface NetworkTrafficListener
      *
      * @param socket the socket associated with the remote client
      */
-    public void opened(Socket socket);
+    void opened(Socket socket);
 
     /**
      * <p>Callback method invoked when bytes sent by a remote client arrived on the server.</p>
@@ -53,7 +48,7 @@ public interface NetworkTrafficListener
      * @param socket the socket associated with the remote client
      * @param bytes  the read-only buffer containing the incoming bytes
      */
-    public void incoming(Socket socket, ByteBuffer bytes);
+    void incoming(Socket socket, ByteBuffer bytes);
 
     /**
      * <p>Callback method invoked when bytes are sent to a remote client from the server.</p>
@@ -62,7 +57,7 @@ public interface NetworkTrafficListener
      * @param socket the socket associated with the remote client
      * @param bytes  the read-only buffer containing the outgoing bytes
      */
-    public void outgoing(Socket socket, ByteBuffer bytes);
+    void outgoing(Socket socket, ByteBuffer bytes);
 
     /**
      * <p>Callback method invoked when a connection to a remote client has been closed.</p>
@@ -74,7 +69,7 @@ public interface NetworkTrafficListener
      *
      * @param socket the (closed) socket associated with the remote client
      */
-    public void closed(Socket socket);
+    void closed(Socket socket);
 
     /**
      * <p>A commodity class that implements {@link NetworkTrafficListener} with empty methods.</p>

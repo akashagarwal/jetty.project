@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.io;
 
@@ -46,7 +41,7 @@ public class LeakTrackingByteBufferPool extends ContainerLifeCycle implements By
         }
     };
 
-    private final static boolean NOISY = Boolean.getBoolean(LeakTrackingByteBufferPool.class.getName() + ".NOISY");
+    private static final boolean NOISY = Boolean.getBoolean(LeakTrackingByteBufferPool.class.getName() + ".NOISY");
     private final ByteBufferPool delegate;
     private final AtomicLong leakedReleases = new AtomicLong(0);
     private final AtomicLong leakedAcquires = new AtomicLong(0);
@@ -76,8 +71,9 @@ public class LeakTrackingByteBufferPool extends ContainerLifeCycle implements By
     @Override
     public void release(ByteBuffer buffer)
     {
-        if (buffer == null)
-            return;
+        if (buffer == null) {
+			return;
+		}
         boolean leaked = leakDetector.released(buffer);
         if (NOISY || !leaked)
         {

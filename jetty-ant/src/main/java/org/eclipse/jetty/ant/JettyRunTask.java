@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2012 Sabre Holdings.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.ant;
 
@@ -53,7 +48,7 @@ public class JettyRunTask extends Task
     private File jettyXml;
 
     /** List of server connectors. */
-    private Connectors connectors = null;
+    private Connectors connectors;
 
     /** Server request logger object. */
     private RequestLog requestLog;
@@ -64,11 +59,11 @@ public class JettyRunTask extends Task
     /** List of system properties to be set. */
     private SystemProperties systemProperties;
     
-    /** List of other contexts to deploy */
+    /** List of other contexts to deploy. */
     private ContextHandlers contextHandlers;
 
  
-    /** Port Jetty will use for the default connector */
+    /** Port Jetty will use for the default connector. */
     private int jettyPort = 8080;
     
     private int stopPort;
@@ -97,29 +92,33 @@ public class JettyRunTask extends Task
      */
     public void addConnectors(Connectors connectors)
     {
-        if (this.connectors != null)
-            throw new BuildException("Only one <connectors> tag is allowed!");
+        if (this.connectors != null) {
+			throw new BuildException("Only one <connectors> tag is allowed!");
+		}
         this.connectors = connectors;
     }
 
     public void addLoginServices(LoginServices services)
     {        
-        if (this.loginServices != null )
-            throw new BuildException("Only one <loginServices> tag is allowed!");       
+        if (this.loginServices != null ) {
+			throw new BuildException("Only one <loginServices> tag is allowed!");
+		}       
         this.loginServices = services;  
     }
 
     public void addSystemProperties(SystemProperties systemProperties)
     {
-        if (this.systemProperties != null)
-            throw new BuildException("Only one <systemProperties> tag is allowed!");
+        if (this.systemProperties != null) {
+			throw new BuildException("Only one <systemProperties> tag is allowed!");
+		}
         this.systemProperties = systemProperties;
     }
     
     public void addContextHandlers (ContextHandlers handlers)
     {
-        if (this.contextHandlers != null)
-            throw new BuildException("Only one <contextHandlers> tag is allowed!");
+        if (this.contextHandlers != null) {
+			throw new BuildException("Only one <contextHandlers> tag is allowed!");
+		}
         this.contextHandlers = handlers;
     }
 
@@ -198,12 +197,13 @@ public class JettyRunTask extends Task
 
         List<Connector> connectorsList = null;
 
-        if (connectors != null)
-            connectorsList = connectors.getConnectors();
-        else
-            connectorsList = new Connectors(jettyPort,30000).getDefaultConnectors();
+        if (connectors != null) {
+			connectorsList = connectors.getConnectors();
+		} else {
+			connectorsList = new Connectors(jettyPort,30000).getDefaultConnectors();
+		}
 
-        List<LoginService> loginServicesList = (loginServices != null?loginServices.getLoginServices():new ArrayList<LoginService>());
+        List<LoginService> loginServicesList = loginServices != null?loginServices.getLoginServices():new ArrayList<LoginService>();
         ServerProxyImpl server = new ServerProxyImpl();
         server.setConnectors(connectorsList);
         server.setLoginServices(loginServicesList);
@@ -291,7 +291,7 @@ public class JettyRunTask extends Task
             Iterator propertiesIterator = systemProperties.getSystemProperties().iterator();
             while (propertiesIterator.hasNext())
             {
-                Property property = ((Property) propertiesIterator.next());
+                Property property = (Property) propertiesIterator.next();
                 SystemProperties.setIfNotSetAlready(property);
             }
         }

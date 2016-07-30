@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.client;
 
@@ -43,8 +38,9 @@ public class RequestNotifier
         for (int i = 0; i < requestListeners.size(); ++i)
         {
             Request.RequestListener listener = requestListeners.get(i);
-            if (listener instanceof Request.QueuedListener)
-                notifyQueued((Request.QueuedListener)listener, request);
+            if (listener instanceof Request.QueuedListener) {
+				notifyQueued((Request.QueuedListener)listener, request);
+			}
         }
         List<Request.Listener> listeners = client.getRequestListeners();
         for (int i = 0; i < listeners.size(); ++i)
@@ -73,8 +69,9 @@ public class RequestNotifier
         for (int i = 0; i < requestListeners.size(); ++i)
         {
             Request.RequestListener listener = requestListeners.get(i);
-            if (listener instanceof Request.BeginListener)
-                notifyBegin((Request.BeginListener)listener, request);
+            if (listener instanceof Request.BeginListener) {
+				notifyBegin((Request.BeginListener)listener, request);
+			}
         }
         List<Request.Listener> listeners = client.getRequestListeners();
         for (int i = 0; i < listeners.size(); ++i)
@@ -103,8 +100,9 @@ public class RequestNotifier
         for (int i = 0; i < requestListeners.size(); ++i)
         {
             Request.RequestListener listener = requestListeners.get(i);
-            if (listener instanceof Request.HeadersListener)
-                notifyHeaders((Request.HeadersListener)listener, request);
+            if (listener instanceof Request.HeadersListener) {
+				notifyHeaders((Request.HeadersListener)listener, request);
+			}
         }
         List<Request.Listener> listeners = client.getRequestListeners();
         for (int i = 0; i < listeners.size(); ++i)
@@ -133,8 +131,9 @@ public class RequestNotifier
         for (int i = 0; i < requestListeners.size(); ++i)
         {
             Request.RequestListener listener = requestListeners.get(i);
-            if (listener instanceof Request.CommitListener)
-                notifyCommit((Request.CommitListener)listener, request);
+            if (listener instanceof Request.CommitListener) {
+				notifyCommit((Request.CommitListener)listener, request);
+			}
         }
         List<Request.Listener> listeners = client.getRequestListeners();
         for (int i = 0; i < listeners.size(); ++i)
@@ -160,8 +159,9 @@ public class RequestNotifier
     {
         // Slice the buffer to avoid that listeners peek into data they should not look at.
         content = content.slice();
-        if (!content.hasRemaining())
-            return;
+        if (!content.hasRemaining()) {
+			return;
+		}
         // Optimized to avoid allocations of iterator instances.
         List<Request.RequestListener> requestListeners = request.getRequestListeners(null);
         for (int i = 0; i < requestListeners.size(); ++i)
@@ -205,8 +205,9 @@ public class RequestNotifier
         for (int i = 0; i < requestListeners.size(); ++i)
         {
             Request.RequestListener listener = requestListeners.get(i);
-            if (listener instanceof Request.SuccessListener)
-                notifySuccess((Request.SuccessListener)listener, request);
+            if (listener instanceof Request.SuccessListener) {
+				notifySuccess((Request.SuccessListener)listener, request);
+			}
         }
         List<Request.Listener> listeners = client.getRequestListeners();
         for (int i = 0; i < listeners.size(); ++i)
@@ -235,8 +236,9 @@ public class RequestNotifier
         for (int i = 0; i < requestListeners.size(); ++i)
         {
             Request.RequestListener listener = requestListeners.get(i);
-            if (listener instanceof Request.FailureListener)
-                notifyFailure((Request.FailureListener)listener, request, failure);
+            if (listener instanceof Request.FailureListener) {
+				notifyFailure((Request.FailureListener)listener, request, failure);
+			}
         }
         List<Request.Listener> listeners = client.getRequestListeners();
         for (int i = 0; i < listeners.size(); ++i)

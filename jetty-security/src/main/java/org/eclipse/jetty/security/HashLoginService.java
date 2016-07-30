@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.security;
 
@@ -56,7 +51,8 @@ public class HashLoginService extends MappedLoginService implements UserListener
     private PropertyUserStore _propertyUserStore;
     private String _config;
     private Resource _configResource;
-    private boolean hotReload = false; // default is not to reload
+    /** Default is not to reload. */
+    private boolean hotReload;
     
     
     
@@ -80,37 +76,37 @@ public class HashLoginService extends MappedLoginService implements UserListener
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public HashLoginService()
     {
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public HashLoginService(String name)
     {
         setName(name);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public HashLoginService(String name, String config)
     {
         setName(name);
         setConfig(config);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public String getConfig()
     {
         return _config;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void getConfig(String config)
     {
         _config = config;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public Resource getConfigResource()
     {
         return _configResource;
@@ -129,7 +125,7 @@ public class HashLoginService extends MappedLoginService implements UserListener
     }
     
     /**
-     * Is hot reload enabled on this user store
+     * Is hot reload enabled on this user store.
      * 
      * @return true if hot reload was enabled before startup
      */
@@ -139,7 +135,7 @@ public class HashLoginService extends MappedLoginService implements UserListener
     }
 
     /**
-     * Enable Hot Reload of the Property File
+     * Enable Hot Reload of the Property File.
      * 
      * @param enable true to enable, false to disable
      */
@@ -154,7 +150,7 @@ public class HashLoginService extends MappedLoginService implements UserListener
 
     /* ------------------------------------------------------------ */
     /**
-     * sets the refresh interval (in seconds)
+     * Sets the refresh interval (in seconds).
      * @param sec the refresh interval
      * @deprecated use {@link #setHotReload(boolean)} instead
      */
@@ -171,17 +167,17 @@ public class HashLoginService extends MappedLoginService implements UserListener
     @Deprecated
     public int getRefreshInterval()
     {
-        return (hotReload)?1:0;
+        return hotReload?1:0;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     protected UserIdentity loadUser(String username)
     {
         return null;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void loadUsers() throws IOException
     {
@@ -194,17 +190,20 @@ public class HashLoginService extends MappedLoginService implements UserListener
     protected String[] loadRoleInfo(KnownUser user)
     {
         UserIdentity id = _propertyUserStore.getUserIdentity(user.getName());
-        if (id == null)
-            return null;
+        if (id == null) {
+			return null;
+		}
 
 
         Set<RolePrincipal> roles = id.getSubject().getPrincipals(RolePrincipal.class);
-        if (roles == null)
-            return null;
+        if (roles == null) {
+			return null;
+		}
 
         List<String> list = new ArrayList<>();
-        for (RolePrincipal r:roles)
-            list.add(r.getName());
+        for (RolePrincipal r:roles) {
+			list.add(r.getName());
+		}
 
         return list.toArray(new String[roles.size()]);
     }
@@ -223,10 +222,7 @@ public class HashLoginService extends MappedLoginService implements UserListener
     
     
 
-    /* ------------------------------------------------------------ */
-    /**
-     * @see org.eclipse.jetty.util.component.AbstractLifeCycle#doStart()
-     */
+    /** ------------------------------------------------------------. */
     @Override
     protected void doStart() throws Exception
     {
@@ -234,8 +230,9 @@ public class HashLoginService extends MappedLoginService implements UserListener
         
         if (_propertyUserStore == null)
         {
-            if(LOG.isDebugEnabled())
-                LOG.debug("doStart: Starting new PropertyUserStore. PropertiesFile: " + _config + " hotReload: " + hotReload);
+            if(LOG.isDebugEnabled()) {
+				LOG.debug("doStart: Starting new PropertyUserStore. PropertiesFile: " + _config + " hotReload: " + hotReload);
+			}
             
             _propertyUserStore = new PropertyUserStore();
             _propertyUserStore.setHotReload(hotReload);
@@ -245,36 +242,37 @@ public class HashLoginService extends MappedLoginService implements UserListener
         }
     }
 
-    /* ------------------------------------------------------------ */
-    /**
-     * @see org.eclipse.jetty.util.component.AbstractLifeCycle#doStop()
-     */
+    /** ------------------------------------------------------------. */
     @Override
     protected void doStop() throws Exception
     {
         super.doStop();
-        if (_propertyUserStore != null)
-            _propertyUserStore.stop();
+        if (_propertyUserStore != null) {
+			_propertyUserStore.stop();
+		}
         _propertyUserStore = null;
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void update(String userName, Credential credential, String[] roleArray)
     {
         if (LOG.isDebugEnabled())
-            LOG.debug("update: " + userName + " Roles: " + roleArray.length);
+		 {
+			LOG.debug("update: " + userName + " Roles: " + roleArray.length);
        //TODO need to remove and replace the authenticated user?
+		}
     }
 
     
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void remove(String userName)
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("remove: " + userName);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("remove: " + userName);
+		}
         removeUser(userName);
     }
 }

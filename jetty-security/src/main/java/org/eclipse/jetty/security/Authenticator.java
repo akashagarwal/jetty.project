@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.security;
 
@@ -42,7 +37,7 @@ public interface Authenticator
 {
     /* ------------------------------------------------------------ */
     /**
-     * Configure the Authenticator
+     * Configure the Authenticator.
      * 
      * @param configuration the configuration
      */
@@ -89,7 +84,7 @@ public interface Authenticator
 
     /* ------------------------------------------------------------ */
     /**
-     * is response secure
+     * Is response secure.
      * 
      * @param request the request 
      * @param response the response
@@ -105,7 +100,7 @@ public interface Authenticator
     /* ------------------------------------------------------------ */
     /* ------------------------------------------------------------ */
     /**
-     * Authenticator Configuration
+     * Authenticator Configuration.
      */
     interface AuthConfiguration
     {
@@ -113,7 +108,7 @@ public interface Authenticator
         String getRealmName();
 
         /** 
-         * Get a SecurityHandler init parameter
+         * Get a SecurityHandler init parameter.
          * @see SecurityHandler#getInitParameter(String)
          * @param param parameter name
          * @return Parameter value or null
@@ -121,7 +116,7 @@ public interface Authenticator
         String getInitParameter(String param);
 
         /* ------------------------------------------------------------ */
-        /** Get a SecurityHandler init parameter names
+        /** Get a SecurityHandler init parameter names.
          * @see SecurityHandler#getInitParameterNames()
          * @return Set of parameter names
          */
@@ -136,7 +131,7 @@ public interface Authenticator
     /* ------------------------------------------------------------ */
     /* ------------------------------------------------------------ */
     /**
-     * Authenticator Factory
+     * Authenticator Factory.
      */
     interface Factory
     {

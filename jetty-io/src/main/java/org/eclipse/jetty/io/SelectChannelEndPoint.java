@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.io;
 
@@ -40,7 +35,7 @@ public class SelectChannelEndPoint extends ChannelEndPoint implements ManagedSel
     private boolean _updatePending;
 
     /**
-     * true if {@link ManagedSelector#destroyEndPoint(EndPoint)} has not been called
+     * True if {@link ManagedSelector#destroyEndPoint(EndPoint)} has not been called.
      */
     private final AtomicBoolean _open = new AtomicBoolean();
     private final ManagedSelector _selector;
@@ -65,7 +60,7 @@ public class SelectChannelEndPoint extends ChannelEndPoint implements ManagedSel
         @Override
         public String toString()
         {
-            return SelectChannelEndPoint.this.toString()+":runUpdateKey";
+            return SelectChannelEndPoint.this+":runUpdateKey";
         }
     };
 
@@ -96,7 +91,7 @@ public class SelectChannelEndPoint extends ChannelEndPoint implements ManagedSel
         @Override
         public String toString()
         {
-            return SelectChannelEndPoint.this.toString()+":runFillable";
+            return SelectChannelEndPoint.this+":runFillable";
         }
     };
     private final Runnable _runCompleteWrite = new RunnableCloseable()
@@ -110,7 +105,7 @@ public class SelectChannelEndPoint extends ChannelEndPoint implements ManagedSel
         @Override
         public String toString()
         {
-            return SelectChannelEndPoint.this.toString()+":runCompleteWrite";
+            return SelectChannelEndPoint.this+":runCompleteWrite";
         }
     };
     private final Runnable _runCompleteWriteFillable = new RunnableCloseable()
@@ -125,7 +120,7 @@ public class SelectChannelEndPoint extends ChannelEndPoint implements ManagedSel
         @Override
         public String toString()
         {
-            return SelectChannelEndPoint.this.toString()+":runFillableCompleteWrite";
+            return SelectChannelEndPoint.this+":runFillableCompleteWrite";
         }
     };
 
@@ -152,7 +147,7 @@ public class SelectChannelEndPoint extends ChannelEndPoint implements ManagedSel
     @Override
     public Runnable onSelected()
     {
-        /**
+        /*
          * This method may run concurrently with {@link #changeInterests(int)}.
          */
 
@@ -171,8 +166,9 @@ public class SelectChannelEndPoint extends ChannelEndPoint implements ManagedSel
         boolean readable = (readyOps & SelectionKey.OP_READ) != 0;
         boolean writable = (readyOps & SelectionKey.OP_WRITE) != 0;
 
-        if (LOG.isDebugEnabled())
-            LOG.debug("onSelected {}->{} r={} w={} for {}", oldInterestOps, newInterestOps, readable, writable, this);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("onSelected {}->{} r={} w={} for {}", oldInterestOps, newInterestOps, readable, writable, this);
+		}
 
         // Run non-blocking code immediately.
         // This producer knows that this non-blocking code is special
@@ -181,15 +177,17 @@ public class SelectChannelEndPoint extends ChannelEndPoint implements ManagedSel
         // tasks (or it may starve forever just after having run them).
         if (readable && getFillInterest().isCallbackNonBlocking())
         {
-            if (LOG.isDebugEnabled())
-                LOG.debug("Direct readable run {}",this);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Direct readable run {}",this);
+			}
             _runFillable.run();
             readable = false;
         }
         if (writable && getWriteFlusher().isCallbackNonBlocking())
         {
-            if (LOG.isDebugEnabled())
-                LOG.debug("Direct writable run {}",this);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Direct writable run {}",this);
+			}
             _runCompleteWrite.run();
             writable = false;
         }
@@ -198,15 +196,16 @@ public class SelectChannelEndPoint extends ChannelEndPoint implements ManagedSel
         Runnable task= readable ? (writable ? _runCompleteWriteFillable : _runFillable)
                 : (writable ? _runCompleteWrite : null);
 
-        if (LOG.isDebugEnabled())
-            LOG.debug("task {}",task);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("task {}",task);
+		}
         return task;
     }
 
     @Override
     public void updateKey()
     {
-        /**
+        /*
          * This method may run concurrently with {@link #changeInterests(int)}.
          */
 
@@ -226,8 +225,9 @@ public class SelectChannelEndPoint extends ChannelEndPoint implements ManagedSel
                 }
             }
 
-            if (LOG.isDebugEnabled())
-                LOG.debug("Key interests updated {} -> {} on {}", oldInterestOps, newInterestOps, this);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Key interests updated {} -> {} on {}", oldInterestOps, newInterestOps, this);
+			}
         }
         catch (CancelledKeyException x)
         {
@@ -243,7 +243,7 @@ public class SelectChannelEndPoint extends ChannelEndPoint implements ManagedSel
 
     private void changeInterests(int operation)
     {
-        /**
+        /*
          * This method may run concurrently with
          * {@link #updateKey()} and {@link #onSelected()}.
          */
@@ -256,15 +256,18 @@ public class SelectChannelEndPoint extends ChannelEndPoint implements ManagedSel
             pending = _updatePending;
             oldInterestOps = _desiredInterestOps;
             newInterestOps = oldInterestOps | operation;
-            if (newInterestOps != oldInterestOps)
-                _desiredInterestOps = newInterestOps;
+            if (newInterestOps != oldInterestOps) {
+				_desiredInterestOps = newInterestOps;
+			}
         }
 
-        if (LOG.isDebugEnabled())
-            LOG.debug("changeInterests p={} {}->{} for {}", pending, oldInterestOps, newInterestOps, this);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("changeInterests p={} {}->{} for {}", pending, oldInterestOps, newInterestOps, this);
+		}
 
-        if (!pending)
-            _selector.submit(_runUpdateKey);
+        if (!pending) {
+			_selector.submit(_runUpdateKey);
+		}
     }
 
 
@@ -290,8 +293,9 @@ public class SelectChannelEndPoint extends ChannelEndPoint implements ManagedSel
     @Override
     public void onOpen()
     {
-        if (_open.compareAndSet(false, true))
-            super.onOpen();
+        if (_open.compareAndSet(false, true)) {
+			super.onOpen();
+		}
     }
 
     @Override

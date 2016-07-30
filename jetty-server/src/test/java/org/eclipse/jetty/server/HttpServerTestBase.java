@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 
@@ -63,9 +58,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-/**
- *
- */
 @RunWith(AdvancedRunner.class)
 public abstract class HttpServerTestBase extends HttpServerTestFixture
 {
@@ -77,7 +69,7 @@ public abstract class HttpServerTestBase extends HttpServerTestFixture
 
     private static final String RESPONSE1 = "HTTP/1.1 200 OK\n" + "Content-Length: 13\n" + "Server: Jetty(" + Server.getVersion() + ")\n" + "\n" + "Hello world\n";
 
-    // Break the request up into three pieces, splitting the header.
+    /** Break the request up into three pieces, splitting the header. */
     private static final String FRAGMENT1 = REQUEST1.substring(0, 16);
     private static final String FRAGMENT2 = REQUEST1.substring(16, 34);
     private static final String FRAGMENT3 = REQUEST1.substring(34);
@@ -177,8 +169,8 @@ public abstract class HttpServerTestBase extends HttpServerTestFixture
         }
     }
 
-    /*
-    * Feed a full header method
+    /**
+    * Feed a full header method.
     */
     @Test
     public void testFullMethod() throws Exception
@@ -205,8 +197,8 @@ public abstract class HttpServerTestBase extends HttpServerTestFixture
         }
     }
 
-    /*
-    * Feed a full header method
+    /**
+    * Feed a full header method.
     */
     @Test
     public void testFullURI() throws Exception
@@ -290,8 +282,9 @@ public abstract class HttpServerTestBase extends HttpServerTestFixture
                         earlyEOFException.set(true);
                         throw e;
                     }
-                    if (i == 3)
-                        fourBytesRead.set(true);
+                    if (i == 3) {
+						fourBytesRead.set(true);
+					}
                 }
             }
         });
@@ -315,8 +308,8 @@ public abstract class HttpServerTestBase extends HttpServerTestFixture
         assertThat("EofException has been caught", earlyEOFException.get(), is(true));
     }
     
-    /*
-     * Feed a full header method
+    /**
+     * Feed a full header method.
      */
     @Test
     public void testFullHeader() throws Exception
@@ -360,7 +353,7 @@ public abstract class HttpServerTestBase extends HttpServerTestFixture
         }
     }
 
-    /*
+    /**
     * Feed the server the entire request at once.
     */
     @Test
@@ -400,9 +393,9 @@ public abstract class HttpServerTestBase extends HttpServerTestFixture
                     "\015\012").getBytes());
             os.flush();
             Thread.sleep(1000);
-            os.write(("5").getBytes());
+            os.write("5".getBytes());
             Thread.sleep(1000);
-            os.write(("\015\012").getBytes());
+            os.write("\015\012".getBytes());
             os.flush();
             Thread.sleep(1000);
             os.write(("ABCDE\015\012" +
@@ -441,7 +434,7 @@ public abstract class HttpServerTestBase extends HttpServerTestFixture
         }
     }
 
-    /*
+    /**
     * Feed the server fragmentary headers and see how it copes with it.
     */
     @Test
@@ -527,7 +520,7 @@ public abstract class HttpServerTestBase extends HttpServerTestFixture
                 String response = readResponse(client);
 
                 // Check the response
-                assertEquals("response for " + i + " " + message.toString(), RESPONSE2, response);
+                assertEquals("response for " + i + " " + message, RESPONSE2, response);
                 
                 Thread.sleep(10);
             }
@@ -559,7 +552,7 @@ public abstract class HttpServerTestBase extends HttpServerTestFixture
                 String response = readResponse(client);
 
                 // Check the response
-                assertEquals("response for " + i + " " + message.toString(), RESPONSE2, response);
+                assertEquals("response for " + i + " " + message, RESPONSE2, response);
                 
                 Thread.sleep(10);
             }
@@ -626,19 +619,13 @@ public abstract class HttpServerTestBase extends HttpServerTestFixture
             ).getBytes());
             os.flush();
             Thread.sleep(200);
-            os.write((
-                    "\r\n23456890"
-            ).getBytes());
+            os.write("\r\n23456890".getBytes());
             os.flush();
             Thread.sleep(1000);
-            os.write((
-                    "abcdefghij"
-            ).getBytes());
+            os.write("abcdefghij".getBytes());
             os.flush();
             Thread.sleep(1000);
-            os.write((
-                    "0987654321\r\n"
-            ).getBytes());
+            os.write("0987654321\r\n".getBytes());
             os.flush();
 
             int total = 0;
@@ -653,7 +640,7 @@ public abstract class HttpServerTestBase extends HttpServerTestFixture
                 if (len > 0)
                 {
                     total += len;
-                    if ((total/10240)>sleeps)
+                    if (total/10240>sleeps)
                     {
                         sleeps++;
                         Thread.sleep(100);
@@ -661,8 +648,8 @@ public abstract class HttpServerTestBase extends HttpServerTestFixture
                 }
             }
 
-            assertTrue(total > (1024 * 256));
-            assertTrue(30000L > (System.currentTimeMillis() - start));
+            assertTrue(total > 1024 * 256);
+            assertTrue(30000L > System.currentTimeMillis() - start);
         }
     }
 
@@ -696,7 +683,7 @@ public abstract class HttpServerTestBase extends HttpServerTestFixture
                 if (len > 0)
                 {
                     total += len;
-                    if ((total/10240)>sleeps)
+                    if (total/10240>sleeps)
                     {
                         Thread.sleep(200);
                         sleeps++;
@@ -704,8 +691,8 @@ public abstract class HttpServerTestBase extends HttpServerTestFixture
                 }
             }
 
-            assertTrue(total > (256 * 1024));
-            assertTrue(30000L > (System.currentTimeMillis() - start));
+            assertTrue(total > 256 * 1024);
+            assertTrue(30000L > System.currentTimeMillis() - start);
         }
     }
 
@@ -789,8 +776,9 @@ public abstract class HttpServerTestBase extends HttpServerTestFixture
             while (true)
             {
                 String line = in.readLine();
-                if (line == null || line.length() == 0)
-                    break;
+                if (line == null || line.length() == 0) {
+					break;
+				}
 
                 chunked |= "Transfer-Encoding: chunked".equals(line);
                 closed |= "Connection: close".equals(line);
@@ -804,12 +792,14 @@ public abstract class HttpServerTestBase extends HttpServerTestFixture
             {
                 String chunk = in.readLine();
                 String line = in.readLine();
-                if (line.length() == 0)
-                    break;
+                if (line.length() == 0) {
+					break;
+				}
                 int len = line.length();
                 Assert.assertEquals(Integer.valueOf(chunk, 16).intValue(), len);
-                if (max < len)
-                    max = len;
+                if (max < len) {
+					max = len;
+				}
             }
 
             // Check that biggest chunk was <= buffer size
@@ -817,8 +807,9 @@ public abstract class HttpServerTestBase extends HttpServerTestFixture
 
             // read and check the times are < 999ms
             String[] times = in.readLine().split(",");
-            for (String t : times)
-                Assert.assertTrue(Integer.valueOf(t) < 999);
+            for (String t : times) {
+				Assert.assertTrue(Integer.valueOf(t) < 999);
+			}
 
 
             // read the EOF chunk
@@ -833,8 +824,9 @@ public abstract class HttpServerTestBase extends HttpServerTestFixture
             while (true)
             {
                 String line = in.readLine();
-                if (line == null || line.length() == 0)
-                    break;
+                if (line == null || line.length() == 0) {
+					break;
+				}
 
                 chunked |= "Transfer-Encoding: chunked".equals(line);
                 closed |= "Connection: close".equals(line);
@@ -847,23 +839,25 @@ public abstract class HttpServerTestBase extends HttpServerTestFixture
 
             // read and check the times are < 999ms
             times = in.readLine().split(",");
-            for (String t : times)
-                Assert.assertTrue(t, Integer.valueOf(t) < 999);
+            for (String t : times) {
+				Assert.assertTrue(t, Integer.valueOf(t) < 999);
+			}
 
             // check close
             Assert.assertTrue(in.readLine() == null);
         }
     }
 
-    // Handler that sends big blocks of data in each of 10 writes, and then sends the time it took for each big block.
+    /** Handler that sends big blocks of data in each of 10 writes, and then sends the time it took for each big block. */
     protected static class BigBlockHandler extends AbstractHandler
     {
         @Override
         public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
         {
             byte[] buf = new byte[128 * 1024];
-            for (int i = 0; i < buf.length; i++)
-                buf[i] = (byte)("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_".charAt(i % 63));
+            for (int i = 0; i < buf.length; i++) {
+				buf[i] = (byte)"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_".charAt(i % 63);
+			}
 
             baseRequest.setHandled(true);
             response.setStatus(200);
@@ -904,14 +898,15 @@ public abstract class HttpServerTestBase extends HttpServerTestFixture
 
                 String request = "";
 
-                for (int i = 1; i < pipeline; i++)
-                    request +=
+                for (int i = 1; i < pipeline; i++) {
+					request +=
                             "GET /data?writes=1&block=16&id=" + i + " HTTP/1.1\r\n" +
                                     "host: " + _serverURI.getHost() + ":" + _serverURI.getPort() + "\r\n" +
                                     "user-agent: testharness/1.0 (blah foo/bar)\r\n" +
                                     "accept-encoding: nothing\r\n" +
                                     "cookie: aaa=1234567890\r\n" +
                                     "\r\n";
+				}
 
                 request +=
                         "GET /data?writes=1&block=16 HTTP/1.1\r\n" +
@@ -931,8 +926,9 @@ public abstract class HttpServerTestBase extends HttpServerTestFixture
                 int count = 0;
                 while (line != null)
                 {
-                    if ("HTTP/1.1 200 OK".equals(line))
-                        count++;
+                    if ("HTTP/1.1 200 OK".equals(line)) {
+						count++;
+					}
                     line = in.readLine();
                 }
                 assertEquals(pipeline, count);
@@ -956,9 +952,7 @@ public abstract class HttpServerTestBase extends HttpServerTestFixture
                             "content-length: 10\r\n" +
                             "\r\n").getBytes(StandardCharsets.ISO_8859_1));
 
-            os.write((
-                    "123456789\n"
-            ).getBytes("utf-8"));
+            os.write("123456789\n".getBytes("utf-8"));
 
             os.write((
                     "POST /echo?charset=utf-8 HTTP/1.1\r\n" +
@@ -968,9 +962,7 @@ public abstract class HttpServerTestBase extends HttpServerTestFixture
                             "\r\n"
             ).getBytes(StandardCharsets.ISO_8859_1));
 
-            os.write((
-                    "abcdefghZ\n"
-            ).getBytes("utf-8"));
+            os.write("abcdefghZ\n".getBytes("utf-8"));
 
             String content = "Wibble";
             byte[] contentB = content.getBytes("utf-8");
@@ -992,20 +984,23 @@ public abstract class HttpServerTestBase extends HttpServerTestFixture
 
             //System.err.println("OUTPUT: "+new String(b));
             int i = 0;
-            while (b[i] != 'Z')
-                i++;
+            while (b[i] != 'Z') {
+				i++;
+			}
             int state = 0;
             while (state != 4)
             {
                 switch (b[i++])
                 {
                     case '\r':
-                        if (state == 0 || state == 2)
-                            state++;
+                        if (state == 0 || state == 2) {
+							state++;
+						}
                         continue;
                     case '\n':
-                        if (state == 1 || state == 3)
-                            state++;
+                        if (state == 1 || state == 3) {
+							state++;
+						}
                         continue;
 
                     default:
@@ -1083,9 +1078,7 @@ public abstract class HttpServerTestBase extends HttpServerTestFixture
                             "content-length: 10\r\n" +
                             "\r\n").getBytes(StandardCharsets.ISO_8859_1));
 
-            os.write((
-                    "123456789\n"
-            ).getBytes("utf-8"));
+            os.write("123456789\n".getBytes("utf-8"));
 
             os.write((
                     "POST /echo?charset=utf-8 HTTP/1.1\r\n" +
@@ -1095,9 +1088,7 @@ public abstract class HttpServerTestBase extends HttpServerTestFixture
                             "\r\n"
             ).getBytes(StandardCharsets.ISO_8859_1));
 
-            os.write((
-                    "abcdefghi\n"
-            ).getBytes(StandardCharsets.UTF_8));
+            os.write("abcdefghi\n".getBytes(StandardCharsets.UTF_8));
 
             String content = "Wibble";
             byte[] contentB = content.getBytes(StandardCharsets.UTF_16);
@@ -1236,8 +1227,9 @@ public abstract class HttpServerTestBase extends HttpServerTestFixture
             // read remaining available bytes
             avail = in.available();
             out.println(avail);
-            for (int i = 0; i < avail; i++)
-                buf += (char)in.read();
+            for (int i = 0; i < avail; i++) {
+				buf += (char)in.read();
+			}
 
             avail = in.available();
             out.println(avail);
@@ -1267,9 +1259,9 @@ public abstract class HttpServerTestBase extends HttpServerTestFixture
                 buf += (char)in.read();
                 avail = in.available();
                 out.println(avail + 1);
-            }
-            else
-                out.println(avail);
+            } else {
+				out.println(avail);
+			}
 
             while (avail > 0)
             {
@@ -1314,23 +1306,21 @@ public abstract class HttpServerTestBase extends HttpServerTestFixture
             ).getBytes());
             os.flush();
             Thread.sleep(500);
-            os.write((
-                    "1234567890"
-            ).getBytes());
+            os.write("1234567890".getBytes());
             os.flush();
 
             ah._ex.exchange(null);
 
-            os.write((
-                    "abcdefghijklmnopqrst"
-            ).getBytes());
+            os.write("abcdefghijklmnopqrst".getBytes());
             os.flush();
             Thread.sleep(500);
             ah._ex.exchange(null);
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(is));
             // skip header
-            while (reader.readLine().length() > 0) ;
+            while (reader.readLine().length() > 0) {
+				;
+			}
             assertThat(Integer.parseInt(reader.readLine()), Matchers.equalTo(0));
             assertThat(Integer.parseInt(reader.readLine()), Matchers.equalTo(9));
             assertThat(Integer.parseInt(reader.readLine()), Matchers.equalTo(0));
@@ -1455,8 +1445,9 @@ public abstract class HttpServerTestBase extends HttpServerTestFixture
                                     "\r\n"+
                                     content).getBytes(StandardCharsets.ISO_8859_1);
                                     
-                    for (int i = 0; i < REQS; i++)
-                        out.write(bytes, 0, bytes.length);
+                    for (int i = 0; i < REQS; i++) {
+						out.write(bytes, 0, bytes.length);
+					}
                     out.write("GET / HTTP/1.1\r\nHost: last\r\nConnection: close\r\n\r\n".getBytes(StandardCharsets.ISO_8859_1));
                     out.flush();
                 }
@@ -1470,7 +1461,7 @@ public abstract class HttpServerTestBase extends HttpServerTestFixture
         String resps = readResponse(client);
                 
         int offset = 0;
-        for (int i = 0; i < (REQS + 1); i++)
+        for (int i = 0; i < REQS + 1; i++)
         {
             int ok = resps.indexOf("HTTP/1.1 200 OK", offset);
             assertThat("resp" + i, ok, greaterThanOrEqualTo(offset));
@@ -1497,10 +1488,12 @@ public abstract class HttpServerTestBase extends HttpServerTestFixture
         while (true)
         {
                 line=in.readLine();
-                if (line==null)
-                        throw new EOFException();
-                if (line.length()==0)
-                        break;
+                if (line==null) {
+					throw new EOFException();
+				}
+                if (line.length()==0) {
+					break;
+				}
                 
             assertThat(line, not(containsString("Content-Length")));
             assertThat(line, not(containsString("Content-Type")));
@@ -1512,10 +1505,12 @@ public abstract class HttpServerTestBase extends HttpServerTestFixture
         while (true)
         {
                 line=in.readLine();
-                if (line==null)
-                        throw new EOFException();
-                if (line.length()==0)
-                        break;
+                if (line==null) {
+					throw new EOFException();
+				}
+                if (line.length()==0) {
+					break;
+				}
                 
             assertThat(line, not(containsString("Content-Length")));
             assertThat(line, not(containsString("Content-Type")));
@@ -1593,7 +1588,7 @@ public abstract class HttpServerTestBase extends HttpServerTestFixture
 
             String response = readResponse(client);
             assertThat(response, containsString("RESUMEDHTTP/1.1 200 OK"));
-            assertThat((System.currentTimeMillis() - start), greaterThanOrEqualTo(1999L));
+            assertThat(System.currentTimeMillis() - start, greaterThanOrEqualTo(1999L));
 
             // TODO This test should also check that that the CPU did not spin during the suspend.
         }

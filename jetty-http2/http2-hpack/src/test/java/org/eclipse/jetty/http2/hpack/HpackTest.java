@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http2.hpack;
 
@@ -40,9 +35,9 @@ import org.junit.Test;
 
 public class HpackTest
 {
-    final static HttpField ServerJetty = new PreEncodedHttpField(HttpHeader.SERVER,"jetty");
-    final static HttpField XPowerJetty = new PreEncodedHttpField(HttpHeader.X_POWERED_BY,"jetty");
-    final static HttpField Date = new PreEncodedHttpField(HttpHeader.DATE,DateGenerator.formatDate(System.currentTimeMillis()));
+    static final HttpField ServerJetty = new PreEncodedHttpField(HttpHeader.SERVER,"jetty");
+    static final HttpField XPowerJetty = new PreEncodedHttpField(HttpHeader.X_POWERED_BY,"jetty");
+    static final HttpField Date = new PreEncodedHttpField(HttpHeader.DATE,DateGenerator.formatDate(System.currentTimeMillis()));
     
     @Test
     public void encodeDecodeResponseTest()
@@ -112,7 +107,7 @@ public class HpackTest
         BufferUtil.clearToFill(buffer);
         encoder.encode(buffer,original0);
         BufferUtil.flipToFlush(buffer,0);
-        MetaData decoded0 = (MetaData)decoder.decode(buffer);
+        MetaData decoded0 = decoder.decode(buffer);
 
         assertMetadataSame(original0,decoded0);
                
@@ -151,7 +146,7 @@ public class HpackTest
         BufferUtil.clearToFill(buffer);
         encoder.encode(buffer,original0);
         BufferUtil.flipToFlush(buffer,0);
-        MetaData decoded0 = (MetaData)decoder.decode(buffer);
+        MetaData decoded0 = decoder.decode(buffer);
 
         assertEquals(2,encoder.getHpackContext().size());
         assertEquals(2,decoder.getHpackContext().size());
@@ -168,7 +163,7 @@ public class HpackTest
         BufferUtil.clearToFill(buffer);
         encoder.encode(buffer,original1);
         BufferUtil.flipToFlush(buffer,0);
-        MetaData decoded1 = (MetaData)decoder.decode(buffer);
+        MetaData decoded1 = decoder.decode(buffer);
         assertMetadataSame(original1,decoded1);
         
         assertEquals(2,encoder.getHpackContext().size());

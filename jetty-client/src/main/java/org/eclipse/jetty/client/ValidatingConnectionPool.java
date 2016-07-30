@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.client;
 
@@ -84,13 +79,15 @@ public class ValidatingConnectionPool extends ConnectionPool
         lock();
         try
         {
-            if (!getActiveConnections().remove(connection))
-                return false;
+            if (!getActiveConnections().remove(connection)) {
+				return false;
+			}
             Holder holder = new Holder(connection);
             holder.task = scheduler.schedule(holder, timeout, TimeUnit.MILLISECONDS);
             quarantine.put(connection, holder);
-            if (LOG.isDebugEnabled())
-                LOG.debug("Validating for {}ms {}", timeout, connection);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Validating for {}ms {}", timeout, connection);
+			}
         }
         finally
         {
@@ -115,15 +112,18 @@ public class ValidatingConnectionPool extends ConnectionPool
             unlock();
         }
 
-        if (holder == null)
-            return super.remove(connection);
+        if (holder == null) {
+			return super.remove(connection);
+		}
 
-        if (LOG.isDebugEnabled())
-            LOG.debug("Removed while validating {}", connection);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Removed while validating {}", connection);
+		}
 
         boolean cancelled = holder.cancel();
-        if (cancelled)
-            return remove(connection, true);
+        if (cancelled) {
+			return remove(connection, true);
+		}
 
         return super.remove(connection);
     }
@@ -174,16 +174,18 @@ public class ValidatingConnectionPool extends ConnectionPool
                 {
                     quarantine.remove(connection);
                     idle = offerIdle(connection);
-                    if (LOG.isDebugEnabled())
-                        LOG.debug("Validated {}", connection);
+                    if (LOG.isDebugEnabled()) {
+						LOG.debug("Validated {}", connection);
+					}
                 }
                 finally
                 {
                     unlock();
                 }
 
-                if (idle(connection, idle))
-                    proceed();
+                if (idle(connection, idle)) {
+					proceed();
+				}
             }
         }
 

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 import java.util.ArrayList;
@@ -52,13 +47,15 @@ public class CookieCutter
     
     public Cookie[] getCookies()
     {
-        if (_cookies!=null)
-            return _cookies;
+        if (_cookies!=null) {
+			return _cookies;
+		}
         
-        if (_lastCookies!=null && _fields==_fieldList.size())
-            _cookies=_lastCookies;
-        else
-            parseFields();
+        if (_lastCookies!=null && _fields==_fieldList.size()) {
+			_cookies=_lastCookies;
+		} else {
+			parseFields();
+		}
         _lastCookies=_cookies;
         return _cookies;
     }
@@ -79,11 +76,13 @@ public class CookieCutter
     
     public void addCookieField(String f)
     {
-        if (f==null)
-            return;
+        if (f==null) {
+			return;
+		}
         f=f.trim();
-        if (f.length()==0)
-            return;
+        if (f.length()==0) {
+			return;
+		}
             
         if (_fieldList.size()>_fields)
         {
@@ -93,8 +92,9 @@ public class CookieCutter
                 return;
             }
             
-            while (_fieldList.size()>_fields)
-                _fieldList.remove(_fields);
+            while (_fieldList.size()>_fields) {
+				_fieldList.remove(_fields);
+			}
         }
         _cookies=null;
         _lastCookies=null;
@@ -112,8 +112,9 @@ public class CookieCutter
         int version = 0;
 
         // delete excess fields
-        while (_fieldList.size()>_fields)
-            _fieldList.remove(_fields);
+        while (_fieldList.size()>_fields) {
+			_fieldList.remove(_fields);
+		}
         
         // For each cookie field
         for (String hdr : _fieldList)
@@ -151,9 +152,9 @@ public class CookieCutter
                             // handle quote as last character specially
                             if (i==last)
                             {
-                                if (invalue)
-                                    value = hdr.substring(tokenstart, tokenend+1);
-                                else
+                                if (invalue) {
+									value = hdr.substring(tokenstart, tokenend+1);
+								} else
                                 {
                                     name = hdr.substring(tokenstart, tokenend+1);
                                     value = "";
@@ -167,108 +168,108 @@ public class CookieCutter
                         default:
                             continue;
                     }
-                }
-                else
-                {
-                    // Handle name and value state machines
-                    if (invalue)
-                    {
-                        // parse the value
-                        switch (c)
-                        {
-                            case ' ':
-                            case '\t':
-                                continue;
-                                
-                            case '"':
-                                if (tokenstart<0)
-                                {
-                                    quoted=true;
-                                    tokenstart=i;
-                                }
-                                tokenend=i;
-                                if (i==last)
-                                {
-                                    value = hdr.substring(tokenstart, tokenend+1);
-                                    break;
-                                }
-                                continue;
+                } else // Handle name and value state machines
+				if (invalue)
+				{
+				    // parse the value
+				    switch (c)
+				    {
+				        case ' ':
+				        case '\t':
+				            continue;
+				            
+				        case '"':
+				            if (tokenstart<0)
+				            {
+				                quoted=true;
+				                tokenstart=i;
+				            }
+				            tokenend=i;
+				            if (i==last)
+				            {
+				                value = hdr.substring(tokenstart, tokenend+1);
+				                break;
+				            }
+				            continue;
 
-                            case ';':
-                                if (tokenstart>=0)
-                                    value = hdr.substring(tokenstart, tokenend+1);
-                                else
-                                    value="";
-                                tokenstart = -1;
-                                invalue=false;
-                                break;
-                                
-                            default:
-                                if (tokenstart<0)
-                                    tokenstart=i;
-                                tokenend=i;
-                                if (i==last)
-                                {
-                                    value = hdr.substring(tokenstart, tokenend+1);
-                                    break;
-                                }
-                                continue;
-                        }
-                    }
-                    else
-                    {
-                        // parse the name
-                        switch (c)
-                        {
-                            case ' ':
-                            case '\t':
-                                continue;
-                                
-                            case '"':
-                                if (tokenstart<0)
-                                {
-                                    quoted=true;
-                                    tokenstart=i;
-                                }
-                                tokenend=i;
-                                if (i==last)
-                                {
-                                    name = hdr.substring(tokenstart, tokenend+1);
-                                    value = "";
-                                    break;
-                                }
-                                continue;
+				        case ';':
+				            if (tokenstart>=0) {
+								value = hdr.substring(tokenstart, tokenend+1);
+							} else {
+								value="";
+							}
+				            tokenstart = -1;
+				            invalue=false;
+				            break;
+				            
+				        default:
+				            if (tokenstart<0) {
+								tokenstart=i;
+							}
+				            tokenend=i;
+				            if (i==last)
+				            {
+				                value = hdr.substring(tokenstart, tokenend+1);
+				                break;
+				            }
+				            continue;
+				    }
+				}
+				else
+				{
+				    // parse the name
+				    switch (c)
+				    {
+				        case ' ':
+				        case '\t':
+				            continue;
+				            
+				        case '"':
+				            if (tokenstart<0)
+				            {
+				                quoted=true;
+				                tokenstart=i;
+				            }
+				            tokenend=i;
+				            if (i==last)
+				            {
+				                name = hdr.substring(tokenstart, tokenend+1);
+				                value = "";
+				                break;
+				            }
+				            continue;
 
-                            case ';':
-                                if (tokenstart>=0)
-                                {
-                                    name = hdr.substring(tokenstart, tokenend+1);
-                                    value = "";
-                                }
-                                tokenstart = -1;
-                                break;
+				        case ';':
+				            if (tokenstart>=0)
+				            {
+				                name = hdr.substring(tokenstart, tokenend+1);
+				                value = "";
+				            }
+				            tokenstart = -1;
+				            break;
 
-                            case '=':
-                                if (tokenstart>=0)
-                                    name = hdr.substring(tokenstart, tokenend+1);
-                                tokenstart = -1;
-                                invalue=true;
-                                continue;
-                                
-                            default:
-                                if (tokenstart<0)
-                                    tokenstart=i;
-                                tokenend=i;
-                                if (i==last)
-                                {
-                                    name = hdr.substring(tokenstart, tokenend+1);
-                                    value = "";
-                                    break;
-                                }
-                                continue;
-                        }
-                    }
-                }
+				        case '=':
+				            if (tokenstart>=0) {
+								name = hdr.substring(tokenstart, tokenend+1);
+							}
+				            tokenstart = -1;
+				            invalue=true;
+				            continue;
+				            
+				        default:
+				            if (tokenstart<0) {
+								tokenstart=i;
+							}
+				            tokenend=i;
+				            if (i==last)
+				            {
+				                name = hdr.substring(tokenstart, tokenend+1);
+				                value = "";
+				                break;
+				            }
+				            continue;
+				    }
+				}
 
                 // If after processing the current character we have a value and a name, then it is a cookie
                 if (value!=null && name!=null)
@@ -284,18 +285,21 @@ public class CookieCutter
                             String lowercaseName = name.toLowerCase(Locale.ENGLISH);
                             if ("$path".equals(lowercaseName))
                             {
-                                if (cookie!=null)
-                                    cookie.setPath(value);
+                                if (cookie!=null) {
+									cookie.setPath(value);
+								}
                             }
                             else if ("$domain".equals(lowercaseName))
                             {
-                                if (cookie!=null)
-                                    cookie.setDomain(value);
+                                if (cookie!=null) {
+									cookie.setDomain(value);
+								}
                             }
                             else if ("$port".equals(lowercaseName))
                             {
-                                if (cookie!=null)
-                                    cookie.setComment("$port="+value);
+                                if (cookie!=null) {
+									cookie.setComment("$port="+value);
+								}
                             }
                             else if ("$version".equals(lowercaseName))
                             {
@@ -305,8 +309,9 @@ public class CookieCutter
                         else
                         {
                             cookie = new Cookie(name, value);
-                            if (version > 0)
-                                cookie.setVersion(version);
+                            if (version > 0) {
+								cookie.setVersion(version);
+							}
                             cookies.add(cookie);
                         }
                     }
@@ -321,7 +326,7 @@ public class CookieCutter
             }
         }
 
-        _cookies = (Cookie[]) cookies.toArray(new Cookie[cookies.size()]);
+        _cookies = cookies.toArray(new Cookie[cookies.size()]);
         _lastCookies=_cookies;
     }
     

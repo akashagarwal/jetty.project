@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.servlets;
 
@@ -72,8 +67,9 @@ public class QoSFilterTest
         TestServlet.__sleepers = 0;
 
         _connectors = new LocalConnector[NUM_CONNECTIONS];
-        for (int i = 0; i < _connectors.length; ++i)
-            _connectors[i] = _tester.createLocalConnector();
+        for (int i = 0; i < _connectors.length; ++i) {
+			_connectors[i] = _tester.createLocalConnector();
+		}
 
         _tester.start();
     }
@@ -98,10 +94,11 @@ public class QoSFilterTest
 
         rethrowExceptions(futures);
 
-        if (TestServlet.__maxSleepers <= MAX_QOS)
-            LOG.warn("TEST WAS NOT PARALLEL ENOUGH!");
-        else
-            assertThat(TestServlet.__maxSleepers, Matchers.lessThanOrEqualTo(NUM_CONNECTIONS));
+        if (TestServlet.__maxSleepers <= MAX_QOS) {
+			LOG.warn("TEST WAS NOT PARALLEL ENOUGH!");
+		} else {
+			assertThat(TestServlet.__maxSleepers, Matchers.lessThanOrEqualTo(NUM_CONNECTIONS));
+		}
     }
 
     @Test
@@ -123,10 +120,11 @@ public class QoSFilterTest
 
         rethrowExceptions(futures);
 
-        if (TestServlet.__maxSleepers < MAX_QOS)
-            LOG.warn("TEST WAS NOT PARALLEL ENOUGH!");
-        else
-            Assert.assertEquals(TestServlet.__maxSleepers, MAX_QOS);
+        if (TestServlet.__maxSleepers < MAX_QOS) {
+			LOG.warn("TEST WAS NOT PARALLEL ENOUGH!");
+		} else {
+			Assert.assertEquals(TestServlet.__maxSleepers, MAX_QOS);
+		}
     }
 
     @Test
@@ -148,10 +146,11 @@ public class QoSFilterTest
 
         rethrowExceptions(futures);
 
-        if (TestServlet.__maxSleepers < MAX_QOS)
-            LOG.warn("TEST WAS NOT PARALLEL ENOUGH!");
-        else
-            Assert.assertEquals(TestServlet.__maxSleepers, MAX_QOS);
+        if (TestServlet.__maxSleepers < MAX_QOS) {
+			LOG.warn("TEST WAS NOT PARALLEL ENOUGH!");
+		} else {
+			Assert.assertEquals(TestServlet.__maxSleepers, MAX_QOS);
+		}
     }
 
     private void rethrowExceptions(List<Future<Void>> futures) throws Exception
@@ -180,7 +179,7 @@ public class QoSFilterTest
 
                 request.setMethod("GET");
                 request.setHeader("host", "tester");
-                request.setURI("/context/test?priority=" + (_num % QoSFilter.__DEFAULT_MAX_PRIORITY));
+                request.setURI("/context/test?priority=" + _num % QoSFilter.__DEFAULT_MAX_PRIORITY);
                 request.setHeader("num", _num + "");
 
                 String responseString = _connectors[_num].getResponse(BufferUtil.toString(request.generate()));
@@ -210,7 +209,7 @@ public class QoSFilterTest
                 String addr = _tester.createConnector(true);
                 for (int i = 0; i < NUM_LOOPS; i++)
                 {
-                    url = new URL(addr + "/context/test?priority=" + (_num % QoSFilter.__DEFAULT_MAX_PRIORITY) + "&n=" + _num + "&l=" + i);
+                    url = new URL(addr + "/context/test?priority=" + _num % QoSFilter.__DEFAULT_MAX_PRIORITY + "&n=" + _num + "&l=" + i);
                     url.getContent();
                 }
             }
@@ -236,8 +235,9 @@ public class QoSFilterTest
                 synchronized (TestServlet.class)
                 {
                     __sleepers++;
-                    if (__sleepers > __maxSleepers)
-                        __maxSleepers = __sleepers;
+                    if (__sleepers > __maxSleepers) {
+						__maxSleepers = __sleepers;
+					}
                 }
 
                 Thread.sleep(50);
@@ -263,8 +263,9 @@ public class QoSFilterTest
         public int getPriority(ServletRequest request)
         {
             String p = request.getParameter("priority");
-            if (p != null)
-                return Integer.parseInt(p);
+            if (p != null) {
+				return Integer.parseInt(p);
+			}
             return 0;
         }
     }

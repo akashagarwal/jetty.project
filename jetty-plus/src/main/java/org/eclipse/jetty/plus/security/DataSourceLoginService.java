@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 
 package org.eclipse.jetty.plus.security;
@@ -69,14 +64,14 @@ public class DataSourceLoginService extends MappedLoginService
     private String _userRoleTableUserKey = "user_id";
     private String _userRoleTableRoleKey = "role_id";
     private int _cacheMs = 30000;
-    private long _lastPurge = 0;
+    private long _lastPurge;
     private String _userSql;
     private String _roleSql;
-    private boolean _createTables = false;
+    private boolean _createTables;
     
     
     /**
-     * DBUser
+     * DBUser.
      */
     public class DBUser extends KnownUser
     {
@@ -95,210 +90,210 @@ public class DataSourceLoginService extends MappedLoginService
         
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public DataSourceLoginService()
     {
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public DataSourceLoginService(String name)
     {
         setName(name);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public DataSourceLoginService(String name, IdentityService identityService)
     {
         setName(name);
         setIdentityService(identityService);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void setJndiName (String jndi)
     {
         _jndiName = jndi;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public String getJndiName ()
     {
         return _jndiName;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void setServer (Server server)
     {
         _server=server;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public Server getServer()
     {
         return _server;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void setCreateTables(boolean createTables)
     {
         _createTables = createTables;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public boolean getCreateTables()
     {
         return _createTables;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void setUserTableName (String name)
     {
         _userTableName=name;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public String getUserTableName()
     {
         return _userTableName;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public String getUserTableKey()
     {
         return _userTableKey;
     }
 
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void setUserTableKey(String tableKey)
     {
         _userTableKey = tableKey;
     }
 
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public String getUserTableUserField()
     {
         return _userTableUserField;
     }
 
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void setUserTableUserField(String tableUserField)
     {
         _userTableUserField = tableUserField;
     }
 
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public String getUserTablePasswordField()
     {
         return _userTablePasswordField;
     }
 
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void setUserTablePasswordField(String tablePasswordField)
     {
         _userTablePasswordField = tablePasswordField;
     }
 
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public String getRoleTableName()
     {
         return _roleTableName;
     }
 
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void setRoleTableName(String tableName)
     {
         _roleTableName = tableName;
     }
 
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public String getRoleTableKey()
     {
         return _roleTableKey;
     }
 
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void setRoleTableKey(String tableKey)
     {
         _roleTableKey = tableKey;
     }
 
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public String getRoleTableRoleField()
     {
         return _roleTableRoleField;
     }
 
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void setRoleTableRoleField(String tableRoleField)
     {
         _roleTableRoleField = tableRoleField;
     }
 
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public String getUserRoleTableName()
     {
         return _userRoleTableName;
     }
 
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void setUserRoleTableName(String roleTableName)
     {
         _userRoleTableName = roleTableName;
     }
 
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public String getUserRoleTableUserKey()
     {
         return _userRoleTableUserKey;
     }
 
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void setUserRoleTableUserKey(String roleTableUserKey)
     {
         _userRoleTableUserKey = roleTableUserKey;
     }
 
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public String getUserRoleTableRoleKey()
     {
         return _userRoleTableRoleKey;
     }
 
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void setUserRoleTableRoleKey(String roleTableRoleKey)
     {
         _userRoleTableRoleKey = roleTableRoleKey;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void setCacheMs (int ms)
     {
         _cacheMs=ms;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public int getCacheMs ()
     {
         return _cacheMs;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     protected void loadUsers()
     {
@@ -356,9 +351,6 @@ public class DataSourceLoginService extends MappedLoginService
     }
     
     
-    /** 
-     * @see org.eclipse.jetty.security.MappedLoginService#loadUserInfo(java.lang.String)
-     */
     public KnownUser loadUserInfo (String username)
     {
         try
@@ -390,9 +382,6 @@ public class DataSourceLoginService extends MappedLoginService
         return null;
     }
     
-    /** 
-     * @see org.eclipse.jetty.security.MappedLoginService#loadRoleInfo(org.eclipse.jetty.security.MappedLoginService.KnownUser)
-     */
     public String[] loadRoleInfo (KnownUser user)
     {
         DBUser dbuser = (DBUser)user;
@@ -428,7 +417,7 @@ public class DataSourceLoginService extends MappedLoginService
         return null;
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public UserIdentity login(String username, Object credentials, ServletRequest request)
     {
@@ -453,8 +442,9 @@ public class DataSourceLoginService extends MappedLoginService
      */
     public void initDb() throws NamingException, SQLException
     {
-        if (_datasource != null)
-            return;
+        if (_datasource != null) {
+			return;
+		}
 
         @SuppressWarnings("unused")
         InitialContext ic = new InitialContext();
@@ -509,7 +499,7 @@ public class DataSourceLoginService extends MappedLoginService
                 DatabaseMetaData metaData = connection.getMetaData();
 
                 //check if tables exist
-                String tableName = (metaData.storesLowerCaseIdentifiers()? _userTableName.toLowerCase(Locale.ENGLISH): (metaData.storesUpperCaseIdentifiers()?_userTableName.toUpperCase(Locale.ENGLISH): _userTableName));
+                String tableName = metaData.storesLowerCaseIdentifiers()? _userTableName.toLowerCase(Locale.ENGLISH): (metaData.storesUpperCaseIdentifiers()?_userTableName.toUpperCase(Locale.ENGLISH): _userTableName);
                 try (ResultSet result = metaData.getTables(null, null, tableName, null))
                 {
                     if (!result.next())
@@ -523,11 +513,13 @@ public class DataSourceLoginService extends MappedLoginService
                         stmt.executeUpdate("create table "+_userTableName+ "("+_userTableKey+" integer,"+
                                 _userTableUserField+" varchar(100) not null unique,"+
                                 _userTablePasswordField+" varchar(20) not null, primary key("+_userTableKey+"))");
-                        if (LOG.isDebugEnabled()) LOG.debug("Created table "+_userTableName);
+                        if (LOG.isDebugEnabled()) {
+							LOG.debug("Created table "+_userTableName);
+						}
                     }
                 }
 
-                tableName = (metaData.storesLowerCaseIdentifiers()? _roleTableName.toLowerCase(Locale.ENGLISH): (metaData.storesUpperCaseIdentifiers()?_roleTableName.toUpperCase(Locale.ENGLISH): _roleTableName));
+                tableName = metaData.storesLowerCaseIdentifiers()? _roleTableName.toLowerCase(Locale.ENGLISH): (metaData.storesUpperCaseIdentifiers()?_roleTableName.toUpperCase(Locale.ENGLISH): _roleTableName);
                 try (ResultSet result = metaData.getTables(null, null, tableName, null))
                 {
                     if (!result.next())
@@ -540,11 +532,13 @@ public class DataSourceLoginService extends MappedLoginService
                         String str = "create table "+_roleTableName+" ("+_roleTableKey+" integer, "+
                         _roleTableRoleField+" varchar(100) not null unique, primary key("+_roleTableKey+"))";
                         stmt.executeUpdate(str);
-                        if (LOG.isDebugEnabled()) LOG.debug("Created table "+_roleTableName);
+                        if (LOG.isDebugEnabled()) {
+							LOG.debug("Created table "+_roleTableName);
+						}
                     }
                 }
 
-                tableName = (metaData.storesLowerCaseIdentifiers()? _userRoleTableName.toLowerCase(Locale.ENGLISH): (metaData.storesUpperCaseIdentifiers()?_userRoleTableName.toUpperCase(Locale.ENGLISH): _userRoleTableName));
+                tableName = metaData.storesLowerCaseIdentifiers()? _userRoleTableName.toLowerCase(Locale.ENGLISH): (metaData.storesUpperCaseIdentifiers()?_userRoleTableName.toUpperCase(Locale.ENGLISH): _userRoleTableName);
                 try (ResultSet result = metaData.getTables(null, null, tableName, null))
                 {
                     if (!result.next())
@@ -561,7 +555,9 @@ public class DataSourceLoginService extends MappedLoginService
                                 _userRoleTableRoleKey+" integer, "+
                                 "primary key ("+_userRoleTableUserKey+", "+_userRoleTableRoleKey+"))");
                         stmt.executeUpdate("create index indx_user_role on "+_userRoleTableName+"("+_userRoleTableUserKey+")");
-                        if (LOG.isDebugEnabled()) LOG.debug("Created table "+_userRoleTableName +" and index");
+                        if (LOG.isDebugEnabled()) {
+							LOG.debug("Created table "+_userRoleTableName +" and index");
+						}
                     }
                 }
                 connection.commit();
@@ -574,7 +570,9 @@ public class DataSourceLoginService extends MappedLoginService
                 }
                 catch (SQLException e)
                 {
-                    if (LOG.isDebugEnabled()) LOG.debug("Prepare tables", e);
+                    if (LOG.isDebugEnabled()) {
+						LOG.debug("Prepare tables", e);
+					}
                 }
                 finally
                 {
@@ -584,7 +582,9 @@ public class DataSourceLoginService extends MappedLoginService
                     }
                     catch (SQLException e)
                     {
-                        if (LOG.isDebugEnabled()) LOG.debug("Prepare tables", e);
+                        if (LOG.isDebugEnabled()) {
+							LOG.debug("Prepare tables", e);
+						}
                     }
                 }
             }

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.common.extensions.fragment;
 
@@ -35,7 +30,7 @@ import org.eclipse.jetty.websocket.common.extensions.AbstractExtension;
 import org.eclipse.jetty.websocket.common.frames.DataFrame;
 
 /**
- * Fragment Extension
+ * Fragment Extension.
  */
 public class FragmentExtension extends AbstractExtension
 {
@@ -69,8 +64,9 @@ public class FragmentExtension extends AbstractExtension
         }
 
         FrameEntry entry = new FrameEntry(frame, callback, batchMode);
-        if (LOG.isDebugEnabled())
-            LOG.debug("Queuing {}", entry);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Queuing {}", entry);
+		}
         entries.offer(entry);
         flusher.iterate();
     }
@@ -114,8 +110,9 @@ public class FragmentExtension extends AbstractExtension
             {
                 current = entries.poll();
                 LOG.debug("Processing {}", current);
-                if (current == null)
-                    return Action.IDLE;
+                if (current == null) {
+					return Action.IDLE;
+				}
                 fragment(current, true);
             }
             else
@@ -144,8 +141,9 @@ public class FragmentExtension extends AbstractExtension
             ByteBuffer payloadFragment = payload.slice();
             payload.limit(limit);
             fragment.setPayload(payloadFragment);
-            if (LOG.isDebugEnabled())
-                LOG.debug("Fragmented {}->{}", frame, fragment);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Fragmented {}->{}", frame, fragment);
+			}
             payload.position(newLimit);
 
             nextOutgoingFrame(fragment, this, entry.batchMode);
@@ -190,13 +188,15 @@ public class FragmentExtension extends AbstractExtension
         {
             try
             {
-                if (callback != null)
-                    callback.writeSuccess();
+                if (callback != null) {
+					callback.writeSuccess();
+				}
             }
             catch (Throwable x)
             {
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Exception while notifying success of callback " + callback, x);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("Exception while notifying success of callback " + callback, x);
+				}
             }
         }
 
@@ -204,13 +204,15 @@ public class FragmentExtension extends AbstractExtension
         {
             try
             {
-                if (callback != null)
-                    callback.writeFailed(failure);
+                if (callback != null) {
+					callback.writeFailed(failure);
+				}
             }
             catch (Throwable x)
             {
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Exception while notifying failure of callback " + callback, x);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("Exception while notifying failure of callback " + callback, x);
+				}
             }
         }
     }

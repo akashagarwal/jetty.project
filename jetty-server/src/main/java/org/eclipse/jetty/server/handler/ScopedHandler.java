@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server.handler;
 
@@ -104,18 +99,16 @@ public abstract class ScopedHandler extends HandlerWrapper
     protected ScopedHandler _outerScope;
     protected ScopedHandler _nextScope;
 
-    /* ------------------------------------------------------------ */
-    /**
-     * @see org.eclipse.jetty.server.handler.HandlerWrapper#doStart()
-     */
+    /** ------------------------------------------------------------. */
     @Override
     protected void doStart() throws Exception
     {
         try
         {
             _outerScope=__outerScope.get();
-            if (_outerScope==null)
-                __outerScope.set(this);
+            if (_outerScope==null) {
+				__outerScope.set(this);
+			}
 
             super.doStart();
 
@@ -124,36 +117,36 @@ public abstract class ScopedHandler extends HandlerWrapper
         }
         finally
         {
-            if (_outerScope==null)
-                __outerScope.set(null);
+            if (_outerScope==null) {
+				__outerScope.set(null);
+			}
         }
     }
 
-    /* ------------------------------------------------------------ */
-    /*
-     */
+    /** ------------------------------------------------------------. */
     @Override
     public final void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
     {
         if (isStarted())
         {
-            if (_outerScope==null)
-                doScope(target,baseRequest,request, response);
-            else
-                doHandle(target,baseRequest,request, response);
+            if (_outerScope!=null) {
+				doHandle(target,baseRequest,request, response);
+			} else {
+				doScope(target,baseRequest,request, response);
+			}
         }
     }
 
     /* ------------------------------------------------------------ */
-    /*
-     * Scope the handler
+    /**
+     * Scope the handler.
      */
     public abstract void doScope(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException;
 
     /* ------------------------------------------------------------ */
-    /*
-     * Scope the handler
+    /**
+     * Scope the handler.
      */
     public final void nextScope(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException
@@ -161,23 +154,24 @@ public abstract class ScopedHandler extends HandlerWrapper
         // this method has been manually inlined in several locations, but
         // is called protected by an if(never()), so your IDE can find those
         // locations if this code is changed.
-        if (_nextScope!=null)
-            _nextScope.doScope(target,baseRequest,request, response);
-        else if (_outerScope!=null)
-            _outerScope.doHandle(target,baseRequest,request, response);
-        else
-            doHandle(target,baseRequest,request, response);
+        if (_nextScope!=null) {
+			_nextScope.doScope(target,baseRequest,request, response);
+		} else if (_outerScope!=null) {
+			_outerScope.doHandle(target,baseRequest,request, response);
+		} else {
+			doHandle(target,baseRequest,request, response);
+		}
     }
 
     /* ------------------------------------------------------------ */
-    /*
+    /**
      * Do the handler work within the scope.
      */
     public abstract void doHandle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException;
 
     /* ------------------------------------------------------------ */
-    /*
+    /**
      * Do the handler work within the scope.
      */
     public final void nextHandle(String target, final Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
@@ -185,13 +179,14 @@ public abstract class ScopedHandler extends HandlerWrapper
         // this method has been manually inlined in several locations, but
         // is called protected by an if(never()), so your IDE can find those
         // locations if this code is changed.
-        if (_nextScope!=null && _nextScope==_handler)
-            _nextScope.doHandle(target,baseRequest,request, response);
-        else if (_handler!=null)
-            _handler.handle(target,baseRequest, request, response);
+        if (_nextScope!=null && _nextScope==_handler) {
+			_nextScope.doHandle(target,baseRequest,request, response);
+		} else if (_handler!=null) {
+			_handler.handle(target,baseRequest, request, response);
+		}
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected boolean never()
     {
         return false;

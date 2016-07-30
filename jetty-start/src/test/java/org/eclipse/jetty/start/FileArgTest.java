@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.start;
 
@@ -39,7 +34,7 @@ public class FileArgTest
     {
         public void add(String rawfileref, String expectedUri, String expectedLocation)
         {
-            this.add(new String[] { rawfileref, expectedUri, expectedLocation });
+            add(new String[] { rawfileref, expectedUri, expectedLocation });
         }
     }
 
@@ -76,24 +71,24 @@ public class FileArgTest
         return data;
     }
 
-    @Parameter(value = 0)
+    @Parameter(0)
     public String rawFileRef;
-    @Parameter(value = 1)
+    @Parameter(1)
     public String expectedUri;
-    @Parameter(value = 2)
+    @Parameter(2)
     public String expectedLocation;
 
     @Test
     public void testFileArg()
     {
         FileArg arg = new FileArg(null,rawFileRef);
-        if (expectedUri == null)
+        if (expectedUri != null)
         {
-            assertThat("URI",arg.uri,nullValue());
+            assertThat("URI",arg.uri,is(expectedUri));
         }
         else
         {
-            assertThat("URI",arg.uri,is(expectedUri));
+            assertThat("URI",arg.uri,nullValue());
         }
         assertThat("Location",arg.location,is(expectedLocation));
     }

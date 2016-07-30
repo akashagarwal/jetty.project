@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util.log;
 
@@ -54,26 +49,26 @@ import org.eclipse.jetty.util.annotation.ManagedAttribute;
  */
 public class Log
 {
-    public final static String EXCEPTION= "EXCEPTION ";
-    public final static String IGNORED= "IGNORED EXCEPTION ";
+    public static final String EXCEPTION= "EXCEPTION ";
+    public static final String IGNORED= "IGNORED EXCEPTION ";
 
     /**
-     * Logging Configuration Properties
+     * Logging Configuration Properties.
      */
     protected static final Properties __props;
     /**
-     * The {@link Logger} implementation class name
+     * The {@link Logger} implementation class name.
      */
     public static String __logClass;
     /**
-     * Legacy flag indicating if {@link Logger#ignore(Throwable)} methods produce any output in the {@link Logger}s
+     * Legacy flag indicating if {@link Logger#ignore(Throwable)} methods produce any output in the {@link Logger}s.
      */
     public static boolean __ignored;
 
     /**
      * Hold loggers only.
      */
-    private final static ConcurrentMap<String, Logger> __loggers = new ConcurrentHashMap<>();
+    private static final ConcurrentMap<String, Logger> __loggers = new ConcurrentHashMap<>();
 
 
     static
@@ -157,14 +152,15 @@ public class Log
     }
 
     private static Logger LOG;
-    private static boolean __initialized=false;
+    private static boolean __initialized;
 
     public static void initialized()
     {   
         synchronized (Log.class)
         {
-            if (__initialized)
-                return;
+            if (__initialized) {
+				return;
+			}
             __initialized = true;
 
             Boolean announce = Boolean.parseBoolean(__props.getProperty("org.eclipse.jetty.util.log.announce", "true"));
@@ -309,12 +305,14 @@ public class Log
     {
         initialized();
 
-        if(name==null)
-            return LOG;
+        if(name==null) {
+			return LOG;
+		}
 
         Logger logger = __loggers.get(name);
-        if(logger==null)
-            logger = LOG.getLogger(name);
+        if(logger==null) {
+			logger = LOG.getLogger(name);
+		}
 
         return logger;
     }

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.quickstart;
 
@@ -28,7 +23,7 @@ import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.webapp.WebAppContext;
 
 /**
- * QuickStartWar
+ * QuickStartWar.
  */
 public class QuickStartWebApp extends WebAppContext
 {
@@ -42,9 +37,9 @@ public class QuickStartWebApp extends WebAppContext
                 org.eclipse.jetty.webapp.JettyWebXmlConfiguration.class.getCanonicalName()
             };
     
-    private boolean _preconfigure=false;
-    private boolean _autoPreconfigure=false;
-    private boolean _startWebapp=false;
+    private boolean _preconfigure;
+    private boolean _autoPreconfigure;
+    private boolean _startWebapp;
     private PreconfigureDescriptorProcessor _preconfigProcessor;
     
     public static final String[] __preconfigurationClasses = new String[]
@@ -92,18 +87,21 @@ public class QuickStartWebApp extends WebAppContext
     @Override
     protected void startWebapp() throws Exception
     {
-        if (isPreconfigure())
-            generateQuickstartWebXml(_preconfigProcessor.getXML());
+        if (isPreconfigure()) {
+			generateQuickstartWebXml(_preconfigProcessor.getXML());
+		}
         
-        if (_startWebapp)
-            super.startWebapp();
+        if (_startWebapp) {
+			super.startWebapp();
+		}
     }
     
     @Override
     protected void stopWebapp() throws Exception
     {
-        if (!_startWebapp)
-            return;
+        if (!_startWebapp) {
+			return;
+		}
         
         super.stopWebapp();
     }
@@ -116,12 +114,13 @@ public class QuickStartWebApp extends WebAppContext
         Resource dir = null;
 
         Resource base = getBaseResource();
-        if (base==null)
-            base=Resource.newResource(getWar());
+        if (base==null) {
+			base=Resource.newResource(getWar());
+		}
 
-        if (base.isDirectory())
-            dir=base;
-        else if (base.toString().toLowerCase(Locale.ENGLISH).endsWith(".war"))
+        if (base.isDirectory()) {
+			dir=base;
+		} else if (base.toString().toLowerCase(Locale.ENGLISH).endsWith(".war"))
         {
             war=base;
             String w=war.toString();
@@ -136,9 +135,9 @@ public class QuickStartWebApp extends WebAppContext
 
             setWar(null);
             setBaseResource(dir);
-        }
-        else 
-            throw new IllegalArgumentException();
+        } else {
+			throw new IllegalArgumentException();
+		}
 
 
         Resource qswebxml=dir.addPath("/WEB-INF/quickstart-web.xml");
@@ -162,9 +161,9 @@ public class QuickStartWebApp extends WebAppContext
             getMetaData().addDescriptorProcessor(_preconfigProcessor);
             setPreconfigure(true);
             _startWebapp=true;
-        }
-        else
-            _startWebapp=true;
+        } else {
+			_startWebapp=true;
+		}
             
         super.doStart();
     }
@@ -172,8 +171,9 @@ public class QuickStartWebApp extends WebAppContext
     public void generateQuickstartWebXml(String extraXML) throws Exception
     {
         Resource descriptor = getWebInf().addPath(QuickStartDescriptorGenerator.DEFAULT_QUICKSTART_DESCRIPTOR_NAME);
-        if (!descriptor.exists())
-            descriptor.getFile().createNewFile();
+        if (!descriptor.exists()) {
+			descriptor.getFile().createNewFile();
+		}
         QuickStartDescriptorGenerator generator = new QuickStartDescriptorGenerator(this, extraXML);
         try (FileOutputStream fos = new FileOutputStream(descriptor.getFile()))
         {

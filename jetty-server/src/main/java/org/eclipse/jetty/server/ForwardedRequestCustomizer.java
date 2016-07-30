@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 
@@ -58,7 +53,7 @@ public class ForwardedRequestCustomizer implements Customizer
     private String _forwardedSslSessionIdHeader;
     
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public String getHostHeader()
     {
         return _hostHeader.getValue();
@@ -76,11 +71,7 @@ public class ForwardedRequestCustomizer implements Customizer
         _hostHeader = new HostPortHttpField(hostHeader);
     }
 
-    /* ------------------------------------------------------------ */
-    /*
-     *
-     * @see #setForwarded(boolean)
-     */
+    /** ------------------------------------------------------------. */
     public String getForwardedHostHeader()
     {
         return _forwardedHostHeader;
@@ -195,7 +186,7 @@ public class ForwardedRequestCustomizer implements Customizer
         _forwardedSslSessionIdHeader = forwardedSslSessionId;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void customize(Connector connector, HttpConfiguration config, Request request)
     {
@@ -205,8 +196,9 @@ public class ForwardedRequestCustomizer implements Customizer
         if (getForwardedCipherSuiteHeader()!=null)
         {
             String cipher_suite=httpFields.get(getForwardedCipherSuiteHeader());
-            if (cipher_suite!=null)
-                request.setAttribute("javax.servlet.request.cipher_suite",cipher_suite);
+            if (cipher_suite!=null) {
+				request.setAttribute("javax.servlet.request.cipher_suite",cipher_suite);
+			}
         }
         if (getForwardedSslSessionIdHeader()!=null)
         {
@@ -251,21 +243,24 @@ public class ForwardedRequestCustomizer implements Customizer
         if (forwardedProto != null)
         {
             request.setScheme(forwardedProto);
-            if (forwardedProto.equals(config.getSecureScheme()))
-                request.setSecure(true);
+            if (forwardedProto.equals(config.getSecureScheme())) {
+				request.setSecure(true);
+			}
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected String getLeftMostFieldValue(HttpFields fields, String header)
     {
-        if (header == null)
-            return null;
+        if (header == null) {
+			return null;
+		}
 
         String headerValue = fields.get(header);
 
-        if (headerValue == null)
-            return null;
+        if (headerValue == null) {
+			return null;
+		}
 
         int commaIndex = headerValue.indexOf(',');
 
@@ -280,10 +275,10 @@ public class ForwardedRequestCustomizer implements Customizer
     }
 
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public String toString()
     {
-        return String.format("%s@%x",this.getClass().getSimpleName(),hashCode());
+        return String.format("%s@%x",getClass().getSimpleName(),hashCode());
     }
 }

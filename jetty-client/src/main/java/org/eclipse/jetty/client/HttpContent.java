@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.client;
 
@@ -151,8 +146,9 @@ public class HttpContent implements Callback, Closeable
         {
             buffer = bytes;
             content = bytes == null ? null : bytes.slice();
-            if (LOG.isDebugEnabled())
-                LOG.debug("Advanced content to {} chunk {}", hasMore ? "next" : "last", String.valueOf(bytes));
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Advanced content to {} chunk {}", hasMore ? "next" : "last", String.valueOf(bytes));
+			}
             return bytes != null;
         }
         else
@@ -161,14 +157,16 @@ public class HttpContent implements Callback, Closeable
             if (wasLast)
             {
                 buffer = content = AFTER;
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Advanced content past last chunk");
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("Advanced content past last chunk");
+				}
             }
             else
             {
                 buffer = content = CLOSE;
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Advanced content to last chunk");
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("Advanced content to last chunk");
+				}
             }
             return false;
         }
@@ -185,23 +183,29 @@ public class HttpContent implements Callback, Closeable
     @Override
     public void succeeded()
     {
-        if (isConsumed())
-            return;
-        if (buffer == CLOSE)
-            return;
-        if (iterator instanceof Callback)
-            ((Callback)iterator).succeeded();
+        if (isConsumed()) {
+			return;
+		}
+        if (buffer == CLOSE) {
+			return;
+		}
+        if (iterator instanceof Callback) {
+			((Callback)iterator).succeeded();
+		}
     }
 
     @Override
     public void failed(Throwable x)
     {
-        if (isConsumed())
-            return;
-        if (buffer == CLOSE)
-            return;
-        if (iterator instanceof Callback)
-            ((Callback)iterator).failed(x);
+        if (isConsumed()) {
+			return;
+		}
+        if (buffer == CLOSE) {
+			return;
+		}
+        if (iterator instanceof Callback) {
+			((Callback)iterator).failed(x);
+		}
     }
 
     @Override
@@ -209,8 +213,9 @@ public class HttpContent implements Callback, Closeable
     {
         try
         {
-            if (iterator instanceof Closeable)
-                ((Closeable)iterator).close();
+            if (iterator instanceof Closeable) {
+				((Closeable)iterator).close();
+			}
         }
         catch (Throwable x)
         {

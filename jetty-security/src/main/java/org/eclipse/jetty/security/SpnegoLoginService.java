@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.security;
 
@@ -40,7 +35,8 @@ public class SpnegoLoginService extends AbstractLifeCycle implements LoginServic
 {
     private static final Logger LOG = Log.getLogger(SpnegoLoginService.class);
 
-    protected IdentityService _identityService;// = new LdapIdentityService();
+    /** = new LdapIdentityService();. */
+    protected IdentityService _identityService;
     protected String _name;
     private String _config;
 
@@ -110,7 +106,7 @@ public class SpnegoLoginService extends AbstractLifeCycle implements LoginServic
     }
 
     /**
-     * username will be null since the credentials will contain all the relevant info
+     * Username will be null since the credentials will contain all the relevant info.
      */
     @Override
     public UserIdentity login(String username, Object credentials, ServletRequest request)
@@ -186,7 +182,6 @@ public class SpnegoLoginService extends AbstractLifeCycle implements LoginServic
     @Override
     public void logout(UserIdentity user) 
     {
-        // TODO Auto-generated method stub
     }
 
 }

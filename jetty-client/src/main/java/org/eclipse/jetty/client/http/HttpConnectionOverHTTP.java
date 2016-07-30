@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.client.http;
 
@@ -101,8 +96,9 @@ public class HttpConnectionOverHTTP extends AbstractConnection implements Connec
     {
         long idleTimeout = getEndPoint().getIdleTimeout();
         boolean close = delegate.onIdleTimeout(idleTimeout);
-        if (close)
-            close(new TimeoutException("Idle timeout " + idleTimeout + " ms"));
+        if (close) {
+			close(new TimeoutException("Idle timeout " + idleTimeout + " ms"));
+		}
         return false;
     }
 
@@ -144,11 +140,13 @@ public class HttpConnectionOverHTTP extends AbstractConnection implements Connec
             abort(failure);
 
             getEndPoint().shutdownOutput();
-            if (LOG.isDebugEnabled())
-                LOG.debug("Shutdown {}", this);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Shutdown {}", this);
+			}
             getEndPoint().close();
-            if (LOG.isDebugEnabled())
-                LOG.debug("Closed {}", this);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Closed {}", this);
+			}
         }
     }
 
@@ -161,11 +159,7 @@ public class HttpConnectionOverHTTP extends AbstractConnection implements Connec
     @Override
     public boolean sweep()
     {
-        if (!closed.get())
-            return false;
-        if (sweeps.incrementAndGet() < 4)
-            return false;
-        return true;
+        return closed.get() && sweeps.incrementAndGet() >= 4;
     }
 
     @Override

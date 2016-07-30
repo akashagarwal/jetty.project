@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http2.generator;
 
@@ -58,13 +53,15 @@ public class HeadersGenerator extends FrameGenerator
 
     public void generateHeaders(ByteBufferPool.Lease lease, int streamId, MetaData metaData, PriorityFrame priority, boolean endStream)
     {
-        if (streamId < 0)
-            throw new IllegalArgumentException("Invalid stream id: " + streamId);
+        if (streamId < 0) {
+			throw new IllegalArgumentException("Invalid stream id: " + streamId);
+		}
 
         int flags = Flags.NONE;
 
-        if (priority != null)
-            flags = Flags.PRIORITY;
+        if (priority != null) {
+			flags = Flags.PRIORITY;
+		}
 
         int maxFrameSize = getMaxFrameSize();
         ByteBuffer hpacked = lease.acquire(maxFrameSize, false);
@@ -76,12 +73,14 @@ public class HeadersGenerator extends FrameGenerator
         // Split into CONTINUATION frames if necessary.
         if (maxHeaderBlockFragment > 0 && hpackedLength > maxHeaderBlockFragment)
         {
-            if (endStream)
-                flags |= Flags.END_STREAM;
+            if (endStream) {
+				flags |= Flags.END_STREAM;
+			}
 
             int length = maxHeaderBlockFragment;
-            if (priority != null)
-                length += PriorityFrame.PRIORITY_LENGTH;
+            if (priority != null) {
+				length += PriorityFrame.PRIORITY_LENGTH;
+			}
 
             ByteBuffer header = generateHeader(lease, FrameType.HEADERS, length, flags, streamId);
             generatePriority(header, priority);
@@ -106,26 +105,25 @@ public class HeadersGenerator extends FrameGenerator
 
             hpacked.position(position).limit(hpackedLength);
             header = generateHeader(lease, FrameType.CONTINUATION, hpacked.remaining(), Flags.END_HEADERS, streamId);
-            BufferUtil.flipToFlush(header, 0);
-            lease.append(header, true);
-            lease.append(hpacked, true);
         }
         else
         {
             flags |= Flags.END_HEADERS;
-            if (endStream)
-                flags |= Flags.END_STREAM;
+            if (endStream) {
+				flags |= Flags.END_STREAM;
+			}
 
             int length = hpackedLength;
-            if (priority != null)
-                length += PriorityFrame.PRIORITY_LENGTH;
+            if (priority != null) {
+				length += PriorityFrame.PRIORITY_LENGTH;
+			}
 
             ByteBuffer header = generateHeader(lease, FrameType.HEADERS, length, flags, streamId);
             generatePriority(header, priority);
-            BufferUtil.flipToFlush(header, 0);
-            lease.append(header, true);
-            lease.append(hpacked, true);
         }
+		BufferUtil.flipToFlush(header, 0);
+		lease.append(header, true);
+		lease.append(hpacked, true);
     }
 
     private void generatePriority(ByteBuffer header, PriorityFrame priority)

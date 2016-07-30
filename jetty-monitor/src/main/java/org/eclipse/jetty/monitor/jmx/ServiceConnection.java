@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.monitor.jmx;
 
@@ -52,7 +47,7 @@ public class ServiceConnection
     
     /* ------------------------------------------------------------ */
     /**
-     * Construct a loopback connection to an internal server
+     * Construct a loopback connection to an internal server.
      * 
      * @throws IOException if unable to construct service connection
      */
@@ -64,7 +59,7 @@ public class ServiceConnection
     
     /* ------------------------------------------------------------ */
     /**
-     * Construct a connection to specified server
+     * Construct a connection to specified server.
      * 
      * @param url URL of JMX server
      * @throws IOException if unable to construct service connection
@@ -76,7 +71,7 @@ public class ServiceConnection
     }
     
     /**
-     * Retrieve an external URL for the JMX server
+     * Retrieve an external URL for the JMX server.
      * 
      * @return service URL
      */
@@ -87,7 +82,7 @@ public class ServiceConnection
     
     /* ------------------------------------------------------------ */
     /**
-     * Retrieve a connection to MBean server
+     * Retrieve a connection to MBean server.
      * 
      * @return connection to MBean server
      */
@@ -101,15 +96,16 @@ public class ServiceConnection
     {
         if (_serviceConnection == null)
         {
-            if (_serviceUrl == null)
-                openLoopbackConnection();
-            else
-                openServerConnection(_serviceUrl);
+            if (_serviceUrl != null) {
+				openServerConnection(_serviceUrl);
+			} else {
+				openLoopbackConnection();
+			}
         }
     }
     /* ------------------------------------------------------------ */
     /**
-     * Open a loopback connection to local JMX server
+     * Open a loopback connection to local JMX server.
      * 
      * @throws IOException
      */
@@ -130,7 +126,7 @@ public class ServiceConnection
     
     /* ------------------------------------------------------------ */
     /**
-     * Open a connection to remote JMX server
+     * Open a connection to remote JMX server.
      * 
      * @param url
      * @throws IOException
@@ -147,7 +143,7 @@ public class ServiceConnection
     
     /* ------------------------------------------------------------ */
     /**
-     * Close the connections
+     * Close the connections.
      */
     public void disconnect()
     {

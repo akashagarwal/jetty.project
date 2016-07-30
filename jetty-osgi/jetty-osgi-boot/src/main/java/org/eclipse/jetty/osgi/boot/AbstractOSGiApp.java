@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.osgi.boot;
 
@@ -50,14 +45,14 @@ public abstract class AbstractOSGiApp extends App
     protected Dictionary _properties;
     protected ServiceRegistration _registration;
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public AbstractOSGiApp(DeploymentManager manager, AppProvider provider, Bundle bundle, String originId)
     {
         super(manager, provider, originId);
         _properties = bundle.getHeaders();
         _bundle = bundle;
     }
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public AbstractOSGiApp(DeploymentManager manager, AppProvider provider, Bundle bundle, Dictionary properties, String originId)
     {
         super(manager, provider, originId);
@@ -65,61 +60,65 @@ public abstract class AbstractOSGiApp extends App
         _bundle = bundle;
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public String getBundleSymbolicName()
     {
         return _bundle.getSymbolicName();
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public String getBundleVersionAsString()
     {
-       if (_bundle.getVersion() == null)
-           return null;
-       return _bundle.getVersion().toString();
+       if (_bundle.getVersion() != null) {
+		return _bundle.getVersion().toString();
+	}
+       return null;
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public Bundle getBundle()
     {
         return _bundle;
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void setRegistration (ServiceRegistration registration)
     {
         _registration = registration;
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public ServiceRegistration getRegistration ()
     {
         return _registration;
     }
     
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void registerAsOSGiService() throws Exception
     {
         if (_registration == null)
         {
             Dictionary<String,String> properties = new Hashtable<String,String>();
             properties.put(OSGiWebappConstants.WATERMARK, OSGiWebappConstants.WATERMARK);
-            if (getBundleSymbolicName() != null)
-                properties.put(OSGiWebappConstants.OSGI_WEB_SYMBOLICNAME, getBundleSymbolicName());
-            if (getBundleVersionAsString() != null)
-                properties.put(OSGiWebappConstants.OSGI_WEB_VERSION, getBundleVersionAsString());
+            if (getBundleSymbolicName() != null) {
+				properties.put(OSGiWebappConstants.OSGI_WEB_SYMBOLICNAME, getBundleSymbolicName());
+			}
+            if (getBundleVersionAsString() != null) {
+				properties.put(OSGiWebappConstants.OSGI_WEB_VERSION, getBundleVersionAsString());
+			}
             properties.put(OSGiWebappConstants.OSGI_WEB_CONTEXTPATH, getContextPath());
-            ServiceRegistration rego = FrameworkUtil.getBundle(this.getClass()).getBundleContext().registerService(ContextHandler.class.getName(), getContextHandler(), properties);
+            ServiceRegistration rego = FrameworkUtil.getBundle(getClass()).getBundleContext().registerService(ContextHandler.class.getName(), getContextHandler(), properties);
             setRegistration(rego);
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected void deregisterAsOSGiService() throws Exception
     {
-        if (_registration == null)
-            return;
+        if (_registration == null) {
+			return;
+		}
 
         _registration.unregister();
         _registration = null;
@@ -131,8 +130,9 @@ public abstract class AbstractOSGiApp extends App
         try
         {
             File asFile = new File (dir, file);
-            if (asFile.exists())
-                r = Resource.newResource(asFile);
+            if (asFile.exists()) {
+				r = Resource.newResource(asFile);
+			}
         }
         catch (Exception e)
         {
@@ -147,8 +147,9 @@ public abstract class AbstractOSGiApp extends App
         try
         {
             File asFile = new File (file);
-            if (asFile.exists())
-                r = Resource.newResource(asFile);
+            if (asFile.exists()) {
+				r = Resource.newResource(asFile);
+			}
         }
         catch (Exception e)
         {
@@ -162,23 +163,28 @@ public abstract class AbstractOSGiApp extends App
         Resource res = null;
 
         //try to find the context file in the filesystem
-        if (fileName.startsWith("/"))
-            res = getFileAsResource(fileName);
-        if (res != null)
-            return res;
+        if (fileName.startsWith("/")) {
+			res = getFileAsResource(fileName);
+		}
+        if (res != null) {
+			return res;
+		}
 
         //try to find it relative to jetty home
         if (jettyHome != null)
         {
-            if (jettyHome.startsWith("\"") || jettyHome.startsWith("'"))
-                jettyHome = jettyHome.substring(1);
-            if (jettyHome.endsWith("\"") || (jettyHome.endsWith("'")))
-                jettyHome = jettyHome.substring(0,jettyHome.length()-1);
+            if (jettyHome.startsWith("\"") || jettyHome.startsWith("'")) {
+				jettyHome = jettyHome.substring(1);
+			}
+            if (jettyHome.endsWith("\"") || jettyHome.endsWith("'")) {
+				jettyHome = jettyHome.substring(0,jettyHome.length()-1);
+			}
 
             res = getFileAsResource(jettyHome, fileName); 
         }
-        if (res != null)
-            return res;
+        if (res != null) {
+			return res;
+		}
        
 
         //try to find it relative to an override location that has been specified               
@@ -193,21 +199,25 @@ public abstract class AbstractOSGiApp extends App
                 LOG.warn(e);
             }
         }        
-        if (res != null)
-            return res;
+        if (res != null) {
+			return res;
+		}
         
         //try to find it relative to the bundle in which it is being deployed
         if (containingBundle != null)
         {
-            if (fileName.startsWith("./"))
-                fileName = fileName.substring(1);
+            if (fileName.startsWith("./")) {
+				fileName = fileName.substring(1);
+			}
 
-            if (!fileName.startsWith("/"))
-                fileName = "/" + fileName;
+            if (!fileName.startsWith("/")) {
+				fileName = "/" + fileName;
+			}
 
             URL entry = _bundle.getEntry(fileName);
-            if (entry != null)
-                res = Resource.newResource(entry);
+            if (entry != null) {
+				res = Resource.newResource(entry);
+			}
         }
         
         return res;

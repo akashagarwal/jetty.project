@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util;
 
@@ -49,7 +44,7 @@ public class DateCache
     private volatile Tick _tick;
 
     /* ------------------------------------------------------------ */
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public static class Tick
     {
         final long _seconds;
@@ -81,19 +76,19 @@ public class DateCache
         this(format,null,TimeZone.getDefault());
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public DateCache(String format,Locale l)
     {
         this(format,l,TimeZone.getDefault());
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public DateCache(String format,Locale l,String tz)
     {
         this(format,l,TimeZone.getTimeZone(tz));
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public DateCache(String format,Locale l,TimeZone tz)
     {
         _formatString=format;
@@ -110,9 +105,9 @@ public class DateCache
             StringBuilder sb = new StringBuilder(_formatString.length()+10);
             sb.append(ss1);
             sb.append("'");
-            if( tzOffset >= 0 )
-                sb.append( '+' );
-            else
+            if( tzOffset >= 0 ) {
+				sb.append( '+' );
+			} else
             {
                 tzOffset = -tzOffset;
                 sb.append( '-' );
@@ -122,19 +117,21 @@ public class DateCache
             int hr = raw / 60;
             int min = raw % 60;
             
-            if( hr < 10 )
-                sb.append( '0' );
+            if( hr < 10 ) {
+				sb.append( '0' );
+			}
             sb.append( hr );
-            if( min < 10 )
-                sb.append( '0' );
+            if( min < 10 ) {
+				sb.append( '0' );
+			}
             sb.append( min );
             sb.append( '\'' );
             
             sb.append(ss2);
             _tzFormatString=sb.toString();            
-        }
-        else
-            _tzFormatString=_formatString;
+        } else {
+			_tzFormatString=_formatString;
+		}
    
         if( _locale != null ) 
         {
@@ -150,7 +147,7 @@ public class DateCache
     }
     
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public TimeZone getTimeZone()
     {
         return _tzFormat.getTimeZone();
@@ -223,24 +220,25 @@ public class DateCache
         Tick tick=_tick;
         
         // Is this the cached time
-        if (tick!=null && tick._seconds==seconds)
-            return tick._string;
+        if (tick!=null && tick._seconds==seconds) {
+			return tick._string;
+		}
         return formatTick(now)._string;
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public String now()
     {
         return formatNow(System.currentTimeMillis());
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public Tick tick()
     {
         return formatTick(System.currentTimeMillis());
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected Tick formatTick(long now)
     {
         long seconds = now / 1000;
@@ -258,7 +256,7 @@ public class DateCache
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public String getFormatString()
     {
         return _formatString;

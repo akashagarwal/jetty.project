@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.ant;
 
@@ -32,7 +27,7 @@ import org.eclipse.jetty.ant.utils.TaskLog;
 /**
  * JettyStopTask
  *
- *
+ *.
  */
 public class JettyStopTask extends Task
 {
@@ -45,24 +40,19 @@ public class JettyStopTask extends Task
     
     
     
-    /**
-     * 
-     */
     public JettyStopTask()
     {
         TaskLog.setTask(this);
     }
 
-    /** 
-     * @see org.apache.tools.ant.Task#execute()
-     */
     public void execute() throws BuildException
     {
         try
         {        
             Socket s = new Socket(InetAddress.getByName("127.0.0.1"),stopPort);
-            if (stopWait > 0)
-                s.setSoTimeout(stopWait*1000);
+            if (stopWait > 0) {
+				s.setSoTimeout(stopWait*1000);
+			}
             try
             {
                 OutputStream out = s.getOutputStream();
@@ -74,8 +64,9 @@ public class JettyStopTask extends Task
                     TaskLog.log("Waiting"+(stopWait > 0 ? (" "+stopWait+"sec") : "")+" for jetty to stop");
                     LineNumberReader lin = new LineNumberReader(new InputStreamReader(s.getInputStream()));
                     String response=lin.readLine();
-                    if ("Stopped".equals(response))
-                        System.err.println("Stopped");
+                    if ("Stopped".equals(response)) {
+						System.err.println("Stopped");
+					}
                 }
             }
             finally

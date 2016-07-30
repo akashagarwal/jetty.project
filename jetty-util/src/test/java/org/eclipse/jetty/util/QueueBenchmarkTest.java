@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util;
 
@@ -148,24 +143,27 @@ public class QueueBenchmarkTest
         while (true)
         {
             Runnable element = blocking ? take(queue) : poll(queue);
-            if (element == END)
-                if (--writers == 0)
-                    break;
+            if (element == END && --writers == 0) {
+				break;
+			}
         }
     }
 
     private static void produce(Queue<Runnable> queue, int readers, int iterations)
     {
-        for (int i = 0; i < iterations; ++i)
-            append(queue, ELEMENT);
-        for (int i = 0; i < readers; ++i)
-            append(queue, END);
+        for (int i = 0; i < iterations; ++i) {
+			append(queue, ELEMENT);
+		}
+        for (int i = 0; i < readers; ++i) {
+			append(queue, END);
+		}
     }
 
     private static void append(Queue<Runnable> queue, Runnable element)
     {
-        if (!queue.offer(element))
-            logger.warn("Queue {} capacity is too small", queue);
+        if (!queue.offer(element)) {
+			logger.warn("Queue {} capacity is too small", queue);
+		}
     }
 
     private static Runnable take(Queue<Runnable> queue)
@@ -186,13 +184,15 @@ public class QueueBenchmarkTest
         while (true)
         {
             Runnable element = queue.poll();
-            if (element != null)
-                return element;
+            if (element != null) {
+				return element;
+			}
             // Busy loop
             sleepMicros(1);
             ++loops;
-            if (loops % 16 == 0)
-                logger.warn("Spin looping while polling empty queue: {} spins: ", loops);
+            if (loops % 16 == 0) {
+				logger.warn("Spin looping while polling empty queue: {} spins: ", loops);
+			}
         }
     }
 

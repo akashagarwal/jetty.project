@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http2.server;
 
@@ -92,16 +87,19 @@ public class HttpChannelOverHTTP2 extends HttpChannel
             _expect100Continue = fields.contains(HttpHeader.EXPECT, HttpHeaderValue.CONTINUE.asString());
 
             HttpFields response = getResponse().getHttpFields();
-            if (getHttpConfiguration().getSendServerVersion())
-                response.add(SERVER_VERSION);
-            if (getHttpConfiguration().getSendXPoweredBy())
-                response.add(POWERED_BY);
+            if (getHttpConfiguration().getSendServerVersion()) {
+				response.add(SERVER_VERSION);
+			}
+            if (getHttpConfiguration().getSendXPoweredBy()) {
+				response.add(POWERED_BY);
+			}
 
             onRequest(request);
 
             boolean endStream = frame.isEndStream();
-            if (endStream)
-                onRequestComplete();
+            if (endStream) {
+				onRequestComplete();
+			}
 
             _delayedUntilContent = getHttpConfiguration().isDelayDispatchUntilContent() &&
                     !endStream && !_expect100Continue;
@@ -239,8 +237,9 @@ public class HttpChannelOverHTTP2 extends HttpChannel
         });
 
         boolean endStream = frame.isEndStream();
-        if (endStream)
-            handle |= onRequestComplete();
+        if (endStream) {
+			handle |= onRequestComplete();
+		}
 
         if (LOG.isDebugEnabled())
         {
@@ -282,12 +281,14 @@ public class HttpChannelOverHTTP2 extends HttpChannel
             // is content missing?
             if (available == 0)
             {
-                if (getResponse().isCommitted())
-                    throw new IOException("Committed before 100 Continues");
+                if (getResponse().isCommitted()) {
+					throw new IOException("Committed before 100 Continues");
+				}
 
                 boolean committed = sendResponse(HttpGenerator.CONTINUE_100_INFO, null, false);
-                if (!committed)
-                    throw new IOException("Concurrent commit while trying to send 100-Continue");
+                if (!committed) {
+					throw new IOException("Concurrent commit while trying to send 100-Continue");
+				}
             }
         }
     }
@@ -297,8 +298,9 @@ public class HttpChannelOverHTTP2 extends HttpChannel
     {
         IStream stream = getStream();
         long streamId = -1;
-        if (stream != null)
-            streamId = stream.getId();
+        if (stream != null) {
+			streamId = stream.getId();
+		}
         return String.format("%s#%d", super.toString(), getStream() == null ? -1 : streamId);
     }
 }

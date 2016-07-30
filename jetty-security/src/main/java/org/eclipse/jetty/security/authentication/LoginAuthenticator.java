@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.security.authentication;
 
@@ -42,12 +37,12 @@ public abstract class LoginAuthenticator implements Authenticator
     private boolean _renewSession;
     
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected LoginAuthenticator()
     {
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void prepareRequest(ServletRequest request)
     {
@@ -55,33 +50,35 @@ public abstract class LoginAuthenticator implements Authenticator
     }
 
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public UserIdentity login(String username, Object password, ServletRequest request)
     {
         UserIdentity user = _loginService.login(username,password, request);
         if (user!=null)
         {
-            renewSession((HttpServletRequest)request, (request instanceof Request? ((Request)request).getResponse() : null));
+            renewSession((HttpServletRequest)request, request instanceof Request? ((Request)request).getResponse() : null);
             return user;
         }
         return null;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void setConfiguration(AuthConfiguration configuration)
     {
         _loginService=configuration.getLoginService();
-        if (_loginService==null)
-            throw new IllegalStateException("No LoginService for "+this+" in "+configuration);
+        if (_loginService==null) {
+			throw new IllegalStateException("No LoginService for "+this+" in "+configuration);
+		}
         _identityService=configuration.getIdentityService();
-        if (_identityService==null)
-            throw new IllegalStateException("No IdentityService for "+this+" in "+configuration);
+        if (_identityService==null) {
+			throw new IllegalStateException("No IdentityService for "+this+" in "+configuration);
+		}
         _renewSession=configuration.isSessionRenewedOnAuthentication();
     }
     
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public LoginService getLoginService()
     {
         return _loginService;
@@ -117,12 +114,13 @@ public abstract class LoginAuthenticator implements Authenticator
                         String oldId = abstractSession.getId();
                         abstractSession.renewId(request);
                         abstractSession.setAttribute(AbstractSession.SESSION_CREATED_SECURE, Boolean.TRUE);
-                        if (abstractSession.isIdChanged() && response != null && (response instanceof Response))
-                            ((Response)response).addCookie(abstractSession.getSessionManager().getSessionCookie(abstractSession, request.getContextPath(), request.isSecure()));
+                        if (abstractSession.isIdChanged() && response != null && response instanceof Response) {
+							((Response)response).addCookie(abstractSession.getSessionManager().getSessionCookie(abstractSession, request.getContextPath(), request.isSecure()));
+						}
                         LOG.debug("renew {}->{}",oldId,abstractSession.getId());
-                    }
-                    else
-                        LOG.warn("Unable to renew session "+httpSession);
+                    } else {
+						LOG.warn("Unable to renew session "+httpSession);
+					}
                     
                     return httpSession;
                 }

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.servlets;
 
@@ -104,8 +99,9 @@ public class QoSFilter implements Filter
     public void init(FilterConfig filterConfig)
     {
         int max_priority = __DEFAULT_MAX_PRIORITY;
-        if (filterConfig.getInitParameter(MAX_PRIORITY_INIT_PARAM) != null)
-            max_priority = Integer.parseInt(filterConfig.getInitParameter(MAX_PRIORITY_INIT_PARAM));
+        if (filterConfig.getInitParameter(MAX_PRIORITY_INIT_PARAM) != null) {
+			max_priority = Integer.parseInt(filterConfig.getInitParameter(MAX_PRIORITY_INIT_PARAM));
+		}
         _queues = new Queue[max_priority + 1];
         _listeners = new AsyncListener[_queues.length];
         for (int p = 0; p < _queues.length; ++p)
@@ -115,24 +111,28 @@ public class QoSFilter implements Filter
         }
 
         int maxRequests = __DEFAULT_PASSES;
-        if (filterConfig.getInitParameter(MAX_REQUESTS_INIT_PARAM) != null)
-            maxRequests = Integer.parseInt(filterConfig.getInitParameter(MAX_REQUESTS_INIT_PARAM));
+        if (filterConfig.getInitParameter(MAX_REQUESTS_INIT_PARAM) != null) {
+			maxRequests = Integer.parseInt(filterConfig.getInitParameter(MAX_REQUESTS_INIT_PARAM));
+		}
         _passes = new Semaphore(maxRequests, true);
         _maxRequests = maxRequests;
 
         long wait = __DEFAULT_WAIT_MS;
-        if (filterConfig.getInitParameter(MAX_WAIT_INIT_PARAM) != null)
-            wait = Integer.parseInt(filterConfig.getInitParameter(MAX_WAIT_INIT_PARAM));
+        if (filterConfig.getInitParameter(MAX_WAIT_INIT_PARAM) != null) {
+			wait = Integer.parseInt(filterConfig.getInitParameter(MAX_WAIT_INIT_PARAM));
+		}
         _waitMs = wait;
 
         long suspend = __DEFAULT_TIMEOUT_MS;
-        if (filterConfig.getInitParameter(SUSPEND_INIT_PARAM) != null)
-            suspend = Integer.parseInt(filterConfig.getInitParameter(SUSPEND_INIT_PARAM));
+        if (filterConfig.getInitParameter(SUSPEND_INIT_PARAM) != null) {
+			suspend = Integer.parseInt(filterConfig.getInitParameter(SUSPEND_INIT_PARAM));
+		}
         _suspendMs = suspend;
 
         ServletContext context = filterConfig.getServletContext();
-        if (context != null && Boolean.parseBoolean(filterConfig.getInitParameter(MANAGED_ATTR_INIT_PARAM)))
-            context.setAttribute(filterConfig.getFilterName(), this);
+        if (context != null && Boolean.parseBoolean(filterConfig.getInitParameter(MANAGED_ATTR_INIT_PARAM))) {
+			context.setAttribute(filterConfig.getFilterName(), this);
+		}
     }
 
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException
@@ -147,8 +147,9 @@ public class QoSFilter implements Filter
                 if (accepted)
                 {
                     request.setAttribute(_suspended, Boolean.FALSE);
-                    if (LOG.isDebugEnabled())
-                        LOG.debug("Accepted {}", request);
+                    if (LOG.isDebugEnabled()) {
+						LOG.debug("Accepted {}", request);
+					}
                 }
                 else
                 {
@@ -156,45 +157,46 @@ public class QoSFilter implements Filter
                     int priority = getPriority(request);
                     AsyncContext asyncContext = request.startAsync();
                     long suspendMs = getSuspendMs();
-                    if (suspendMs > 0)
-                        asyncContext.setTimeout(suspendMs);
+                    if (suspendMs > 0) {
+						asyncContext.setTimeout(suspendMs);
+					}
                     asyncContext.addListener(_listeners[priority]);
                     _queues[priority].add(asyncContext);
-                    if (LOG.isDebugEnabled())
-                        LOG.debug("Suspended {}", request);
+                    if (LOG.isDebugEnabled()) {
+						LOG.debug("Suspended {}", request);
+					}
                     return;
                 }
-            }
-            else
-            {
-                if (suspended)
-                {
-                    request.setAttribute(_suspended, Boolean.FALSE);
-                    Boolean resumed = (Boolean)request.getAttribute(_resumed);
-                    if (resumed == Boolean.TRUE)
-                    {
-                        _passes.acquire();
-                        accepted = true;
-                        if (LOG.isDebugEnabled())
-                            LOG.debug("Resumed {}", request);
-                    }
-                    else
-                    {
-                        // Timeout! try 1 more time.
-                        accepted = _passes.tryAcquire(getWaitMs(), TimeUnit.MILLISECONDS);
-                        if (LOG.isDebugEnabled())
-                            LOG.debug("Timeout {}", request);
-                    }
-                }
-                else
-                {
-                    // Pass through resume of previously accepted request.
-                    _passes.acquire();
-                    accepted = true;
-                    if (LOG.isDebugEnabled())
-                        LOG.debug("Passthrough {}", request);
-                }
-            }
+            } else if (suspended)
+			{
+			    request.setAttribute(_suspended, Boolean.FALSE);
+			    Boolean resumed = (Boolean)request.getAttribute(_resumed);
+			    if (resumed == Boolean.TRUE)
+			    {
+			        _passes.acquire();
+			        accepted = true;
+			        if (LOG.isDebugEnabled()) {
+						LOG.debug("Resumed {}", request);
+					}
+			    }
+			    else
+			    {
+			        // Timeout! try 1 more time.
+			        accepted = _passes.tryAcquire(getWaitMs(), TimeUnit.MILLISECONDS);
+			        if (LOG.isDebugEnabled()) {
+						LOG.debug("Timeout {}", request);
+					}
+			    }
+			}
+			else
+			{
+			    // Pass through resume of previously accepted request.
+			    _passes.acquire();
+			    accepted = true;
+			    if (LOG.isDebugEnabled()) {
+					LOG.debug("Passthrough {}", request);
+				}
+			}
 
             if (accepted)
             {
@@ -202,8 +204,9 @@ public class QoSFilter implements Filter
             }
             else
             {
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Rejected {}", request);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("Rejected {}", request);
+				}
                 ((HttpServletResponse)response).sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
             }
         }
@@ -259,10 +262,11 @@ public class QoSFilter implements Filter
         else
         {
             HttpSession session = baseRequest.getSession(false);
-            if (session != null && !session.isNew())
-                return 1;
-            else
-                return 0;
+            if (session != null && !session.isNew()) {
+				return 1;
+			} else {
+				return 0;
+			}
         }
     }
 

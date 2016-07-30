@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.jaas.spi;
 
@@ -38,14 +33,9 @@ public class UserInfo
     private String _userName;
     private Credential _credential;
     protected List<String> _roleNames = new ArrayList<>();
-    protected boolean _rolesLoaded = false;
+    protected boolean _rolesLoaded;
     
     
-    /**
-     * @param userName
-     * @param credential
-     * @param roleNames
-     */
     public UserInfo (String userName, Credential credential, List<String> roleNames)
     {
         _userName = userName;
@@ -61,10 +51,6 @@ public class UserInfo
     }
     
     
-    /**
-     * @param userName
-     * @param credential
-     */
     public UserInfo (String userName, Credential credential)
     {
         this (userName, credential, null);
@@ -74,7 +60,7 @@ public class UserInfo
     
     /**
      * Should be overridden by subclasses to obtain
-     * role info
+     * role info.
      * 
      * @return
      * @throws Exception

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.common.events;
 
@@ -42,32 +37,32 @@ public class JettyAnnotatedScanner extends AbstractMethodAnnotationScanner<Jetty
     private static final Logger LOG = Log.getLogger(JettyAnnotatedScanner.class);
 
     /**
-     * Parameter list for &#064;OnWebSocketMessage (Binary mode)
+     * Parameter list for &#064;OnWebSocketMessage (Binary mode).
      */
     private static final ParamList validBinaryParams;
 
     /**
-     * Parameter list for &#064;OnWebSocketConnect
+     * Parameter list for &#064;OnWebSocketConnect.
      */
     private static final ParamList validConnectParams;
 
     /**
-     * Parameter list for &#064;OnWebSocketClose
+     * Parameter list for &#064;OnWebSocketClose.
      */
     private static final ParamList validCloseParams;
 
     /**
-     * Parameter list for &#064;OnWebSocketError
+     * Parameter list for &#064;OnWebSocketError.
      */
     private static final ParamList validErrorParams;
 
     /**
-     * Parameter list for &#064;OnWebSocketFrame
+     * Parameter list for &#064;OnWebSocketFrame.
      */
     private static final ParamList validFrameParams;
 
     /**
-     * Parameter list for &#064;OnWebSocketMessage (Text mode)
+     * Parameter list for &#064;OnWebSocketMessage (Text mode).
      */
     private static final ParamList validTextParams;
 
@@ -104,8 +99,9 @@ public class JettyAnnotatedScanner extends AbstractMethodAnnotationScanner<Jetty
     @Override
     public void onMethodAnnotation(JettyAnnotatedMetadata metadata, Class<?> pojo, Method method, Annotation annotation)
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("onMethodAnnotation({}, {}, {}, {})",metadata,pojo,method,annotation);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("onMethodAnnotation({}, {}, {}, {})",metadata,pojo,method,annotation);
+		}
 
         if (isAnnotation(annotation,OnWebSocketConnect.class))
         {

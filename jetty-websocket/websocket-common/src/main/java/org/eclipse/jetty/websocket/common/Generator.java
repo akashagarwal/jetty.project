@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.common;
 
@@ -73,12 +68,12 @@ public class Generator
      *   0100_0000 (0x40) = rsv1
      *   0010_0000 (0x20) = rsv2
      *   0001_0000 (0x10) = rsv3
-     * </pre>
+     * </pre>.
      */
-    private byte flagsInUse = 0x00;
+    private byte flagsInUse;
 
     /**
-     * Construct Generator with provided policy and bufferPool
+     * Construct Generator with provided policy and bufferPool.
      * 
      * @param policy
      *            the policy to use
@@ -91,7 +86,7 @@ public class Generator
     }
 
     /**
-     * Construct Generator with provided policy and bufferPool
+     * Construct Generator with provided policy and bufferPool.
      * 
      * @param policy
      *            the policy to use
@@ -263,7 +258,7 @@ public class Generator
         buffer.put(b);
 
         // is masked
-        b = (frame.isMasked()?(byte)0x80:(byte)0x00);
+        b = frame.isMasked()?(byte)0x80:(byte)0x00;
 
         // payload lengths
         int payloadLength = frame.getPayloadLength();
@@ -276,8 +271,7 @@ public class Generator
             // we have a 64 bit length
             b |= 0x7F;
             buffer.put(b); // indicate 8 byte length
-            buffer.put((byte)0); //
-            buffer.put((byte)0); // anything over an
+            buffer.put((byte)0);            buffer.put((byte)0); // anything over an
             buffer.put((byte)0); // int is just
             buffer.put((byte)0); // insane!
             buffer.put((byte)((payloadLength >> 24) & 0xFF));
@@ -300,7 +294,7 @@ public class Generator
          */
         else
         {
-            b |= (payloadLength & 0x7F);
+            b |= payloadLength & 0x7F;
             buffer.put(b);
         }
 
@@ -310,12 +304,13 @@ public class Generator
             byte[] mask = frame.getMask();
             buffer.put(mask);
             int maskInt = 0;
-            for (byte maskByte : mask)
-                maskInt = (maskInt << 8) + (maskByte & 0xFF);
+            for (byte maskByte : mask) {
+				maskInt = (maskInt << 8) + (maskByte & 0xFF);
+			}
 
             // perform data masking here
             ByteBuffer payload = frame.getPayload();
-            if ((payload != null) && (payload.remaining() > 0))
+            if (payload != null && payload.remaining() > 0)
             {
                 int maskOffset = 0;
                 int start = payload.position();

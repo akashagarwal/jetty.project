@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.webapp;
 
@@ -34,8 +29,9 @@ import org.eclipse.jetty.xml.XmlParser;
  */
 public class FragmentDescriptor extends WebDescriptor
 {
-    public static final String NAMELESS = "@@-NAMELESS-@@"; //prefix for nameless Fragments
-    protected static int _counter = 0;
+    /** Prefix for nameless Fragments. */
+    public static final String NAMELESS = "@@-NAMELESS-@@";
+    protected static int _counter;
 
     public enum OtherType {None, Before, After};
     protected OtherType _otherType = OtherType.None;
@@ -69,12 +65,13 @@ public class FragmentDescriptor extends WebDescriptor
     {
         XmlParser.Node root = getRoot();
         XmlParser.Node nameNode = root.get("name");
-        _name = NAMELESS+(_counter++);
+        _name = NAMELESS+_counter++;
         if (nameNode != null)
         {
             String tmp = nameNode.toString(false,true);
-            if (tmp!=null && tmp.length()>0)
-                _name = tmp;
+            if (tmp!=null && tmp.length()>0) {
+				_name = tmp;
+			}
         }
     }
     @Override
@@ -85,7 +82,9 @@ public class FragmentDescriptor extends WebDescriptor
         
         XmlParser.Node ordering = root.get("ordering");
         if (ordering == null)
-            return; //No ordering for this fragment
+		 {
+			return; //No ordering for this fragment
+		}
         
         _isOrdered = true;
    
@@ -98,25 +97,30 @@ public class FragmentDescriptor extends WebDescriptor
     {
         //Process the <before> elements, looking for an <others/> clause and all of the <name> clauses
         XmlParser.Node before = ordering.get("before");
-        if (before == null)
-            return;
+        if (before == null) {
+			return;
+		}
 
         Iterator<?> iter = before.iterator();
         XmlParser.Node node = null;
         while (iter.hasNext())
         {
             Object o = iter.next();
-            if (!(o instanceof XmlParser.Node)) continue;
+            if (!(o instanceof XmlParser.Node)) {
+				continue;
+			}
             node = (XmlParser.Node) o;
-            if (node.getTag().equalsIgnoreCase("others"))
+            if ("others".equalsIgnoreCase(node.getTag()))
             {
-                if (_otherType != OtherType.None)
-                    throw new IllegalStateException("Duplicate <other> clause detected in "+_xml.getURI());
+                if (_otherType != OtherType.None) {
+					throw new IllegalStateException("Duplicate <other> clause detected in "+_xml.getURI());
+				}
 
                 _otherType = OtherType.Before;
             }
-            else if (node.getTag().equalsIgnoreCase("name"))
-                _befores.add(node.toString(false,true));
+            else if ("name".equalsIgnoreCase(node.getTag())) {
+				_befores.add(node.toString(false,true));
+			}
         }
     }
 
@@ -124,26 +128,31 @@ public class FragmentDescriptor extends WebDescriptor
     {
         //Process the <after> elements, look for an <others/> clause and all of the <name/> clauses
         XmlParser.Node after = ordering.get("after");
-        if (after == null)
-            return;
+        if (after == null) {
+			return;
+		}
         
         Iterator<?> iter = after.iterator();
         XmlParser.Node node = null;
         while (iter.hasNext())
         {
             Object o = iter.next();
-            if (!(o instanceof XmlParser.Node)) continue;
+            if (!(o instanceof XmlParser.Node)) {
+				continue;
+			}
             node = (XmlParser.Node) o;
-            if (node.getTag().equalsIgnoreCase("others"))
+            if ("others".equalsIgnoreCase(node.getTag()))
             {
-                if (_otherType != OtherType.None)
-                    throw new IllegalStateException("Duplicate <other> clause detected in "+_xml.getURI());
+                if (_otherType != OtherType.None) {
+					throw new IllegalStateException("Duplicate <other> clause detected in "+_xml.getURI());
+				}
 
                 _otherType = OtherType.After;
 
             }
-            else if (node.getTag().equalsIgnoreCase("name"))
-                _afters.add(node.toString(false,true));
+            else if ("name".equalsIgnoreCase(node.getTag())) {
+				_afters.add(node.toString(false,true));
+			}
         }
     }
     

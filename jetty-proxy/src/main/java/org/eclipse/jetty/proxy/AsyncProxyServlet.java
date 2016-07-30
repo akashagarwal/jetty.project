@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.proxy;
 
@@ -69,8 +64,9 @@ public class AsyncProxyServlet extends ProxyServlet
     {
         try
         {
-            if (_log.isDebugEnabled())
-                _log.debug("{} proxying content to downstream: {} bytes", getRequestId(request), length);
+            if (_log.isDebugEnabled()) {
+				_log.debug("{} proxying content to downstream: {} bytes", getRequestId(request), length);
+			}
             StreamWriter writeListener = (StreamWriter)request.getAttribute(WRITE_LISTENER_ATTRIBUTE);
             if (writeListener == null)
             {
@@ -151,8 +147,9 @@ public class AsyncProxyServlet extends ProxyServlet
         @Override
         public void onAllDataRead() throws IOException
         {
-            if (_log.isDebugEnabled())
-                _log.debug("{} proxying content to upstream completed", getRequestId(request));
+            if (_log.isDebugEnabled()) {
+				_log.debug("{} proxying content to upstream completed", getRequestId(request));
+			}
             provider.close();
         }
 
@@ -173,12 +170,14 @@ public class AsyncProxyServlet extends ProxyServlet
             while (input.isReady() && !input.isFinished())
             {
                 int read = input.read(buffer);
-                if (_log.isDebugEnabled())
-                    _log.debug("{} asynchronous read {} bytes on {}", requestId, read, input);
+                if (_log.isDebugEnabled()) {
+					_log.debug("{} asynchronous read {} bytes on {}", requestId, read, input);
+				}
                 if (read > 0)
                 {
-                    if (_log.isDebugEnabled())
-                        _log.debug("{} proxying content to upstream: {} bytes", requestId, read);
+                    if (_log.isDebugEnabled()) {
+						_log.debug("{} proxying content to upstream: {} bytes", requestId, read);
+					}
                     onRequestContent(request, proxyRequest, provider, buffer, 0, read, this);
                     return Action.SCHEDULED;
                 }
@@ -186,14 +185,16 @@ public class AsyncProxyServlet extends ProxyServlet
 
             if (input.isFinished())
             {
-                if (_log.isDebugEnabled())
-                    _log.debug("{} asynchronous read complete on {}", requestId, input);
+                if (_log.isDebugEnabled()) {
+					_log.debug("{} asynchronous read complete on {}", requestId, input);
+				}
                 return Action.SUCCEEDED;
             }
             else
             {
-                if (_log.isDebugEnabled())
-                    _log.debug("{} asynchronous read pending on {}", requestId, input);
+                if (_log.isDebugEnabled()) {
+					_log.debug("{} asynchronous read pending on {}", requestId, input);
+				}
                 return Action.IDLE;
             }
         }
@@ -230,8 +231,9 @@ public class AsyncProxyServlet extends ProxyServlet
 
         protected void data(byte[] bytes, int offset, int length, Callback callback)
         {
-            if (state != WriteState.IDLE)
-                throw new WritePendingException();
+            if (state != WriteState.IDLE) {
+				throw new WritePendingException();
+			}
             this.state = WriteState.READY;
             this.buffer = bytes;
             this.offset = offset;
@@ -247,27 +249,27 @@ public class AsyncProxyServlet extends ProxyServlet
             if (state == WriteState.READY)
             {
                 // There is data to write.
-                if (_log.isDebugEnabled())
-                    _log.debug("{} asynchronous write start of {} bytes on {}", requestId, length, output);
+                if (_log.isDebugEnabled()) {
+					_log.debug("{} asynchronous write start of {} bytes on {}", requestId, length, output);
+				}
                 output.write(buffer, offset, length);
                 state = WriteState.PENDING;
                 if (output.isReady())
                 {
-                    if (_log.isDebugEnabled())
-                        _log.debug("{} asynchronous write of {} bytes completed on {}", requestId, length, output);
+                    if (_log.isDebugEnabled()) {
+						_log.debug("{} asynchronous write of {} bytes completed on {}", requestId, length, output);
+					}
                     complete();
-                }
-                else
-                {
-                    if (_log.isDebugEnabled())
-                        _log.debug("{} asynchronous write of {} bytes pending on {}", requestId, length, output);
-                }
+                } else if (_log.isDebugEnabled()) {
+					_log.debug("{} asynchronous write of {} bytes pending on {}", requestId, length, output);
+				}
             }
             else if (state == WriteState.PENDING)
             {
                 // The write blocked but is now complete.
-                if (_log.isDebugEnabled())
-                    _log.debug("{} asynchronous write of {} bytes completing on {}", requestId, length, output);
+                if (_log.isDebugEnabled()) {
+					_log.debug("{} asynchronous write of {} bytes completing on {}", requestId, length, output);
+				}
                 complete();
             }
             else

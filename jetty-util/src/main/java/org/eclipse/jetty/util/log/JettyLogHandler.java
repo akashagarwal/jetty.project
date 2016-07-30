@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util.log;
 
@@ -69,7 +64,7 @@ public class JettyLogHandler extends java.util.logging.Handler
             setLevel(Level.ALL);
         }
         
-        System.err.printf("%s Initialized at level [%s]%n",this.getClass().getName(),getLevel().getName());
+        System.err.printf("%s Initialized at level [%s]%n",getClass().getName(),getLevel().getName());
     }
 
     private synchronized String formatMessage(LogRecord record)
@@ -79,7 +74,7 @@ public class JettyLogHandler extends java.util.logging.Handler
         try
         {
             Object params[] = record.getParameters();
-            if ((params == null) || (params.length == 0))
+            if (params == null || params.length == 0)
             {
                 return msg;
             }

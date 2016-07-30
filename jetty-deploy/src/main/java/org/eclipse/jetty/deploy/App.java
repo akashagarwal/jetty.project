@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.deploy;
 
@@ -22,7 +17,7 @@ import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.util.AttributesMap;
 
 /**
- * The information about an App that is managed by the {@link DeploymentManager}
+ * The information about an App that is managed by the {@link DeploymentManager}.
  */
 public class App
 {
@@ -32,7 +27,7 @@ public class App
     private ContextHandler _context;
 
     /**
-     * Create an App with specified Origin ID and archivePath
+     * Create an App with specified Origin ID and archivePath.
      * 
      * @param manager the deployment manager 
      * @param provider the app provider
@@ -142,11 +137,11 @@ public class App
      */
     public String getContextPath()
     {
-        if (this._context == null)
+        if (this._context != null)
         {
-            return null;
+            return this._context.getContextPath();
         }
-        return this._context.getContextPath();
+        return null;
     }
 
 

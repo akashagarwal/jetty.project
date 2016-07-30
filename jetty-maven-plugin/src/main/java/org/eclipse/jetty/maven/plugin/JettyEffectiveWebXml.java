@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 
 package org.eclipse.jetty.maven.plugin;
@@ -49,7 +44,7 @@ public class JettyEffectiveWebXml extends JettyRunMojo
     protected File target;
     
     /**
-     * The target directory
+     * The target directory.
      * 
      * @parameter 
      */
@@ -59,9 +54,6 @@ public class JettyEffectiveWebXml extends JettyRunMojo
     protected boolean deleteOnExit = true;
     
 
-    /**
-     * @see org.apache.maven.plugin.Mojo#execute()
-     */
     public void execute() throws MojoExecutionException, MojoFailureException
     {
         super.execute();
@@ -110,10 +102,12 @@ public class JettyEffectiveWebXml extends JettyRunMojo
 
                 Resource descriptor = Resource.newResource(effectiveWebXml);
 
-                if (!effectiveWebXml.getParentFile().exists())
-                    effectiveWebXml.getParentFile().mkdirs();
-                if (!effectiveWebXml.exists())
-                    effectiveWebXml.createNewFile();
+                if (!effectiveWebXml.getParentFile().exists()) {
+					effectiveWebXml.getParentFile().mkdirs();
+				}
+                if (!effectiveWebXml.exists()) {
+					effectiveWebXml.createNewFile();
+				}
 
                 webApp.setQuickStartWebDescriptor(descriptor);
             }
@@ -123,10 +117,11 @@ public class JettyEffectiveWebXml extends JettyRunMojo
             //if our server has a thread pool associated we can do any annotation scanning multithreaded,
             //otherwise scanning will be single threaded
             tpool = server.getBean(QueuedThreadPool.class);
-            if (tpool != null)
-                tpool.start();
-            else
-                webApp.setAttribute(AnnotationConfiguration.MULTI_THREADED, Boolean.FALSE.toString());
+            if (tpool != null) {
+				tpool.start();
+			} else {
+				webApp.setAttribute(AnnotationConfiguration.MULTI_THREADED, Boolean.FALSE.toString());
+			}
             
              webApp.start(); //just enough to generate the quickstart           
            
@@ -139,7 +134,9 @@ public class JettyEffectiveWebXml extends JettyRunMojo
         {
             try {webApp.stop();}catch (Exception x) {};
             
-            try {if (tpool != null) tpool.stop();} catch (Exception x) {};
+            try {if (tpool != null) {
+				tpool.stop();
+			}} catch (Exception x) {};
         }
          
        

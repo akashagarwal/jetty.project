@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.deploy.providers;
 
@@ -62,8 +57,8 @@ import org.eclipse.jetty.xml.XmlConfiguration;
 @ManagedObject("Provider for start-up deployement of webapps based on presence in directory")
 public class WebAppProvider extends ScanningAppProvider
 {
-    private boolean _extractWars = false;
-    private boolean _parentLoaderPriority = false;
+    private boolean _extractWars;
+    private boolean _parentLoaderPriority;
     private ConfigurationManager _configurationManager;
     private String _defaultsDescriptor;
     private File _tempDirectory;
@@ -83,48 +78,21 @@ public class WebAppProvider extends ScanningAppProvider
             File file = new File(dir,name);
 
             // ignore hidden files
-            if (lowername.startsWith("."))
-                return false;
+            if (lowername.startsWith(".")) {
+				return false;
+			}
 
             // Ignore some directories
             if (file.isDirectory())
             {
-                // is it a nominated config directory
-                if (lowername.endsWith(".d"))
-                    return false;
-
-                // is it an unpacked directory for an existing war file?
-                if (exists(name+".war")||exists(name+".WAR"))
-                    return false;
-
-                // is it a directory for an existing xml file?
-                if (exists(name+".xml")||exists(name+".XML"))
-                    return false;
-
-                //is it a sccs dir?
-                if ("cvs".equals(lowername) || "cvsroot".equals(lowername))
-                    return false;
-
-                // OK to deploy it then
-                return true;
+                return !lowername.endsWith(".d") && !exists(name+".war") && !exists(name+".WAR") && !exists(name+".xml") && !exists(name+".XML") && !"cvs".equals(lowername) && !"cvsroot".equals(lowername);
             }
 
-            // else is it a war file
-            if (lowername.endsWith(".war"))
-            {
-                //defer deployment decision to fileChanged()
-                return true;
-            }
-
-            // else is it a context XML file 
-            if (lowername.endsWith(".xml"))
-                return true;
-
-            return false;
+            return lowername.endsWith(".war") || lowername.endsWith(".xml");
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public WebAppProvider()
     {
         super();
@@ -189,7 +157,7 @@ public class WebAppProvider extends ScanningAppProvider
         _defaultsDescriptor = defaultsDescriptor;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public ConfigurationManager getConfigurationManager()
     {
         return _configurationManager;
@@ -213,7 +181,7 @@ public class WebAppProvider extends ScanningAppProvider
         _configurationClasses = configurations==null?null:(String[])configurations.clone();
     }  
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @ManagedAttribute("configuration classes for webapps to be processed through")
     public String[] getConfigurationClasses()
     {
@@ -244,15 +212,17 @@ public class WebAppProvider extends ScanningAppProvider
         return _tempDirectory;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected void initializeWebAppContextDefaults(WebAppContext webapp)
     {
-        if (_defaultsDescriptor != null)
-            webapp.setDefaultsDescriptor(_defaultsDescriptor);
+        if (_defaultsDescriptor != null) {
+			webapp.setDefaultsDescriptor(_defaultsDescriptor);
+		}
         webapp.setExtractWAR(_extractWars);
         webapp.setParentLoaderPriority(_parentLoaderPriority);
-        if (_configurationClasses != null)
-            webapp.setConfigurationClasses(_configurationClasses);
+        if (_configurationClasses != null) {
+			webapp.setConfigurationClasses(_configurationClasses);
+		}
 
         if (_tempDirectory != null)
         {
@@ -266,14 +236,15 @@ public class WebAppProvider extends ScanningAppProvider
         }
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public ContextHandler createContextHandler(final App app) throws Exception
     {
         Resource resource = Resource.newResource(app.getOriginId());
         File file = resource.getFile();
-        if (!resource.exists())
-            throw new IllegalStateException("App resouce does not exist "+resource);
+        if (!resource.exists()) {
+			throw new IllegalStateException("App resouce does not exist "+resource);
+		}
 
         String context = file.getName();
 
@@ -300,8 +271,9 @@ public class WebAppProvider extends ScanningAppProvider
             xmlc.getProperties().put("jetty.webapp",file.getCanonicalPath());
             xmlc.getProperties().put("jetty.webapps",file.getParentFile().getCanonicalPath());
 
-            if (getConfigurationManager() != null)
-                xmlc.getProperties().putAll(getConfigurationManager().getProperties());
+            if (getConfigurationManager() != null) {
+				xmlc.getProperties().putAll(getConfigurationManager().getProperties());
+			}
             return (ContextHandler)xmlc.configure();
         }
         else if (file.isDirectory())
@@ -329,7 +301,7 @@ public class WebAppProvider extends ScanningAppProvider
         webAppContext.setDisplayName(context);
 
         // special case of archive (or dir) named "root" is / context
-        if (context.equalsIgnoreCase("root"))
+        if ("root".equalsIgnoreCase(context))
         {
             context = URIUtil.SLASH;
         }
@@ -355,13 +327,14 @@ public class WebAppProvider extends ScanningAppProvider
     }
     
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     protected void fileChanged(String filename) throws Exception
     {        
         File file = new File(filename);
-        if (!file.exists())
-            return;
+        if (!file.exists()) {
+			return;
+		}
         
         File parent = file.getParentFile();
         
@@ -370,11 +343,15 @@ public class WebAppProvider extends ScanningAppProvider
         {
             //is there a .xml file of the same name?
             if (exists(file.getName()+".xml")||exists(file.getName()+".XML"))
-                return; //ignore it
+			 {
+				return; //ignore it
+			}
 
             //is there .war file of the same name?
             if (exists(file.getName()+".war")||exists(file.getName()+".WAR"))
-                return; //ignore it
+			 {
+				return; //ignore it
+			}
 
              super.fileChanged(filename);
              return;
@@ -411,28 +388,34 @@ public class WebAppProvider extends ScanningAppProvider
         }
 
         //is the file that changed a .xml file?
-        if (lowname.endsWith(".xml"))
-            super.fileChanged(filename);
+        if (lowname.endsWith(".xml")) {
+			super.fileChanged(filename);
+		}
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     protected void fileAdded(String filename) throws Exception
     {
         File file = new File(filename);
-        if (!file.exists())
-            return;
+        if (!file.exists()) {
+			return;
+		}
 
         //is the file that was added a directory? 
         if (file.isDirectory())
         {
             //is there a .xml file of the same name?
             if (exists(file.getName()+".xml")||exists(file.getName()+".XML"))
-                return; //assume we will get added events for the xml file
+			 {
+				return; //assume we will get added events for the xml file
+			}
 
             //is there .war file of the same name?
             if (exists(file.getName()+".war")||exists(file.getName()+".WAR"))
-                return; //assume we will get added events for the war file
+			 {
+				return; //assume we will get added events for the war file
+			}
 
             super.fileAdded(filename);
             return;
@@ -446,20 +429,23 @@ public class WebAppProvider extends ScanningAppProvider
             String name = file.getName();
             String base=name.substring(0,name.length()-4);
             //is there a .xml file of the same name?
-            if (exists(base+".xml")||exists(base+".XML")) 
-                return; //ignore it as we should get addition of the xml file
+            if (exists(base+".xml")||exists(base+".XML"))
+			 {
+				return; //ignore it as we should get addition of the xml file
+			}
 
             super.fileAdded(filename);
             return;
         }
 
         //is the file that was added an .xml file?
-        if (lowname.endsWith(".xml"))
-            super.fileAdded(filename);
+        if (lowname.endsWith(".xml")) {
+			super.fileAdded(filename);
+		}
     }
 
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     protected void fileRemoved(String filename) throws Exception
     { 
@@ -470,11 +456,15 @@ public class WebAppProvider extends ScanningAppProvider
         {
             //is there a .xml file of the same name?
             if (exists(file.getName()+".xml")||exists(file.getName()+".XML"))
-                return; //assume we will get removed events for the xml file
+			 {
+				return; //assume we will get removed events for the xml file
+			}
 
             //is there .war file of the same name?
             if (exists(file.getName()+".war")||exists(file.getName()+".WAR"))
-                return; //assume we will get removed events for the war file
+			 {
+				return; //assume we will get removed events for the war file
+			}
 
             super.fileRemoved(filename);
             return;
@@ -488,15 +478,18 @@ public class WebAppProvider extends ScanningAppProvider
             String name = file.getName();
             String base=name.substring(0,name.length()-4);
             if (exists(base+".xml")||exists(base+".XML"))
-                return; //ignore it as we should get removal of the xml file
+			 {
+				return; //ignore it as we should get removal of the xml file
+			}
 
             super.fileRemoved(filename);
             return;
         }
 
         //is the file that was removed an .xml file?
-        if (lowname.endsWith(".xml"))
-            super.fileRemoved(filename);
+        if (lowname.endsWith(".xml")) {
+			super.fileRemoved(filename);
+		}
     }
 
 }

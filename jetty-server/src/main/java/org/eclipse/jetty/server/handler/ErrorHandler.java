@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server.handler;
 
@@ -56,16 +51,13 @@ import org.eclipse.jetty.util.log.Logger;
 public class ErrorHandler extends AbstractHandler
 {    
     private static final Logger LOG = Log.getLogger(ErrorHandler.class);
-    public final static String ERROR_PAGE="org.eclipse.jetty.server.error_page";
+    public static final String ERROR_PAGE="org.eclipse.jetty.server.error_page";
     
     boolean _showStacks=true;
     boolean _showMessageInTitle=true;
     String _cacheControl="must-revalidate,no-cache,no-store";
 
-    /* ------------------------------------------------------------ */
-    /*
-     * @see org.eclipse.jetty.server.server.Handler#handle(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, int)
-     */
+    /** ------------------------------------------------------------. */
     @Override
     public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException
     {
@@ -102,18 +94,15 @@ public class ErrorHandler extends AbstractHandler
                         return;
                     }
                 }
-            } 
-            else 
-            {
-                if (LOG.isDebugEnabled())
-                {
-                    LOG.debug("No Error Page mapping for request({} {}) (using default)",request.getMethod(),request.getRequestURI());
-                }
-            }
+            } else if (LOG.isDebugEnabled())
+			{
+			    LOG.debug("No Error Page mapping for request({} {}) (using default)",request.getMethod(),request.getRequestURI());
+			}
         }
 
-        if (_cacheControl != null)
-            response.setHeader(HttpHeader.CACHE_CONTROL.asString(), _cacheControl);
+        if (_cacheControl != null) {
+			response.setHeader(HttpHeader.CACHE_CONTROL.asString(), _cacheControl);
+		}
         generateAcceptableResponse(baseRequest,request,response,response.getStatus(),baseRequest.getResponse().getReason());
     }
 
@@ -134,15 +123,16 @@ public class ErrorHandler extends AbstractHandler
     {
         List<String> acceptable=baseRequest.getHttpFields().getQualityCSV(HttpHeader.ACCEPT);
         
-        if (acceptable.isEmpty() && !baseRequest.getHttpFields().contains(HttpHeader.ACCEPT))
-            generateAcceptableResponse(baseRequest,request,response,code,message,MimeTypes.Type.TEXT_HTML.asString());
-        else
+        if (acceptable.isEmpty() && !baseRequest.getHttpFields().contains(HttpHeader.ACCEPT)) {
+			generateAcceptableResponse(baseRequest,request,response,code,message,MimeTypes.Type.TEXT_HTML.asString());
+		} else
         {
             for (String mimeType:acceptable)
             {
                 generateAcceptableResponse(baseRequest,request,response,code,message,mimeType);
-                if (baseRequest.isHandled())
-                    return;
+                if (baseRequest.isHandled()) {
+					return;
+				}
             }
         }
         baseRequest.setHandled(true);
@@ -179,10 +169,11 @@ public class ErrorHandler extends AbstractHandler
         {
             try
             {
-                if ("*".equals(charset))
-                    response.setCharacterEncoding(StandardCharsets.UTF_8.name());
-                else
-                    response.setCharacterEncoding(Charset.forName(charset).name());
+                if ("*".equals(charset)) {
+					response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+				} else {
+					response.setCharacterEncoding(Charset.forName(charset).name());
+				}
                 return response.getWriter();
             }
             catch(Exception e)
@@ -225,19 +216,20 @@ public class ErrorHandler extends AbstractHandler
         }        
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected void handleErrorPage(HttpServletRequest request, Writer writer, int code, String message)
         throws IOException
     {
         writeErrorPage(request, writer, code, message, _showStacks);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected void writeErrorPage(HttpServletRequest request, Writer writer, int code, String message, boolean showStacks)
         throws IOException
     {
-        if (message == null)
-            message=HttpStatus.getMessage(code);
+        if (message == null) {
+			message=HttpStatus.getMessage(code);
+		}
 
         writer.write("<html>\n<head>\n");
         writeErrorPageHead(request,writer,code,message);
@@ -246,7 +238,7 @@ public class ErrorHandler extends AbstractHandler
         writer.write("\n</body>\n</html>\n");
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected void writeErrorPageHead(HttpServletRequest request, Writer writer, int code, String message)
         throws IOException
         {
@@ -262,21 +254,22 @@ public class ErrorHandler extends AbstractHandler
         writer.write("</title>\n");
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected void writeErrorPageBody(HttpServletRequest request, Writer writer, int code, String message, boolean showStacks)
         throws IOException
     {
         String uri= request.getRequestURI();
 
         writeErrorPageMessage(request,writer,code,message,uri);
-        if (showStacks)
-            writeErrorPageStacks(request,writer);
+        if (showStacks) {
+			writeErrorPageStacks(request,writer);
+		}
 
         Request.getBaseRequest(request).getHttpChannel().getHttpConfiguration()
             .writePoweredBy(writer,"<hr>","<hr/>\n");
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected void writeErrorPageMessage(HttpServletRequest request, Writer writer, int code, String message,String uri)
     throws IOException
     {
@@ -289,7 +282,7 @@ public class ErrorHandler extends AbstractHandler
         writer.write("</pre></p>");
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected void writeErrorPageStacks(HttpServletRequest request, Writer writer)
         throws IOException
     {
@@ -322,8 +315,9 @@ public class ErrorHandler extends AbstractHandler
      */
     public ByteBuffer badMessageError(int status, String reason, HttpFields fields)
     {
-        if (reason==null)
-            reason=HttpStatus.getMessage(status);
+        if (reason==null) {
+			reason=HttpStatus.getMessage(status);
+		}
         fields.put(HttpHeader.CONTENT_TYPE,MimeTypes.Type.TEXT_HTML_8859_1.asString());
         return BufferUtil.toBuffer("<h1>Bad Message " + status + "</h1><pre>reason: " + reason + "</pre>");
     }    
@@ -374,36 +368,39 @@ public class ErrorHandler extends AbstractHandler
     }
 
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public boolean getShowMessageInTitle()
     {
         return _showMessageInTitle;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected void write(Writer writer,String string)
         throws IOException
     {
-        if (string==null)
-            return;
+        if (string==null) {
+			return;
+		}
 
         writer.write(StringUtil.sanitizeXmlString(string));
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public interface ErrorPageMapper
     {
         String getErrorPage(HttpServletRequest request);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public static ErrorHandler getErrorHandler(Server server, ContextHandler context)
     {
         ErrorHandler error_handler=null;
-        if (context!=null)
-            error_handler=context.getErrorHandler();
-        if (error_handler==null && server!=null)
-            error_handler = server.getBean(ErrorHandler.class);
+        if (context!=null) {
+			error_handler=context.getErrorHandler();
+		}
+        if (error_handler==null && server!=null) {
+			error_handler = server.getBean(ErrorHandler.class);
+		}
         return error_handler;
     }
 }

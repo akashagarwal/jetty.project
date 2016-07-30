@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.security.authentication;
 
@@ -40,15 +35,12 @@ import org.eclipse.jetty.util.security.Constraint;
  */
 public class BasicAuthenticator extends LoginAuthenticator
 {
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public BasicAuthenticator()
     {
     }
 
-    /* ------------------------------------------------------------ */
-    /**
-     * @see org.eclipse.jetty.security.Authenticator#getAuthMethod()
-     */
+    /** ------------------------------------------------------------. */
     @Override
     public String getAuthMethod()
     {
@@ -57,10 +49,7 @@ public class BasicAuthenticator extends LoginAuthenticator
 
  
 
-    /* ------------------------------------------------------------ */
-    /**
-     * @see org.eclipse.jetty.security.Authenticator#validateRequest(javax.servlet.ServletRequest, javax.servlet.ServletResponse, boolean)
-     */
+    /** ------------------------------------------------------------. */
     @Override
     public Authentication validateRequest(ServletRequest req, ServletResponse res, boolean mandatory) throws ServerAuthException
     {
@@ -70,8 +59,9 @@ public class BasicAuthenticator extends LoginAuthenticator
 
         try
         {
-            if (!mandatory)
-                return new DeferredAuthentication(this);
+            if (!mandatory) {
+				return new DeferredAuthentication(this);
+			}
 
             if (credentials != null)
             {
@@ -99,8 +89,9 @@ public class BasicAuthenticator extends LoginAuthenticator
                 }
             }
 
-            if (DeferredAuthentication.isDeferred(response))
-                return Authentication.UNAUTHENTICATED;
+            if (DeferredAuthentication.isDeferred(response)) {
+				return Authentication.UNAUTHENTICATED;
+			}
 
             response.setHeader(HttpHeader.WWW_AUTHENTICATE.asString(), "basic realm=\"" + _loginService.getName() + '"');
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED);

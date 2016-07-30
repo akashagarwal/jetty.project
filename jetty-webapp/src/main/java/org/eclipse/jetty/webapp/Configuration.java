@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.webapp;
 
@@ -34,7 +29,7 @@ import org.eclipse.jetty.util.annotation.Name;
  */
 public interface Configuration 
 {
-    public final static String ATTR="org.eclipse.jetty.webapp.configuration";
+    String ATTR="org.eclipse.jetty.webapp.configuration";
     
     /* ------------------------------------------------------------------------------- */
     /** Set up for configuration.
@@ -43,7 +38,7 @@ public interface Configuration
      * @param context The context to configure
      * @throws Exception if unable to pre configure
      */
-    public void preConfigure (WebAppContext context) throws Exception;
+    void preConfigure (WebAppContext context) throws Exception;
     
     
     /* ------------------------------------------------------------------------------- */
@@ -54,7 +49,7 @@ public interface Configuration
      * @param context The context to configure
      * @throws Exception if unable to configure
      */
-    public void configure (WebAppContext context) throws Exception;
+    void configure (WebAppContext context) throws Exception;
     
     
     /* ------------------------------------------------------------------------------- */
@@ -62,7 +57,7 @@ public interface Configuration
      * @param context The context to configure
      * @throws Exception if unable to post configure
      */
-    public void postConfigure (WebAppContext context) throws Exception;
+    void postConfigure (WebAppContext context) throws Exception;
     
     /* ------------------------------------------------------------------------------- */
     /** DeConfigure WebApp.
@@ -71,7 +66,7 @@ public interface Configuration
      * @param context The context to configure
      * @throws Exception if unable to deconfigure
      */
-    public void deconfigure (WebAppContext context) throws Exception;
+    void deconfigure (WebAppContext context) throws Exception;
 
     /* ------------------------------------------------------------------------------- */
     /** Destroy WebApp.
@@ -80,7 +75,7 @@ public interface Configuration
      * @param context The context to configure
      * @throws Exception if unable to destroy
      */
-    public void destroy (WebAppContext context) throws Exception;
+    void destroy (WebAppContext context) throws Exception;
     
 
     /* ------------------------------------------------------------------------------- */
@@ -92,7 +87,7 @@ public interface Configuration
      * @param context The context to configure
      * @throws Exception if unable to clone
      */
-    public void cloneConfigure (WebAppContext template, WebAppContext context) throws Exception;
+    void cloneConfigure (WebAppContext template, WebAppContext context) throws Exception;
     
     
     public class ClassList extends ArrayList<String>
@@ -110,8 +105,9 @@ public interface Configuration
         public static ClassList setServerDefault(Server server)
         {
             ClassList cl=server.getBean(ClassList.class);
-            if (cl!=null)
-                return cl;
+            if (cl!=null) {
+				return cl;
+			}
             cl=serverDefault(server);
             server.addBean(cl);
             server.setAttribute(ATTR,null);
@@ -132,13 +128,16 @@ public interface Configuration
             if (server!=null)
             {
                 cl= server.getBean(ClassList.class);
-                if (cl!=null)
-                    return new ClassList(cl);
+                if (cl!=null) {
+					return new ClassList(cl);
+				}
                 Object attr = server.getAttribute(ATTR);
-                if (attr instanceof ClassList)
-                    return new ClassList((ClassList)attr);
-                if (attr instanceof String[])
-                    return new ClassList((String[])attr);
+                if (attr instanceof ClassList) {
+					return new ClassList((ClassList)attr);
+				}
+                if (attr instanceof String[]) {
+					return new ClassList((String[])attr);
+				}
             }
             return new ClassList();
         }
@@ -168,8 +167,9 @@ public interface Configuration
                     String cc=iter.next();
                     if (afterClass.equals(cc))
                     {
-                        for (int i=0;i<configClass.length;i++)
-                            iter.add(configClass[i]);
+                        for (int i=0;i<configClass.length;i++) {
+							iter.add(configClass[i]);
+						}
                         return;
                     }
                 }
@@ -188,8 +188,9 @@ public interface Configuration
                     if (beforeClass.equals(cc))
                     {
                         iter.previous();
-                        for (int i=0;i<configClass.length;i++)
-                            iter.add(configClass[i]);
+                        for (int i=0;i<configClass.length;i++) {
+							iter.add(configClass[i]);
+						}
                         return;
                     }
                 }

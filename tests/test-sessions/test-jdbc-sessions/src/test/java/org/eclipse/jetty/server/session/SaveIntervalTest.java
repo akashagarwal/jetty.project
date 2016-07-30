@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server.session;
 
@@ -49,9 +44,12 @@ import org.junit.Test;
  */
 public class SaveIntervalTest
 {
-    public static int INACTIVE = 90; //sec
-    public static int SCAVENGE = 100; //sec
-    public static int SAVE = 10; //sec
+    /** Sec. */
+    public static int INACTIVE = 90;
+    /** Sec. */
+    public static int SCAVENGE = 100;
+    /** Sec. */
+    public static int SAVE = 10;
 
 
     @Ignore
@@ -155,8 +153,9 @@ public class SaveIntervalTest
             if ("set".equals(action))
             {
                 HttpSession session = request.getSession(false);
-                if (session == null)
-                    throw new ServletException("Session is null for action=change");
+                if (session == null) {
+					throw new ServletException("Session is null for action=change");
+				}
                
                 System.err.println("SET: Session id="+session.getId());
                 session.setAttribute("aaa", "12345");
@@ -167,8 +166,9 @@ public class SaveIntervalTest
             if ("tickle".equals(action))
             {
                 HttpSession session = request.getSession(false);
-                if (session == null)
-                    throw new ServletException("Session does not exist");
+                if (session == null) {
+					throw new ServletException("Session does not exist");
+				}
                 System.err.println("TICKLE: Session id="+session.getId());
                 assertEquals(_session.getId(), session.getId());
                 return;

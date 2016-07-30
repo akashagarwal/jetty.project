@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.fcgi.parser;
 
@@ -65,8 +60,9 @@ public abstract class Parser
             {
                 case HEADER:
                 {
-                    if (!headerParser.parse(buffer))
-                        return false;
+                    if (!headerParser.parse(buffer)) {
+						return false;
+					}
                     state = State.CONTENT;
                     break;
                 }
@@ -80,8 +76,9 @@ public abstract class Parser
                     else
                     {
                         ContentParser.Result result = contentParser.parse(buffer);
-                        if (LOG.isDebugEnabled())
-                            LOG.debug("Parsed request {} content {} result={}", headerParser.getRequest(), headerParser.getFrameType(), result);
+                        if (LOG.isDebugEnabled()) {
+							LOG.debug("Parsed request {} content {} result={}", headerParser.getRequest(), headerParser.getFrameType(), result);
+						}
 
                         if (result == ContentParser.Result.PENDING)
                         {
@@ -133,9 +130,9 @@ public abstract class Parser
 
     public interface Listener
     {
-        public void onHeader(int request, HttpField field);
+        void onHeader(int request, HttpField field);
 
-        public void onHeaders(int request);
+        void onHeaders(int request);
 
         /**
          * @param request the request id
@@ -144,11 +141,11 @@ public abstract class Parser
          * @return true to signal to the parser to stop parsing, false to continue parsing
          * @see Parser#parse(java.nio.ByteBuffer)
          */
-        public boolean onContent(int request, FCGI.StreamType stream, ByteBuffer buffer);
+        boolean onContent(int request, FCGI.StreamType stream, ByteBuffer buffer);
 
-        public void onEnd(int request);
+        void onEnd(int request);
 
-        public void onFailure(int request, Throwable failure);
+        void onFailure(int request, Throwable failure);
 
         public static class Adapter implements Listener
         {

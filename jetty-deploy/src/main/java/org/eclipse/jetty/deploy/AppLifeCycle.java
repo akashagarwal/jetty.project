@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.deploy;
 
@@ -66,7 +61,7 @@ public class AppLifeCycle extends Graph
         void processBinding(Node node, App app) throws Exception;
     }
 
-    // Well known existing lifecycle Nodes
+    /** Well known existing lifecycle Nodes. */
     public static final String UNDEPLOYED = "undeployed";
     public static final String DEPLOYING = "deploying";
     public static final String DEPLOYED = "deployed";
@@ -119,8 +114,9 @@ public class AppLifeCycle extends Graph
         for (String nodeName : binding.getBindingTargets())
         {
             List<Binding> bindings = lifecyclebindings.get(nodeName);
-            if (bindings != null)
-                bindings.remove(binding);
+            if (bindings != null) {
+				bindings.remove(binding);
+			}
         }
     }
 
@@ -183,8 +179,9 @@ public class AppLifeCycle extends Graph
     {
         for (Binding binding : getBindings(node))
         {
-            if (LOG.isDebugEnabled())
-                LOG.debug("Calling " + binding.getClass().getName()+" for "+app);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Calling " + binding.getClass().getName()+" for "+app);
+			}
             binding.processBinding(node,app);
         }
     }

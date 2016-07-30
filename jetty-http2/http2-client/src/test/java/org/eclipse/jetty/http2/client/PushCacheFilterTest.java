@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http2.client;
 
@@ -70,10 +65,11 @@ public class PushCacheFilterTest extends AbstractTest
             {
                 String requestURI = req.getRequestURI();
                 ServletOutputStream output = resp.getOutputStream();
-                if (requestURI.endsWith(primaryResource))
-                    output.print("<html><head></head><body>PRIMARY</body></html>");
-                else if (requestURI.endsWith(secondaryResource))
-                    output.write(secondaryData);
+                if (requestURI.endsWith(primaryResource)) {
+					output.print("<html><head></head><body>PRIMARY</body></html>");
+				} else if (requestURI.endsWith(secondaryResource)) {
+					output.write(secondaryData);
+				}
             }
         });
 
@@ -125,8 +121,9 @@ public class PushCacheFilterTest extends AbstractTest
                     public void onData(Stream stream, DataFrame frame, Callback callback)
                     {
                         callback.succeeded();
-                        if (frame.isEndStream())
-                            pushLatch.countDown();
+                        if (frame.isEndStream()) {
+							pushLatch.countDown();
+						}
                     }
                 };
             }
@@ -135,8 +132,9 @@ public class PushCacheFilterTest extends AbstractTest
             public void onData(Stream stream, DataFrame frame, Callback callback)
             {
                 callback.succeeded();
-                if (frame.isEndStream())
-                    primaryResponseLatch.countDown();
+                if (frame.isEndStream()) {
+					primaryResponseLatch.countDown();
+				}
             }
         });
         Assert.assertTrue(pushLatch.await(5, TimeUnit.SECONDS));
@@ -156,10 +154,11 @@ public class PushCacheFilterTest extends AbstractTest
             {
                 String requestURI = req.getRequestURI();
                 ServletOutputStream output = resp.getOutputStream();
-                if (requestURI.endsWith(primaryResource))
-                    output.print("<html><head></head><body>PRIMARY</body></html>");
-                else if (requestURI.endsWith(secondaryResource))
-                    output.write(secondaryData);
+                if (requestURI.endsWith(primaryResource)) {
+					output.print("<html><head></head><body>PRIMARY</body></html>");
+				} else if (requestURI.endsWith(secondaryResource)) {
+					output.write(secondaryData);
+				}
             }
         });
 
@@ -213,8 +212,9 @@ public class PushCacheFilterTest extends AbstractTest
                     public void onData(Stream stream, DataFrame frame, Callback callback)
                     {
                         callback.succeeded();
-                        if (frame.isEndStream())
-                            pushLatch.countDown();
+                        if (frame.isEndStream()) {
+							pushLatch.countDown();
+						}
                     }
                 };
             }
@@ -223,8 +223,9 @@ public class PushCacheFilterTest extends AbstractTest
             public void onData(Stream stream, DataFrame frame, Callback callback)
             {
                 callback.succeeded();
-                if (frame.isEndStream())
-                    primaryResponseLatch.countDown();
+                if (frame.isEndStream()) {
+					primaryResponseLatch.countDown();
+				}
             }
         });
         Assert.assertFalse(pushLatch.await(1, TimeUnit.SECONDS));
@@ -244,10 +245,11 @@ public class PushCacheFilterTest extends AbstractTest
             {
                 String requestURI = req.getRequestURI();
                 ServletOutputStream output = resp.getOutputStream();
-                if (requestURI.endsWith(primaryResource))
-                    output.print("<html><head></head><body>PRIMARY</body></html>");
-                else if (requestURI.endsWith(secondaryResource))
-                    output.write(secondaryData);
+                if (requestURI.endsWith(primaryResource)) {
+					output.print("<html><head></head><body>PRIMARY</body></html>");
+				} else if (requestURI.endsWith(secondaryResource)) {
+					output.write(secondaryData);
+				}
             }
         });
 
@@ -311,8 +313,9 @@ public class PushCacheFilterTest extends AbstractTest
             public void onData(Stream stream, DataFrame frame, Callback callback)
             {
                 callback.succeeded();
-                if (frame.isEndStream())
-                    primaryResponseLatch.countDown();
+                if (frame.isEndStream()) {
+					primaryResponseLatch.countDown();
+				}
             }
         });
         // We should not receive pushed data that we reset.
@@ -330,8 +333,9 @@ public class PushCacheFilterTest extends AbstractTest
             public void onData(Stream stream, DataFrame frame, Callback callback)
             {
                 callback.succeeded();
-                if (frame.isEndStream())
-                    secondaryResponseLatch.countDown();
+                if (frame.isEndStream()) {
+					secondaryResponseLatch.countDown();
+				}
             }
         });
         Assert.assertTrue(secondaryResponseLatch.await(5, TimeUnit.SECONDS));
@@ -349,8 +353,9 @@ public class PushCacheFilterTest extends AbstractTest
             {
                 String requestURI = request.getRequestURI();
                 final ServletOutputStream output = response.getOutputStream();
-                if (requestURI.endsWith(secondaryResource))
-                    output.write("SECONDARY".getBytes(StandardCharsets.UTF_8));
+                if (requestURI.endsWith(secondaryResource)) {
+					output.write("SECONDARY".getBytes(StandardCharsets.UTF_8));
+				}
             }
         });
 
@@ -397,8 +402,9 @@ public class PushCacheFilterTest extends AbstractTest
             @Override
             public void onHeaders(Stream stream, HeadersFrame frame)
             {
-                if (frame.isEndStream())
-                    primaryResponseLatch.countDown();
+                if (frame.isEndStream()) {
+					primaryResponseLatch.countDown();
+				}
             }
 
             @Override
@@ -410,8 +416,9 @@ public class PushCacheFilterTest extends AbstractTest
                     public void onData(Stream stream, DataFrame frame, Callback callback)
                     {
                         callback.succeeded();
-                        if (frame.isEndStream())
-                            pushLatch.countDown();
+                        if (frame.isEndStream()) {
+							pushLatch.countDown();
+						}
                     }
                 };
             }
@@ -434,14 +441,16 @@ public class PushCacheFilterTest extends AbstractTest
             {
                 String requestURI = request.getRequestURI();
                 final ServletOutputStream output = response.getOutputStream();
-                if (requestURI.endsWith(primaryResource))
-                    output.print("<html><head></head><body>PRIMARY</body></html>");
-                else if (requestURI.endsWith(secondaryResource1))
-                    output.print("body { background-image: url(\"" + tertiaryResource + "\"); }");
-                else if (requestURI.endsWith(secondaryResource2))
-                    output.print("(function() { window.alert('HTTP/2'); })()");
-                if (requestURI.endsWith(tertiaryResource))
-                    output.write("TERTIARY".getBytes(StandardCharsets.UTF_8));
+                if (requestURI.endsWith(primaryResource)) {
+					output.print("<html><head></head><body>PRIMARY</body></html>");
+				} else if (requestURI.endsWith(secondaryResource1)) {
+					output.print("body { background-image: url(\"" + tertiaryResource + "\"); }");
+				} else if (requestURI.endsWith(secondaryResource2)) {
+					output.print("(function() { window.alert('HTTP/2'); })()");
+				}
+                if (requestURI.endsWith(tertiaryResource)) {
+					output.write("TERTIARY".getBytes(StandardCharsets.UTF_8));
+				}
             }
         });
 
@@ -483,8 +492,9 @@ public class PushCacheFilterTest extends AbstractTest
                                     public void onData(Stream stream, DataFrame frame, Callback callback)
                                     {
                                         callback.succeeded();
-                                        if (frame.isEndStream())
-                                            warmupLatch.countDown();
+                                        if (frame.isEndStream()) {
+											warmupLatch.countDown();
+										}
                                     }
                                 });
                             }
@@ -500,8 +510,9 @@ public class PushCacheFilterTest extends AbstractTest
                         public void onData(Stream stream, DataFrame frame, Callback callback)
                         {
                             callback.succeeded();
-                            if (frame.isEndStream())
-                                warmupLatch.countDown();
+                            if (frame.isEndStream()) {
+								warmupLatch.countDown();
+							}
                         }
                     });
                 }
@@ -522,8 +533,9 @@ public class PushCacheFilterTest extends AbstractTest
             public void onData(Stream stream, DataFrame frame, Callback callback)
             {
                 callback.succeeded();
-                if (frame.isEndStream())
-                    primaryResponseLatch.countDown();
+                if (frame.isEndStream()) {
+					primaryResponseLatch.countDown();
+				}
             }
 
             @Override
@@ -538,8 +550,9 @@ public class PushCacheFilterTest extends AbstractTest
                     public void onData(Stream stream, DataFrame frame, Callback callback)
                     {
                         callback.succeeded();
-                        if (frame.isEndStream())
-                            primaryPushesLatch.countDown();
+                        if (frame.isEndStream()) {
+							primaryPushesLatch.countDown();
+						}
                     }
 
                     @Override
@@ -551,8 +564,9 @@ public class PushCacheFilterTest extends AbstractTest
                             public void onData(Stream stream, DataFrame frame, Callback callback)
                             {
                                 callback.succeeded();
-                                if (frame.isEndStream())
-                                    recursiveLatch.countDown();
+                                if (frame.isEndStream()) {
+									recursiveLatch.countDown();
+								}
                             }
                         };
                     }
@@ -574,8 +588,9 @@ public class PushCacheFilterTest extends AbstractTest
             public void onData(Stream stream, DataFrame frame, Callback callback)
             {
                 callback.succeeded();
-                if (frame.isEndStream())
-                    secondaryResponseLatch.countDown();
+                if (frame.isEndStream()) {
+					secondaryResponseLatch.countDown();
+				}
             }
 
             @Override
@@ -587,8 +602,9 @@ public class PushCacheFilterTest extends AbstractTest
                     public void onData(Stream stream, DataFrame frame, Callback callback)
                     {
                         callback.succeeded();
-                        if (frame.isEndStream())
-                            secondaryPushLatch.countDown();
+                        if (frame.isEndStream()) {
+							secondaryPushLatch.countDown();
+						}
                     }
                 };
             }
@@ -662,8 +678,9 @@ public class PushCacheFilterTest extends AbstractTest
                             public void onData(Stream stream, DataFrame frame, Callback callback)
                             {
                                 callback.succeeded();
-                                if (frame.isEndStream())
-                                    warmupLatch.countDown();
+                                if (frame.isEndStream()) {
+									warmupLatch.countDown();
+								}
                             }
                         });
                     }
@@ -684,8 +701,9 @@ public class PushCacheFilterTest extends AbstractTest
             public void onData(Stream stream, DataFrame frame, Callback callback)
             {
                 callback.succeeded();
-                if (frame.isEndStream())
-                    primaryResponseLatch.countDown();
+                if (frame.isEndStream()) {
+					primaryResponseLatch.countDown();
+				}
             }
 
             @Override
@@ -719,10 +737,11 @@ public class PushCacheFilterTest extends AbstractTest
                 else if (requestURI.endsWith(secondaryResource))
                 {
                     String param = request.getParameter(name);
-                    if (param == null)
-                        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR_500);
-                    else
-                        response.setStatus(HttpStatus.OK_200);
+                    if (param != null) {
+						response.setStatus(HttpStatus.OK_200);
+					} else {
+						response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR_500);
+					}
                 }
             }
         });
@@ -750,8 +769,9 @@ public class PushCacheFilterTest extends AbstractTest
                         @Override
                         public void onHeaders(Stream stream, HeadersFrame frame)
                         {
-                            if (frame.isEndStream())
-                                warmupLatch.countDown();
+                            if (frame.isEndStream()) {
+								warmupLatch.countDown();
+							}
                         }
                     });
                 }
@@ -782,8 +802,9 @@ public class PushCacheFilterTest extends AbstractTest
                         if (frame.isEndStream())
                         {
                             MetaData.Response response = (MetaData.Response)frame.getMetaData();
-                            if (response.getStatus() == HttpStatus.OK_200)
-                                pushLatch.countDown();
+                            if (response.getStatus() == HttpStatus.OK_200) {
+								pushLatch.countDown();
+							}
                         }
                     }
                 };
@@ -792,8 +813,9 @@ public class PushCacheFilterTest extends AbstractTest
             @Override
             public void onHeaders(Stream stream, HeadersFrame frame)
             {
-                if (frame.isEndStream())
-                    primaryResponseLatch.countDown();
+                if (frame.isEndStream()) {
+					primaryResponseLatch.countDown();
+				}
             }
         });
         Assert.assertTrue(pushLatch.await(5, TimeUnit.SECONDS));

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.jsr356;
 
@@ -39,7 +34,7 @@ public class MessageQueue extends BlockingArrayQueue<String>
             LOG.debug("Await Message.. Now: {} - expireOn: {} ({} ms)",now,expireOn,msDur);
         }
 
-        while (this.size() < expectedMessageCount)
+        while (size() < expectedMessageCount)
         {
             try
             {
@@ -49,10 +44,10 @@ public class MessageQueue extends BlockingArrayQueue<String>
             {
                 /* ignore */
             }
-            if (!LOG.isDebugEnabled() && (System.currentTimeMillis() > expireOn))
+            if (!LOG.isDebugEnabled() && System.currentTimeMillis() > expireOn)
             {
                 throw new TimeoutException(String.format("Timeout reading all %d expected messages. (managed to only read %d messages)",expectedMessageCount,
-                        this.size()));
+                        size()));
             }
         }
     }

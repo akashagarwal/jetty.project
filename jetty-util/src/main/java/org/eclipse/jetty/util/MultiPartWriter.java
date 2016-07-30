@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util;
 
@@ -31,20 +26,20 @@ import java.io.Writer;
 */
 public class MultiPartWriter extends FilterWriter
 {
-    /* ------------------------------------------------------------ */
-    private final static String __CRLF="\015\012";
-    private final static String __DASHDASH="--";
+    /** ------------------------------------------------------------. */
+    private static final String __CRLF="\015\012";
+    private static final String __DASHDASH="--";
     
     public static final String MULTIPART_MIXED=MultiPartOutputStream.MULTIPART_MIXED;
     public static final String MULTIPART_X_MIXED_REPLACE=MultiPartOutputStream.MULTIPART_X_MIXED_REPLACE;
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     private String boundary;
 
-    /* ------------------------------------------------------------ */
-    private boolean inPart=false;    
+    /** ------------------------------------------------------------. */
+    private boolean inPart;    
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public MultiPartWriter(Writer out)
          throws IOException
     {
@@ -65,8 +60,9 @@ public class MultiPartWriter extends FilterWriter
     {
         try
         {
-            if (inPart)
-                out.write(__CRLF);
+            if (inPart) {
+				out.write(__CRLF);
+			}
             out.write(__DASHDASH);
             out.write(boundary);
             out.write(__DASHDASH);
@@ -79,7 +75,7 @@ public class MultiPartWriter extends FilterWriter
         }
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public String getBoundary()
     {
         return boundary;
@@ -93,8 +89,9 @@ public class MultiPartWriter extends FilterWriter
     public void startPart(String contentType)
          throws IOException
     {
-        if (inPart)
-            out.write(__CRLF);
+        if (inPart) {
+			out.write(__CRLF);
+		}
         out.write(__DASHDASH);
         out.write(boundary);
         out.write(__CRLF);
@@ -106,14 +103,15 @@ public class MultiPartWriter extends FilterWriter
     }
     
     /* ------------------------------------------------------------ */
-    /** end creation of the next Content.
+    /** End creation of the next Content.
      * @throws IOException if unable to write the part
      */
     public void endPart()
          throws IOException
     {
-        if (inPart)
-            out.write(__CRLF);
+        if (inPart) {
+			out.write(__CRLF);
+		}
         inPart=false;
     }
         
@@ -126,8 +124,9 @@ public class MultiPartWriter extends FilterWriter
     public void startPart(String contentType, String[] headers)
          throws IOException
     {
-        if (inPart)
-            out.write(__CRLF);
+        if (inPart) {
+			out.write(__CRLF);
+		}
         out.write(__DASHDASH);
         out.write(boundary);
         out.write(__CRLF);

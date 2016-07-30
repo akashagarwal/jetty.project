@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.client;
 
@@ -70,7 +65,7 @@ public class WebSocketClient extends ContainerLifeCycle implements WebSocketCont
     private final WebSocketPolicy policy = WebSocketPolicy.newClientPolicy();
     private final SslContextFactory sslContextFactory;
     private final WebSocketExtensionFactory extensionRegistry;
-    private boolean daemon = false;
+    private boolean daemon;
     private EventDriverFactory eventDriverFactory;
     private SessionFactory sessionFactory;
     private ByteBufferPool bufferPool;
@@ -128,8 +123,9 @@ public class WebSocketClient extends ContainerLifeCycle implements WebSocketCont
     {
         
         this.sslContextFactory = sslContextFactory;
-        if(sslContextFactory!=null)
-            addBean(sslContextFactory);
+        if(sslContextFactory!=null) {
+			addBean(sslContextFactory);
+		}
         setExecutor(executor);
         setBufferPool(bufferPool);
         
@@ -158,7 +154,7 @@ public class WebSocketClient extends ContainerLifeCycle implements WebSocketCont
     {
         if (!isStarted())
         {
-            throw new IllegalStateException(WebSocketClient.class.getSimpleName() + "@" + this.hashCode() + " is not started");
+            throw new IllegalStateException(WebSocketClient.class.getSimpleName() + "@" + hashCode() + " is not started");
         }
 
         // Validate websocket URI
@@ -173,7 +169,7 @@ public class WebSocketClient extends ContainerLifeCycle implements WebSocketCont
         }
 
         String scheme = toUri.getScheme().toLowerCase(Locale.ENGLISH);
-        if (("ws".equals(scheme) == false) && ("wss".equals(scheme) == false))
+        if (!"ws".equals(scheme) && !"wss".equals(scheme))
         {
             throw new IllegalArgumentException("WebSocket URI scheme only supports [ws] and [wss], not [" + scheme + "]");
         }
@@ -190,8 +186,9 @@ public class WebSocketClient extends ContainerLifeCycle implements WebSocketCont
             }
         }
 
-        if (LOG.isDebugEnabled())
-            LOG.debug("connect websocket {} to {}",websocket,toUri);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("connect websocket {} to {}",websocket,toUri);
+		}
 
         // Grab Connection Manager
         initializeClient();
@@ -223,8 +220,9 @@ public class WebSocketClient extends ContainerLifeCycle implements WebSocketCont
             promise.setUpgradeListener(upgradeListener);
         }
 
-        if (LOG.isDebugEnabled())
-            LOG.debug("Connect Promise: {}",promise);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Connect Promise: {}",promise);
+		}
 
         // Execute the connection on the executor thread
         executor.execute(promise);
@@ -236,8 +234,9 @@ public class WebSocketClient extends ContainerLifeCycle implements WebSocketCont
     @Override
     protected void doStart() throws Exception
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("Starting {}",this);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Starting {}",this);
+		}
 
         String name = WebSocketClient.class.getSimpleName() + "@" + hashCode();
 
@@ -269,15 +268,17 @@ public class WebSocketClient extends ContainerLifeCycle implements WebSocketCont
 
         super.doStart();
         
-        if (LOG.isDebugEnabled())
-            LOG.debug("Started {}",this);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Started {}",this);
+		}
     }
 
     @Override
     protected void doStop() throws Exception
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("Stopping {}",this);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Stopping {}",this);
+		}
 
         
         if (ShutdownThread.isRegistered(this))
@@ -293,8 +294,9 @@ public class WebSocketClient extends ContainerLifeCycle implements WebSocketCont
             cookieStore = null;
         }
         
-        if (LOG.isDebugEnabled())
-            LOG.debug("Stopped {}",this);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Stopped {}",this);
+		}
     }
 
     public boolean isDispatchIO()
@@ -471,7 +473,7 @@ public class WebSocketClient extends ContainerLifeCycle implements WebSocketCont
     }
 
     /**
-     * Factory method for new ConnectionManager (used by other projects like cometd)
+     * Factory method for new ConnectionManager (used by other projects like cometd).
      * 
      * @return the ConnectionManager instance to use
      */
@@ -483,16 +485,18 @@ public class WebSocketClient extends ContainerLifeCycle implements WebSocketCont
     @Override
     public void onSessionClosed(WebSocketSession session)
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("Session Closed: {}",session);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Session Closed: {}",session);
+		}
         removeBean(session);
     }
 
     @Override
     public void onSessionOpened(WebSocketSession session)
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("Session Opened: {}",session);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Session Opened: {}",session);
+		}
         addManaged(session);
     }
     

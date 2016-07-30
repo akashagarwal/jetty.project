@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.proxy;
 
@@ -97,8 +92,9 @@ public abstract class ProxyConnection extends AbstractConnection
             try
             {
                 int filled = this.filled = read(getEndPoint(), buffer);
-                if (LOG.isDebugEnabled())
-                    LOG.debug("{} filled {} bytes", ProxyConnection.this, filled);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("{} filled {} bytes", ProxyConnection.this, filled);
+				}
                 if (filled > 0)
                 {
                     write(connection.getEndPoint(), buffer, this);
@@ -119,8 +115,9 @@ public abstract class ProxyConnection extends AbstractConnection
             }
             catch (IOException x)
             {
-                if (LOG.isDebugEnabled())
-                    LOG.debug(ProxyConnection.this + " could not fill", x);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug(ProxyConnection.this + " could not fill", x);
+				}
                 bufferPool.release(buffer);
                 disconnect();
                 return Action.SUCCEEDED;
@@ -130,8 +127,9 @@ public abstract class ProxyConnection extends AbstractConnection
         @Override
         public void succeeded()
         {
-            if (LOG.isDebugEnabled())
-                LOG.debug("{} wrote {} bytes", ProxyConnection.this, filled);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("{} wrote {} bytes", ProxyConnection.this, filled);
+			}
             bufferPool.release(buffer);
             super.succeeded();
         }
@@ -144,8 +142,9 @@ public abstract class ProxyConnection extends AbstractConnection
         @Override
         protected void onCompleteFailure(Throwable x)
         {
-            if (LOG.isDebugEnabled())
-                LOG.debug(ProxyConnection.this + " failed to write " + filled + " bytes", x);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug(ProxyConnection.this + " failed to write " + filled + " bytes", x);
+			}
             disconnect();
         }
 

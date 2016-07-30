@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.io;
 
@@ -433,8 +428,8 @@ public class WriteFlusherTest
 
     private class ExposingStateCallback extends FutureCallback
     {
-        private boolean failed = false;
-        private boolean completed = false;
+        private boolean failed;
+        private boolean completed;
 
         @Override
         public void succeeded()
@@ -606,9 +601,11 @@ public class WriteFlusherTest
                 byteBuffer.position(byteBuffer.limit());
             }
 
-            for (ByteBuffer b: buffers)
-                if (BufferUtil.hasContent(b))
-                    return false;
+            for (ByteBuffer b: buffers) {
+				if (BufferUtil.hasContent(b)) {
+					return false;
+				}
+			}
             return true;
         }
     }
@@ -630,8 +627,9 @@ public class WriteFlusherTest
                     {
                         try
                         {
-                            while(window.get()==0)
-                                window.addAndGet(exchange.exchange(0));
+                            while(window.get()==0) {
+								window.addAndGet(exchange.exchange(0));
+							}
                             completeWrite(); 
                         }
                         catch(Throwable th)
@@ -686,9 +684,11 @@ public class WriteFlusherTest
                     byteBuffer.position(byteBuffer.position()+1);
                 }
             }
-            for (ByteBuffer b: buffers)
-                if (BufferUtil.hasContent(b))
-                    return false;
+            for (ByteBuffer b: buffers) {
+				if (BufferUtil.hasContent(b)) {
+					return false;
+				}
+			}
             return true;
         }
     }

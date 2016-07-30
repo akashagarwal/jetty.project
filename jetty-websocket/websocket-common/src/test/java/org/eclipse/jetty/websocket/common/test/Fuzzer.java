@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.common.test;
 
@@ -63,9 +58,9 @@ public class Fuzzer implements AutoCloseable
 
     public static enum DisconnectMode
     {
-        /** Disconnect occurred after a proper close handshake */
+        /** Disconnect occurred after a proper close handshake. */
         CLEAN,
-        /** Disconnect occurred in a harsh manner, without a close handshake */
+        /** Disconnect occurred in a harsh manner, without a close handshake. */
         UNCLEAN
     }
 
@@ -74,7 +69,7 @@ public class Fuzzer implements AutoCloseable
 
     private static final Logger LOG = Log.getLogger(Fuzzer.class);
 
-    // Client side framing mask
+    /** Client side framing mask. */
     protected static final byte[] MASK =
     { 0x11, 0x22, 0x33, 0x44 };
 
@@ -242,7 +237,7 @@ public class Fuzzer implements AutoCloseable
     {
         Assert.assertThat("Client connected",client.isConnected(),is(true));
         LOG.debug("[{}] Sending {} frames (mode {})",testname,send.size(),sendMode);
-        if ((sendMode == SendMode.BULK) || (sendMode == SendMode.SLOW))
+        if (sendMode == SendMode.BULK || sendMode == SendMode.SLOW)
         {
             int buflen = 0;
             for (Frame f : send)

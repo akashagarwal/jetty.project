@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util;
 
@@ -65,7 +60,7 @@ public class LazyList
 {
     private static final String[] __EMTPY_STRING_ARRAY = new String[0];
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     private LazyList()
     {}
     
@@ -144,8 +139,9 @@ public class LazyList
     public static Object addCollection(Object list, Collection<?> collection)
     {
         Iterator<?> i=collection.iterator();
-        while(i.hasNext())
-            list=LazyList.add(list,i.next());
+        while(i.hasNext()) {
+			list=LazyList.add(list,i.next());
+		}
         return list;
     }
     
@@ -157,8 +153,9 @@ public class LazyList
      */
     public static Object addArray(Object list, Object[] array)
     {
-        for(int i=0;array!=null && i<array.length;i++)
-            list=LazyList.add(list,array[i]);
+        for(int i=0;array!=null && i<array.length;i++) {
+			list=LazyList.add(list,array[i]);
+		}
         return list;
     }
 
@@ -170,59 +167,65 @@ public class LazyList
      */
     public static Object ensureSize(Object list, int initialSize)
     {
-        if (list==null)
-            return new ArrayList<Object>(initialSize);
+        if (list==null) {
+			return new ArrayList<Object>(initialSize);
+		}
         if (list instanceof ArrayList)
         {
             ArrayList<?> ol=(ArrayList<?>)list;
-            if (ol.size()>initialSize)
-                return ol;
-            ArrayList<Object> nl = new ArrayList<Object>(initialSize);
-            nl.addAll(ol);
-            return nl;
+            if (ol.size()>initialSize) {
+				return ol;
+			}
+            return new ArrayList<Object>(ol);
         }
         List<Object> l= new ArrayList<Object>(initialSize);
         l.add(list);
         return l;    
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public static Object remove(Object list, Object o)
     {
-        if (list==null)
-            return null;
+        if (list==null) {
+			return null;
+		}
 
         if (list instanceof List)
         {
             List<?> l = (List<?>)list;
             l.remove(o);
-            if (l.size()==0)
-                return null;
+            if (l.size()==0) {
+				return null;
+			}
             return list;
         }
 
-        if (list.equals(o))
-            return null;
+        if (list.equals(o)) {
+			return null;
+		}
         return list;
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public static Object remove(Object list, int i)
     {
-        if (list==null)
-            return null;
+        if (list==null) {
+			return null;
+		}
 
         if (list instanceof List)
         {
             List<?> l = (List<?>)list;
             l.remove(i);
-            if (l.size()==0)
-                return null;
+            if (l.size()==0) {
+				return null;
+			}
             return list;
         }
 
-        if (i==0)
-            return null;
+        if (i==0) {
+			return null;
+		}
         return list;
     }
     
@@ -257,12 +260,14 @@ public class LazyList
     {
         if (list==null)
         {
-            if (nullForEmpty)
-                return null;
+            if (nullForEmpty) {
+				return null;
+			}
             return Collections.emptyList();
         }
-        if (list instanceof List)
-            return (List<E>)list;
+        if (list instanceof List) {
+			return (List<E>)list;
+		}
         
         return (List<E>)Collections.singletonList(list);
     }
@@ -276,15 +281,11 @@ public class LazyList
      */
     public static boolean hasEntry(Object list)
     {
-        if (list == null)
-            return false;
-        if (list instanceof List)
-            return !((List<?>)list).isEmpty();
-        return true;
+        return list != null && (!(list instanceof List) || !((List<?>)list).isEmpty());
     }
     
     /**
-     * Simple utility method to test if List is empty
+     * Simple utility method to test if List is empty.
      * 
      * @param list
      *            a LazyList, {@link List} or {@link Object}
@@ -292,19 +293,16 @@ public class LazyList
      */
     public static boolean isEmpty(Object list)
     {
-        if (list == null)
-            return true;
-        if (list instanceof List)
-            return ((List<?>)list).isEmpty();
-        return false;
+        return list == null || (list instanceof List && ((List<?>)list).isEmpty());
     }
 
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public static String[] toStringArray(Object list)
     {
-        if (list==null)
-            return __EMTPY_STRING_ARRAY;
+        if (list==null) {
+			return __EMTPY_STRING_ARRAY;
+		}
         
         if (list instanceof List)
         {
@@ -313,8 +311,9 @@ public class LazyList
             for (int i=l.size();i-->0;)
             {
                 Object o=l.get(i);
-                if (o!=null)
-                    a[i]=o.toString();
+                if (o!=null) {
+					a[i]=o.toString();
+				}
             }
             return a;
         }
@@ -323,15 +322,16 @@ public class LazyList
     }
 
     /* ------------------------------------------------------------ */
-    /** Convert a lazylist to an array
+    /** Convert a lazylist to an array.
      * @param list The list to convert
      * @param clazz The class of the array, which may be a primitive type
      * @return array of the lazylist entries passed in
      */
     public static Object toArray(Object list,Class<?> clazz)
     {
-        if (list==null)
-            return Array.newInstance(clazz,0);
+        if (list==null) {
+			return Array.newInstance(clazz,0);
+		}
         
         if (list instanceof List)
         {
@@ -339,8 +339,9 @@ public class LazyList
             if (clazz.isPrimitive())
             {
                 Object a = Array.newInstance(clazz,l.size());
-                for (int i=0;i<l.size();i++)
-                    Array.set(a,i,l.get(i));
+                for (int i=0;i<l.size();i++) {
+					Array.set(a,i,l.get(i));
+				}
                 return a;
             }
             return l.toArray((Object[])Array.newInstance(clazz,l.size()));
@@ -359,10 +360,12 @@ public class LazyList
      */
     public static int size(Object list)
     {
-        if (list==null)
-            return 0;
-        if (list instanceof List)
-            return ((List<?>)list).size();
+        if (list==null) {
+			return 0;
+		}
+        if (list instanceof List) {
+			return ((List<?>)list).size();
+		}
         return 1;
     }
     
@@ -376,52 +379,61 @@ public class LazyList
     @SuppressWarnings("unchecked")
     public static <E> E get(Object list, int i)
     {
-        if (list==null)
-            throw new IndexOutOfBoundsException();
+        if (list==null) {
+			throw new IndexOutOfBoundsException();
+		}
        
-        if (list instanceof List)
-            return (E)((List<?>)list).get(i);
+        if (list instanceof List) {
+			return (E)((List<?>)list).get(i);
+		}
 
-        if (i==0)
-            return (E)list;
+        if (i==0) {
+			return (E)list;
+		}
         
         throw new IndexOutOfBoundsException();
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public static boolean contains(Object list,Object item)
     {
-        if (list==null)
-            return false;
+        if (list==null) {
+			return false;
+		}
         
-        if (list instanceof List)
-            return ((List<?>)list).contains(item);
+        if (list instanceof List) {
+			return ((List<?>)list).contains(item);
+		}
 
         return list.equals(item);
     }
     
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public static Object clone(Object list)
     {
-        if (list==null)
-            return null;
-        if (list instanceof List)
-            return new ArrayList<Object>((List<?>)list);
+        if (list==null) {
+			return null;
+		}
+        if (list instanceof List) {
+			return new ArrayList<Object>((List<?>)list);
+		}
         return list;
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public static String toString(Object list)
     {
-        if (list==null)
-            return "[]";
-        if (list instanceof List)
-            return list.toString();
+        if (list==null) {
+			return "[]";
+		}
+        if (list instanceof List) {
+			return list.toString();
+		}
         return "["+list+"]";
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @SuppressWarnings("unchecked")
     public static<E> Iterator<E> iterator(Object list)
     {
@@ -438,7 +450,7 @@ public class LazyList
         return l.iterator();
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @SuppressWarnings("unchecked")
     public static<E> ListIterator<E> listIterator(Object list)
     {
@@ -447,8 +459,9 @@ public class LazyList
             List<E> empty=Collections.emptyList();
             return empty.listIterator();
         }
-        if (list instanceof List)
-            return ((List<E>)list).listIterator();
+        if (list instanceof List) {
+			return ((List<E>)list).listIterator();
+		}
 
         List<E> l=getList(list);
         return l.listIterator();

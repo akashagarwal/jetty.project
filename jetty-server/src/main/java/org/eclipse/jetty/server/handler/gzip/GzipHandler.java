@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server.handler.gzip;
 
@@ -60,15 +55,15 @@ public class GzipHandler extends HandlerWrapper implements GzipFactory
 {
     private static final Logger LOG = Log.getLogger(GzipHandler.class);
 
-    public final static String GZIP = "gzip";
-    public final static String DEFLATE = "deflate";
-    public final static int DEFAULT_MIN_GZIP_SIZE=16;
+    public static final String GZIP = "gzip";
+    public static final String DEFLATE = "deflate";
+    public static final int DEFAULT_MIN_GZIP_SIZE=16;
     private int _minGzipSize=DEFAULT_MIN_GZIP_SIZE;
     private int _compressionLevel=Deflater.DEFAULT_COMPRESSION;
     private boolean _checkGzExists = true;
-    private boolean _syncFlush = false;
+    private boolean _syncFlush;
 
-    // non-static, as other GzipHandler instances may have different configurations
+    /** Non-static, as other GzipHandler instances may have different configurations. */
     private final ThreadLocal<Deflater> _deflater = new ThreadLocal<>();
 
     private final IncludeExclude<String> _agentPatterns=new IncludeExclude<>(RegexSet.class);
@@ -92,12 +87,13 @@ public class GzipHandler extends HandlerWrapper implements GzipFactory
         _methods.include(HttpMethod.GET.asString());
         for (String type:MimeTypes.getKnownMimeTypes())
         {
-            if ("image/svg+xml".equals(type))
-                _paths.exclude("*.svgz");
-            else if (type.startsWith("image/")||
+            if ("image/svg+xml".equals(type)) {
+				_paths.exclude("*.svgz");
+			} else if (type.startsWith("image/")||
                 type.startsWith("audio/")||
-                type.startsWith("video/"))
-                _mimeTypes.exclude(type);
+                type.startsWith("video/")) {
+				_mimeTypes.exclude(type);
+			}
         }
         _mimeTypes.exclude("application/compress");
         _mimeTypes.exclude("application/zip");
@@ -124,8 +120,9 @@ public class GzipHandler extends HandlerWrapper implements GzipFactory
      */
     public void addExcludedMethods(String... methods)
     {
-        for (String m : methods)
-            _methods.exclude(m);
+        for (String m : methods) {
+			_methods.exclude(m);
+		}
     }
 
     /* ------------------------------------------------------------ */
@@ -137,8 +134,9 @@ public class GzipHandler extends HandlerWrapper implements GzipFactory
      */
     public void addExcludedMimeTypes(String... types)
     {
-        for (String t : types)
-            _mimeTypes.exclude(StringUtil.csvSplit(t));
+        for (String t : types) {
+			_mimeTypes.exclude(StringUtil.csvSplit(t));
+		}
     }
 
     /* ------------------------------------------------------------ */
@@ -151,8 +149,9 @@ public class GzipHandler extends HandlerWrapper implements GzipFactory
      */
     public void addExcludedPaths(String... pathspecs)
     {
-        for (String p : pathspecs)
-            _paths.exclude(StringUtil.csvSplit(p));
+        for (String p : pathspecs) {
+			_paths.exclude(StringUtil.csvSplit(p));
+		}
     }
 
     /* ------------------------------------------------------------ */
@@ -170,8 +169,9 @@ public class GzipHandler extends HandlerWrapper implements GzipFactory
      */
     public void addIncludedMethods(String... methods)
     {
-        for (String m : methods)
-            _methods.include(m);
+        for (String m : methods) {
+			_methods.include(m);
+		}
     }
 
     /* ------------------------------------------------------------ */
@@ -205,8 +205,9 @@ public class GzipHandler extends HandlerWrapper implements GzipFactory
      */
     public void addIncludedMimeTypes(String... types)
     {
-        for (String t : types)
-            _mimeTypes.include(StringUtil.csvSplit(t));
+        for (String t : types) {
+			_mimeTypes.include(StringUtil.csvSplit(t));
+		}
     }
 
     /* ------------------------------------------------------------ */
@@ -220,11 +221,12 @@ public class GzipHandler extends HandlerWrapper implements GzipFactory
      */
     public void addIncludedPaths(String... pathspecs)
     {
-        for (String p : pathspecs)
-            _paths.include(StringUtil.csvSplit(p));
+        for (String p : pathspecs) {
+			_paths.include(StringUtil.csvSplit(p));
+		}
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     protected void doStart() throws Exception
     {
@@ -232,19 +234,19 @@ public class GzipHandler extends HandlerWrapper implements GzipFactory
         super.doStart();
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public boolean getCheckGzExists()
     {
         return _checkGzExists;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public int getCompressionLevel()
     {
         return _compressionLevel;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public Deflater getDeflater(Request request, long content_length)
     {
@@ -278,71 +280,72 @@ public class GzipHandler extends HandlerWrapper implements GzipFactory
         }
 
         Deflater df = _deflater.get();
-        if (df==null)
-            df=new Deflater(_compressionLevel,true);
-        else
-            _deflater.set(null);
+        if (df!=null) {
+			_deflater.set(null);
+		} else {
+			df=new Deflater(_compressionLevel,true);
+		}
 
         return df;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public String[] getExcludedAgentPatterns()
     {
         Set<String> excluded=_agentPatterns.getExcluded();
         return excluded.toArray(new String[excluded.size()]);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public String[] getExcludedMethods()
     {
         Set<String> excluded=_methods.getExcluded();
         return excluded.toArray(new String[excluded.size()]);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public String[] getExcludedMimeTypes()
     {
         Set<String> excluded=_mimeTypes.getExcluded();
         return excluded.toArray(new String[excluded.size()]);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public String[] getExcludedPaths()
     {
         Set<String> excluded=_paths.getExcluded();
         return excluded.toArray(new String[excluded.size()]);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public String[] getIncludedAgentPatterns()
     {
         Set<String> includes=_agentPatterns.getIncluded();
         return includes.toArray(new String[includes.size()]);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public String[] getIncludedMethods()
     {
         Set<String> includes=_methods.getIncluded();
         return includes.toArray(new String[includes.size()]);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public String[] getIncludedMimeTypes()
     {
         Set<String> includes=_mimeTypes.getIncluded();
         return includes.toArray(new String[includes.size()]);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public String[] getIncludedPaths()
     {
         Set<String> includes=_paths.getIncluded();
         return includes.toArray(new String[includes.size()]);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Deprecated
     public String[] getMethods()
     {
@@ -365,10 +368,7 @@ public class GzipHandler extends HandlerWrapper implements GzipFactory
         return _vary;
     }
 
-    /* ------------------------------------------------------------ */
-    /**
-     * @see org.eclipse.jetty.server.handler.HandlerWrapper#handle(java.lang.String, org.eclipse.jetty.server.Request, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-     */
+    /** ------------------------------------------------------------. */
     @Override
     public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
     {
@@ -457,26 +457,24 @@ public class GzipHandler extends HandlerWrapper implements GzipFactory
         // install interceptor and handle
         out.setInterceptor(new GzipHttpOutputInterceptor(this,getVaryField(),baseRequest.getHttpChannel(),out.getInterceptor(),isSyncFlush()));
 
-        if (_handler!=null)
-            _handler.handle(target,baseRequest, request, response);
+        if (_handler!=null) {
+			_handler.handle(target,baseRequest, request, response);
+		}
     }
 
     /* ------------------------------------------------------------ */
     /**
-     * Checks to see if the userAgent is excluded
+     * Checks to see if the userAgent is excluded.
      *
      * @param ua the user agent
      * @return boolean true if excluded
      */
     protected boolean isAgentGzipable(String ua)
     {
-        if (ua == null)
-            return false;
-
-        return _agentPatterns.matches(ua);
+        return ua != null && _agentPatterns.matches(ua);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public boolean isMimeTypeGzipable(String mimetype)
     {
@@ -485,7 +483,7 @@ public class GzipHandler extends HandlerWrapper implements GzipFactory
 
     /* ------------------------------------------------------------ */
     /**
-     * Checks to see if the path is included or not excluded
+     * Checks to see if the path is included or not excluded.
      *
      * @param requestURI
      *            the request uri
@@ -493,19 +491,17 @@ public class GzipHandler extends HandlerWrapper implements GzipFactory
      */
     protected boolean isPathGzipable(String requestURI)
     {
-        if (requestURI == null)
-            return true;
-
-        return _paths.matches(requestURI);
+        return requestURI == null || _paths.matches(requestURI);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public void recycle(Deflater deflater)
     {
         deflater.reset();
-        if (_deflater.get()==null)
-            _deflater.set(deflater);
+        if (_deflater.get()==null) {
+			_deflater.set(deflater);
+		}
     }
 
     /* ------------------------------------------------------------ */
@@ -617,7 +613,7 @@ public class GzipHandler extends HandlerWrapper implements GzipFactory
 
     /* ------------------------------------------------------------ */
     /**
-     * Set the minimum response size to trigger dynamic compresssion
+     * Set the minimum response size to trigger dynamic compresssion.
      *
      * @param minGzipSize minimum response size in bytes
      */

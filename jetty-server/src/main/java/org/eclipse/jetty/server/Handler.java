@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 
@@ -73,15 +68,13 @@ public interface Handler extends LifeCycle, Destroyable
      * @throws ServletException
      *             if unable to handle the request or response due to underlying servlet issue
      */
-    public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response)
+    void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response)
         throws IOException, ServletException;
 
-    public void setServer(Server server);
+    void setServer(Server server);
 
-    @ManagedAttribute(value="the jetty server for this handler", readonly=true)
-    public Server getServer();
+    @ManagedAttribute(value="the jetty server for this handler", readonly=true) Server getServer();
 
-    @ManagedOperation(value="destroy associated resources", impact="ACTION")
-    public void destroy();
+    @ManagedOperation(value="destroy associated resources", impact="ACTION") void destroy();
 }
 

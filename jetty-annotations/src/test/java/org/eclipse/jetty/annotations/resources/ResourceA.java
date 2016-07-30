@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.annotations.resources;
 
@@ -29,7 +24,7 @@ import javax.servlet.ServletResponse;
 /**
  * ResourceA
  *
- *
+ *.
  */
 public class ResourceA implements javax.servlet.Servlet
 {
@@ -39,7 +34,7 @@ public class ResourceA implements javax.servlet.Servlet
 
 
     @Resource(name="myf", mappedName="resB") //test giving both a name and mapped name from the environment
-    private Integer f;//test a non inherited field that needs injection
+    private Integer f;/** Test a non inherited field that needs injection. */
 
     @Resource(mappedName="resA") //test the default naming scheme but using a mapped name from the environment
     private Integer g;
@@ -48,7 +43,7 @@ public class ResourceA implements javax.servlet.Servlet
     private Integer j;
 
     @Resource(mappedName="resB") //test using the default name on an inherited field
-    protected Integer n; //TODO - if it's inherited, is it supposed to use the classname of the class it is inherited by?
+    protected Integer n; /** TODO - if it's inherited, is it supposed to use the classname of the class it is inherited by? */
 
 
     @Resource(name="mye", mappedName="resA", type=Integer.class)

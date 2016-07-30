@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.osgi.boot.internal.serverfactory;
 
@@ -55,12 +50,12 @@ public class DefaultJettyAtJettyHomeHelper
     private static final Logger LOG = Log.getLogger(DefaultJettyAtJettyHomeHelper.class);
 
     /**
-     * contains a comma separated list of paths to the etc/jetty-*.xml files
+     * Contains a comma separated list of paths to the etc/jetty-*.xml files
      */
     public static final String JETTY_ETC_FILES = OSGiServerConstants.MANAGED_JETTY_XML_CONFIG_URLS;
 
     /**
-     * Set of config files to apply to a jetty Server instance if none are supplied by SYS_PROP_JETTY_ETC_FILES
+     * Set of config files to apply to a jetty Server instance if none are supplied by SYS_PROP_JETTY_ETC_FILES.
      */
     public static final String DEFAULT_JETTY_ETC_FILES = "etc/jetty.xml,etc/jetty-http.xml,etc/jetty-deployer.xml";
     
@@ -107,11 +102,13 @@ public class DefaultJettyAtJettyHomeHelper
         {
             jettyHomeSysProp = Util.resolvePropertyValue(jettyHomeSysProp);
             // bug 329621
-            if (jettyHomeSysProp.startsWith("\"") && jettyHomeSysProp.endsWith("\"") || (jettyHomeSysProp.startsWith("'") && jettyHomeSysProp.endsWith("'")))
-                jettyHomeSysProp = jettyHomeSysProp.substring(1, jettyHomeSysProp.length() - 1);
+            if ((jettyHomeSysProp.startsWith("\"") && jettyHomeSysProp.endsWith("\"")) || (jettyHomeSysProp.startsWith("'") && jettyHomeSysProp.endsWith("'"))) {
+				jettyHomeSysProp = jettyHomeSysProp.substring(1, jettyHomeSysProp.length() - 1);
+			}
          
-            if (jettyHomeBundleSysProp != null)
-                LOG.warn("Both jetty.home and jetty.home.bundle property defined: jetty.home.bundle ignored.");
+            if (jettyHomeBundleSysProp != null) {
+				LOG.warn("Both jetty.home and jetty.home.bundle property defined: jetty.home.bundle ignored.");
+			}
            
             jettyHomeDir = new File(jettyHomeSysProp);
             if (!jettyHomeDir.exists() || !jettyHomeDir.isDirectory())
@@ -128,8 +125,9 @@ public class DefaultJettyAtJettyHomeHelper
             jettyHomeBundleSysProp = Util.resolvePropertyValue(jettyHomeBundleSysProp);
             for (Bundle b : bundleContext.getBundles())
             {
-                if (b.getState() == Bundle.UNINSTALLED)
-                    continue;
+                if (b.getState() == Bundle.UNINSTALLED) {
+					continue;
+				}
                 
                 if (b.getSymbolicName().equals(jettyHomeBundleSysProp))
                 {
@@ -159,8 +157,9 @@ public class DefaultJettyAtJettyHomeHelper
         LOG.info("Configuring the default jetty server with {}",configURLs);
         String home=properties.get(OSGiServerConstants.JETTY_HOME);
         String base=properties.get(OSGiServerConstants.JETTY_BASE);
-        if (base==null)
-            base=home;
+        if (base==null) {
+			base=home;
+		}
         LOG.info("JETTY.HOME="+home);
         LOG.info("JETTY.BASE="+base);
         ClassLoader contextCl = Thread.currentThread().getContextClassLoader();
@@ -220,10 +219,11 @@ public class DefaultJettyAtJettyHomeHelper
         {
             String next = tokenizer.nextToken().trim();
             //etc files can either be relative to jetty.home or absolute disk locations
-            if (!next.startsWith("/") && (next.indexOf(':') == -1))    
-                configURLs.add(new File(jettyhome, next).toURI().toURL());
-            else 
-                configURLs.add(new URL(next));
+            if (!next.startsWith("/") && next.indexOf(':') == -1) {
+				configURLs.add(new File(jettyhome, next).toURI().toURL());
+			} else {
+				configURLs.add(new URL(next));
+			}
         }
         return configURLs;
     }
@@ -250,16 +250,16 @@ public class DefaultJettyAtJettyHomeHelper
             String etcFile = tokenizer.nextToken().trim();
 
             //file path is absolute
-            if (etcFile.startsWith("/") || etcFile.indexOf(":") != -1)
-                configURLs.add(new URL(etcFile));
-            else //relative file path
+            if (etcFile.startsWith("/") || etcFile.contains(":")) {
+				configURLs.add(new URL(etcFile));
+			} else //relative file path
             {
                 Enumeration<URL> enUrls = BundleFileLocatorHelperFactory.getFactory().getHelper().findEntries(configurationBundle, etcFile);
 
                 String home = null;
                 // default for org.eclipse.osgi.boot where we look inside
                 // jettyhome/ for the default embedded configuration.
-                if ((enUrls == null || !enUrls.hasMoreElements()))
+                if (enUrls == null || !enUrls.hasMoreElements())
                 {
                     home = DEFAULT_JETTYHOME;
                     String tmp = DEFAULT_JETTYHOME+(DEFAULT_JETTYHOME.endsWith("/")?"":"/")+etcFile;
@@ -271,12 +271,14 @@ public class DefaultJettyAtJettyHomeHelper
                 if (properties.get(OSGiServerConstants.JETTY_HOME) == null)
                 {
                     Resource res = findDir(configurationBundle, home);
-                    if (res != null)
-                        properties.put(OSGiServerConstants.JETTY_HOME, res.toString());
+                    if (res != null) {
+						properties.put(OSGiServerConstants.JETTY_HOME, res.toString());
+					}
                 }
          
-                if (enUrls == null || !enUrls.hasMoreElements())
-                    throw new IllegalStateException ("Unable to locate a jetty configuration file for " + etcFile);
+                if (enUrls == null || !enUrls.hasMoreElements()) {
+					throw new IllegalStateException ("Unable to locate a jetty configuration file for " + etcFile);
+				}
 
                 URL url = BundleFileLocatorHelperFactory.getFactory().getHelper().getFileURL(enUrls.nextElement());
                 configURLs.add(url);
@@ -296,8 +298,9 @@ public class DefaultJettyAtJettyHomeHelper
      */
     public static Resource findDir (Bundle bundle, String dir)
     {
-        if (bundle == null)
-            return null;
+        if (bundle == null) {
+			return null;
+		}
 
         try
         {
@@ -308,12 +311,14 @@ public class DefaultJettyAtJettyHomeHelper
             String s = res.toString();
    
             //check if it is an unarchived bundle
-            if (s.endsWith(".jar") && s.startsWith("file:"))
-                res = JarResource.newJarResource(res);
+            if (s.endsWith(".jar") && s.startsWith("file:")) {
+				res = JarResource.newJarResource(res);
+			}
             
             //if looking for a directory 
-            if (dir != null)
-                res = res.addPath(dir);
+            if (dir != null) {
+				res = res.addPath(dir);
+			}
             
             return res;
           

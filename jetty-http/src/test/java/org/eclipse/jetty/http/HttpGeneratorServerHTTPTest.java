@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http;
 
@@ -41,7 +36,7 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class HttpGeneratorServerHTTPTest
 {
-    @Parameter(value = 0)
+    @Parameter(0)
     public Run run;
     private String _content;
     private String _reason;
@@ -64,20 +59,23 @@ public class HttpGeneratorServerHTTPTest
 
         parser.parseNext(BufferUtil.toBuffer(response));
 
-        if (run.result._body != null)
-            assertEquals(t, run.result._body, this._content);
+        if (run.result._body != null) {
+			assertEquals(t, run.result._body, this._content);
+		}
 
-        if (run.httpVersion == 10)
-            assertTrue(t, gen.isPersistent() || run.result._contentLength >= 0 || EnumSet.of(ConnectionType.CLOSE, ConnectionType.KEEP_ALIVE, ConnectionType.NONE).contains(run.connection));
-        else
-            assertTrue(t, gen.isPersistent() || EnumSet.of(ConnectionType.CLOSE, ConnectionType.TE_CLOSE).contains(run.connection));
+        if (run.httpVersion == 10) {
+			assertTrue(t, gen.isPersistent() || run.result._contentLength >= 0 || EnumSet.of(ConnectionType.CLOSE, ConnectionType.KEEP_ALIVE, ConnectionType.NONE).contains(run.connection));
+		} else {
+			assertTrue(t, gen.isPersistent() || EnumSet.of(ConnectionType.CLOSE, ConnectionType.TE_CLOSE).contains(run.connection));
+		}
 
         assertEquals("OK??Test", _reason);
 
-        if (_content == null)
-            assertTrue(t, run.result._body == null);
-        else
-            assertThat(t, run.result._contentLength, either(equalTo(_content.length())).or(equalTo(-1)));
+        if (_content != null) {
+			assertThat(t, run.result._contentLength, either(equalTo(_content.length())).or(equalTo(-1)));
+		} else {
+			assertTrue(t, run.result._body == null);
+		}
     }
 
     private static class Result
@@ -108,16 +106,21 @@ public class HttpGeneratorServerHTTPTest
             _connection = connection;
             _te = te;
 
-            if (_contentType != null)
-                _fields.put("Content-Type", _contentType);
-            if (_contentLength >= 0)
-                _fields.put("Content-Length", "" + _contentLength);
-            if (_connection != null)
-                _fields.put("Connection", _connection);
-            if (_te != null)
-                _fields.put("Transfer-Encoding", _te);
-            if (_other != null)
-                _fields.put("Other", _other);
+            if (_contentType != null) {
+				_fields.put("Content-Type", _contentType);
+			}
+            if (_contentLength >= 0) {
+				_fields.put("Content-Length", "" + _contentLength);
+			}
+            if (_connection != null) {
+				_fields.put("Connection", _connection);
+			}
+            if (_te != null) {
+				_fields.put("Transfer-Encoding", _te);
+			}
+            if (_other != null) {
+				_fields.put("Other", _other);
+			}
 
             ByteBuffer source = _body == null ? null : BufferUtil.toBuffer(_body);
             ByteBuffer[] chunks = new ByteBuffer[nchunks];
@@ -129,8 +132,9 @@ public class HttpGeneratorServerHTTPTest
                 {
                     chunks[i] = source.duplicate();
                     chunks[i].position(i * (source.capacity() / nchunks));
-                    if (i > 0)
-                        chunks[i - 1].limit(chunks[i].position());
+                    if (i > 0) {
+						chunks[i - 1].limit(chunks[i].position());
+					}
                 }
                 content = chunks[c++];
             }
@@ -142,8 +146,9 @@ public class HttpGeneratorServerHTTPTest
             while (true)
             {
                 // if we have unwritten content
-                if (source != null && content != null && content.remaining() == 0 && c < nchunks)
-                    content = chunks[c++];
+                if (source != null && content != null && content.remaining() == 0 && c < nchunks) {
+					content = chunks[c++];
+				}
 
                 // Generate
                 boolean last = !BufferUtil.hasContent(content);
@@ -212,8 +217,9 @@ public class HttpGeneratorServerHTTPTest
         @Override
         public boolean content(ByteBuffer ref)
         {
-            if (_content == null)
-                _content = "";
+            if (_content == null) {
+				_content = "";
+			}
             _content += BufferUtil.toString(ref);
             ref.position(ref.limit());
             return false;
@@ -262,7 +268,7 @@ public class HttpGeneratorServerHTTPTest
         }
     }
 
-    public final static String CONTENT = "The quick brown fox jumped over the lazy dog.\nNow is the time for all good men to come to the aid of the party\nThe moon is blue to a fish in love.\n";
+    public static final String CONTENT = "The quick brown fox jumped over the lazy dog.\nNow is the time for all good men to come to the aid of the party\nThe moon is blue to a fish in love.\n";
 
     private static class Run
     {

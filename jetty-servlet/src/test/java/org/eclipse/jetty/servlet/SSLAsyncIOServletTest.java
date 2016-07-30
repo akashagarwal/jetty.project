@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.servlet;
 
@@ -101,8 +96,9 @@ public class SSLAsyncIOServletTest
         Random random = new Random();
         String chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
         final byte[] content = new byte[50000];
-        for (int i = 0; i < content.length; ++i)
-            content[i] = (byte)chars.charAt(random.nextInt(chars.length()));
+        for (int i = 0; i < content.length; ++i) {
+			content[i] = (byte)chars.charAt(random.nextInt(chars.length()));
+		}
 
         prepare(new HttpServlet()
         {
@@ -135,8 +131,9 @@ public class SSLAsyncIOServletTest
 
                             // Perform a write that is smaller than the buffer size to
                             // trigger the condition where the bytes are aggregated.
-                            if (writes == 1)
-                                toWrite -= 16;
+                            if (writes == 1) {
+								toWrite -= 16;
+							}
 
                             output.write(content, written, toWrite);
                             ++writes;
@@ -156,10 +153,7 @@ public class SSLAsyncIOServletTest
 
         try (Socket client = newClient())
         {
-            String request = "" +
-                    "GET " + contextPath + servletPath + " HTTP/1.1\r\n" +
-                    "Host: localhost\r\n" +
-                    "\r\n";
+            String request = "GET " + contextPath + servletPath + " HTTP/1.1\r\n" + "Host: localhost\r\n" + "\r\n";
             OutputStream output = client.getOutputStream();
             output.write(request.getBytes("UTF-8"));
             output.flush();

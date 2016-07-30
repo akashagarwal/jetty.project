@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 
@@ -32,25 +27,25 @@ public interface SessionIdManager extends LifeCycle
      * @param id The session ID without any cluster node extension
      * @return True if the session ID is in use by at least one context.
      */
-    public boolean idInUse(String id);
+    boolean idInUse(String id);
     
     /**
      * Add a session to the list of known sessions for a given ID.
      * @param session The session
      */
-    public void addSession(HttpSession session);
+    void addSession(HttpSession session);
     
     /**
      * Remove session from the list of known sessions for a given ID.
      * @param session the session to remove
      */
-    public void removeSession(HttpSession session);
+    void removeSession(HttpSession session);
     
     /**
      * Call {@link HttpSession#invalidate()} on all known sessions for the given id.
      * @param id The session ID without any cluster node extension
      */
-    public void invalidateAll(String id);
+    void invalidateAll(String id);
     
     /**
      * Create a new Session ID.
@@ -59,11 +54,11 @@ public interface SessionIdManager extends LifeCycle
      * @param created the timestamp for when the session was created
      * @return the new session id
      */
-    public String newSessionId(HttpServletRequest request,long created);
+    String newSessionId(HttpServletRequest request,long created);
     
     
     
-    public String getWorkerName();
+    String getWorkerName();
     
     
     /* ------------------------------------------------------------ */
@@ -72,7 +67,7 @@ public interface SessionIdManager extends LifeCycle
      * @param nodeId the node id
      * @return the cluster id
      */
-    public String getClusterId(String nodeId);
+    String getClusterId(String nodeId);
     
     /* ------------------------------------------------------------ */
     /** Get a node ID from a cluster ID and a request
@@ -80,7 +75,7 @@ public interface SessionIdManager extends LifeCycle
      * @param request The request that for the session (or null)
      * @return The session ID qualified with the node ID.
      */
-    public String getNodeId(String clusterId,HttpServletRequest request);
+    String getNodeId(String clusterId,HttpServletRequest request);
     
     
     /* ------------------------------------------------------------ */
@@ -90,7 +85,7 @@ public interface SessionIdManager extends LifeCycle
     * @param oldNodeId the old node id
     * @param request the request containing the session
     */
-    public void renewSessionId(String oldClusterId, String oldNodeId, HttpServletRequest request);    
+    void renewSessionId(String oldClusterId, String oldNodeId, HttpServletRequest request);    
 
     
 }

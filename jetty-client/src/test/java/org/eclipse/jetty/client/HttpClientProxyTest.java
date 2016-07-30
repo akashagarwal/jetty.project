@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.client;
 
@@ -59,12 +54,13 @@ public class HttpClientProxyTest extends AbstractHttpClientServerTest
             public void handle(String target, org.eclipse.jetty.server.Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
             {
                 baseRequest.setHandled(true);
-                if (!URI.create(baseRequest.getHttpURI().toString()).isAbsolute())
-                    response.setStatus(HttpServletResponse.SC_USE_PROXY);
-                else if (serverHost.equals(request.getServerName()))
-                    response.setStatus(status);
-                else
-                    response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
+                if (!URI.create(baseRequest.getHttpURI().toString()).isAbsolute()) {
+					response.setStatus(HttpServletResponse.SC_USE_PROXY);
+				} else if (serverHost.equals(request.getServerName())) {
+					response.setStatus(status);
+				} else {
+					response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
+				}
             }
         });
 
@@ -107,8 +103,9 @@ public class HttpClientProxyTest extends AbstractHttpClientServerTest
                     if (authorization.startsWith(prefix))
                     {
                         String attempt = authorization.substring(prefix.length());
-                        if (credentials.equals(attempt))
-                            response.setStatus(status);
+                        if (credentials.equals(attempt)) {
+							response.setStatus(status);
+						}
                     }
                 }
             }

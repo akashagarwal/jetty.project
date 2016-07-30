@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util.ssl;
 
@@ -68,8 +63,9 @@ public class SniX509ExtendedKeyManager extends X509ExtendedKeyManager
     {
         // Look for the aliases that are suitable for the keytype and issuers
         String[] aliases = _delegate.getServerAliases(keyType,issuers);
-        if (aliases==null || aliases.length==0)
-            return null;
+        if (aliases==null || aliases.length==0) {
+			return null;
+		}
 
         // Look for the SNI information.
         String host=null;
@@ -88,8 +84,9 @@ public class SniX509ExtendedKeyManager extends X509ExtendedKeyManager
             }
         }
 
-        if (LOG.isDebugEnabled())
-            LOG.debug("Matched {} with {} from {}",host,x509,Arrays.asList(aliases));
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Matched {} with {} from {}",host,x509,Arrays.asList(aliases));
+		}
 
         // Check if the SNI selected alias is allowable
         if (x509!=null)
@@ -113,10 +110,12 @@ public class SniX509ExtendedKeyManager extends X509ExtendedKeyManager
         SSLSocket sslSocket = (SSLSocket)socket;
 
         String alias = chooseServerAlias(keyType,issuers,sslSocket.getSSLParameters().getSNIMatchers(),sslSocket.getHandshakeSession());
-        if (alias==NO_MATCHERS)
-            alias=_delegate.chooseServerAlias(keyType,issuers,socket);
-        if (LOG.isDebugEnabled())
-            LOG.debug("Chose alias {}/{} on {}",alias,keyType,socket);
+        if (alias==NO_MATCHERS) {
+			alias=_delegate.chooseServerAlias(keyType,issuers,socket);
+		}
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Chose alias {}/{} on {}",alias,keyType,socket);
+		}
         return alias;
     }
 
@@ -124,10 +123,12 @@ public class SniX509ExtendedKeyManager extends X509ExtendedKeyManager
     public String chooseEngineServerAlias(String keyType, Principal[] issuers, SSLEngine engine)
     {
         String alias = chooseServerAlias(keyType,issuers,engine.getSSLParameters().getSNIMatchers(),engine.getHandshakeSession());
-        if (alias==NO_MATCHERS)
-            alias=_delegate.chooseEngineServerAlias(keyType,issuers,engine);
-        if (LOG.isDebugEnabled())
-            LOG.debug("Chose alias {}/{} on {}",alias,keyType,engine);
+        if (alias==NO_MATCHERS) {
+			alias=_delegate.chooseEngineServerAlias(keyType,issuers,engine);
+		}
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("Chose alias {}/{} on {}",alias,keyType,engine);
+		}
         return alias;
     }
 

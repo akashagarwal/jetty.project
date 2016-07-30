@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.monitor.triggers;
 
@@ -69,10 +64,12 @@ public class AttrEventTrigger<TYPE extends Comparable<TYPE>>
     public AttrEventTrigger(String objectName, String attributeName)
         throws MalformedObjectNameException, IllegalArgumentException
     {
-        if (objectName == null)
-            throw new IllegalArgumentException("Object name cannot be null");
-        if (attributeName == null)
-            throw new IllegalArgumentException("Attribute name cannot be null");
+        if (objectName == null) {
+			throw new IllegalArgumentException("Object name cannot be null");
+		}
+        if (attributeName == null) {
+			throw new IllegalArgumentException("Attribute name cannot be null");
+		}
         
         _states =  new ConcurrentHashMap<Long,EventState<TYPE>>();
         
@@ -95,10 +92,12 @@ public class AttrEventTrigger<TYPE extends Comparable<TYPE>>
     public AttrEventTrigger(ObjectName nameObject, String attributeName)
         throws IllegalArgumentException
     {
-        if (nameObject == null)
-            throw new IllegalArgumentException("Object name cannot be null");
-        if (attributeName == null)
-            throw new IllegalArgumentException("Attribute name cannot be null");
+        if (nameObject == null) {
+			throw new IllegalArgumentException("Object name cannot be null");
+		}
+        if (attributeName == null) {
+			throw new IllegalArgumentException("Attribute name cannot be null");
+		}
         
         _states =  new ConcurrentHashMap<Long,EventState<TYPE>>();
         
@@ -128,11 +127,12 @@ public class AttrEventTrigger<TYPE extends Comparable<TYPE>>
         try
         {
             int pos = _attributeName.indexOf('.');
-            if (pos < 0)
-                value = (TYPE)serverConnection.getAttribute(_nameObject,_attributeName);
-            else
-                value =  getValue((CompositeData)serverConnection.getAttribute(_nameObject, _attributeName.substring(0, pos)),
+            if (pos < 0) {
+				value = (TYPE)serverConnection.getAttribute(_nameObject,_attributeName);
+			} else {
+				value =  getValue((CompositeData)serverConnection.getAttribute(_nameObject, _attributeName.substring(0, pos)),
                                   _attributeName.substring(pos+1));
+			}
         }
         catch (Exception ex)
         {
@@ -147,7 +147,7 @@ public class AttrEventTrigger<TYPE extends Comparable<TYPE>>
             if (result || getSaveAll())
             {
                 _states.put(timestamp, 
-                            new EventState<TYPE>(this.getID(), this.getNameString(), value));
+                            new EventState<TYPE>(getID(), this.getNameString(), value));
             }
         }
             
@@ -230,11 +230,12 @@ public class AttrEventTrigger<TYPE extends Comparable<TYPE>>
     protected TYPE getValue(CompositeData compValue, String fieldName)
     {
         int pos = fieldName.indexOf('.');
-        if (pos < 0)
-            return (TYPE)compValue.get(fieldName);
-        else
-            return getValue((CompositeData)compValue.get(fieldName.substring(0, pos)), 
+        if (pos < 0) {
+			return (TYPE)compValue.get(fieldName);
+		} else {
+			return getValue((CompositeData)compValue.get(fieldName.substring(0, pos)), 
                             fieldName.substring(pos+1));
+		}
           
     }
 }

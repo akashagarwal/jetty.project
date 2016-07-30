@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.plus.annotation;
 
@@ -74,12 +69,12 @@ public class Injection
 
     public boolean isField ()
     {
-        return (_target != null && _target instanceof Field);
+        return _target instanceof Field;
     }
 
     public boolean isMethod ()
     {
-        return (_target != null && _target instanceof Method);
+        return _target instanceof Method;
     }
 
     /**
@@ -166,20 +161,21 @@ public class Injection
     }
 
     /**
-     * Inject a value for a Resource from JNDI into an object
+     * Inject a value for a Resource from JNDI into an object.
      * @param injectable the object to inject 
      */
     public void inject (Object injectable)
     {
         if (_target != null)
         {
-            if (_target instanceof Field)
-                injectField((Field)_target, injectable);
-            else
-                injectMethod((Method)_target, injectable);
-        }
-        else
-            throw new IllegalStateException ("No method or field to inject with "+getJndiName());
+            if (_target instanceof Field) {
+				injectField((Field)_target, injectable);
+			} else {
+				injectMethod((Method)_target, injectable);
+			}
+        } else {
+			throw new IllegalStateException ("No method or field to inject with "+getJndiName());
+		}
     }
 
 
@@ -198,7 +194,7 @@ public class Injection
 
 
     /**
-     * Inject value from jndi into a field of an instance
+     * Inject value from jndi into a field of an instance.
      * @param field the field to inject into
      * @param injectable the value to inject
      */
@@ -219,7 +215,7 @@ public class Injection
     }
 
     /**
-     * Inject value from jndi into a setter method of an instance
+     * Inject value from jndi into a setter method of an instance.
      * @param method the method to inject into
      * @param injectable the value to inject
      */

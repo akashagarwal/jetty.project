@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.proxy;
 
@@ -77,8 +72,9 @@ public class AsyncMiddleManServlet extends AbstractProxyServlet
         if (_log.isDebugEnabled())
         {
             StringBuffer target = clientRequest.getRequestURL();
-            if (clientRequest.getQueryString() != null)
-                target.append("?").append(clientRequest.getQueryString());
+            if (clientRequest.getQueryString() != null) {
+				target.append("?").append(clientRequest.getQueryString());
+			}
             _log.debug("{} rewriting: {} -> {}", getRequestId(clientRequest), target, rewrittenTarget);
         }
         if (rewrittenTarget == null)
@@ -105,10 +101,11 @@ public class AsyncMiddleManServlet extends AbstractProxyServlet
         // If there is content, the send of the proxy request
         // is delayed and performed when the content arrives,
         // to allow optimization of the Content-Length header.
-        if (hasContent)
-            proxyRequest.content(newProxyContentProvider(clientRequest, proxyResponse, proxyRequest));
-        else
-            sendProxyRequest(clientRequest, proxyResponse, proxyRequest);
+        if (hasContent) {
+			proxyRequest.content(newProxyContentProvider(clientRequest, proxyResponse, proxyRequest));
+		} else {
+			sendProxyRequest(clientRequest, proxyResponse, proxyRequest);
+		}
     }
 
     protected ContentProvider newProxyContentProvider(final HttpServletRequest clientRequest, HttpServletResponse proxyResponse, Request proxyRequest) throws IOException
@@ -119,8 +116,9 @@ public class AsyncMiddleManServlet extends AbstractProxyServlet
             @Override
             public boolean offer(ByteBuffer buffer, Callback callback)
             {
-                if (_log.isDebugEnabled())
-                    _log.debug("{} proxying content to upstream: {} bytes", getRequestId(clientRequest), buffer.remaining());
+                if (_log.isDebugEnabled()) {
+					_log.debug("{} proxying content to upstream: {} bytes", getRequestId(clientRequest), buffer.remaining());
+				}
                 return super.offer(buffer, callback);
             }
         };
@@ -198,11 +196,13 @@ public class AsyncMiddleManServlet extends AbstractProxyServlet
     private void cleanup(HttpServletRequest clientRequest)
     {
         ContentTransformer clientTransformer = (ContentTransformer)clientRequest.getAttribute(CLIENT_TRANSFORMER);
-        if (clientTransformer instanceof Destroyable)
-            ((Destroyable)clientTransformer).destroy();
+        if (clientTransformer instanceof Destroyable) {
+			((Destroyable)clientTransformer).destroy();
+		}
         ContentTransformer serverTransformer = (ContentTransformer)clientRequest.getAttribute(SERVER_TRANSFORMER);
-        if (serverTransformer instanceof Destroyable)
-            ((Destroyable)serverTransformer).destroy();
+        if (serverTransformer instanceof Destroyable) {
+			((Destroyable)serverTransformer).destroy();
+		}
     }
 
     /**
@@ -269,8 +269,9 @@ public class AsyncMiddleManServlet extends AbstractProxyServlet
                 }, true);
             }
 
-            if (_log.isDebugEnabled())
-                _log.debug("{} proxying content to upstream completed", getRequestId(clientRequest));
+            if (_log.isDebugEnabled()) {
+				_log.debug("{} proxying content to upstream completed", getRequestId(clientRequest));
+			}
         }
 
         @Override
@@ -288,33 +289,39 @@ public class AsyncMiddleManServlet extends AbstractProxyServlet
             {
                 int read = readClientRequestContent(input, buffer);
 
-                if (_log.isDebugEnabled())
-                    _log.debug("{} asynchronous read {} bytes on {}", getRequestId(clientRequest), read, input);
+                if (_log.isDebugEnabled()) {
+					_log.debug("{} asynchronous read {} bytes on {}", getRequestId(clientRequest), read, input);
+				}
 
-                if (read < 0)
-                    return Action.SUCCEEDED;
+                if (read < 0) {
+					return Action.SUCCEEDED;
+				}
 
-                if (contentLength > 0 && read > 0)
-                    length += read;
+                if (contentLength > 0 && read > 0) {
+					length += read;
+				}
 
                 ByteBuffer content = read > 0 ? ByteBuffer.wrap(buffer, 0, read) : BufferUtil.EMPTY_BUFFER;
                 boolean finished = length == contentLength;
                 process(content, this, finished);
 
-                if (read > 0)
-                    return Action.SCHEDULED;
+                if (read > 0) {
+					return Action.SCHEDULED;
+				}
             }
 
             if (input.isFinished())
             {
-                if (_log.isDebugEnabled())
-                    _log.debug("{} asynchronous read complete on {}", getRequestId(clientRequest), input);
+                if (_log.isDebugEnabled()) {
+					_log.debug("{} asynchronous read complete on {}", getRequestId(clientRequest), input);
+				}
                 return Action.SUCCEEDED;
             }
             else
             {
-                if (_log.isDebugEnabled())
-                    _log.debug("{} asynchronous read pending on {}", getRequestId(clientRequest), input);
+                if (_log.isDebugEnabled()) {
+					_log.debug("{} asynchronous read pending on {}", getRequestId(clientRequest), input);
+				}
                 return Action.IDLE;
             }
         }
@@ -355,11 +362,13 @@ public class AsyncMiddleManServlet extends AbstractProxyServlet
                 buffers.clear();
             }
 
-            if (finished)
-                provider.close();
+            if (finished) {
+				provider.close();
+			}
 
-            if (_log.isDebugEnabled())
-                _log.debug("{} upstream content transformation {} -> {} bytes", getRequestId(clientRequest), contentBytes, newContentBytes);
+            if (_log.isDebugEnabled()) {
+				_log.debug("{} upstream content transformation {} -> {} bytes", getRequestId(clientRequest), contentBytes, newContentBytes);
+			}
 
             if (!committed && (size > 0 || finished))
             {
@@ -368,8 +377,9 @@ public class AsyncMiddleManServlet extends AbstractProxyServlet
                 sendProxyRequest(clientRequest, proxyResponse, proxyRequest);
             }
 
-            if (size == 0)
-                callback.succeeded();
+            if (size == 0) {
+				callback.succeeded();
+			}
         }
 
         @Override
@@ -417,8 +427,9 @@ public class AsyncMiddleManServlet extends AbstractProxyServlet
             try
             {
                 int contentBytes = content.remaining();
-                if (_log.isDebugEnabled())
-                    _log.debug("{} received server content: {} bytes", getRequestId(clientRequest), contentBytes);
+                if (_log.isDebugEnabled()) {
+					_log.debug("{} received server content: {} bytes", getRequestId(clientRequest), contentBytes);
+				}
 
                 hasContent = true;
 
@@ -459,11 +470,13 @@ public class AsyncMiddleManServlet extends AbstractProxyServlet
                 {
                     proxyWriter.offer(BufferUtil.EMPTY_BUFFER, callback);
                 }
-                if (finished)
-                    proxyWriter.offer(BufferUtil.EMPTY_BUFFER, complete);
+                if (finished) {
+					proxyWriter.offer(BufferUtil.EMPTY_BUFFER, complete);
+				}
 
-                if (_log.isDebugEnabled())
-                    _log.debug("{} downstream content transformation {} -> {} bytes", getRequestId(clientRequest), contentBytes, newContentBytes);
+                if (_log.isDebugEnabled()) {
+					_log.debug("{} downstream content transformation {} -> {} bytes", getRequestId(clientRequest), contentBytes, newContentBytes);
+				}
 
                 if (committed)
                 {
@@ -471,8 +484,9 @@ public class AsyncMiddleManServlet extends AbstractProxyServlet
                 }
                 else
                 {
-                    if (contentLength >= 0)
-                        proxyResponse.setContentLength(-1);
+                    if (contentLength >= 0) {
+						proxyResponse.setContentLength(-1);
+					}
 
                     // Setting the WriteListener triggers an invocation to
                     // onWritePossible(), possibly on a different thread.
@@ -524,8 +538,9 @@ public class AsyncMiddleManServlet extends AbstractProxyServlet
                             proxyWriter.offer(BufferUtil.EMPTY_BUFFER, complete);
                         }
 
-                        if (_log.isDebugEnabled())
-                            _log.debug("{} downstream content transformation to {} bytes", getRequestId(clientRequest), newContentBytes);
+                        if (_log.isDebugEnabled()) {
+							_log.debug("{} downstream content transformation to {} bytes", getRequestId(clientRequest), newContentBytes);
+						}
 
                         proxyWriter.onWritePossible();
                     }
@@ -545,10 +560,11 @@ public class AsyncMiddleManServlet extends AbstractProxyServlet
         public void onComplete(Result result)
         {
             response = result.getResponse();
-            if (result.isSucceeded())
-                complete.succeeded();
-            else
-                complete.failed(result.getFailure());
+            if (result.isSucceeded()) {
+				complete.succeeded();
+			} else {
+				complete.failed(result.getFailure());
+			}
         }
 
         @Override
@@ -582,8 +598,9 @@ public class AsyncMiddleManServlet extends AbstractProxyServlet
 
         public boolean offer(ByteBuffer content, Callback callback)
         {
-            if (_log.isDebugEnabled())
-                _log.debug("{} proxying content to downstream: {} bytes {}", getRequestId(clientRequest), content.remaining(), callback);
+            if (_log.isDebugEnabled()) {
+				_log.debug("{} proxying content to downstream: {} bytes {}", getRequestId(clientRequest), content.remaining(), callback);
+			}
             return chunks.offer(new DeferredContentProvider.Chunk(content, callback));
         }
 
@@ -595,11 +612,13 @@ public class AsyncMiddleManServlet extends AbstractProxyServlet
             // If we had a pending write, let's succeed it.
             if (writePending)
             {
-                if (_log.isDebugEnabled())
-                    _log.debug("{} pending async write complete of {} on {}", getRequestId(clientRequest), chunk, output);
+                if (_log.isDebugEnabled()) {
+					_log.debug("{} pending async write complete of {} on {}", getRequestId(clientRequest), chunk, output);
+				}
                 writePending = false;
-                if (succeed(chunk.callback))
-                    return;
+                if (succeed(chunk.callback)) {
+					return;
+				}
             }
 
             int length = 0;
@@ -608,23 +627,28 @@ public class AsyncMiddleManServlet extends AbstractProxyServlet
             {
                 if (chunk != null)
                 {
-                    if (_log.isDebugEnabled())
-                        _log.debug("{} async write complete of {} ({} bytes) on {}", getRequestId(clientRequest), chunk, length, output);
-                    if (succeed(chunk.callback))
-                        return;
+                    if (_log.isDebugEnabled()) {
+						_log.debug("{} async write complete of {} ({} bytes) on {}", getRequestId(clientRequest), chunk, length, output);
+					}
+                    if (succeed(chunk.callback)) {
+						return;
+					}
                 }
 
                 this.chunk = chunk = chunks.poll();
-                if (chunk == null)
-                    return;
+                if (chunk == null) {
+					return;
+				}
 
                 length = chunk.buffer.remaining();
-                if (length > 0)
-                    writeProxyResponseContent(output, chunk.buffer);
+                if (length > 0) {
+					writeProxyResponseContent(output, chunk.buffer);
+				}
             }
 
-            if (_log.isDebugEnabled())
-                _log.debug("{} async write pending of {} ({} bytes) on {}", getRequestId(clientRequest), chunk, length, output);
+            if (_log.isDebugEnabled()) {
+				_log.debug("{} async write pending of {} ({} bytes) on {}", getRequestId(clientRequest), chunk, length, output);
+			}
             writePending = true;
         }
 
@@ -648,10 +672,11 @@ public class AsyncMiddleManServlet extends AbstractProxyServlet
         public void onError(Throwable failure)
         {
             DeferredContentProvider.Chunk chunk = this.chunk;
-            if (chunk != null)
-                chunk.callback.failed(failure);
-            else
-                serverResponse.abort(failure);
+            if (chunk != null) {
+				chunk.callback.failed(failure);
+			} else {
+				serverResponse.abort(failure);
+			}
         }
     }
 
@@ -669,7 +694,7 @@ public class AsyncMiddleManServlet extends AbstractProxyServlet
         /**
          * The identity transformer that does not perform any transformation.
          */
-        public static final ContentTransformer IDENTITY = new IdentityContentTransformer();
+        ContentTransformer IDENTITY = new IdentityContentTransformer();
 
         /**
          * <p>Transforms the given input byte buffers into (possibly multiple) byte buffers.</p>
@@ -717,7 +742,7 @@ public class AsyncMiddleManServlet extends AbstractProxyServlet
          * @param output where to put the transformed output content
          * @throws IOException in case of transformation failures
          */
-        public void transform(ByteBuffer input, boolean finished, List<ByteBuffer> output) throws IOException;
+        void transform(ByteBuffer input, boolean finished, List<ByteBuffer> output) throws IOException;
     }
 
     private static class IdentityContentTransformer implements ContentTransformer
@@ -756,16 +781,18 @@ public class AsyncMiddleManServlet extends AbstractProxyServlet
         {
             if (!input.hasRemaining())
             {
-                if (finished)
-                    transformer.transform(input, true, buffers);
+                if (finished) {
+					transformer.transform(input, true, buffers);
+				}
             }
             else
             {
                 while (input.hasRemaining())
                 {
                     ByteBuffer decoded = decoder.decode(input);
-                    if (decoded.hasRemaining())
-                        transformer.transform(decoded, finished && !input.hasRemaining(), buffers);
+                    if (decoded.hasRemaining()) {
+						transformer.transform(decoded, finished && !input.hasRemaining(), buffers);
+					}
                 }
             }
 
@@ -779,10 +806,12 @@ public class AsyncMiddleManServlet extends AbstractProxyServlet
 
         private ByteBuffer gzip(List<ByteBuffer> buffers, boolean finished) throws IOException
         {
-            for (ByteBuffer buffer : buffers)
-                write(gzipOut, buffer);
-            if (finished)
-                gzipOut.close();
+            for (ByteBuffer buffer : buffers) {
+				write(gzipOut, buffer);
+			}
+            if (finished) {
+				gzipOut.close();
+			}
             byte[] gzipBytes = out.toByteArray();
             out.reset();
             return ByteBuffer.wrap(gzipBytes);

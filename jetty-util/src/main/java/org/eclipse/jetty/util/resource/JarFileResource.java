@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util.resource;
 
@@ -32,7 +27,7 @@ import java.util.jar.JarFile;
 import org.eclipse.jetty.util.log.Log;
 import org.eclipse.jetty.util.log.Logger;
 
-/* ------------------------------------------------------------ */
+/** ------------------------------------------------------------. */
 class JarFileResource extends JarResource
 {
     private static final Logger LOG = Log.getLogger(JarFileResource.class);
@@ -45,19 +40,19 @@ class JarFileResource extends JarResource
     private String _path;
     private boolean _exists;
     
-    /* -------------------------------------------------------- */
+    /** --------------------------------------------------------. */
     protected JarFileResource(URL url)
     {
         super(url);
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected JarFileResource(URL url, boolean useCaches)
     {
         super(url, useCaches);
     }   
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public synchronized void close()
     {
@@ -67,27 +62,24 @@ class JarFileResource extends JarResource
         _file=null;
         //if the jvm is not doing url caching, then the JarFiles will not be cached either,
         //and so they are safe to close
-        if (!getUseCaches())
-        {
-            if ( _jarFile != null )
-            {
-                try
-                {
-                    if (LOG.isDebugEnabled())
-                        LOG.debug("Closing JarFile "+_jarFile.getName());
-                    _jarFile.close();
-                }
-                catch ( IOException ioe )
-                {
-                    LOG.ignore(ioe);
-                }
-            }
-        }
+        if (!getUseCaches() && _jarFile != null) {
+		    try
+		    {
+		        if (LOG.isDebugEnabled()) {
+					LOG.debug("Closing JarFile "+_jarFile.getName());
+				}
+		        _jarFile.close();
+		    }
+		    catch ( IOException ioe )
+		    {
+		        LOG.ignore(ioe);
+		    }
+		}
         _jarFile=null;
         super.close();
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     protected synchronized boolean checkConnection()
     {
@@ -109,7 +101,7 @@ class JarFileResource extends JarResource
     }
 
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     protected synchronized void newConnection()
         throws IOException
@@ -124,8 +116,9 @@ class JarFileResource extends JarResource
         int sep = _urlString.lastIndexOf("!/");
         _jarUrl=_urlString.substring(0,sep+2);
         _path=_urlString.substring(sep+2);
-        if (_path.length()==0)
-            _path=null;   
+        if (_path.length()==0) {
+			_path=null;
+		}   
         _jarFile=_jarConnection.getJarFile();
         _file=new File(_jarFile.getName());
     }
@@ -139,8 +132,9 @@ class JarFileResource extends JarResource
 
     public boolean exists()
     {
-        if (_exists)
-            return true;
+        if (_exists) {
+			return true;
+		}
 
         if (_urlString.endsWith("!/"))
         {
@@ -163,15 +157,15 @@ class JarFileResource extends JarResource
             // Can we find a file for it?
             boolean close_jar_file= false;
             JarFile jar_file=null;
-            if (check)
-                // Yes
+            if (check) {
+				// Yes
                 jar_file=_jarFile;
-            else
+			} else
             {
                 // No - so lets look if the root entry exists.
                 try
                 {
-                    JarURLConnection c=(JarURLConnection)((new URL(_jarUrl)).openConnection());
+                    JarURLConnection c=(JarURLConnection)(new URL(_jarUrl)).openConnection();
                     c.setUseCaches(getUseCaches());
                     jar_file=c.getJarFile();
                     close_jar_file = !getUseCaches();
@@ -228,7 +222,7 @@ class JarFileResource extends JarResource
             }
         }
         
-        _exists= ( _directory || _entry!=null);
+        _exists= _directory || _entry!=null;
         return _exists;
     }
 
@@ -242,26 +236,27 @@ class JarFileResource extends JarResource
     @Override
     public boolean isDirectory()
     {
-        return _urlString.endsWith("/") || exists() && _directory;
+        return _urlString.endsWith("/") || (exists() && _directory);
     }
     
     /* ------------------------------------------------------------ */
     /**
-     * Returns the last modified time
+     * Returns the last modified time.
      */
     @Override
     public long lastModified()
     {
         if (checkConnection() && _file!=null)
         {
-            if (exists() && _entry!=null)
-                return _entry.getTime();
+            if (exists() && _entry!=null) {
+				return _entry.getTime();
+			}
             return _file.lastModified();
         }
         return -1;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public synchronized String[] list()
     {
@@ -296,7 +291,7 @@ class JarFileResource extends JarResource
     }
     
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     private List<String> listEntries ()
     {
         checkConnection();
@@ -307,7 +302,7 @@ class JarFileResource extends JarResource
         {
             try
             {
-                JarURLConnection jc=(JarURLConnection)((new URL(_jarUrl)).openConnection());
+                JarURLConnection jc=(JarURLConnection)(new URL(_jarUrl)).openConnection();
                 jc.setUseCaches(getUseCaches());
                 jarFile=jc.getJarFile();
             }
@@ -317,8 +312,9 @@ class JarFileResource extends JarResource
                 e.printStackTrace();
                  LOG.ignore(e);
             }
-                if(jarFile==null)
-                    throw new IllegalStateException();
+                if(jarFile==null) {
+					throw new IllegalStateException();
+				}
         }
         
         Enumeration<JarEntry> e=jarFile.entries();
@@ -337,17 +333,20 @@ class JarFileResource extends JarResource
             {
                 //when listing jar:file urls, you get back one
                 //entry for the dir itself, which we ignore
-                if (dash==0 && listName.length()==1)
-                    continue;
+                if (dash==0 && listName.length()==1) {
+					continue;
+				}
                 //when listing jar:file urls, all files and
                 //subdirs have a leading /, which we remove
-                if (dash==0)
-                    listName=listName.substring(dash+1, listName.length());
-                else
-                    listName=listName.substring(0,dash+1);
+                if (dash==0) {
+					listName=listName.substring(dash+1, listName.length());
+				} else {
+					listName=listName.substring(0,dash+1);
+				}
                 
-                if (list.contains(listName))
-                    continue;
+                if (list.contains(listName)) {
+					continue;
+				}
             }
             
             list.add(listName);
@@ -362,16 +361,18 @@ class JarFileResource extends JarResource
     
     /* ------------------------------------------------------------ */
     /**
-     * Return the length of the resource
+     * Return the length of the resource.
      */
     @Override
     public long length()
     {
-        if (isDirectory())
-            return -1;
+        if (isDirectory()) {
+			return -1;
+		}
 
-        if (_entry!=null)
-            return _entry.getSize();
+        if (_entry!=null) {
+			return _entry.getSize();
+		}
         
         return -1;
     }
@@ -385,13 +386,13 @@ class JarFileResource extends JarResource
      */
     public static Resource getNonCachingResource (Resource resource)
     {
-        if (!(resource instanceof JarFileResource))
-            return resource;
+        if (!(resource instanceof JarFileResource)) {
+			return resource;
+		}
         
         JarFileResource oldResource = (JarFileResource)resource;
         
-        JarFileResource newResource = new JarFileResource(oldResource.getURL(), false);
-        return newResource;
+        return new JarFileResource(oldResource.getURL(), false);
     }
     
     /**
@@ -407,10 +408,12 @@ class JarFileResource extends JarResource
     {
         String string = _urlString;
         int index = string.lastIndexOf("!/");
-        if (index > 0)
-            string = string.substring(0,index);
-        if (string.startsWith("jar:"))
-            string = string.substring(4);
+        if (index > 0) {
+			string = string.substring(0,index);
+		}
+        if (string.startsWith("jar:")) {
+			string = string.substring(4);
+		}
         URL url = new URL(string);
         return url.sameFile(resource.getURI().toURL());     
     }

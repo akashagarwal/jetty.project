@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util;
 
@@ -51,12 +46,12 @@ public class PathWatcherTest
 {
     public static class PathWatchEventCapture implements PathWatcher.Listener
     {
-        public final static String FINISH_TAG = "#finished#.tag";
+        public static final String FINISH_TAG = "#finished#.tag";
         private static final Logger LOG = Log.getLogger(PathWatcherTest.PathWatchEventCapture.class);
         private final Path baseDir;
 
         /**
-         * Map of relative paths seen, to their events seen (in order seen)
+         * Map of relative paths seen, to their events seen (in order seen).
          */
         public Map<String, List<PathWatchEventType>> events = new HashMap<>();
 
@@ -85,7 +80,7 @@ public class PathWatcherTest
                 if (triggerPath != null)
                 {
                    
-                    if (triggerPath.equals(event.getPath()) && (event.getType() == triggerType))
+                    if (triggerPath.equals(event.getPath()) && event.getType() == triggerType)
                     {
                         LOG.debug("Encountered finish trigger: {} on {}",event.getType(),event.getPath());
                         finishedLatch.countDown();
@@ -154,7 +149,7 @@ public class PathWatcherTest
         }
 
         /**
-         * Set the path and type that will trigger this capture to be finished
+         * Set the path and type that will trigger this capture to be finished.
          * 
          * @param triggerPath
          *            the trigger path we look for to know that the capture is complete
@@ -177,7 +172,7 @@ public class PathWatcherTest
         }
 
         /**
-         * Await the countdown latch on the finish trigger
+         * Await the countdown latch on the finish trigger.
          * 
          * @param pathWatcher
          *            the watcher instance we are waiting on
@@ -192,7 +187,7 @@ public class PathWatcherTest
             //assertThat("Trigger Path must be set",triggerPath,notNullValue());
             //assertThat("Trigger Type must be set",triggerType,notNullValue());
             double multiplier = 25.0;
-            long awaitMillis = (long)((double)pathWatcher.getUpdateQuietTimeMillis() * multiplier);
+            long awaitMillis = (long)(pathWatcher.getUpdateQuietTimeMillis() * multiplier);
             LOG.debug("Waiting for finish ({} ms)",awaitMillis);
             assertThat("Timed Out (" + awaitMillis + "ms) waiting for capture to finish",finishedLatch.await(awaitMillis,TimeUnit.MILLISECONDS),is(true));
             LOG.debug("Finished capture");
@@ -237,7 +232,7 @@ public class PathWatcherTest
         long totalMs = timeUnit.toMillis(timeDuration);
 
         // how many write chunks to write
-        int writeCount = (int)((int)totalMs / (int)sleepMs);
+        int writeCount = (int)totalMs / (int)sleepMs;
 
         // average chunk buffer
         int chunkBufLen = fileSize / writeCount;
@@ -279,7 +274,7 @@ public class PathWatcherTest
             // Microsoft Windows filesystem is too slow for a lower multiplier
             multiplier = 6.0;
         }
-        TimeUnit.MILLISECONDS.sleep((long)((double)pathWatcher.getUpdateQuietTimeMillis() * multiplier));
+        TimeUnit.MILLISECONDS.sleep((long)(pathWatcher.getUpdateQuietTimeMillis() * multiplier));
     }
 
     private static final int KB = 1024;

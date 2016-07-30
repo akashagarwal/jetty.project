@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.security;
 
@@ -72,7 +67,7 @@ public class JDBCLoginService extends MappedLoginService
 
     
     /**
-     * JDBCKnownUser
+     * JDBCKnownUser.
      */
     public class JDBCKnownUser extends KnownUser
     {
@@ -91,20 +86,20 @@ public class JDBCLoginService extends MappedLoginService
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public JDBCLoginService()
         throws IOException
     {
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public JDBCLoginService(String name)
         throws IOException
     {
         setName(name);
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public JDBCLoginService(String name, String config)
         throws IOException
     {
@@ -112,7 +107,7 @@ public class JDBCLoginService extends MappedLoginService
         setConfig(config);
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public JDBCLoginService(String name, IdentityService identityService, String config)
         throws IOException
     {
@@ -122,10 +117,7 @@ public class JDBCLoginService extends MappedLoginService
     }
 
 
-    /* ------------------------------------------------------------ */
-    /**
-     * @see org.eclipse.jetty.security.MappedLoginService#doStart()
-     */
+    /** ------------------------------------------------------------. */
     @Override
     protected void doStart() throws Exception
     {
@@ -149,13 +141,13 @@ public class JDBCLoginService extends MappedLoginService
         String _userRoleTable = properties.getProperty("userroletable");
         String _userRoleTableUserKey = properties.getProperty("userroletableuserkey");
         String _userRoleTableRoleKey = properties.getProperty("userroletablerolekey");
-        _cacheTime = new Integer(properties.getProperty("cachetime"));
+        _cacheTime = Integer.valueOf(properties.getProperty("cachetime"));
 
-        if (_jdbcDriver == null || _jdbcDriver.equals("")
+        if (_jdbcDriver == null || "".equals(_jdbcDriver)
             || _url == null
-            || _url.equals("")
+            || "".equals(_url)
             || _userName == null
-            || _userName.equals("")
+            || "".equals(_userName)
             || _password == null
             || _cacheTime < 0)
         {
@@ -177,12 +169,12 @@ public class JDBCLoginService extends MappedLoginService
                    + " = u."
                    + _userRoleTableRoleKey;
         
-        Loader.loadClass(this.getClass(), _jdbcDriver).newInstance();
+        Loader.loadClass(getClass(), _jdbcDriver).newInstance();
         super.doStart();
     }
 
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public String getConfig()
     {
         return _config;
@@ -196,14 +188,15 @@ public class JDBCLoginService extends MappedLoginService
      */
     public void setConfig(String config)
     {        
-        if (isRunning())
-            throw new IllegalStateException("Running");
+        if (isRunning()) {
+			throw new IllegalStateException("Running");
+		}
         _config=config;
     }
 
     /* ------------------------------------------------------------ */
     /**
-     * (re)Connect to database with parameters setup by loadConfig()
+     * (re)Connect to database with parameters setup by loadConfig().
      */
     public void connectDatabase()
     {
@@ -222,7 +215,7 @@ public class JDBCLoginService extends MappedLoginService
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public UserIdentity login(String username, Object credentials, ServletRequest request)
     {
@@ -237,23 +230,25 @@ public class JDBCLoginService extends MappedLoginService
         return super.login(username,credentials, request);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     protected void loadUsers()
     {   
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Deprecated
     protected UserIdentity loadUser(String username)
     {
         try
         {
-            if (null == _con) 
-                connectDatabase();
+            if (null == _con) {
+				connectDatabase();
+			}
 
-            if (null == _con) 
-                throw new SQLException("Can't connect to database");
+            if (null == _con) {
+				throw new SQLException("Can't connect to database");
+			}
 
             try (PreparedStatement stat1 = _con.prepareStatement(_userSql))
             {
@@ -273,8 +268,9 @@ public class JDBCLoginService extends MappedLoginService
                             stat2.setInt(1, key);
                             try (ResultSet rs2 = stat2.executeQuery())
                             {
-                                while (rs2.next())
-                                    roles.add(rs2.getString(_roleTableRoleField));
+                                while (rs2.next()) {
+									roles.add(rs2.getString(_roleTableRoleField));
+								}
                             }
                         }
                         return putUser(username, Credential.getCredential(credentials), roles.toArray(new String[roles.size()]));
@@ -291,18 +287,17 @@ public class JDBCLoginService extends MappedLoginService
     }
 
 
-    /** 
-     * @see org.eclipse.jetty.security.MappedLoginService#loadUserInfo(java.lang.String)
-     */
     public KnownUser loadUserInfo (String username)
     {
         try
         {
-            if (null == _con) 
-                connectDatabase();
+            if (null == _con) {
+				connectDatabase();
+			}
 
-            if (null == _con) 
-                throw new SQLException("Can't connect to database");
+            if (null == _con) {
+				throw new SQLException("Can't connect to database");
+			}
 
             try (PreparedStatement stat1 = _con.prepareStatement(_userSql))
             {
@@ -330,20 +325,19 @@ public class JDBCLoginService extends MappedLoginService
 
     
     
-    /** 
-     * @see org.eclipse.jetty.security.MappedLoginService#loadRoleInfo(org.eclipse.jetty.security.MappedLoginService.KnownUser)
-     */
     public String[] loadRoleInfo (KnownUser user)
     {
         JDBCKnownUser jdbcUser = (JDBCKnownUser)user;
         
         try
         {
-            if (null == _con) 
-                connectDatabase();
+            if (null == _con) {
+				connectDatabase();
+			}
 
-            if (null == _con) 
-                throw new SQLException("Can't connect to database");
+            if (null == _con) {
+				throw new SQLException("Can't connect to database");
+			}
             
             
             List<String> roles = new ArrayList<String>();
@@ -353,8 +347,9 @@ public class JDBCLoginService extends MappedLoginService
                 stat2.setInt(1, jdbcUser.getUserKey());
                 try (ResultSet rs2 = stat2.executeQuery())
                 {
-                    while (rs2.next())
-                        roles.add(rs2.getString(_roleTableRoleField));
+                    while (rs2.next()) {
+						roles.add(rs2.getString(_roleTableRoleField));
+					}
                     return roles.toArray(new String[roles.size()]);
                 }
             }
@@ -370,13 +365,15 @@ public class JDBCLoginService extends MappedLoginService
     
 
     /**
-     * Close an existing connection
+     * Close an existing connection.
      */
     private void closeConnection ()
     {
         if (_con != null)
         {
-            if (LOG.isDebugEnabled()) LOG.debug("Closing db connection for JDBCUserRealm");
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Closing db connection for JDBCUserRealm");
+			}
             try { _con.close(); }catch (Exception e) {LOG.ignore(e);}
         }
         _con = null;

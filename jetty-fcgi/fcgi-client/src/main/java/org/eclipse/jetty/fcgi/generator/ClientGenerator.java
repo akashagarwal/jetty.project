@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.fcgi.generator;
 
@@ -33,9 +28,11 @@ import org.eclipse.jetty.util.Callback;
 
 public class ClientGenerator extends Generator
 {
-    // To keep the algorithm simple, and given that the max length of a
-    // frame is 0xFF_FF we allow the max length of a name (or value) to be
-    // 0x7F_FF - 4 (the 4 is to make room for the name (or value) length).
+    /**
+     * To keep the algorithm simple, and given that the max length of a
+     * frame is 0xFF_FF we allow the max length of a name (or value) to be
+     * 0x7F_FF - 4 (the 4 is to make room for the name (or value) length).
+     */
     public static final int MAX_PARAM_LENGTH = 0x7F_FF - 4;
 
     public ClientGenerator(ByteBufferPool byteBufferPool)
@@ -54,14 +51,16 @@ public class ClientGenerator extends Generator
         {
             String name = field.getName();
             byte[] nameBytes = name.getBytes(utf8);
-            if (nameBytes.length > MAX_PARAM_LENGTH)
-                throw new IllegalArgumentException("Field name " + name + " exceeds max length " + MAX_PARAM_LENGTH);
+            if (nameBytes.length > MAX_PARAM_LENGTH) {
+				throw new IllegalArgumentException("Field name " + name + " exceeds max length " + MAX_PARAM_LENGTH);
+			}
             bytes.add(nameBytes);
 
             String value = field.getValue();
             byte[] valueBytes = value.getBytes(utf8);
-            if (valueBytes.length > MAX_PARAM_LENGTH)
-                throw new IllegalArgumentException("Field value " + value + " exceeds max length " + MAX_PARAM_LENGTH);
+            if (valueBytes.length > MAX_PARAM_LENGTH) {
+				throw new IllegalArgumentException("Field value " + value + " exceeds max length " + MAX_PARAM_LENGTH);
+			}
             bytes.add(valueBytes);
 
             int nameLength = nameBytes.length;
@@ -114,8 +113,9 @@ public class ClientGenerator extends Generator
                 int valueLength = valueBytes.length;
 
                 int required = bytesForLength(nameLength) + bytesForLength(valueLength) + nameLength + valueLength;
-                if (required > capacity)
-                    break;
+                if (required > capacity) {
+					break;
+				}
 
                 putParamLength(buffer, nameLength);
                 putParamLength(buffer, valueLength);
@@ -148,10 +148,11 @@ public class ClientGenerator extends Generator
     private int putParamLength(ByteBuffer buffer, int length)
     {
         int result = bytesForLength(length);
-        if (result == 4)
-            buffer.putInt(length | 0x80_00_00_00);
-        else
-            buffer.put((byte)length);
+        if (result == 4) {
+			buffer.putInt(length | 0x80_00_00_00);
+		} else {
+			buffer.put((byte)length);
+		}
         return result;
     }
 

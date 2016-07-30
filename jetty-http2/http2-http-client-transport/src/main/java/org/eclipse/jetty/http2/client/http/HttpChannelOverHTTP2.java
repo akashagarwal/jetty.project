@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http2.client.http;
 
@@ -85,8 +80,9 @@ public class HttpChannelOverHTTP2 extends HttpChannel
     public void send()
     {
         HttpExchange exchange = getHttpExchange();
-        if (exchange != null)
-            sender.send(exchange);
+        if (exchange != null) {
+			sender.send(exchange);
+		}
     }
 
     @Override
@@ -102,8 +98,9 @@ public class HttpChannelOverHTTP2 extends HttpChannel
         if (aborted)
         {
             Stream stream = getStream();
-            if (stream != null)
-                stream.reset(new ResetFrame(stream.getId(), ErrorCode.CANCEL_STREAM_ERROR.code), Callback.NOOP);
+            if (stream != null) {
+				stream.reset(new ResetFrame(stream.getId(), ErrorCode.CANCEL_STREAM_ERROR.code), Callback.NOOP);
+			}
         }
         return aborted;
     }

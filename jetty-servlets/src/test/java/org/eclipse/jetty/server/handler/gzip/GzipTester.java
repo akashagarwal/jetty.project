@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server.handler.gzip;
 
@@ -82,7 +77,7 @@ public class GzipTester
     }
 
     private String encoding = "ISO8859_1";
-    private String userAgent = null;
+    private String userAgent;
     private final ServletTester tester = new ServletTester("/context",ServletContextHandler.GZIP);
     private TestingDir testdir;
     private String accept;
@@ -190,18 +185,20 @@ public class GzipTester
         request.setHeader("Host","tester");
         request.setHeader("Accept-Encoding",accept);
 
-        if (this.userAgent != null)
-            request.setHeader("User-Agent",this.userAgent);
+        if (this.userAgent != null) {
+			request.setHeader("User-Agent",this.userAgent);
+		}
         request.setURI("/context/" + path);
 
         // Issue the request
         response = HttpTester.parseResponse(tester.getResponses(request.generate()));
 
         int qindex = compressionType.indexOf(";");
-        if (qindex < 0)
-            Assert.assertThat("Response.header[Content-Encoding]",response.get("Content-Encoding"),containsString(compressionType));
-        else
-            Assert.assertThat("Response.header[Content-Encoding]",response.get("Content-Encoding"),containsString(compressionType.substring(0,qindex)));
+        if (qindex < 0) {
+			Assert.assertThat("Response.header[Content-Encoding]",response.get("Content-Encoding"),containsString(compressionType));
+		} else {
+			Assert.assertThat("Response.header[Content-Encoding]",response.get("Content-Encoding"),containsString(compressionType.substring(0,qindex)));
+		}
 
         ByteArrayInputStream bais = null;
         InputStream in = null;
@@ -245,10 +242,12 @@ public class GzipTester
         request.setVersion("HTTP/1.0");
         request.setHeader("Host","tester");
         request.setHeader("Accept-Encoding",compressionType);
-        if (ifmodifiedsince > 0)
-            request.setHeader(HttpHeader.IF_MODIFIED_SINCE.asString(),DateGenerator.formatDate(ifmodifiedsince));
-        if (this.userAgent != null)
-            request.setHeader("User-Agent",this.userAgent);
+        if (ifmodifiedsince > 0) {
+			request.setHeader(HttpHeader.IF_MODIFIED_SINCE.asString(),DateGenerator.formatDate(ifmodifiedsince));
+		}
+        if (this.userAgent != null) {
+			request.setHeader("User-Agent",this.userAgent);
+		}
         request.setURI("/context/" + requestedFilename);
 
         // Issue the request
@@ -268,10 +267,11 @@ public class GzipTester
          */
 
         int qindex = compressionType.indexOf(";");
-        if (qindex < 0)
-            Assert.assertThat("Response.header[Content-Encoding]",response.get("Content-Encoding"),containsString(compressionType));
-        else
-            Assert.assertThat("Response.header[Content-Encoding]",response.get("Content-Encoding"),containsString(compressionType.substring(0,qindex)));
+        if (qindex < 0) {
+			Assert.assertThat("Response.header[Content-Encoding]",response.get("Content-Encoding"),containsString(compressionType));
+		} else {
+			Assert.assertThat("Response.header[Content-Encoding]",response.get("Content-Encoding"),containsString(compressionType.substring(0,qindex)));
+		}
 
         Assert.assertThat(response.get("ETag"),Matchers.startsWith("W/"));
 
@@ -319,10 +319,12 @@ public class GzipTester
         request.setVersion("HTTP/1.0");
         request.setHeader("Host","tester");
         request.setHeader("Accept-Encoding",compressionType);
-        if (ifmodifiedsince > 0)
-            request.setHeader(HttpHeader.IF_MODIFIED_SINCE.asString(),DateGenerator.formatDate(ifmodifiedsince));
-        if (this.userAgent != null)
-            request.setHeader("User-Agent",this.userAgent);
+        if (ifmodifiedsince > 0) {
+			request.setHeader(HttpHeader.IF_MODIFIED_SINCE.asString(),DateGenerator.formatDate(ifmodifiedsince));
+		}
+        if (this.userAgent != null) {
+			request.setHeader("User-Agent",this.userAgent);
+		}
         request.setURI("/context/" + requestedFilename);
 
         // Issue the request
@@ -379,8 +381,9 @@ public class GzipTester
         request.setVersion("HTTP/1.0");
         request.setHeader("Host","tester");
         request.setHeader("Accept-Encoding",compressionType);
-        if (this.userAgent != null)
-            request.setHeader("User-Agent",this.userAgent);
+        if (this.userAgent != null) {
+			request.setHeader("User-Agent",this.userAgent);
+		}
         request.setURI("/context/" + requestedFilename);
 
         // Issue the request
@@ -394,8 +397,9 @@ public class GzipTester
         Assert.assertThat(prefix + ".header[Content-Length]",response.get("Content-Length"),notNullValue());
         Assert.assertThat(prefix + ".header[Content-Encoding] (should not be recompressed by GzipHandler)",response.get("Content-Encoding"),
                 expectedContentEncoding == null?nullValue():notNullValue());
-        if (expectedContentEncoding != null)
-            Assert.assertThat(prefix + ".header[Content-Encoding]",response.get("Content-Encoding"),is(expectedContentEncoding));
+        if (expectedContentEncoding != null) {
+			Assert.assertThat(prefix + ".header[Content-Encoding]",response.get("Content-Encoding"),is(expectedContentEncoding));
+		}
         Assert.assertThat(prefix + ".header[Content-Type] (should have a Content-Type associated with it)",response.get("Content-Type"),notNullValue());
         Assert.assertThat(prefix + ".header[Content-Type]",response.get("Content-Type"),is(expectedContentType));
 
@@ -472,10 +476,11 @@ public class GzipTester
         try
         {
             byte[] content = response.getContentBytes();
-            if (content != null)
-                actual = new String(response.getContentBytes(),encoding);
-            else
-                actual = "";
+            if (content != null) {
+				actual = new String(response.getContentBytes(),encoding);
+			} else {
+				actual = "";
+			}
         }
         finally
         {
@@ -544,7 +549,7 @@ public class GzipTester
         int i = 0;
         while (testFile.exists())
         {
-            testFile = new File(dir,(i++) + "-" + filename);
+            testFile = new File(dir,i++ + "-" + filename);
         }
 
         FileOutputStream fos = null;

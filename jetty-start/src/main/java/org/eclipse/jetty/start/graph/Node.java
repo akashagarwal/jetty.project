@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.start.graph;
 
@@ -25,25 +20,25 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Basic Graph Node
+ * Basic Graph Node.
  * @param <T> the node type
  */
 public abstract class Node<T>
 {
-    /** The logical name of this Node */
+    /** The logical name of this Node. */
     private String logicalName;
-    /** The depth of the Node in the tree */
-    private int depth = 0;
-    /** The set of selections for how this node was selected */
+    /** The depth of the Node in the tree. */
+    private int depth;
+    /** The set of selections for how this node was selected. */
     private Set<Selection> selections = new LinkedHashSet<>();
-    /** Set of Nodes, by name, that this Node depends on */
+    /** Set of Nodes, by name, that this Node depends on. */
     private List<String> parentNames = new ArrayList<>();
-    /** Set of Nodes, by name, that this Node optionally depend on */
+    /** Set of Nodes, by name, that this Node optionally depend on. */
     private List<String> optionalParentNames = new ArrayList<>();
 
-    /** The Edges to parent Nodes */
+    /** The Edges to parent Nodes. */
     private Set<T> parentEdges = new LinkedHashSet<>();
-    /** The Edges to child Nodes */
+    /** The Edges to child Nodes. */
     private Set<T> childEdges = new LinkedHashSet<>();
 
     public void addChildEdge(T child)

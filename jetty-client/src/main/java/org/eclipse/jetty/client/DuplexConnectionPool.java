@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.client;
 
@@ -110,8 +105,9 @@ public class DuplexConnectionPool implements Closeable, Dumpable, Sweeper.Sweepa
     public Connection acquire()
     {
         Connection connection = activateIdle();
-        if (connection == null)
-            connection = tryCreate();
+        if (connection == null) {
+			connection = tryCreate();
+		}
         return connection;
     }
 
@@ -124,24 +120,27 @@ public class DuplexConnectionPool implements Closeable, Dumpable, Sweeper.Sweepa
 
             if (next > maxConnections)
             {
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Max connections {}/{} reached", current, maxConnections);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("Max connections {}/{} reached", current, maxConnections);
+				}
                 // Try again the idle connections
                 return activateIdle();
             }
 
             if (connectionCount.compareAndSet(current, next))
             {
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Connection {}/{} creation", next, maxConnections);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("Connection {}/{} creation", next, maxConnections);
+				}
 
                 destination.newConnection(new Promise<Connection>()
                 {
                     @Override
                     public void succeeded(Connection connection)
                     {
-                        if (LOG.isDebugEnabled())
-                            LOG.debug("Connection {}/{} creation succeeded {}", next, maxConnections, connection);
+                        if (LOG.isDebugEnabled()) {
+							LOG.debug("Connection {}/{} creation succeeded {}", next, maxConnections, connection);
+						}
 
                         idleCreated(connection);
 
@@ -151,8 +150,9 @@ public class DuplexConnectionPool implements Closeable, Dumpable, Sweeper.Sweepa
                     @Override
                     public void failed(Throwable x)
                     {
-                        if (LOG.isDebugEnabled())
-                            LOG.debug("Connection " + next + "/" + maxConnections + " creation failed", x);
+                        if (LOG.isDebugEnabled()) {
+							LOG.debug("Connection " + next + "/" + maxConnections + " creation failed", x);
+						}
 
                         connectionCount.decrementAndGet();
 
@@ -196,8 +196,9 @@ public class DuplexConnectionPool implements Closeable, Dumpable, Sweeper.Sweepa
         try
         {
             connection = idleConnections.pollFirst();
-            if (connection == null)
-                return null;
+            if (connection == null) {
+				return null;
+			}
             acquired = activeConnections.offer(connection);
         }
         finally
@@ -207,15 +208,17 @@ public class DuplexConnectionPool implements Closeable, Dumpable, Sweeper.Sweepa
 
         if (acquired)
         {
-            if (LOG.isDebugEnabled())
-                LOG.debug("Connection active {}", connection);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Connection active {}", connection);
+			}
             acquired(connection);
             return connection;
         }
         else
         {
-            if (LOG.isDebugEnabled())
-                LOG.debug("Connection active overflow {}", connection);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Connection active overflow {}", connection);
+			}
             connection.close();
             return null;
         }
@@ -231,8 +234,9 @@ public class DuplexConnectionPool implements Closeable, Dumpable, Sweeper.Sweepa
         lock();
         try
         {
-            if (!activeConnections.remove(connection))
-                return false;
+            if (!activeConnections.remove(connection)) {
+				return false;
+			}
             // Make sure we use "hot" connections first.
             idle = offerIdle(connection);
         }
@@ -254,14 +258,16 @@ public class DuplexConnectionPool implements Closeable, Dumpable, Sweeper.Sweepa
     {
         if (idle)
         {
-            if (LOG.isDebugEnabled())
-                LOG.debug("Connection idle {}", connection);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Connection idle {}", connection);
+			}
             return true;
         }
         else
         {
-            if (LOG.isDebugEnabled())
-                LOG.debug("Connection idle overflow {}", connection);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Connection idle overflow {}", connection);
+			}
             connection.close();
             return false;
         }
@@ -291,14 +297,16 @@ public class DuplexConnectionPool implements Closeable, Dumpable, Sweeper.Sweepa
             unlock();
         }
 
-        if (activeRemoved || force)
-            released(connection);
+        if (activeRemoved || force) {
+			released(connection);
+		}
         boolean removed = activeRemoved || idleRemoved || force;
         if (removed)
         {
             int pooled = connectionCount.decrementAndGet();
-            if (LOG.isDebugEnabled())
-                LOG.debug("Connection removed {} - pooled: {}", connection, pooled);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Connection removed {} - pooled: {}", connection, pooled);
+			}
         }
         return removed;
     }
@@ -353,12 +361,14 @@ public class DuplexConnectionPool implements Closeable, Dumpable, Sweeper.Sweepa
 
         connectionCount.set(0);
 
-        for (Connection connection : idles)
-            connection.close();
+        for (Connection connection : idles) {
+			connection.close();
+		}
 
         // A bit drastic, but we cannot wait for all requests to complete
-        for (Connection connection : actives)
-            connection.close();
+        for (Connection connection : actives) {
+			connection.close();
+		}
     }
 
     @Override
@@ -396,8 +406,9 @@ public class DuplexConnectionPool implements Closeable, Dumpable, Sweeper.Sweepa
         {
             for (Connection connection : activeConnections)
             {
-                if (connection instanceof Sweeper.Sweepable)
-                    toSweep.add(connection);
+                if (connection instanceof Sweeper.Sweepable) {
+					toSweep.add(connection);
+				}
             }
         }
         finally

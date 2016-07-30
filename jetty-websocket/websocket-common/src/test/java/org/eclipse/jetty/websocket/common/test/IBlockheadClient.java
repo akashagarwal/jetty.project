@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.common.test;
 
@@ -31,49 +26,49 @@ import org.eclipse.jetty.websocket.common.WebSocketFrame;
  */
 public interface IBlockheadClient extends AutoCloseable
 {
-    public void addExtensions(String xtension);
+    void addExtensions(String xtension);
 
-    public void addHeader(String header);
+    void addHeader(String header);
 
-    public boolean awaitDisconnect(long timeout, TimeUnit unit) throws InterruptedException;
+    boolean awaitDisconnect(long timeout, TimeUnit unit) throws InterruptedException;
 
-    public void close();
+    void close();
 
-    public void close(int statusCode, String message);
+    void close(int statusCode, String message);
 
-    public void connect() throws IOException;
+    void connect() throws IOException;
 
-    public void disconnect();
+    void disconnect();
 
-    public void expectServerDisconnect();
+    void expectServerDisconnect();
 
-    public HttpResponse expectUpgradeResponse() throws IOException;
+    HttpResponse expectUpgradeResponse() throws IOException;
 
-    public InetSocketAddress getLocalSocketAddress();
+    InetSocketAddress getLocalSocketAddress();
 
-    public String getProtocols();
+    String getProtocols();
 
-    public InetSocketAddress getRemoteSocketAddress();
+    InetSocketAddress getRemoteSocketAddress();
 
-    public EventQueue<WebSocketFrame> readFrames(int expectedFrameCount, int timeoutDuration, TimeUnit timeoutUnit) throws Exception;
+    EventQueue<WebSocketFrame> readFrames(int expectedFrameCount, int timeoutDuration, TimeUnit timeoutUnit) throws Exception;
 
-    public HttpResponse readResponseHeader() throws IOException;
+    HttpResponse readResponseHeader() throws IOException;
 
-    public void sendStandardRequest() throws IOException;
+    void sendStandardRequest() throws IOException;
 
-    public void setConnectionValue(String connectionValue);
+    void setConnectionValue(String connectionValue);
 
-    public void setProtocols(String protocols);
+    void setProtocols(String protocols);
 
-    public void setTimeout(int duration, TimeUnit unit);
+    void setTimeout(int duration, TimeUnit unit);
 
-    public void write(WebSocketFrame frame) throws IOException;
+    void write(WebSocketFrame frame) throws IOException;
 
-    public void writeRaw(ByteBuffer buf) throws IOException;
+    void writeRaw(ByteBuffer buf) throws IOException;
 
-    public void writeRaw(ByteBuffer buf, int numBytes) throws IOException;
+    void writeRaw(ByteBuffer buf, int numBytes) throws IOException;
 
-    public void writeRaw(String str) throws IOException;
+    void writeRaw(String str) throws IOException;
 
-    public void writeRawSlowly(ByteBuffer buf, int segmentSize) throws IOException;
+    void writeRawSlowly(ByteBuffer buf, int segmentSize) throws IOException;
 }

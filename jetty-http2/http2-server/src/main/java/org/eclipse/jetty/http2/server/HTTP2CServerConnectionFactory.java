@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http2.server;
 
@@ -64,15 +59,18 @@ public class HTTP2CServerConnectionFactory extends HTTP2ServerConnectionFactory 
     @Override
     public Connection upgradeConnection(Connector connector, EndPoint endPoint, Request request, HttpFields response101) throws BadMessageException
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("{} upgraded {}{}", this, request.toString(), request.getFields());
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("{} upgraded {}{}", this, request.toString(), request.getFields());
+		}
 
-        if (request.getContentLength() > 0)
-            return null;
+        if (request.getContentLength() > 0) {
+			return null;
+		}
 
         HTTP2ServerConnection connection = (HTTP2ServerConnection)newConnection(connector, endPoint);
-        if (connection.upgrade(request))
-            return connection;
+        if (connection.upgrade(request)) {
+			return connection;
+		}
         return null;
     }
 }

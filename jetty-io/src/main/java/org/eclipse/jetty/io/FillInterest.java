@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.io;
 
@@ -35,7 +30,7 @@ import org.eclipse.jetty.util.log.Logger;
  */
 public abstract class FillInterest
 {
-    private final static Logger LOG = Log.getLogger(FillInterest.class);
+    private static final Logger LOG = Log.getLogger(FillInterest.class);
     private final AtomicReference<Callback> _interested = new AtomicReference<>(null);
     private Throwable _lastSet;
 
@@ -53,8 +48,9 @@ public abstract class FillInterest
      */
     public void register(Callback callback) throws ReadPendingException
     {
-        if (callback == null)
-            throw new IllegalArgumentException();
+        if (callback == null) {
+			throw new IllegalArgumentException();
+		}
 
         if (_interested.compareAndSet(null, callback))
         {
@@ -67,14 +63,16 @@ public abstract class FillInterest
         else
         {
             LOG.warn("Read pending for {} prevented {}", _interested, callback);
-            if (LOG.isDebugEnabled())
-                LOG.warn("callback set at ",_lastSet);
+            if (LOG.isDebugEnabled()) {
+				LOG.warn("callback set at ",_lastSet);
+			}
             throw new ReadPendingException();
         }
         try
         {
-            if (LOG.isDebugEnabled())
-                LOG.debug("{} register {}",this,callback);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("{} register {}",this,callback);
+			}
             needsFillInterest();
         }
         catch (Throwable e)
@@ -89,12 +87,14 @@ public abstract class FillInterest
     public void fillable()
     {
         Callback callback = _interested.get();
-        if (LOG.isDebugEnabled())
-            LOG.debug("{} fillable {}",this,callback);
-        if (callback != null && _interested.compareAndSet(callback, null))
-            callback.succeeded();
-        else if (LOG.isDebugEnabled())
-            LOG.debug("{} lost race {}",this,callback);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("{} fillable {}",this,callback);
+		}
+        if (callback != null && _interested.compareAndSet(callback, null)) {
+			callback.succeeded();
+		} else if (LOG.isDebugEnabled()) {
+			LOG.debug("{} lost race {}",this,callback);
+		}
     }
 
     /**
@@ -112,7 +112,7 @@ public abstract class FillInterest
     }
 
     /**
-     * Call to signal a failure to a registered interest
+     * Call to signal a failure to a registered interest.
      *
      * @param cause the cause of the failure
      * @return true if the cause was passed to a {@link Callback} instance
@@ -131,8 +131,9 @@ public abstract class FillInterest
     public void onClose()
     {
         Callback callback = _interested.get();
-        if (callback != null && _interested.compareAndSet(callback, null))
-            callback.failed(new ClosedChannelException());
+        if (callback != null && _interested.compareAndSet(callback, null)) {
+			callback.failed(new ClosedChannelException());
+		}
     }
 
     @Override
@@ -150,9 +151,9 @@ public abstract class FillInterest
     /**
      * Register the read interest
      * Abstract method to be implemented by the Specific ReadInterest to
-     * schedule a future call to {@link #fillable()} or {@link #onFail(Throwable)}
+     * schedule a future call to {@link #fillable()} or {@link #onFail(Throwable)}.
      *
      * @throws IOException if unable to fulfill interest in fill
      */
-    abstract protected void needsFillInterest() throws IOException;
+    protected abstract void needsFillInterest() throws IOException;
 }

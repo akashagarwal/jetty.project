@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.security.authentication;
 
@@ -47,26 +42,26 @@ public class ClientCertAuthenticator extends LoginAuthenticator
     /** String name of keystore password property. */
     private static final String PASSWORD_PROPERTY = "org.eclipse.jetty.ssl.password";
 
-    /** Truststore path */
+    /** Truststore path. */
     private String _trustStorePath;
-    /** Truststore provider name */
+    /** Truststore provider name. */
     private String _trustStoreProvider;
-    /** Truststore type */
+    /** Truststore type. */
     private String _trustStoreType = "JKS";
-    /** Truststore password */
+    /** Truststore password. */
     private transient Password _trustStorePassword;
 
-    /** Set to true if SSL certificate validation is required */
+    /** Set to true if SSL certificate validation is required. */
     private boolean _validateCerts;
-    /** Path to file that contains Certificate Revocation List */
+    /** Path to file that contains Certificate Revocation List. */
     private String _crlPath;
-    /** Maximum certification path length (n - number of intermediate certs, -1 for unlimited) */
+    /** Maximum certification path length (n - number of intermediate certs, -1 for unlimited). */
     private int _maxCertPathLength = -1;
-    /** CRL Distribution Points (CRLDP) support */
-    private boolean _enableCRLDP = false;
-    /** On-Line Certificate Status Protocol (OCSP) support */
-    private boolean _enableOCSP = false;
-    /** Location of OCSP Responder */
+    /** CRL Distribution Points (CRLDP) support. */
+    private boolean _enableCRLDP;
+    /** On-Line Certificate Status Protocol (OCSP) support. */
+    private boolean _enableOCSP;
+    /** Location of OCSP Responder. */
     private String _ocspResponderURL;
 
     public ClientCertAuthenticator()
@@ -83,8 +78,9 @@ public class ClientCertAuthenticator extends LoginAuthenticator
     @Override
     public Authentication validateRequest(ServletRequest req, ServletResponse res, boolean mandatory) throws ServerAuthException
     {
-        if (!mandatory)
-            return new DeferredAuthentication(this);
+        if (!mandatory) {
+			return new DeferredAuthentication(this);
+		}
 
         HttpServletRequest request = (HttpServletRequest)req;
         HttpServletResponse response = (HttpServletResponse)res;
@@ -108,11 +104,14 @@ public class ClientCertAuthenticator extends LoginAuthenticator
 
                 for (X509Certificate cert: certs)
                 {
-                    if (cert==null)
-                        continue;
+                    if (cert==null) {
+						continue;
+					}
 
                     Principal principal = cert.getSubjectDN();
-                    if (principal == null) principal = cert.getIssuerDN();
+                    if (principal == null) {
+						principal = cert.getIssuerDN();
+					}
                     final String username = principal == null ? "clientcert" : principal.getName();
 
                     final char[] credential = B64Code.encode(cert.getSignature());
@@ -321,7 +320,7 @@ public class ClientCertAuthenticator extends LoginAuthenticator
     }
 
     /* ------------------------------------------------------------ */
-    /** Enables CRL Distribution Points Support
+    /** Enables CRL Distribution Points Support.
      * @param enableCRLDP true - turn on, false - turns off
      */
     public void setEnableCRLDP(boolean enableCRLDP)
@@ -339,7 +338,7 @@ public class ClientCertAuthenticator extends LoginAuthenticator
     }
 
     /* ------------------------------------------------------------ */
-    /** Enables On-Line Certificate Status Protocol support
+    /** Enables On-Line Certificate Status Protocol support.
      * @param enableOCSP true - turn on, false - turn off
      */
     public void setEnableOCSP(boolean enableOCSP)

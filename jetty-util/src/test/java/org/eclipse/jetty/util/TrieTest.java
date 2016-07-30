@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util;
 
@@ -30,7 +25,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 
-@RunWith(value = Parameterized.class)
+@RunWith(Parameterized.class)
 public class TrieTest
 {
     @Parameterized.Parameters
@@ -72,7 +67,9 @@ public class TrieTest
         while (true) 
         {
             if (++i>10000)
-                break; // must not be fixed size
+			 {
+				break; // must not be fixed size
+			}
             if (!trie.put("prefix" + i, i))
             {
                 Assert.assertTrue(trie.isFull());
@@ -232,8 +229,9 @@ public class TrieTest
     @Test 
     public void testFull() throws Exception
     {
-       if (!(trie instanceof ArrayTrie<?> || trie instanceof ArrayTernaryTrie<?>))
-           return;
+       if (!(trie instanceof ArrayTrie<?>) && !(trie instanceof ArrayTernaryTrie<?>)) {
+		return;
+	}
        
        Assert.assertFalse(trie.put("Large: This is a really large key and should blow the maximum size of the array trie as lots of nodes should already be used.",99));
        testGetString();

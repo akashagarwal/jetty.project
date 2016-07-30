@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http2;
 
@@ -33,31 +28,30 @@ public interface IStream extends Stream, Closeable
 {
     /**
      * <p>The constant used as attribute key to store/retrieve the HTTP
-     * channel associated with this stream</p>
+     * channel associated with this stream</p>.
      *
      * @see #setAttribute(String, Object)
      */
-    public static final String CHANNEL_ATTRIBUTE = IStream.class.getName() + ".channel";
+    String CHANNEL_ATTRIBUTE = IStream.class.getName() + ".channel";
 
     /**
      * @return whether this stream is local or remote
      */
-    public boolean isLocal();
+    boolean isLocal();
 
-    @Override
-    public ISession getSession();
+    @Override ISession getSession();
 
     /**
      * @return the {@link org.eclipse.jetty.http2.api.Stream.Listener} associated with this stream
      * @see #setListener(Listener)
      */
-    public Listener getListener();
+    Listener getListener();
 
     /**
      * @param listener the {@link org.eclipse.jetty.http2.api.Stream.Listener} associated with this stream
      * @see #getListener()
      */
-    public void setListener(Listener listener);
+    void setListener(Listener listener);
 
     /**
      * <p>Processes the given {@code frame}, belonging to this stream.</p>
@@ -65,7 +59,7 @@ public interface IStream extends Stream, Closeable
      * @param frame the frame to process
      * @param callback the callback to complete when frame has been processed
      */
-    public void process(Frame frame, Callback callback);
+    void process(Frame frame, Callback callback);
 
     /**
      * <p>Updates the close state of this stream.</p>
@@ -76,13 +70,12 @@ public interface IStream extends Stream, Closeable
      *               or a remote operation (such as receiving a frame
      * @return whether the stream has been fully closed by this invocation
      */
-    public boolean updateClose(boolean update, boolean local);
+    boolean updateClose(boolean update, boolean local);
 
     /**
      * <p>Forcibly closes this stream.</p>
      */
-    @Override
-    public void close();
+    @Override void close();
 
     /**
      * <p>Updates the stream send window by the given {@code delta}.</p>
@@ -90,7 +83,7 @@ public interface IStream extends Stream, Closeable
      * @param delta the delta value (positive or negative) to add to the stream send window
      * @return the previous value of the stream send window
      */
-    public int updateSendWindow(int delta);
+    int updateSendWindow(int delta);
 
     /**
      * <p>Updates the stream receive window by the given {@code delta}.</p>
@@ -98,11 +91,11 @@ public interface IStream extends Stream, Closeable
      * @param delta the delta value (positive or negative) to add to the stream receive window
      * @return the previous value of the stream receive window
      */
-    public int updateRecvWindow(int delta);
+    int updateRecvWindow(int delta);
 
     /**
      * <p>Marks this stream as not idle so that the
      * {@link #getIdleTimeout() idle timeout} is postponed.</p>
      */
-    public void notIdle();
+    void notIdle();
 }

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.monitor;
 
@@ -295,10 +290,7 @@ public class ThreadMonitor extends AbstractLifeCycle implements Runnable
         _dumpable = dumpable;
     }
 
-    /* ------------------------------------------------------------ */
-    /**
-     * @see org.eclipse.jetty.util.component.AbstractLifeCycle#doStart()
-     */
+    /** ------------------------------------------------------------. */
     public void doStart()
     {
         _done = false;
@@ -310,10 +302,7 @@ public class ThreadMonitor extends AbstractLifeCycle implements Runnable
         LOG.info("Thread Monitor started successfully");
     }
     
-    /* ------------------------------------------------------------ */
-    /**
-     * @see org.eclipse.jetty.util.component.AbstractLifeCycle#doStop()
-     */
+    /** ------------------------------------------------------------. */
     public void doStop()
     {
         if (_runner != null)
@@ -331,7 +320,7 @@ public class ThreadMonitor extends AbstractLifeCycle implements Runnable
 
     /* ------------------------------------------------------------ */
     /**
-     * Retrieve all avaliable thread ids
+     * Retrieve all avaliable thread ids.
      *
      * @return array of thread ids
      */
@@ -365,10 +354,7 @@ public class ThreadMonitor extends AbstractLifeCycle implements Runnable
         }
     }
     
-    /* ------------------------------------------------------------ */
-    /**
-     * @see java.lang.Runnable#run()
-     */
+    /** ------------------------------------------------------------. */
     public void run()
     {
         // Initialize repeat flag
@@ -382,8 +368,8 @@ public class ThreadMonitor extends AbstractLifeCycle implements Runnable
         while (!_done)
         {
             long currTime = System.currentTimeMillis();
-            scanNow = (currTime > nextScanTime);
-            logNow = (_logInterval > 0 && currTime > nextLogTime);
+            scanNow = currTime > nextScanTime;
+            logNow = _logInterval > 0 && currTime > nextLogTime;
             if (repeat || scanNow || logNow)
             {
                 repeat = collectThreadInfo();
@@ -492,7 +478,7 @@ public class ThreadMonitor extends AbstractLifeCycle implements Runnable
                                 // only if the incoming trace count is negative
                                 // that indicates a new scan for this thread
                                 currMonitorInfo.setTraceCount(0);
-                                repeat = (_trailLength > 0);
+                                repeat = _trailLength > 0;
                             }
                         }
                     }
@@ -505,8 +491,9 @@ public class ThreadMonitor extends AbstractLifeCycle implements Runnable
             while (iter.hasNext())
             {
                 Long id = iter.next();
-                if (!newOrUpdatedIds.contains(id))
-                    iter.remove();
+                if (!newOrUpdatedIds.contains(id)) {
+					iter.remove();
+				}
             }
             newOrUpdatedIds.clear();
         }
@@ -517,7 +504,7 @@ public class ThreadMonitor extends AbstractLifeCycle implements Runnable
         return repeat;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected void logThreadInfo(boolean logAll)
     {
         if (_monitorInfo.size() > 0)
@@ -537,7 +524,7 @@ public class ThreadMonitor extends AbstractLifeCycle implements Runnable
             // Sort selected thread objects by their CPU utilization
             Collections.sort(all, new Comparator<ThreadMonitorInfo>()
             {
-                /* ------------------------------------------------------------ */
+                /** ------------------------------------------------------------. */
                 public int compare(ThreadMonitorInfo info1, ThreadMonitorInfo info2)
                 {
                     return (int)Math.signum(info2.getCpuUtilization()-info1.getCpuUtilization());
@@ -551,8 +538,8 @@ public class ThreadMonitor extends AbstractLifeCycle implements Runnable
             boolean spinning=false;
             for (ThreadMonitorInfo info : all)
             {
-                if (logAll && info.getCpuUtilization() > _logThreshold 
-                || info.isSpinning() && info.getTraceCount() == 0)
+                if ((logAll && info.getCpuUtilization() > _logThreshold) 
+                || (info.isSpinning() && info.getTraceCount() == 0))
                 {
                     String message = String.format(format, 
                             info.getThreadId(), info.getThreadName(), 

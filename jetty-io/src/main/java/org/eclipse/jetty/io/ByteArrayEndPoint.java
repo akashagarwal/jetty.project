@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.io;
 
@@ -44,7 +39,7 @@ import org.eclipse.jetty.util.thread.Scheduler;
 public class ByteArrayEndPoint extends AbstractEndPoint
 {
     static final Logger LOG = Log.getLogger(ByteArrayEndPoint.class);
-    public final static InetSocketAddress NOIP=new InetSocketAddress(0);
+    public static final InetSocketAddress NOIP=new InetSocketAddress(0);
     private static final ByteBuffer EOF = BufferUtil.allocate(0);
 
     private final Runnable _runFillable = new Runnable()
@@ -65,10 +60,7 @@ public class ByteArrayEndPoint extends AbstractEndPoint
     private boolean _closed;
     private boolean _growOutput;
 
-    /* ------------------------------------------------------------ */
-    /**
-     *
-     */
+    /** ------------------------------------------------------------. */
     public ByteArrayEndPoint()
     {
         this(null,0,null,null);
@@ -94,65 +86,66 @@ public class ByteArrayEndPoint extends AbstractEndPoint
         this(null,0,input!=null?BufferUtil.toBuffer(input):null,BufferUtil.allocate(outputSize));
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public ByteArrayEndPoint(Scheduler scheduler, long idleTimeoutMs)
     {
         this(scheduler,idleTimeoutMs,null,null);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public ByteArrayEndPoint(Scheduler timer, long idleTimeoutMs, byte[] input, int outputSize)
     {
         this(timer,idleTimeoutMs,input!=null?BufferUtil.toBuffer(input):null,BufferUtil.allocate(outputSize));
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public ByteArrayEndPoint(Scheduler timer, long idleTimeoutMs, String input, int outputSize)
     {
         this(timer,idleTimeoutMs,input!=null?BufferUtil.toBuffer(input):null,BufferUtil.allocate(outputSize));
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public ByteArrayEndPoint(Scheduler timer, long idleTimeoutMs, ByteBuffer input, ByteBuffer output)
     {
         super(timer,NOIP,NOIP);
-        if (BufferUtil.hasContent(input))
-            addInput(input);
+        if (BufferUtil.hasContent(input)) {
+			addInput(input);
+		}
         _out=output==null?BufferUtil.allocate(1024):output;
         setIdleTimeout(idleTimeoutMs);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     protected void onIncompleteFlush()
     {
         // Don't need to do anything here as takeOutput does the signalling.
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     protected void execute(Runnable task)
     {
         new Thread(task,"BAEPoint-"+Integer.toHexString(hashCode())).start();
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     protected void needsFillInterest() throws IOException
     {
         try(Locker.Lock lock = _locker.lock())
         {
-            if (_closed)
-                throw new ClosedChannelException();
+            if (_closed) {
+				throw new ClosedChannelException();
+			}
 
             ByteBuffer in = _inQ.peek();
-            if (BufferUtil.hasContent(in) || in==EOF)
-                execute(_runFillable);
+            if (BufferUtil.hasContent(in) || in==EOF) {
+				execute(_runFillable);
+			}
         }
     }
 
-    /* ------------------------------------------------------------ */
-    /**
-     */
+    /** ------------------------------------------------------------. */
     public void addInputEOF()
     {
         addInput((ByteBuffer)null);
@@ -167,8 +160,9 @@ public class ByteArrayEndPoint extends AbstractEndPoint
         boolean fillable=false;
         try(Locker.Lock lock = _locker.lock())
         {
-            if (_inQ.peek()==EOF)
-                throw new RuntimeIOException(new EOFException());
+            if (_inQ.peek()==EOF) {
+				throw new RuntimeIOException(new EOFException());
+			}
             boolean was_empty=_inQ.isEmpty();
             if (in==null)
             {
@@ -181,18 +175,20 @@ public class ByteArrayEndPoint extends AbstractEndPoint
                 fillable=was_empty;
             }
         }
-        if (fillable)
-            _runFillable.run();
+        if (fillable) {
+			_runFillable.run();
+		}
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void addInputAndExecute(ByteBuffer in)
     {
         boolean fillable=false;
         try(Locker.Lock lock = _locker.lock())
         {
-            if (_inQ.peek()==EOF)
-                throw new RuntimeIOException(new EOFException());
+            if (_inQ.peek()==EOF) {
+				throw new RuntimeIOException(new EOFException());
+			}
             boolean was_empty=_inQ.isEmpty();
             if (in==null)
             {
@@ -205,17 +201,18 @@ public class ByteArrayEndPoint extends AbstractEndPoint
                 fillable=was_empty;
             }
         }
-        if (fillable)
-            execute(_runFillable);
+        if (fillable) {
+			execute(_runFillable);
+		}
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void addInput(String s)
     {
         addInput(BufferUtil.toBuffer(s,StandardCharsets.UTF_8));
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void addInput(String s,Charset charset)
     {
         addInput(BufferUtil.toBuffer(s,charset));
@@ -270,7 +267,7 @@ public class ByteArrayEndPoint extends AbstractEndPoint
     }
 
     /* ------------------------------------------------------------ */
-    /** Wait for some output
+    /** Wait for some output.
      * @param time Time to wait
      * @param unit Units for time to wait
      * @return The buffer of output
@@ -326,10 +323,7 @@ public class ByteArrayEndPoint extends AbstractEndPoint
         getWriteFlusher().completeWrite();
     }
 
-    /* ------------------------------------------------------------ */
-    /*
-     * @see org.eclipse.io.EndPoint#isOpen()
-     */
+    /** ------------------------------------------------------------. */
     @Override
     public boolean isOpen()
     {
@@ -339,9 +333,7 @@ public class ByteArrayEndPoint extends AbstractEndPoint
         }
     }
 
-    /* ------------------------------------------------------------ */
-    /*
-     */
+    /** ------------------------------------------------------------. */
     @Override
     public boolean isInputShutdown()
     {
@@ -351,9 +343,7 @@ public class ByteArrayEndPoint extends AbstractEndPoint
         }
     }
 
-    /* ------------------------------------------------------------ */
-    /*
-     */
+    /** ------------------------------------------------------------. */
     @Override
     public boolean isOutputShutdown()
     {
@@ -363,24 +353,23 @@ public class ByteArrayEndPoint extends AbstractEndPoint
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void shutdownInput()
     {
         boolean close=false;
         try(Locker.Lock lock = _locker.lock())
         {
             _ishut=true;
-            if (_oshut && !_closed)
-                close=_closed=true;
+            if (_oshut && !_closed) {
+				close=_closed=true;
+			}
         }
-        if (close)
-            super.close();
+        if (close) {
+			super.close();
+		}
     }
 
-    /* ------------------------------------------------------------ */
-    /*
-     * @see org.eclipse.io.EndPoint#shutdownOutput()
-     */
+    /** ------------------------------------------------------------. */
     @Override
     public void shutdownOutput()
     {
@@ -389,30 +378,31 @@ public class ByteArrayEndPoint extends AbstractEndPoint
         {
             _oshut=true;
             _hasOutput.signalAll();
-            if (_ishut && !_closed)
-                close=_closed=true;
+            if (_ishut && !_closed) {
+				close=_closed=true;
+			}
         }
-        if (close)
-            super.close();
+        if (close) {
+			super.close();
+		}
     }
 
-    /* ------------------------------------------------------------ */
-    /*
-     * @see org.eclipse.io.EndPoint#close()
-     */
+    /** ------------------------------------------------------------. */
     @Override
     public void close()
     {
         boolean close=false;
         try(Locker.Lock lock = _locker.lock())
         {
-            if (!_closed)
-                close=_closed=_ishut=_oshut=true;
+            if (!_closed) {
+				close=_closed=_ishut=_oshut=true;
+			}
 
             _hasOutput.signalAll();
         }
-        if (close)
-            super.close();
+        if (close) {
+			super.close();
+		}
     }
 
     /* ------------------------------------------------------------ */
@@ -424,10 +414,7 @@ public class ByteArrayEndPoint extends AbstractEndPoint
         return getOutput().position()>0;
     }
 
-    /* ------------------------------------------------------------ */
-    /*
-     * @see org.eclipse.io.EndPoint#fill(org.eclipse.io.Buffer)
-     */
+    /** ------------------------------------------------------------. */
     @Override
     public int fill(ByteBuffer buffer) throws IOException
     {
@@ -437,21 +424,25 @@ public class ByteArrayEndPoint extends AbstractEndPoint
         {
             while(true)
             {
-                if (_closed)
-                    throw new EofException("CLOSED");
+                if (_closed) {
+					throw new EofException("CLOSED");
+				}
 
-                if (_ishut)
-                    return -1;
+                if (_ishut) {
+					return -1;
+				}
 
-                if (_inQ.isEmpty())
-                    break;
+                if (_inQ.isEmpty()) {
+					break;
+				}
 
                 ByteBuffer in= _inQ.peek();
                 if (in==EOF)
                 {
                     _ishut=true;
-                    if (_oshut)
-                        close=_closed=true;
+                    if (_oshut) {
+						close=_closed=true;
+					}
                     filled=-1;
                     break;
                 }
@@ -459,35 +450,37 @@ public class ByteArrayEndPoint extends AbstractEndPoint
                 if (BufferUtil.hasContent(in))
                 {
                     filled=BufferUtil.append(buffer,in);
-                    if (BufferUtil.isEmpty(in))
-                        _inQ.poll();
+                    if (BufferUtil.isEmpty(in)) {
+						_inQ.poll();
+					}
                     break;
                 }
                 _inQ.poll();
             }
         }
 
-        if (close)
-            super.close();
-        if (filled>0)
-            notIdle();
+        if (close) {
+			super.close();
+		}
+        if (filled>0) {
+			notIdle();
+		}
         return filled;
     }
 
-    /* ------------------------------------------------------------ */
-    /*
-     * @see org.eclipse.io.EndPoint#flush(org.eclipse.io.Buffer, org.eclipse.io.Buffer, org.eclipse.io.Buffer)
-     */
+    /** ------------------------------------------------------------. */
     @Override
     public boolean flush(ByteBuffer... buffers) throws IOException
     {
         boolean flushed=true;
         try(Locker.Lock lock = _locker.lock())
         {
-            if (_closed)
-                throw new IOException("CLOSED");
-            if (_oshut)
-                throw new IOException("OSHUT");
+            if (_closed) {
+				throw new IOException("CLOSED");
+			}
+            if (_oshut) {
+				throw new IOException("OSHUT");
+			}
 
             boolean idle=true;
 
@@ -506,8 +499,9 @@ public class ByteArrayEndPoint extends AbstractEndPoint
                         }
                     }
 
-                    if (BufferUtil.append(_out,b)>0)
-                        idle=false;
+                    if (BufferUtil.append(_out,b)>0) {
+						idle=false;
+					}
 
                     if (BufferUtil.hasContent(b))
                     {
@@ -525,10 +519,7 @@ public class ByteArrayEndPoint extends AbstractEndPoint
         return flushed;
     }
 
-    /* ------------------------------------------------------------ */
-    /**
-     *
-     */
+    /** ------------------------------------------------------------. */
     public void reset()
     {
         try(Locker.Lock lock = _locker.lock())
@@ -543,10 +534,7 @@ public class ByteArrayEndPoint extends AbstractEndPoint
         }
     }
 
-    /* ------------------------------------------------------------ */
-    /*
-     * @see org.eclipse.io.EndPoint#getConnection()
-     */
+    /** ------------------------------------------------------------. */
     @Override
     public Object getTransport()
     {
@@ -571,7 +559,7 @@ public class ByteArrayEndPoint extends AbstractEndPoint
         _growOutput=growOutput;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public String toString()
     {

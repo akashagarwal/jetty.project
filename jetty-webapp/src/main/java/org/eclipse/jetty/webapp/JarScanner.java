@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 
 package org.eclipse.jetty.webapp;
@@ -127,15 +122,17 @@ public abstract class JarScanner extends org.eclipse.jetty.util.PatternMatcher
                 {
                     URI[] uris = new URI[urls.length];
                     int i=0;
-                    for (URL u : urls)
-                        uris[i++] = u.toURI();
+                    for (URL u : urls) {
+						uris[i++] = u.toURI();
+					}
                     scan (pattern, uris, isNullInclusive);
                 }
             }     
-            if (visitParent)
-                loader=loader.getParent();
-            else
-                loader = null;
+            if (visitParent) {
+				loader=loader.getParent();
+			} else {
+				loader = null;
+			}
         }  
     }
     
@@ -148,8 +145,9 @@ public abstract class JarScanner extends org.eclipse.jetty.util.PatternMatcher
         {
          
             InputStream in = Resource.newResource(uri).getInputStream();
-            if (in==null)
-                return;
+            if (in==null) {
+				return;
+			}
 
             JarInputStream jar_in = new JarInputStream(in);
             try

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.client.ssl;
 
@@ -82,14 +77,18 @@ public class SslBytesClientTest extends SslBytesTest
     @After
     public void destroy() throws Exception
     {
-        if (acceptor != null)
-            acceptor.close();
-        if (proxy != null)
-            proxy.stop();
-        if (client != null)
-            client.stop();
-        if (threadPool != null)
-            threadPool.shutdownNow();
+        if (acceptor != null) {
+			acceptor.close();
+		}
+        if (proxy != null) {
+			proxy.stop();
+		}
+        if (client != null) {
+			client.stop();
+		}
+        if (threadPool != null) {
+			threadPool.shutdownNow();
+		}
     }
 
     @Test
@@ -152,8 +151,9 @@ public class SslBytesClientTest extends SslBytesTest
         BufferedReader reader = new BufferedReader(new InputStreamReader(server.getInputStream(), StandardCharsets.UTF_8));
         String line = reader.readLine();
         Assert.assertTrue(line.startsWith("GET"));
-        while (line.length() > 0)
-            line = reader.readLine();
+        while (line.length() > 0) {
+			line = reader.readLine();
+		}
 
         // Write response
         OutputStream output = server.getOutputStream();
@@ -195,8 +195,9 @@ public class SslBytesClientTest extends SslBytesTest
         BufferedReader reader = new BufferedReader(new InputStreamReader(serverInput, StandardCharsets.UTF_8));
         String line = reader.readLine();
         Assert.assertTrue(line.startsWith("GET"));
-        while (line.length() > 0)
-            line = reader.readLine();
+        while (line.length() > 0) {
+			line = reader.readLine();
+		}
 
         OutputStream serverOutput = server.getOutputStream();
         byte[] data1 = new byte[1024];
@@ -311,8 +312,9 @@ public class SslBytesClientTest extends SslBytesTest
         BufferedReader reader = new BufferedReader(new InputStreamReader(serverInput, StandardCharsets.UTF_8));
         String line = reader.readLine();
         Assert.assertTrue(line.startsWith("GET"));
-        while (line.length() > 0)
-            line = reader.readLine();
+        while (line.length() > 0) {
+			line = reader.readLine();
+		}
 
         OutputStream serverOutput = server.getOutputStream();
         byte[] data1 = new byte[1024];

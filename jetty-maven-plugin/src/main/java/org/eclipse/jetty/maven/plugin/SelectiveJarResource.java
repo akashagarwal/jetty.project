@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.maven.plugin;
 
@@ -49,12 +44,14 @@ import org.eclipse.jetty.util.resource.JarResource;
 public class SelectiveJarResource extends JarResource
 {  
     private static final Logger LOG = Log.getLogger(SelectiveJarResource.class);
-    public static final List<String> DEFAULT_INCLUDES = Arrays.asList(new String[]{"**"});// No includes supplied, so set it to 'matches all'
-    public static final List<String> DEFAULT_EXCLUDES = Collections.emptyList(); //No includes, set to no exclusions
+    /** No includes supplied, so set it to 'matches all'. */
+    public static final List<String> DEFAULT_INCLUDES = Arrays.asList(new String[]{"**"});
+    /** No includes, set to no exclusions. */
+    public static final List<String> DEFAULT_EXCLUDES = Collections.emptyList();
 
-    List<String> _includes = null;
-    List<String> _excludes = null;
-    boolean _caseSensitive = false;
+    List<String> _includes;
+    List<String> _excludes;
+    boolean _caseSensitive;
     
     public SelectiveJarResource(URL url)
     {
@@ -110,29 +107,30 @@ public class SelectiveJarResource extends JarResource
     
   
 
-    /** 
-     * @see org.eclipse.jetty.util.resource.JarResource#copyTo(java.io.File)
-     */
     @Override
     public void copyTo(File directory) throws IOException
     {
-        if (_includes == null)
-            _includes = DEFAULT_INCLUDES;
-        if (_excludes == null)
-            _excludes = DEFAULT_EXCLUDES;
+        if (_includes == null) {
+			_includes = DEFAULT_INCLUDES;
+		}
+        if (_excludes == null) {
+			_excludes = DEFAULT_EXCLUDES;
+		}
         
         //Copy contents of the jar file to the given directory, 
         //using the includes and excludes patterns to control which
         //parts of the jar file are copied
-        if (!exists())
-            return;
+        if (!exists()) {
+			return;
+		}
         
-        String urlString = this.getURL().toExternalForm().trim();
+        String urlString = getURL().toExternalForm().trim();
         int endOfJarUrl = urlString.indexOf("!/");
-        int startOfJarUrl = (endOfJarUrl >= 0?4:0);
+        int startOfJarUrl = endOfJarUrl >= 0?4:0;
         
-        if (endOfJarUrl < 0)
-            throw new IOException("Not a valid jar url: "+urlString);
+        if (endOfJarUrl < 0) {
+			throw new IOException("Not a valid jar url: "+urlString);
+		}
         
         URL jarFileURL = new URL(urlString.substring(startOfJarUrl, endOfJarUrl));
      
@@ -163,59 +161,54 @@ public class SelectiveJarResource extends JarResource
                         if (!isExcluded(entryName))
                         {
                             // Make directory
-                            if (!file.exists())
-                                file.mkdirs();
-                        }
-                        else
-                            LOG.debug("{} dir is excluded", entryName);
-                    }
-                    else
-                        LOG.debug("{} dir is NOT included", entryName);
-                }
-                else
-                {
-                    //entry is a file, is it included?
-                    if (isIncluded(entryName))
-                    {
-                        if (!isExcluded(entryName))
-                        {
-                            // make directory (some jars don't list dirs)
-                            File dir = new File(file.getParent());
-                            if (!dir.exists())
-                                dir.mkdirs();
+                            if (!file.exists()) {
+								file.mkdirs();
+							}
+                        } else {
+							LOG.debug("{} dir is excluded", entryName);
+						}
+                    } else {
+						LOG.debug("{} dir is NOT included", entryName);
+					}
+                } else //entry is a file, is it included?
+				if (isIncluded(entryName))
+				{
+				    if (!isExcluded(entryName))
+				    {
+				        // make directory (some jars don't list dirs)
+				        File dir = new File(file.getParent());
+				        if (!dir.exists()) {
+							dir.mkdirs();
+						}
 
-                            // Make file
-                            try (OutputStream fout = new FileOutputStream(file))
-                            {
-                                IO.copy(jin,fout);
-                            }
+				        // Make file
+				        try (OutputStream fout = new FileOutputStream(file))
+				        {
+				            IO.copy(jin,fout);
+				        }
 
-                            // touch the file.
-                            if (entry.getTime()>=0)
-                                file.setLastModified(entry.getTime());
-                        }
-                        else
-                            LOG.debug("{} file is excluded", entryName);
-                    }
-                    else
-                        LOG.debug("{} file is NOT included", entryName);
-                }
+				        // touch the file.
+				        if (entry.getTime()>=0) {
+							file.setLastModified(entry.getTime());
+						}
+				    } else {
+						LOG.debug("{} file is excluded", entryName);
+					}
+				} else {
+					LOG.debug("{} file is NOT included", entryName);
+				}
             }
 
             Manifest manifest = jin.getManifest();
-            if (manifest != null)
-            {
-                if (isIncluded("META-INF") && !isExcluded("META-INF"))
-                {
-                    File metaInf = new File (directory, "META-INF");
-                    metaInf.mkdir();
-                    File f = new File(metaInf, "MANIFEST.MF");
-                    try (OutputStream fout = new FileOutputStream(f))
-                    {
-                        manifest.write(fout);
-                    }
-                }
-            }
+            if (manifest != null && isIncluded("META-INF") && !isExcluded("META-INF")) {
+			    File metaInf = new File (directory, "META-INF");
+			    metaInf.mkdir();
+			    File f = new File(metaInf, "MANIFEST.MF");
+			    try (OutputStream fout = new FileOutputStream(f))
+			    {
+			        manifest.write(fout);
+			    }
+			}
         }
     }
     

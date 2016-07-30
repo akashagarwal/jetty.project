@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.websocket.common.message;
 
@@ -35,7 +30,7 @@ import org.eclipse.jetty.websocket.common.WebSocketSession;
 import org.eclipse.jetty.websocket.common.frames.BinaryFrame;
 
 /**
- * Support for writing a single WebSocket BINARY message via a {@link OutputStream}
+ * Support for writing a single WebSocket BINARY message via a {@link OutputStream}.
  */
 public class MessageOutputStream extends OutputStream
 {
@@ -117,8 +112,9 @@ public class MessageOutputStream extends OutputStream
         {
             flush(true);
             bufferPool.release(buffer);
-            if (LOG.isDebugEnabled())
-                LOG.debug("Stream closed, {} frames sent", frameCount);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Stream closed, {} frames sent", frameCount);
+			}
             // Notify without holding locks.
             notifySuccess();
         }
@@ -134,8 +130,9 @@ public class MessageOutputStream extends OutputStream
     {
         synchronized (this)
         {
-            if (closed)
-                throw new IOException("Stream is closed");
+            if (closed) {
+				throw new IOException("Stream is closed");
+			}
 
             closed = fin;
 
@@ -161,8 +158,9 @@ public class MessageOutputStream extends OutputStream
     {
         synchronized (this)
         {
-            if (closed)
-                throw new IOException("Stream is closed");
+            if (closed) {
+				throw new IOException("Stream is closed");
+			}
 
             while (length > 0)
             {

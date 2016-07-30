@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.webapp;
 
@@ -52,8 +47,9 @@ public class CachingWebAppClassLoader extends WebAppClassLoader
     @Override
     public URL getResource(String name)
     {
-        if (_notFound.contains(name))
-            return null;
+        if (_notFound.contains(name)) {
+			return null;
+		}
         
         URL url = _cache.get(name);
         
@@ -61,13 +57,13 @@ public class CachingWebAppClassLoader extends WebAppClassLoader
         {
             url = super.getResource(name);
         
-            if (url==null)
+            if (url!=null)
             {
-                _notFound.add(name);
+                _cache.putIfAbsent(name,url);
             }
             else
             {
-                _cache.putIfAbsent(name,url);
+                _notFound.add(name);
             }
         }
         
@@ -77,8 +73,9 @@ public class CachingWebAppClassLoader extends WebAppClassLoader
     @Override
     protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException
     {
-        if (_notFound.contains(name))
-            throw new ClassNotFoundException(name+": in notfound cache");
+        if (_notFound.contains(name)) {
+			throw new ClassNotFoundException(name+": in notfound cache");
+		}
         try
         {
             return super.loadClass(name,resolve);
@@ -93,8 +90,9 @@ public class CachingWebAppClassLoader extends WebAppClassLoader
     @Override
     protected Class<?> findClass(String name) throws ClassNotFoundException
     {
-        if (_notFound.contains(name))
-            throw new ClassNotFoundException(name+": in notfound cache");
+        if (_notFound.contains(name)) {
+			throw new ClassNotFoundException(name+": in notfound cache");
+		}
         try
         {
             return super.findClass(name);

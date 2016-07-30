@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.webapp;
 
@@ -129,7 +124,7 @@ public class WebAppClassLoader extends URLClassLoader
          */
         boolean isParentLoaderPriority();
         
-        /* ------------------------------------------------------------ */
+        /** ------------------------------------------------------------. */
         String getExtraClasspath();
         
     }
@@ -163,8 +158,9 @@ public class WebAppClassLoader extends URLClassLoader
                                 :ClassLoader.getSystemClassLoader())));
         _parent=getParent();
         _context=context;
-        if (_parent==null)
-            throw new IllegalArgumentException("no parent classloader!");
+        if (_parent==null) {
+			throw new IllegalArgumentException("no parent classloader!");
+		}
         
         _extensions.add(".jar");
         _extensions.add(".zip");
@@ -174,12 +170,14 @@ public class WebAppClassLoader extends URLClassLoader
         if(extensions!=null)
         {
             StringTokenizer tokenizer = new StringTokenizer(extensions, ",;");
-            while(tokenizer.hasMoreTokens())
-                _extensions.add(tokenizer.nextToken().trim());
+            while(tokenizer.hasMoreTokens()) {
+				_extensions.add(tokenizer.nextToken().trim());
+			}
         }
         
-        if (context.getExtraClasspath()!=null)
-            addClassPath(context.getExtraClasspath());
+        if (context.getExtraClasspath()!=null) {
+			addClassPath(context.getExtraClasspath());
+		}
     }
     
     /* ------------------------------------------------------------ */
@@ -201,7 +199,7 @@ public class WebAppClassLoader extends URLClassLoader
     }
     
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public Context getContext()
     {
         return _context;
@@ -219,8 +217,9 @@ public class WebAppClassLoader extends URLClassLoader
     {
         if (resource instanceof ResourceCollection)
         {
-            for (Resource r : ((ResourceCollection)resource).getResources())
-                addClassPath(r);
+            for (Resource r : ((ResourceCollection)resource).getResources()) {
+				addClassPath(r);
+			}
         }
         else
         {
@@ -238,20 +237,22 @@ public class WebAppClassLoader extends URLClassLoader
     public void addClassPath(String classPath)
         throws IOException
     {
-        if (classPath == null)
-            return;
+        if (classPath == null) {
+			return;
+		}
             
         StringTokenizer tokenizer= new StringTokenizer(classPath, ",;");
         while (tokenizer.hasMoreTokens())
         {
             Resource resource= _context.newResource(tokenizer.nextToken().trim());
-            if (LOG.isDebugEnabled())
-                LOG.debug("Path resource=" + resource);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Path resource=" + resource);
+			}
 
             // Add the resource
-            if (resource.isDirectory() && resource instanceof ResourceCollection)
-                addClassPath(resource);
-            else
+            if (resource.isDirectory() && resource instanceof ResourceCollection) {
+				addClassPath(resource);
+			} else
             {
                 // Resolve file path if possible
                 File file= resource.getFile();
@@ -266,8 +267,9 @@ public class WebAppClassLoader extends URLClassLoader
                 }
                 else
                 {
-                    if (LOG.isDebugEnabled())
-                        LOG.debug("Check file exists and is not nested jar: "+resource);
+                    if (LOG.isDebugEnabled()) {
+						LOG.debug("Check file exists and is not nested jar: "+resource);
+					}
                     throw new IllegalArgumentException("File not resolvable or incompatible with URLClassloader: "+resource);
                 }
             }
@@ -299,8 +301,9 @@ public class WebAppClassLoader extends URLClassLoader
                 try 
                 {
                     Resource fn=lib.addPath(files[f]);
-                    if(LOG.isDebugEnabled())
-                        LOG.debug("addJar - {}", fn);
+                    if(LOG.isDebugEnabled()) {
+						LOG.debug("addJar - {}", fn);
+					}
                     String fnlc=fn.getName().toLowerCase(Locale.ENGLISH);
                     // don't check if this is a directory, see Bug 353165
                     if (isFileSupported(fnlc))
@@ -319,16 +322,15 @@ public class WebAppClassLoader extends URLClassLoader
         }
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public PermissionCollection getPermissions(CodeSource cs)
     {
         PermissionCollection permissions=_context.getPermissions();
-        PermissionCollection pc= (permissions == null) ? super.getPermissions(cs) : permissions;
-        return pc;
+        return (permissions == null) ? super.getPermissions(cs) : permissions;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public Enumeration<URL> getResources(String name) throws IOException
     {
@@ -336,7 +338,7 @@ public class WebAppClassLoader extends URLClassLoader
         boolean server_class=_context.isServerClass(name);
         
         List<URL> from_parent = toList(server_class?null:_parent.getResources(name));
-        List<URL> from_webapp = toList((system_class&&!from_parent.isEmpty())?null:this.findResources(name));
+        List<URL> from_webapp = toList((system_class&&!from_parent.isEmpty())?null:findResources(name));
             
         if (_context.isParentLoaderPriority())
         {
@@ -347,12 +349,13 @@ public class WebAppClassLoader extends URLClassLoader
         return Collections.enumeration(from_webapp);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     private List<URL> toList(Enumeration<URL> e)
     {
-        if (e==null)
-            return new ArrayList<URL>();
-        return Collections.list(e);
+        if (e!=null) {
+			return Collections.list(e);
+		}
+        return new ArrayList<URL>();
     }
     
     /* ------------------------------------------------------------ */
@@ -372,17 +375,20 @@ public class WebAppClassLoader extends URLClassLoader
         //If the resource is a class name with .class suffix, strip it off before comparison
         //as the server and system patterns are specified without a .class suffix
         String tmp = name;
-        if (tmp != null && tmp.endsWith(".class"))
-            tmp = tmp.substring(0, tmp.length()-6);
+        if (tmp != null && tmp.endsWith(".class")) {
+			tmp = tmp.substring(0, tmp.length()-6);
+		}
         
         boolean system_class=_context.isSystemClass(tmp);
         boolean server_class=_context.isServerClass(tmp);
         
-        if (LOG.isDebugEnabled())
-            LOG.debug("getResource({}) system={} server={} cl={}",name,system_class,server_class,this);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("getResource({}) system={} server={} cl={}",name,system_class,server_class,this);
+		}
         
-        if (system_class && server_class)
-            return null;
+        if (system_class && server_class) {
+			return null;
+		}
         
         ClassLoader source=null;
         
@@ -399,36 +405,34 @@ public class WebAppClassLoader extends URLClassLoader
 
         if (url == null)
         {
-            url= this.findResource(name);
+            url= findResource(name);
             source=this;
-            if (url == null && name.startsWith("/"))
-                url= this.findResource(name.substring(1));
+            if (url == null && name.startsWith("/")) {
+				url= findResource(name.substring(1));
+			}
         }
 
-        if (url == null && !tried_parent && !server_class )
-        {
-            if (_parent!=null)
-            {
-                tried_parent=true;
-                source=_parent;
-                url= _parent.getResource(name);
-            }
-        }
+        if (url == null && !tried_parent && !server_class && _parent!=null ) {
+		    tried_parent=true;
+		    source=_parent;
+		    url= _parent.getResource(name);
+		}
 
-        if (LOG.isDebugEnabled())
-            LOG.debug("gotResource({})=={} from={} tried_parent={}",name,url,source,tried_parent);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("gotResource({})=={} from={} tried_parent={}",name,url,source,tried_parent);
+		}
 
         return url;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public Class<?> loadClass(String name) throws ClassNotFoundException
     {
         return loadClass(name, false);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException
     {
@@ -441,8 +445,9 @@ public class WebAppClassLoader extends URLClassLoader
             boolean system_class=_context.isSystemClass(name);
             boolean server_class=_context.isServerClass(name);
 
-            if (LOG.isDebugEnabled())
-                LOG.debug("loadClass({}) system={} server={} cl={}",name,system_class,server_class,this);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("loadClass({}) system={} server={} cl={}",name,system_class,server_class,this);
+			}
             
             ClassLoader source=null;
             
@@ -458,8 +463,9 @@ public class WebAppClassLoader extends URLClassLoader
                 try
                 {
                     c= _parent.loadClass(name);
-                    if (LOG.isDebugEnabled())
-                        LOG.debug("loaded " + c);
+                    if (LOG.isDebugEnabled()) {
+						LOG.debug("loaded " + c);
+					}
                 }
                 catch (ClassNotFoundException e)
                 {
@@ -472,7 +478,7 @@ public class WebAppClassLoader extends URLClassLoader
                 try
                 {
                     source=this;
-                    c= this.findClass(name);
+                    c= findClass(name);
                 }
                 catch (ClassNotFoundException e)
                 {
@@ -493,11 +499,13 @@ public class WebAppClassLoader extends URLClassLoader
                 throw ex;
             }
 
-            if (LOG.isDebugEnabled())
-                LOG.debug("loadedClass({})=={} from={} tried_parent={}",name,c,source,tried_parent);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("loadedClass({})=={} from={} tried_parent={}",name,c,source,tried_parent);
+			}
             
-            if (resolve)
-                resolveClass(c);
+            if (resolve) {
+				resolveClass(c);
+			}
 
             return c;
         }
@@ -526,33 +534,34 @@ public class WebAppClassLoader extends URLClassLoader
         return _transformers.remove(transformer);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void addTransformer(ClassFileTransformer transformer)
     {
         _transformers.add(transformer);
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public boolean removeTransformer(ClassFileTransformer transformer)
     {
         return _transformers.remove(transformer);
     }
     
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     protected Class<?> findClass(final String name) throws ClassNotFoundException
     {
         Class<?> clazz=null;
 
-        if (_transformers.isEmpty())
-            clazz = super.findClass(name);
-        else
+        if (_transformers.isEmpty()) {
+			clazz = super.findClass(name);
+		} else
         {
             String path = name.replace('.', '/').concat(".class");
             URL url = getResource(path);
-            if (url==null)
-                throw new ClassNotFoundException(name);
+            if (url==null) {
+				throw new ClassNotFoundException(name);
+			}
 
             InputStream content=null;
             try
@@ -560,14 +569,16 @@ public class WebAppClassLoader extends URLClassLoader
                 content = url.openStream();
                 byte[] bytes = IO.readBytes(content);
 
-                if (LOG.isDebugEnabled())
-                    LOG.debug("foundClass({}) url={} cl={}",name,url,this);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("foundClass({}) url={} cl={}",name,url,this);
+				}
                 
                 for (ClassFileTransformer transformer : _transformers)
                 {
                     byte[] tmp = transformer.transform(this,name,null,null,bytes);
-                    if (tmp != null)
-                        bytes = tmp;
+                    if (tmp != null) {
+						bytes = tmp;
+					}
                 }
                 
                 clazz=defineClass(name,bytes,0,bytes.length);
@@ -606,7 +617,7 @@ public class WebAppClassLoader extends URLClassLoader
         super.close();
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public String toString()
     {

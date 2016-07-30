@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util.security;
 
@@ -75,49 +70,58 @@ public class Password extends Credential
         _pw = password;
 
         // expand password
-        while (_pw != null && _pw.startsWith(__OBFUSCATE))
-            _pw = deobfuscate(_pw);
+        while (_pw != null && _pw.startsWith(__OBFUSCATE)) {
+			_pw = deobfuscate(_pw);
+		}
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public String toString()
     {
         return _pw;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public String toStarString()
     {
         return "*****************************************************".substring(0, _pw.length());
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public boolean check(Object credentials)
     {
-        if (this == credentials) return true;
+        if (this == credentials) {
+			return true;
+		}
 
-        if (credentials instanceof Password) return credentials.equals(_pw);
+        if (credentials instanceof Password) {
+			return credentials.equals(_pw);
+		}
 
-        if (credentials instanceof String) return credentials.equals(_pw);
+        if (credentials instanceof String) {
+			return credentials.equals(_pw);
+		}
 
-        if (credentials instanceof char[]) return Arrays.equals(_pw.toCharArray(), (char[]) credentials);
+        if (credentials instanceof char[]) {
+			return Arrays.equals(_pw.toCharArray(), (char[]) credentials);
+		}
 
-        if (credentials instanceof Credential) return ((Credential) credentials).check(_pw);
-
-        return false;
+        return credentials instanceof Credential && ((Credential) credentials).check(_pw);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public boolean equals(Object o)
     {
-        if (this == o)
-            return true;
+        if (this == o) {
+			return true;
+		}
 
-        if (null == o)
-            return false;
+        if (null == o) {
+			return false;
+		}
 
         if (o instanceof Password)
         {
@@ -126,20 +130,17 @@ public class Password extends Credential
             return p._pw == _pw || (null != _pw && _pw.equals(p._pw));
         }
 
-        if (o instanceof String)
-            return o.equals(_pw);
-
-        return false;
+        return o instanceof String && o.equals(_pw);
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public int hashCode()
     {
         return null == _pw ? super.hashCode() : _pw.hashCode();
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public static String obfuscate(String s)
     {
         StringBuilder buf = new StringBuilder();
@@ -155,7 +156,6 @@ public class Password extends Credential
                 int i0 = (0xff&b1)*256 + (0xff&b2);
                 String x = Integer.toString(i0, 36).toLowerCase(Locale.ENGLISH);
                 buf.append("U0000",0,5-x.length());
-                buf.append(x);
             }
             else
             {
@@ -165,23 +165,25 @@ public class Password extends Credential
                 String x = Integer.toString(i0, 36).toLowerCase(Locale.ENGLISH);
 
                 int j0 = Integer.parseInt(x, 36);
-                int j1 = (i0 / 256);
-                int j2 = (i0 % 256);
+                int j1 = i0 / 256;
+                int j2 = i0 % 256;
                 byte bx = (byte) ((j1 + j2 - 254) / 2);
 
                 buf.append("000",0,4-x.length());
-                buf.append(x);
             }
+			buf.append(x);
 
         }
         return buf.toString();
 
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public static String deobfuscate(String s)
     {
-        if (s.startsWith(__OBFUSCATE)) s = s.substring(4);
+        if (s.startsWith(__OBFUSCATE)) {
+			s = s.substring(4);
+		}
 
         byte[] b = new byte[s.length() / 2];
         int l = 0;
@@ -193,17 +195,16 @@ public class Password extends Credential
                 String x = s.substring(i, i + 4);
                 int i0 = Integer.parseInt(x, 36);
                 byte bx = (byte)(i0>>8);
-                b[l++] = bx;
             }
             else
             {
                 String x = s.substring(i, i + 4);
                 int i0 = Integer.parseInt(x, 36);
-                int i1 = (i0 / 256);
-                int i2 = (i0 % 256);
+                int i1 = i0 / 256;
+                int i2 = i0 % 256;
                 byte bx = (byte) ((i1 + i2 - 254) / 2);
-                b[l++] = bx;
             }
+			b[l++] = bx;
         }
 
         return new String(b, 0, l,StandardCharsets.UTF_8);
@@ -235,13 +236,17 @@ public class Password extends Credential
                 System.out.flush();
                 byte[] buf = new byte[512];
                 int len = System.in.read(buf);
-                if (len > 0) passwd = new String(buf, 0, len).trim();
+                if (len > 0) {
+					passwd = new String(buf, 0, len).trim();
+				}
             }
             catch (IOException e)
             {
                 LOG.warn(Log.EXCEPTION, e);
             }
-            if (passwd == null || passwd.length() == 0) passwd = promptDft;
+            if (passwd == null || passwd.length() == 0) {
+				passwd = promptDft;
+			}
         }
         return new Password(passwd);
     }
@@ -259,6 +264,8 @@ public class Password extends Credential
         System.err.println(pw.toString());
         System.err.println(obfuscate(pw.toString()));
         System.err.println(Credential.MD5.digest(p));
-        if (arg.length == 2) System.err.println(Credential.Crypt.crypt(arg[0], pw.toString()));
+        if (arg.length == 2) {
+			System.err.println(Credential.Crypt.crypt(arg[0], pw.toString()));
+		}
     }
 }

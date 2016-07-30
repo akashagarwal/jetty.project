@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 
 package org.eclipse.jetty.util;
@@ -48,10 +43,7 @@ public class HostMap<TYPE> extends HashMap<String, TYPE>
         super (capacity);
     }
     
-    /* ------------------------------------------------------------ */
-    /**
-     * @see java.util.HashMap#put(java.lang.Object, java.lang.Object)
-     */
+    /** ------------------------------------------------------------. */
     @Override
     public TYPE put(String host, TYPE object)
         throws IllegalArgumentException
@@ -59,10 +51,7 @@ public class HostMap<TYPE> extends HashMap<String, TYPE>
         return super.put(host, object);
     }
         
-    /* ------------------------------------------------------------ */
-    /**
-     * @see java.util.HashMap#get(java.lang.Object)
-     */
+    /** ------------------------------------------------------------. */
     @Override
     public TYPE get(Object key)
     {
@@ -79,15 +68,17 @@ public class HostMap<TYPE> extends HashMap<String, TYPE>
      */
     public Object getLazyMatches(String host)
     {
-        if (host == null)
-            return LazyList.getList(super.entrySet());
+        if (host == null) {
+			return LazyList.getList(super.entrySet());
+		}
         
         int idx = 0;
         String domain = host.trim();
         HashSet<String> domains = new HashSet<String>();
         do {
             domains.add(domain);
-            if ((idx = domain.indexOf('.')) > 0)
+            idx = domain.indexOf('.');
+			if (idx > 0)
             {
                 domain = domain.substring(idx+1);
             }

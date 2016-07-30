@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.start;
 
@@ -61,7 +56,7 @@ public class StartArgs
         if (ver == null)
         {
             Package pkg = StartArgs.class.getPackage();
-            if ((pkg != null) && "Eclipse.org - Jetty".equals(pkg.getImplementationVendor()) && (pkg.getImplementationVersion() != null))
+            if (pkg != null && "Eclipse.org - Jetty".equals(pkg.getImplementationVendor()) && pkg.getImplementationVersion() != null)
             {
                 ver = pkg.getImplementationVersion();
                 if (tag == null)
@@ -113,28 +108,28 @@ public class StartArgs
 
     private static final String SERVER_MAIN = "org.eclipse.jetty.xml.XmlConfiguration";
 
-    /** List of enabled modules */
+    /** List of enabled modules. */
     private Set<String> modules = new HashSet<>();
 
-    /** List of modules to skip [files] section validation */
+    /** List of modules to skip [files] section validation. */
     private Set<String> skipFileValidationModules = new HashSet<>();
 
-    /** Map of enabled modules to the source of where that activation occurred */
+    /** Map of enabled modules to the source of where that activation occurred. */
     private Map<String, List<String>> sources = new HashMap<>();
 
-    /** Map of properties to where that property was declared */
+    /** Map of properties to where that property was declared. */
     private Map<String, String> propertySource = new HashMap<>();
 
-    /** List of all active [files] sections from enabled modules */
+    /** List of all active [files] sections from enabled modules. */
     private List<FileArg> files = new ArrayList<>();
 
-    /** List of all active [lib] sections from enabled modules */
+    /** List of all active [lib] sections from enabled modules. */
     private Classpath classpath;
 
-    /** List of all active [xml] sections from enabled modules */
+    /** List of all active [xml] sections from enabled modules. */
     private List<Path> xmls = new ArrayList<>();
 
-    /** JVM arguments, found via commmand line and in all active [exec] sections from enabled modules */
+    /** JVM arguments, found via commmand line and in all active [exec] sections from enabled modules. */
     private List<String> jvmArgs = new ArrayList<>();
 
     /** List of all xml references found directly on command line or start.ini */
@@ -143,7 +138,7 @@ public class StartArgs
     /** List of all property references found directly on command line or start.ini */
     private List<String> propertyFileRefs = new ArrayList<>();
 
-    /** List of all property files */
+    /** List of all property files. */
     private List<Path> propertyFiles = new ArrayList<>();
 
     private Props properties = new Props();
@@ -151,36 +146,36 @@ public class StartArgs
     private List<String> rawLibs = new ArrayList<>();
 
     // jetty.base - build out commands
-    /** --add-to-startd=[module,[module]] */
+    /** --add-to-startd=[module,[module]]. */
     private List<String> addToStartdIni = new ArrayList<>();
-    /** --add-to-start=[module,[module]] */
+    /** --add-to-start=[module,[module]]. */
     private List<String> addToStartIni = new ArrayList<>();
 
     // module inspection commands
-    /** --write-module-graph=[filename] */
+    /** --write-module-graph=[filename]. */
     private String moduleGraphFilename;
 
-    /** Collection of all modules */
+    /** Collection of all modules. */
     private Modules allModules;
     /** Should the server be run? */
     private boolean run = true;
 
-    /** Download related args */
-    private boolean download = false;
-    private boolean licenseCheckRequired = false;
-    private boolean testingMode = false;
+    /** Download related args. */
+    private boolean download;
+    private boolean licenseCheckRequired;
+    private boolean testingMode;
 
-    private boolean help = false;
-    private boolean stopCommand = false;
-    private boolean listModules = false;
-    private boolean listClasspath = false;
-    private boolean listConfig = false;
-    private boolean version = false;
-    private boolean dryRun = false;
+    private boolean help;
+    private boolean stopCommand;
+    private boolean listModules;
+    private boolean listClasspath;
+    private boolean listConfig;
+    private boolean version;
+    private boolean dryRun;
 
-    private boolean exec = false;
+    private boolean exec;
     private String exec_properties;
-    private boolean approveAllLicenses = false;
+    private boolean approveAllLicenses;
 
     public StartArgs()
     {
@@ -334,7 +329,7 @@ public class StartArgs
         List<String> sortedKeys = new ArrayList<>();
         for (Prop prop : properties)
         {
-            if (prop.origin.equals(Props.ORIGIN_SYSPROP))
+            if (Props.ORIGIN_SYSPROP.equals(prop.origin))
             {
                 continue; // skip
             }
@@ -391,8 +386,7 @@ public class StartArgs
             return;
         }
 
-        List<String> sortedKeys = new ArrayList<>();
-        sortedKeys.addAll(systemPropertyKeys);
+        List<String> sortedKeys = new ArrayList<String>(systemPropertyKeys);
         Collections.sort(sortedKeys);
 
         for (String key : sortedKeys)
@@ -585,8 +579,9 @@ public class StartArgs
         // pass properties as args or as a file
         if (dryRun && exec_properties==null)
         {
-            for (Prop p : properties)
-                cmd.addRawArg(CommandLineBuilder.quote(p.key) + "=" + CommandLineBuilder.quote(p.value));
+            for (Prop p : properties) {
+				cmd.addRawArg(CommandLineBuilder.quote(p.key) + "=" + CommandLineBuilder.quote(p.value));
+			}
         }
         else if (properties.size() > 0)
         {
@@ -595,9 +590,9 @@ public class StartArgs
             {
                 prop_path=Files.createTempFile("start_", ".properties");
                 prop_path.toFile().deleteOnExit();
-            }
-            else
-                prop_path=new File(exec_properties).toPath();
+            } else {
+				prop_path=new File(exec_properties).toPath();
+			}
                 
             try (OutputStream out = Files.newOutputStream(prop_path))
             {
@@ -870,7 +865,7 @@ public class StartArgs
             return;
         }
 
-        if (arg.equals("--create-files"))
+        if ("--create-files".equals(arg))
         {
             run = false;
             download = true;
@@ -910,8 +905,9 @@ public class StartArgs
         if (arg.startsWith("--exec-properties="))
         {
             exec_properties=Props.getValue(arg);
-            if (!exec_properties.endsWith(".properties"))
-                throw new UsageException(ERR_BAD_ARG,"--exec-properties filename must have .properties suffix: %s",exec_properties);
+            if (!exec_properties.endsWith(".properties")) {
+				throw new UsageException(ERR_BAD_ARG,"--exec-properties filename must have .properties suffix: %s",exec_properties);
+			}
             return;
         }
 
@@ -980,10 +976,7 @@ public class StartArgs
         if (arg.startsWith("--skip-file-validation="))
         {
             List<String> moduleNames = Props.getValues(arg);
-            for (String moduleName : moduleNames)
-            {
-                skipFileValidationModules.add(moduleName);
-            }
+            skipFileValidationModules.addAll(moduleNames);
             return;
         }
 
@@ -1147,23 +1140,23 @@ public class StartArgs
     public void setProperty(String key, String value, String source, boolean replaceProp)
     {
         // Special / Prevent override from start.ini's
-        if (key.equals("jetty.home"))
+        if ("jetty.home".equals(key))
         {
             properties.setProperty("jetty.home",System.getProperty("jetty.home"),source);
             return;
         }
 
         // Special / Prevent override from start.ini's
-        if (key.equals("jetty.base"))
+        if ("jetty.base".equals(key))
         {
             properties.setProperty("jetty.base",System.getProperty("jetty.base"),source);
             return;
         }
 
-        if (replaceProp || (!properties.containsKey(key)))
+        if (replaceProp || !properties.containsKey(key))
         {
             properties.setProperty(key,value,source);
-            if(key.equals("java.version"))
+            if("java.version".equals(key))
             {
                 Version ver = new Version(value);
 

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 
@@ -46,15 +41,15 @@ import org.eclipse.jetty.util.log.Logger;
 public class ResponseWriter extends PrintWriter
 {
     private static final Logger LOG = Log.getLogger(ResponseWriter.class);
-    private final static String __lineSeparator = System.getProperty("line.separator");
-    private final static String __trueln = "true"+__lineSeparator;
-    private final static String __falseln = "false"+__lineSeparator;
+    private static final String __lineSeparator = System.getProperty("line.separator");
+    private static final String __trueln = "true"+__lineSeparator;
+    private static final String __falseln = "false"+__lineSeparator;
     
     private final HttpWriter _httpWriter;
     private final Locale _locale;
     private final String _encoding;
     private IOException _ioException;
-    private boolean _isClosed = false;
+    private boolean _isClosed;
     private Formatter _formatter;
 
     public ResponseWriter(HttpWriter httpWriter,Locale locale,String encoding)
@@ -67,11 +62,7 @@ public class ResponseWriter extends PrintWriter
 
     public boolean isFor(Locale locale, String encoding)
     {
-        if (_locale==null && locale!=null)
-            return false;
-        if (_encoding==null && encoding!=null)
-            return false;
-        return _encoding.equalsIgnoreCase(encoding) && _locale.equals(locale);
+        return (_locale != null || locale == null) && (_encoding != null || encoding == null) && _encoding.equalsIgnoreCase(encoding) && _locale.equals(locale);
     }
 
     protected void reopen()
@@ -107,16 +98,17 @@ public class ResponseWriter extends PrintWriter
     {
         super.setError();
 
-        if (th instanceof IOException)
-            _ioException=(IOException)th;
-        else
+        if (th instanceof IOException) {
+			_ioException=(IOException)th;
+		} else
         {
             _ioException=new IOException(String.valueOf(th));
             _ioException.initCause(th);
         }
 
-        if (LOG.isDebugEnabled())
-            LOG.debug(th);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug(th);
+		}
     }
 
 
@@ -126,14 +118,16 @@ public class ResponseWriter extends PrintWriter
         setError(new IOException());
     }
 
-    /** Check to make sure that the stream has not been closed */
+    /** Check to make sure that the stream has not been closed. */
     private void isOpen() throws IOException
     {       
-        if (_ioException!=null)
-            throw new RuntimeIOException(_ioException); 
+        if (_ioException!=null) {
+			throw new RuntimeIOException(_ioException);
+		} 
         
-        if (_isClosed)
-            throw new EofException("Stream closed");
+        if (_isClosed) {
+			throw new EofException("Stream closed");
+		}
     }
 
     @Override
@@ -217,7 +211,7 @@ public class ResponseWriter extends PrintWriter
     @Override
     public void write(char buf[])
     { 
-        this.write(buf,0,buf.length);
+        write(buf,0,buf.length);
     }
 
     @Override
@@ -245,63 +239,64 @@ public class ResponseWriter extends PrintWriter
     @Override
     public void write(String s)
     {
-        this.write(s,0,s.length());
+        write(s,0,s.length());
     }
 
     @Override
     public void print(boolean b)
     {
-        this.write(b?"true":"false");
+        write(b?"true":"false");
     }
     
     @Override
     public void print(char c)
     {
-        this.write(c);
+        write(c);
     }
 
     @Override
     public void print(int i)
     {
-        this.write(String.valueOf(i));
+        write(String.valueOf(i));
     }
 
     @Override
     public void print(long l)
     {
-        this.write(String.valueOf(l));
+        write(String.valueOf(l));
     }
 
     @Override
     public void print(float f)
     {
-        this.write(String.valueOf(f));
+        write(String.valueOf(f));
     }
 
     @Override
     public void print(double d)
     {
-        this.write(String.valueOf(d));
+        write(String.valueOf(d));
     }
 
     @Override
     public void print(char s[])
     {
-        this.write(s);
+        write(s);
     }
 
     @Override
     public void print(String s)
     {
-        if (s == null)
-            s = "null";
-        this.write(s);
+        if (s == null) {
+			s = "null";
+		}
+        write(s);
     }
 
     @Override
     public void print(Object obj)
     {
-        this.write(String.valueOf(obj));
+        write(String.valueOf(obj));
     }
 
     @Override
@@ -357,25 +352,25 @@ public class ResponseWriter extends PrintWriter
     @Override
     public void println(int x)
     {
-        this.println(String.valueOf(x));
+        println(String.valueOf(x));
     }
 
     @Override
     public void println(long x)
     {
-        this.println(String.valueOf(x));
+        println(String.valueOf(x));
     }
     
     @Override
     public void println(float x)
     {
-        this.println(String.valueOf(x));
+        println(String.valueOf(x));
     }
 
     @Override
     public void println(double x)
     {
-        this.println(String.valueOf(x));
+        println(String.valueOf(x));
     }
 
     @Override
@@ -404,8 +399,9 @@ public class ResponseWriter extends PrintWriter
     @Override
     public void println(String s)
     {
-        if (s == null)
-            s = "null";
+        if (s == null) {
+			s = "null";
+		}
         
         try
         {
@@ -430,7 +426,7 @@ public class ResponseWriter extends PrintWriter
     @Override
     public void println(Object x)
     {
-        this.println(String.valueOf(x));
+        println(String.valueOf(x));
     }
 
     @Override
@@ -459,8 +455,9 @@ public class ResponseWriter extends PrintWriter
             synchronized (lock) 
             {
                 isOpen();
-                if ((_formatter == null) || (_formatter.locale() != l))
-                    _formatter = new Formatter(this, l);
+                if (_formatter == null || _formatter.locale() != l) {
+					_formatter = new Formatter(this, l);
+				}
                 _formatter.format(l, format, args);
             }
         } 

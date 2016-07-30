@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http2.server;
 
@@ -69,8 +64,9 @@ public class HttpTransportOverHTTP2 implements HttpTransport
 
     public void setStream(IStream stream)
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("{} setStream {}", this, stream.getId());
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("{} setStream {}", this, stream.getId());
+		}
         this.stream = stream;
     }
 
@@ -112,18 +108,14 @@ public class HttpTransportOverHTTP2 implements HttpTransport
             {
                 callback.failed(new IllegalStateException("committed"));
             }
-        }
-        else
-        {
-            if (hasContent || lastContent)
-            {
-                send(content, lastContent, callback);
-            }
-            else
-            {
-                callback.succeeded();
-            }
-        }
+        } else if (hasContent || lastContent)
+		{
+		    send(content, lastContent, callback);
+		}
+		else
+		{
+		    callback.succeeded();
+		}
     }
 
     @Override
@@ -137,13 +129,15 @@ public class HttpTransportOverHTTP2 implements HttpTransport
     {
         if (!stream.getSession().isPushEnabled())
         {
-            if (LOG.isDebugEnabled())
-                LOG.debug("HTTP/2 Push disabled for {}", request);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("HTTP/2 Push disabled for {}", request);
+			}
             return;
         }
 
-        if (LOG.isDebugEnabled())
-            LOG.debug("HTTP/2 Push {}",request);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("HTTP/2 Push {}",request);
+		}
 
         stream.push(new PushPromiseFrame(stream.getId(), 0, request), new Promise<Stream>()
         {
@@ -156,8 +150,9 @@ public class HttpTransportOverHTTP2 implements HttpTransport
             @Override
             public void failed(Throwable x)
             {
-                if (LOG.isDebugEnabled())
-                    LOG.debug("Could not push " + request, x);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("Could not push " + request, x);
+				}
             }
         }, new Stream.Listener.Adapter()); // TODO: handle reset from the client ?
     }
@@ -193,8 +188,9 @@ public class HttpTransportOverHTTP2 implements HttpTransport
         // Send a reset to the other end so that it stops sending data.
         if (!stream.isClosed())
         {
-            if (LOG.isDebugEnabled())
-                LOG.debug("HTTP2 Response #{}: unconsumed request content, resetting stream", stream.getId());
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("HTTP2 Response #{}: unconsumed request content, resetting stream", stream.getId());
+			}
             stream.reset(new ResetFrame(stream.getId(), ErrorCode.CANCEL_STREAM_ERROR.code), Callback.NOOP);
         }
 
@@ -208,10 +204,12 @@ public class HttpTransportOverHTTP2 implements HttpTransport
     public void abort(Throwable failure)
     {
         IStream stream = this.stream;
-        if (LOG.isDebugEnabled())
-            LOG.debug("HTTP2 Response #{} aborted", stream == null ? -1 : stream.getId());
-        if (stream != null)
-            stream.reset(new ResetFrame(stream.getId(), ErrorCode.INTERNAL_ERROR.code), Callback.NOOP);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("HTTP2 Response #{} aborted", stream == null ? -1 : stream.getId());
+		}
+        if (stream != null) {
+			stream.reset(new ResetFrame(stream.getId(), ErrorCode.INTERNAL_ERROR.code), Callback.NOOP);
+		}
     }
 
     private class CommitCallback implements Callback.NonBlocking
@@ -219,15 +217,17 @@ public class HttpTransportOverHTTP2 implements HttpTransport
         @Override
         public void succeeded()
         {
-            if (LOG.isDebugEnabled())
-                LOG.debug("HTTP2 Response #{} committed", stream.getId());
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("HTTP2 Response #{} committed", stream.getId());
+			}
         }
 
         @Override
         public void failed(Throwable x)
         {
-            if (LOG.isDebugEnabled())
-                LOG.debug("HTTP2 Response #" + stream.getId() + " failed to commit", x);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("HTTP2 Response #" + stream.getId() + " failed to commit", x);
+			}
         }
     }
 }

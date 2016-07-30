@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server.handler;
 
@@ -52,10 +47,7 @@ public class DebugHandler extends HandlerWrapper implements Connection.Listener
     private OutputStream _out;
     private PrintStream _print;
 
-    /* ------------------------------------------------------------ */
-    /*
-     * @see org.eclipse.jetty.server.Handler#handle(java.lang.String, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, int)
-     */
+    /** ------------------------------------------------------------. */
     @Override
     public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException
@@ -67,18 +59,20 @@ public class DebugHandler extends HandlerWrapper implements Connection.Listener
         boolean suspend=false;
         boolean retry=false;
         String name=(String)request.getAttribute("org.eclipse.jetty.thread.name");
-        if (name == null)
-            name = old_name + ":" + baseRequest.getHttpURI();
-        else
-            retry=true;
+        if (name != null) {
+			retry=true;
+		} else {
+			name = old_name + ":" + baseRequest.getHttpURI();
+		}
 
         String ex=null;
         try
         {
-            if (retry)
-                print(name,"RESUME");
-            else
-                print(name,"REQUEST "+baseRequest.getRemoteAddr()+" "+request.getMethod()+" "+baseRequest.getHeader("Cookie")+"; "+baseRequest.getHeader("User-Agent"));
+            if (retry) {
+				print(name,"RESUME");
+			} else {
+				print(name,"REQUEST "+baseRequest.getRemoteAddr()+" "+request.getMethod()+" "+baseRequest.getHeader("Cookie")+"; "+baseRequest.getHeader("User-Agent"));
+			}
             thread.setName(name);
 
             getHandler().handle(target,baseRequest,request,response);
@@ -90,7 +84,7 @@ public class DebugHandler extends HandlerWrapper implements Connection.Listener
         }
         catch(ServletException se)
         {
-            ex=se.toString()+":"+se.getCause();
+            ex=se+":"+se.getCause();
             throw se;
         }
         catch(RuntimeException rte)
@@ -111,9 +105,9 @@ public class DebugHandler extends HandlerWrapper implements Connection.Listener
             {
                 request.setAttribute("org.eclipse.jetty.thread.name",name);
                 print(name,"SUSPEND");
-            }
-            else
-                print(name,"RESPONSE "+base_response.getStatus()+(ex==null?"":("/"+ex))+" "+base_response.getContentType());
+            } else {
+				print(name,"RESPONSE "+base_response.getStatus()+(ex==null?"":("/"+ex))+" "+base_response.getContentType());
+			}
         }
     }
     
@@ -126,24 +120,27 @@ public class DebugHandler extends HandlerWrapper implements Connection.Listener
         _print.println(d+(ms>99?".":(ms>9?".0":".00"))+ms+":"+name+" "+message);
     }
 
-    /* (non-Javadoc)
+    /** (non-Javadoc)
      * @see org.eclipse.jetty.server.handler.HandlerWrapper#doStart()
      */
     @Override
     protected void doStart() throws Exception
     {
-        if (_out==null)
-            _out=new RolloverFileOutputStream("./logs/yyyy_mm_dd.debug.log",true);
+        if (_out==null) {
+			_out=new RolloverFileOutputStream("./logs/yyyy_mm_dd.debug.log",true);
+		}
         _print=new PrintStream(_out);
         
-        for (Connector connector : getServer().getConnectors())
-            if (connector instanceof AbstractConnector)
-                ((AbstractConnector)connector).addBean(this,false);
+        for (Connector connector : getServer().getConnectors()) {
+			if (connector instanceof AbstractConnector) {
+				((AbstractConnector)connector).addBean(this,false);
+			}
+		}
             
         super.doStart();
     }
 
-    /* (non-Javadoc)
+    /** (non-Javadoc)
      * @see org.eclipse.jetty.server.handler.HandlerWrapper#doStop()
      */
     @Override
@@ -151,9 +148,11 @@ public class DebugHandler extends HandlerWrapper implements Connection.Listener
     {
         super.doStop();
         _print.close();
-        for (Connector connector : getServer().getConnectors())
-            if (connector instanceof AbstractConnector)
-                ((AbstractConnector)connector).removeBean(this);
+        for (Connector connector : getServer().getConnectors()) {
+			if (connector instanceof AbstractConnector) {
+				((AbstractConnector)connector).removeBean(this);
+			}
+		}
     }
 
     /**
@@ -175,13 +174,13 @@ public class DebugHandler extends HandlerWrapper implements Connection.Listener
     @Override
     public void onOpened(Connection connection)
     {
-        print(Thread.currentThread().getName(),"OPENED "+connection.toString());
+        print(Thread.currentThread().getName(),"OPENED "+connection);
     }
 
     @Override
     public void onClosed(Connection connection)
     {
-        print(Thread.currentThread().getName(),"CLOSED "+connection.toString());
+        print(Thread.currentThread().getName(),"CLOSED "+connection);
     }
 
 }

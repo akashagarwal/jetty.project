@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.client;
 
@@ -142,10 +137,12 @@ public class HttpClientContinueTest extends AbstractHttpClientServerTest
 
         int index = 0;
         byte[] responseContent = response.getContent();
-        for (byte b : content1)
-            Assert.assertEquals(b, responseContent[index++]);
-        for (byte b : content2)
-            Assert.assertEquals(b, responseContent[index++]);
+        for (byte b : content1) {
+			Assert.assertEquals(b, responseContent[index++]);
+		}
+        for (byte b : content2) {
+			Assert.assertEquals(b, responseContent[index++]);
+		}
     }
 
     @Test
@@ -678,33 +675,24 @@ public class HttpClientContinueTest extends AbstractHttpClientServerTest
                 while (true)
                 {
                     int read = input.read();
-                    if (read == '\r' || read == '\n')
-                        ++crlfs;
-                    else
-                        crlfs = 0;
-                    if (crlfs == 4)
-                        break;
+                    if (read == '\r' || read == '\n') {
+						++crlfs;
+					} else {
+						crlfs = 0;
+					}
+                    if (crlfs == 4) {
+						break;
+					}
                 }
 
                 OutputStream output = socket.getOutputStream();
-                String responses = "" +
-                        "HTTP/1.1 100 Continue\r\n" +
-                        "\r\n" +
-                        "HTTP/1.1 200 OK\r\n" +
-                        "Transfer-Encoding: chunked\r\n" +
-                        "\r\n" +
-                        "10\r\n" +
-                        "0123456789ABCDEF\r\n";
+                String responses = "HTTP/1.1 100 Continue\r\n" + "\r\n" + "HTTP/1.1 200 OK\r\n" + "Transfer-Encoding: chunked\r\n" + "\r\n" + "10\r\n" + "0123456789ABCDEF\r\n";
                 output.write(responses.getBytes(StandardCharsets.UTF_8));
                 output.flush();
 
                 Thread.sleep(1000);
 
-                String content = "" +
-                        "10\r\n" +
-                        "0123456789ABCDEF\r\n" +
-                        "0\r\n" +
-                        "\r\n";
+                String content = "10\r\n" + "0123456789ABCDEF\r\n" + "0\r\n" + "\r\n";
                 output.write(content.getBytes(StandardCharsets.UTF_8));
                 output.flush();
 

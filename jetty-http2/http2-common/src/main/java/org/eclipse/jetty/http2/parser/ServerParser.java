@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.http2.parser;
 
@@ -58,8 +53,9 @@ public class ServerParser extends Parser
      */
     public void directUpgrade()
     {
-        if (state != State.PREFACE)
-            throw new IllegalStateException();
+        if (state != State.PREFACE) {
+			throw new IllegalStateException();
+		}
         prefaceParser.directUpgrade();
     }
 
@@ -68,8 +64,9 @@ public class ServerParser extends Parser
      */
     public void standardUpgrade()
     {
-        if (state != State.PREFACE)
-            throw new IllegalStateException();
+        if (state != State.PREFACE) {
+			throw new IllegalStateException();
+		}
         notifyPreface = false;
     }
 
@@ -78,8 +75,9 @@ public class ServerParser extends Parser
     {
         try
         {
-            if (LOG.isDebugEnabled())
-                LOG.debug("Parsing {}", buffer);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("Parsing {}", buffer);
+			}
 
             while (true)
             {
@@ -87,25 +85,29 @@ public class ServerParser extends Parser
                 {
                     case PREFACE:
                     {
-                        if (!prefaceParser.parse(buffer))
-                            return;
-                        if (notifyPreface)
-                            onPreface();
+                        if (!prefaceParser.parse(buffer)) {
+							return;
+						}
+                        if (notifyPreface) {
+							onPreface();
+						}
                         state = State.SETTINGS;
                         break;
                     }
                     case SETTINGS:
                     {
-                        if (!parseHeader(buffer))
-                            return;
+                        if (!parseHeader(buffer)) {
+							return;
+						}
                         if (getFrameType() != FrameType.SETTINGS.getType() || hasFlag(Flags.ACK))
                         {
                             BufferUtil.clear(buffer);
                             notifyConnectionFailure(ErrorCode.PROTOCOL_ERROR.code, "invalid_preface");
                             return;
                         }
-                        if (!parseBody(buffer))
-                            return;
+                        if (!parseBody(buffer)) {
+							return;
+						}
                         state = State.FRAMES;
                         break;
                     }
@@ -149,7 +151,7 @@ public class ServerParser extends Parser
 
     public interface Listener extends Parser.Listener
     {
-        public void onPreface();
+        void onPreface();
 
         public static class Adapter extends Parser.Listener.Adapter implements Listener
         {

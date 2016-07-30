@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.monitor.triggers;
 
@@ -40,7 +35,7 @@ public class AggregateEventTrigger extends EventTrigger
 
     /* ------------------------------------------------------------ */
     /**
-     * Construct an event trigger
+     * Construct an event trigger.
      */
     public AggregateEventTrigger()
     {
@@ -50,7 +45,7 @@ public class AggregateEventTrigger extends EventTrigger
     /* ------------------------------------------------------------ */
     /**
      * Construct an event trigger and associate the list 
-     * of event triggers to be aggregated by this trigger
+     * of event triggers to be aggregated by this trigger.
      * 
      * @param triggers list of event triggers to add
      */
@@ -62,7 +57,7 @@ public class AggregateEventTrigger extends EventTrigger
     /* ------------------------------------------------------------ */
     /**
      * Construct an event trigger and associate the array 
-     * of event triggers to be aggregated by this trigger
+     * of event triggers to be aggregated by this trigger.
      * 
      * @param triggers list of event triggers to add
      */
@@ -71,19 +66,19 @@ public class AggregateEventTrigger extends EventTrigger
         _triggers = Arrays.asList(triggers);
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void add(EventTrigger trigger)
     {
         _triggers.add(trigger);
     }
     
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void addAll(List<EventTrigger> triggers)
     {
         _triggers.addAll(triggers);
     }
         
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void addAll(EventTrigger... triggers)
     {
         _triggers.addAll(Arrays.asList(triggers));
@@ -117,10 +112,7 @@ public class AggregateEventTrigger extends EventTrigger
         return state;
     }
 
-    /* ------------------------------------------------------------ */
-    /**
-     * @see org.eclipse.jetty.monitor.jmx.EventTrigger#match(long)
-     */
+    /** ------------------------------------------------------------. */
     @Override
     public boolean match(long timestamp) throws Exception
     {

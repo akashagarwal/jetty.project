@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server.handler;
 
@@ -224,10 +219,11 @@ public class ContextHandlerCollectionTest
             
             String response=connector.getResponses("GET / HTTP/1.0\n" + "Host: "+host+"\nConnection:close\n\n");
             // System.err.println(response);
-            if(succeed)
-                assertTrue("'"+host+"' should have been handled.",handler.isHandled());
-            else
-                assertFalse("'"+host + "' should not have been handled.", handler.isHandled());
+            if(succeed) {
+				assertTrue("'"+host+"' should have been handled.",handler.isHandled());
+			} else {
+				assertFalse("'"+host + "' should not have been handled.", handler.isHandled());
+			}
             handler.reset();
         }
 
@@ -404,10 +400,11 @@ public class ContextHandlerCollectionTest
         @Override
         public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
         {
-            if (response.containsHeader("Wrapped"))
-                response.setHeader("Wrapped", "ASYNC");
-            else
-                response.setHeader("Wrapped", "TRUE");
+            if (response.containsHeader("Wrapped")) {
+				response.setHeader("Wrapped", "ASYNC");
+			} else {
+				response.setHeader("Wrapped", "TRUE");
+			}
             super.handle(target, baseRequest, request, response);
         }   
     }

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 
@@ -210,11 +205,7 @@ public class ConnectionOpenCloseTest extends AbstractHttpTest
         Socket socket = sslContextFactory.getSslContext().getSocketFactory().createSocket("localhost", connector.getLocalPort());
         socket.setSoTimeout((int)connector.getIdleTimeout());
         OutputStream output = socket.getOutputStream();
-        output.write(("" +
-                "GET / HTTP/1.1\r\n" +
-                "Host: localhost:" + connector.getLocalPort() + "\r\n" +
-                "Connection: close\r\n" +
-                "\r\n").getBytes(StandardCharsets.UTF_8));
+        output.write(("GET / HTTP/1.1\r\n" + "Host: localhost:" + connector.getLocalPort() + "\r\n" + "Connection: close\r\n" + "\r\n").getBytes(StandardCharsets.UTF_8));
         output.flush();
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util.thread.strategy;
 
@@ -71,8 +66,9 @@ public class ExecuteProduceConsume extends ExecutingExecutionStrategy implements
     @Override
     public void execute()
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("{} execute", this);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("{} execute", this);
+		}
 
         boolean produce = false;
         try (Lock locked = _locker.lock())
@@ -80,8 +76,9 @@ public class ExecuteProduceConsume extends ExecutingExecutionStrategy implements
             // If we are idle and a thread is not producing
             if (_idle)
             {
-                if (_producing)
-                    throw new IllegalStateException();
+                if (_producing) {
+					throw new IllegalStateException();
+				}
 
                 // Then this thread will do the producing
                 produce = _producing = true;
@@ -96,32 +93,37 @@ public class ExecuteProduceConsume extends ExecutingExecutionStrategy implements
             }
         }
 
-        if (produce)
-            produceConsume();
+        if (produce) {
+			produceConsume();
+		}
     }
 
     @Override
     public void dispatch()
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("{} spawning", this);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("{} spawning", this);
+		}
         boolean dispatch = false;
         try (Lock locked = _locker.lock())
         {
-            if (_idle)
-                dispatch = true;
-            else
-                _execute = true;
+            if (_idle) {
+				dispatch = true;
+			} else {
+				_execute = true;
+			}
         }
-        if (dispatch)
-            execute(_runExecute);
+        if (dispatch) {
+			execute(_runExecute);
+		}
     }
 
     @Override
     public void run()
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("{} run", this);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("{} run", this);
+		}
         boolean produce = false;
         try (Lock locked = _locker.lock())
         {
@@ -132,19 +134,16 @@ public class ExecuteProduceConsume extends ExecutingExecutionStrategy implements
             }
         }
 
-        if (produce)
-            produceConsume();
+        if (produce) {
+			produceConsume();
+		}
     }
 
     private void produceConsume()
     {
-        if (_threadPool != null && _threadPool.isLowOnThreads())
-        {
-            // If we are low on threads we must not produce and consume
-            // in the same thread, but produce and execute to consume.
-            if (!produceExecuteConsume())
-                return;
-        }
+        if (_threadPool != null && _threadPool.isLowOnThreads() && !produceExecuteConsume()) {
+			return;
+		}
         executeProduceConsume();
     }
 
@@ -158,8 +157,9 @@ public class ExecuteProduceConsume extends ExecutingExecutionStrategy implements
      */
     private boolean produceExecuteConsume()
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("{} enter low threads mode", this);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("{} enter low threads mode", this);
+		}
         _lowThreads = true;
         try
         {
@@ -167,8 +167,9 @@ public class ExecuteProduceConsume extends ExecutingExecutionStrategy implements
             while (_threadPool.isLowOnThreads())
             {
                 Runnable task = _producer.produce();
-                if (LOG.isDebugEnabled())
-                    LOG.debug("{} produced {}", _producer, task);
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("{} produced {}", _producer, task);
+				}
 
                 if (task == null)
                 {
@@ -197,8 +198,9 @@ public class ExecuteProduceConsume extends ExecutingExecutionStrategy implements
         finally
         {
             _lowThreads = false;
-            if (LOG.isDebugEnabled())
-                LOG.debug("{} exit low threads mode", this);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("{} exit low threads mode", this);
+			}
         }
     }
 
@@ -221,8 +223,9 @@ public class ExecuteProduceConsume extends ExecutingExecutionStrategy implements
             try
             {
                 ((Rejectable)task).reject();
-                if (task instanceof Closeable)
-                    ((Closeable)task).close();
+                if (task instanceof Closeable) {
+					((Closeable)task).close();
+				}
             }
             catch (Throwable x)
             {
@@ -237,19 +240,22 @@ public class ExecuteProduceConsume extends ExecutingExecutionStrategy implements
 
     private void executeProduceConsume()
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("{} produce enter", this);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("{} produce enter", this);
+		}
 
         while (true)
         {
             // If we got here, then we are the thread that is producing.
-            if (LOG.isDebugEnabled())
-                LOG.debug("{} producing", this);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("{} producing", this);
+			}
 
             Runnable task = _producer.produce();
 
-            if (LOG.isDebugEnabled())
-                LOG.debug("{} produced {}", this, task);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("{} produced {}", this, task);
+			}
 
             boolean dispatch = false;
             try (Lock locked = _locker.lock())
@@ -290,32 +296,39 @@ public class ExecuteProduceConsume extends ExecutingExecutionStrategy implements
             if (dispatch)
             {
                 // Spawn a new thread to continue production by running the produce loop.
-                if (LOG.isDebugEnabled())
-                    LOG.debug("{} dispatch", this);
-                if (!execute(this))
-                    task = null;
+                if (LOG.isDebugEnabled()) {
+					LOG.debug("{} dispatch", this);
+				}
+                if (!execute(this)) {
+					task = null;
+				}
             }
 
             // Run the task.
-            if (LOG.isDebugEnabled())
-                LOG.debug("{} run {}", this, task);
-            if (task != null)
-                task.run();
-            if (LOG.isDebugEnabled())
-                LOG.debug("{} ran {}", this, task);
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("{} run {}", this, task);
+			}
+            if (task != null) {
+				task.run();
+			}
+            if (LOG.isDebugEnabled()) {
+				LOG.debug("{} ran {}", this, task);
+			}
 
             // Once we have run the task, we can try producing again.
             try (Lock locked = _locker.lock())
             {
                 // Is another thread already producing or we are now idle?
-                if (_producing || _idle)
-                    break;
+                if (_producing || _idle) {
+					break;
+				}
                 _producing = true;
             }
         }
 
-        if (LOG.isDebugEnabled())
-            LOG.debug("{} produce exit", this);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("{} produce exit", this);
+		}
     }
 
     public Boolean isIdle()

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.client;
 
@@ -104,11 +99,7 @@ public class Socks4ProxyTest
         Assert.assertEquals(method + " " + path, StandardCharsets.UTF_8.decode(buffer).toString());
 
         // Response
-        String response = "" +
-                "HTTP/1.1 200 OK\r\n" +
-                "Content-Length: 0\r\n" +
-                "Connection: close\r\n" +
-                "\r\n";
+        String response = "HTTP/1.1 200 OK\r\n" + "Content-Length: 0\r\n" + "Connection: close\r\n" + "\r\n";
         channel.write(ByteBuffer.wrap(response.getBytes("UTF-8")));
 
         Assert.assertTrue(latch.await(5, TimeUnit.SECONDS));
@@ -163,11 +154,7 @@ public class Socks4ProxyTest
         Assert.assertEquals(method, StandardCharsets.UTF_8.decode(buffer).toString());
 
         // Response
-        String response = "" +
-                "HTTP/1.1 200 OK\r\n" +
-                "Content-Length: 0\r\n" +
-                "Connection: close\r\n" +
-                "\r\n";
+        String response = "HTTP/1.1 200 OK\r\n" + "Content-Length: 0\r\n" + "Connection: close\r\n" + "\r\n";
         channel.write(ByteBuffer.wrap(response.getBytes("UTF-8")));
 
         Assert.assertTrue(latch.await(5, TimeUnit.SECONDS));

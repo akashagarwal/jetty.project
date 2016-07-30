@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 
 package org.eclipse.jetty.security.authentication;
@@ -45,7 +40,7 @@ public class SessionAuthentication extends AbstractUserAuthentication implements
 
 
 
-    public final static String __J_AUTHENTICATED="org.eclipse.jetty.security.UserIdentity";
+    public static final String __J_AUTHENTICATED="org.eclipse.jetty.security.UserIdentity";
 
     private final String _name;
     private final Object _credentials;
@@ -65,11 +60,13 @@ public class SessionAuthentication extends AbstractUserAuthentication implements
         stream.defaultReadObject();
 
         SecurityHandler security=SecurityHandler.getCurrentSecurityHandler();
-        if (security==null)
-            throw new IllegalStateException("!SecurityHandler");
+        if (security==null) {
+			throw new IllegalStateException("!SecurityHandler");
+		}
         LoginService login_service=security.getLoginService();
-        if (login_service==null)
-            throw new IllegalStateException("!LoginService");
+        if (login_service==null) {
+			throw new IllegalStateException("!LoginService");
+		}
 
         _userIdentity=login_service.login(_name,_credentials, null);
         LOG.debug("Deserialized and relogged in {}",this);
@@ -77,8 +74,9 @@ public class SessionAuthentication extends AbstractUserAuthentication implements
 
     public void logout()
     {
-        if (_session!=null && _session.getAttribute(__J_AUTHENTICATED)!=null)
-            _session.removeAttribute(__J_AUTHENTICATED);
+        if (_session!=null && _session.getAttribute(__J_AUTHENTICATED)!=null) {
+			_session.removeAttribute(__J_AUTHENTICATED);
+		}
 
         doLogout();
     }
@@ -86,16 +84,18 @@ public class SessionAuthentication extends AbstractUserAuthentication implements
     private void doLogout()
     {
         SecurityHandler security=SecurityHandler.getCurrentSecurityHandler();
-        if (security!=null)
-            security.logout(this);
-        if (_session!=null)
-            _session.removeAttribute(AbstractSession.SESSION_CREATED_SECURE);
+        if (security!=null) {
+			security.logout(this);
+		}
+        if (_session!=null) {
+			_session.removeAttribute(AbstractSession.SESSION_CREATED_SECURE);
+		}
     }
 
     @Override
     public String toString()
     {
-        return String.format("%s@%x{%s,%s}",this.getClass().getSimpleName(),hashCode(),_session==null?"-":_session.getId(),_userIdentity);
+        return String.format("%s@%x{%s,%s}",getClass().getSimpleName(),hashCode(),_session==null?"-":_session.getId(),_userIdentity);
     }
 
     @Override

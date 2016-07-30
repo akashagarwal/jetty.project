@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util;
 
@@ -51,15 +46,17 @@ public class ReadLineInputStream extends BufferedInputStream
         {
             int b=super.read();
             
-            if (markpos < 0)
-                throw new IOException("Buffer size exceeded: no line terminator");
+            if (markpos < 0) {
+				throw new IOException("Buffer size exceeded: no line terminator");
+			}
             
             if (b==-1)
             {
                 int m=markpos;
                 markpos=-1;
-                if (pos>m)
-                    return new String(buf,m,pos-m, StandardCharsets.UTF_8);
+                if (pos>m) {
+					return new String(buf,m,pos-m, StandardCharsets.UTF_8);
+				}
 
                 return null;
             }
@@ -71,11 +68,12 @@ public class ReadLineInputStream extends BufferedInputStream
                 // if we have seen CRLF before, hungrily consume LF
                 if (_seenCRLF && pos<count)
                 {
-                    if (buf[pos]=='\n')
-                        pos+=1;
-                }
-                else
-                    _skipLF=true;
+                    if (buf[pos]=='\n') {
+						pos+=1;
+					}
+                } else {
+					_skipLF=true;
+				}
                 int m=markpos;
                 markpos=-1;
                 return new String(buf,m,p-m-1,StandardCharsets.UTF_8);
@@ -104,8 +102,9 @@ public class ReadLineInputStream extends BufferedInputStream
         if (_skipLF)
         {
             _skipLF=false;
-            if (_seenCRLF && b=='\n')
-                b=super.read();
+            if (_seenCRLF && b=='\n') {
+				b=super.read();
+			}
         }
         return b;
     }
@@ -119,8 +118,9 @@ public class ReadLineInputStream extends BufferedInputStream
             if (_seenCRLF)
             {
                 int b = super.read();
-                if (b==-1)
-                    return -1;
+                if (b==-1) {
+					return -1;
+				}
                 
                 if (b!='\n')
                 {

@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.util.security;
 
@@ -28,57 +23,59 @@ import java.util.Arrays;
  */
 public class Constraint implements Cloneable, Serializable
 {
-    /* ------------------------------------------------------------ */
-    public final static String __BASIC_AUTH = "BASIC";
+    /** ------------------------------------------------------------. */
+    public static final String __BASIC_AUTH = "BASIC";
 
-    public final static String __FORM_AUTH = "FORM";
+    public static final String __FORM_AUTH = "FORM";
 
-    public final static String __DIGEST_AUTH = "DIGEST";
+    public static final String __DIGEST_AUTH = "DIGEST";
 
-    public final static String __CERT_AUTH = "CLIENT_CERT";
+    public static final String __CERT_AUTH = "CLIENT_CERT";
 
-    public final static String __CERT_AUTH2 = "CLIENT-CERT";
+    public static final String __CERT_AUTH2 = "CLIENT-CERT";
     
-    public final static String __SPNEGO_AUTH = "SPNEGO";
+    public static final String __SPNEGO_AUTH = "SPNEGO";
     
-    public final static String __NEGOTIATE_AUTH = "NEGOTIATE";
+    public static final String __NEGOTIATE_AUTH = "NEGOTIATE";
     
     public static boolean validateMethod (String method)
     {
-        if (method == null)
-            return false;
+        if (method == null) {
+			return false;
+		}
         method = method.trim();
-        return (method.equals(__FORM_AUTH) 
-                || method.equals(__BASIC_AUTH) 
-                || method.equals (__DIGEST_AUTH) 
-                || method.equals (__CERT_AUTH) 
-                || method.equals(__CERT_AUTH2)
-                || method.equals(__SPNEGO_AUTH)
-                || method.equals(__NEGOTIATE_AUTH));
+        return __FORM_AUTH.equals(method) 
+                || __BASIC_AUTH.equals(method) 
+                || __DIGEST_AUTH.equals(method) 
+                || __CERT_AUTH.equals(method) 
+                || __CERT_AUTH2.equals(method)
+                || __SPNEGO_AUTH.equals(method)
+                || __NEGOTIATE_AUTH.equals(method);
     }
 
-    /* ------------------------------------------------------------ */
-    public final static int DC_UNSET = -1, DC_NONE = 0, DC_INTEGRAL = 1, DC_CONFIDENTIAL = 2, DC_FORBIDDEN = 3;
+    /** ------------------------------------------------------------. */
+    public static final int DC_UNSET = -1, DC_NONE = 0, DC_INTEGRAL = 1, DC_CONFIDENTIAL = 2, DC_FORBIDDEN = 3;
 
-    /* ------------------------------------------------------------ */
-    public final static String NONE = "NONE";
+    /** ------------------------------------------------------------. */
+    public static final String NONE = "NONE";
 
-    public final static String ANY_ROLE = "*";
+    public static final String ANY_ROLE = "*";
     
-    public final static String ANY_AUTH = "**"; //Servlet Spec 3.1 pg 140
+    /** Servlet Spec 3.1 pg 140 */
+    public static final String ANY_AUTH = "**";
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     private String _name;
 
     private String[] _roles;
 
     private int _dataConstraint = DC_UNSET;
 
-    private boolean _anyRole = false;
+    private boolean _anyRole;
     
-    private boolean _anyAuth = false;
+    private boolean _anyAuth;
 
-    private boolean _authenticate = false;
+    private boolean _authenticate;
 
     /* ------------------------------------------------------------ */
     /**
@@ -101,7 +98,7 @@ public class Constraint implements Cloneable, Serializable
         setRoles(new String[] { role });
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public Object clone() throws CloneNotSupportedException
     {
@@ -117,13 +114,13 @@ public class Constraint implements Cloneable, Serializable
         _name = name;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public String getName()
     {
         return _name;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     public void setRoles(String[] roles)
     {
         _roles = roles;
@@ -174,9 +171,16 @@ public class Constraint implements Cloneable, Serializable
      */
     public boolean hasRole(String role)
     {
-        if (_anyRole) return true;
-        if (_roles != null) for (int i = _roles.length; i-- > 0;)
-            if (role.equals(_roles[i])) return true;
+        if (_anyRole) {
+			return true;
+		}
+        if (_roles != null) {
+			for (int i = _roles.length; i-- > 0;) {
+				if (role.equals(_roles[i])) {
+					return true;
+				}
+			}
+		}
         return false;
     }
 
@@ -214,7 +218,9 @@ public class Constraint implements Cloneable, Serializable
      */
     public void setDataConstraint(int c)
     {
-        if (c < 0 || c > DC_CONFIDENTIAL) throw new IllegalArgumentException("Constraint out of range");
+        if (c < 0 || c > DC_CONFIDENTIAL) {
+			throw new IllegalArgumentException("Constraint out of range");
+		}
         _dataConstraint = c;
     }
 
@@ -237,7 +243,7 @@ public class Constraint implements Cloneable, Serializable
         return _dataConstraint >= DC_NONE;
     }
 
-    /* ------------------------------------------------------------ */
+    /** ------------------------------------------------------------. */
     @Override
     public String toString()
     {

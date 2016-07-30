@@ -1,20 +1,15 @@
-//
 //  ========================================================================
 //  Copyright (c) 1995-2016 Mort Bay Consulting Pty. Ltd.
 //  ------------------------------------------------------------------------
 //  All rights reserved. This program and the accompanying materials
 //  are made available under the terms of the Eclipse Public License v1.0
 //  and Apache License v2.0 which accompanies this distribution.
-//
 //      The Eclipse Public License is available at
 //      http://www.eclipse.org/legal/epl-v10.html
-//
 //      The Apache License v2.0 is available at
 //      http://www.opensource.org/licenses/apache2.0.php
-//
 //  You may elect to redistribute this code under either of these licenses.
 //  ========================================================================
-//
 
 package org.eclipse.jetty.server;
 
@@ -149,15 +144,18 @@ public class LocalConnector extends AbstractConnector
      */
     public ByteBuffer getResponses(ByteBuffer requestsBuffer,long idleFor,TimeUnit units) throws Exception
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("requests {}", BufferUtil.toUTF8String(requestsBuffer));
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("requests {}", BufferUtil.toUTF8String(requestsBuffer));
+		}
         LocalEndPoint endp = executeRequest(requestsBuffer);
         endp.waitUntilClosedOrIdleFor(idleFor,units);
         ByteBuffer responses = endp.takeOutput();
-        if (endp.isOutputShutdown())
-            endp.close();
-        if (LOG.isDebugEnabled())
-            LOG.debug("responses {}", BufferUtil.toUTF8String(responses));
+        if (endp.isOutputShutdown()) {
+			endp.close();
+		}
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("responses {}", BufferUtil.toUTF8String(responses));
+		}
         return responses;
     }
 
@@ -174,8 +172,9 @@ public class LocalConnector extends AbstractConnector
 
     private LocalEndPoint executeRequest(ByteBuffer rawRequest)
     {
-        if (!isStarted())
-            throw new IllegalStateException("!STARTED");
+        if (!isStarted()) {
+			throw new IllegalStateException("!STARTED");
+		}
         LocalEndPoint endp = new LocalEndPoint();
         endp.addInput(rawRequest);
         _connects.add(endp);
@@ -192,8 +191,9 @@ public class LocalConnector extends AbstractConnector
     @Override
     protected void accept(int acceptorID) throws IOException, InterruptedException
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("accepting {}", acceptorID);
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("accepting {}", acceptorID);
+		}
         LocalEndPoint endPoint = _connects.take();
         endPoint.onOpen();
         onEndPointOpened(endPoint);
@@ -225,8 +225,9 @@ public class LocalConnector extends AbstractConnector
     public ByteBuffer getResponse(ByteBuffer requestBuffer, long time,TimeUnit unit) throws Exception
     {
         boolean head = BufferUtil.toString(requestBuffer).toLowerCase().startsWith("head ");
-        if (LOG.isDebugEnabled())
-            LOG.debug("requests {}", BufferUtil.toUTF8String(requestBuffer));
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("requests {}", BufferUtil.toUTF8String(requestBuffer));
+		}
         LocalEndPoint endp = executeRequest(requestBuffer);
         return endp.waitForResponse(head,time,unit);
     }
@@ -241,8 +242,9 @@ public class LocalConnector extends AbstractConnector
      */
     public ByteBuffer getResponse(ByteBuffer requestBuffer,boolean head, long time,TimeUnit unit) throws Exception
     {
-        if (LOG.isDebugEnabled())
-            LOG.debug("requests {}", BufferUtil.toUTF8String(requestBuffer));
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("requests {}", BufferUtil.toUTF8String(requestBuffer));
+		}
         LocalEndPoint endp = executeRequest(requestBuffer);
         return endp.waitForResponse(head,time,unit);
     }
@@ -269,8 +271,9 @@ public class LocalConnector extends AbstractConnector
     {
         boolean head = rawRequest.toLowerCase().startsWith("head ");
         ByteBuffer requestsBuffer = BufferUtil.toBuffer(rawRequest, StandardCharsets.ISO_8859_1);
-        if (LOG.isDebugEnabled())
-            LOG.debug("request {}", BufferUtil.toUTF8String(requestsBuffer));
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("request {}", BufferUtil.toUTF8String(requestsBuffer));
+		}
         LocalEndPoint endp = executeRequest(requestsBuffer);
         
         return BufferUtil.toString(endp.waitForResponse(head,time,unit), StandardCharsets.ISO_8859_1);
@@ -288,14 +291,15 @@ public class LocalConnector extends AbstractConnector
     public String getResponse(String rawRequest, boolean head, long time,TimeUnit unit) throws Exception
     {
         ByteBuffer requestsBuffer = BufferUtil.toBuffer(rawRequest, StandardCharsets.ISO_8859_1);
-        if (LOG.isDebugEnabled())
-            LOG.debug("request {}", BufferUtil.toUTF8String(requestsBuffer));
+        if (LOG.isDebugEnabled()) {
+			LOG.debug("request {}", BufferUtil.toUTF8String(requestsBuffer));
+		}
         LocalEndPoint endp = executeRequest(requestsBuffer);
         
         return BufferUtil.toString(endp.waitForResponse(head,time,unit), StandardCharsets.ISO_8859_1);
     }
     
-    /** Local EndPoint
+    /** Local EndPoint.
      */
     public class LocalEndPoint extends ByteArrayEndPoint
     {
@@ -346,8 +350,9 @@ public class LocalConnector extends AbstractConnector
             {
                 try
                 {
-                    if (!_closed.await(10,TimeUnit.SECONDS))
-                        break;
+                    if (!_closed.await(10,TimeUnit.SECONDS)) {
+						break;
+					}
                 }
                 catch(Exception e)
                 {
@@ -368,8 +373,9 @@ public class LocalConnector extends AbstractConnector
                     {
                         if (size==getOutput().remaining())
                         {
-                            if (LOG.isDebugEnabled())
-                                LOG.debug("idle for {} {}",idleFor,units);
+                            if (LOG.isDebugEnabled()) {
+								LOG.debug("idle for {} {}",idleFor,units);
+							}
                             return;
                         }
                         size=getOutput().remaining();
@@ -383,7 +389,7 @@ public class LocalConnector extends AbstractConnector
         }
         
         /** 
-         * Wait for a response using a parser to detect the end of message
+         * Wait for a response using a parser to detect the end of message.
          * @return Buffer containing full response or null for EOF;
          * @throws Exception if the response cannot be parsed
          */
@@ -393,7 +399,7 @@ public class LocalConnector extends AbstractConnector
         }
         
         /** 
-         * Wait for a response using a parser to detect the end of message
+         * Wait for a response using a parser to detect the end of message.
          * @param head whether the request is a HEAD request
          * @param time the maximum time to wait
          * @param unit the time unit of the {@code timeout} argument
@@ -403,13 +409,14 @@ public class LocalConnector extends AbstractConnector
         public String getResponse(boolean head, long time,TimeUnit unit) throws Exception
         {
             ByteBuffer response = waitForResponse(head,time,unit);
-            if (response!=null)
-                return BufferUtil.toString(response);
+            if (response!=null) {
+				return BufferUtil.toString(response);
+			}
             return null;
         }
         
         /** 
-         * Wait for a response using a parser to detect the end of message
+         * Wait for a response using a parser to detect the end of message.
          * @param head whether the request is a HEAD request
          * @param time the maximum time to wait
          * @param unit the time unit of the {@code timeout} argument
@@ -474,9 +481,9 @@ public class LocalConnector extends AbstractConnector
                 {
                     // read a chunk of response
                     ByteBuffer chunk;
-                    if (BufferUtil.hasContent(_responseData))
-                        chunk = _responseData;
-                    else 
+                    if (BufferUtil.hasContent(_responseData)) {
+						chunk = _responseData;
+					} else 
                     {
                         chunk = waitForOutput(time,unit);
                         if (BufferUtil.isEmpty(chunk) && (!isOpen() || isOutputShutdown()))
@@ -495,8 +502,9 @@ public class LocalConnector extends AbstractConnector
                         if (chunk.position()==pos)
                         {
                             // Nothing consumed
-                            if (BufferUtil.isEmpty(chunk))
-                                break;
+                            if (BufferUtil.isEmpty(chunk)) {
+								break;
+							}
                             return null;
                         }
 
@@ -506,15 +514,17 @@ public class LocalConnector extends AbstractConnector
                         // If we are complete then break the outer loop
                         if (complete)
                         {
-                            if (BufferUtil.hasContent(chunk))
-                                _responseData=chunk;
+                            if (BufferUtil.hasContent(chunk)) {
+								_responseData=chunk;
+							}
                             break loop;
                         }
                     }
                 }
             
-                if (bout.getCount()==0 && isOutputShutdown())
-                    return null;
+                if (bout.getCount()==0 && isOutputShutdown()) {
+					return null;
+				}
                 return ByteBuffer.wrap(bout.getBuf(),0,bout.getCount()); 
             }
         }
